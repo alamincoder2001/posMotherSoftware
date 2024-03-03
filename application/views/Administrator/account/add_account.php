@@ -158,7 +158,7 @@
                     { label: 'Action', align: 'center', filterable: false }
                 ],
                 page: 1,
-                per_page: 10,
+                per_page: 100,
                 filter: ''
             }
         },

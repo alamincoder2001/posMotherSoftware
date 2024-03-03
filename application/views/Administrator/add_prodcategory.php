@@ -1,158 +1,161 @@
-<div class="row">
-<div class="col-xs-12">
-	<!-- PAGE CONTENT BEGINS -->
-	<div class="form-horizontal">
-		
-		<div class="form-group">
-			<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Category Name  </label>
-			<label class="col-sm-1 control-label no-padding-right">:</label>
-			<div class="col-sm-3">
-				<input type="text" id="catname" name="catname" placeholder="Category Name" value="<?php echo set_value('catname'); ?>" class="form-control" />
-				<span id="msg"></span>
-				<?php echo form_error('catname'); ?>
-				<span style="color:red;font-size:15px;">
-			</div>
-		</div>
-		
-		<div class="form-group">
-			<label class="col-sm-3 control-label no-padding-right" for="description">Description </label>
-			<label class="col-sm-1 control-label no-padding-right">:</label>
-			<div class="col-sm-3">
-				<textarea name="catdescrip" id="catdescrip" class="form-control" placeholder="Category Description" ></textarea>
-			</div>
-		</div>
-		
-		<div class="form-group">
-			<label class="col-sm-3 control-label no-padding-right" for="form-field-1"></label>
-			<label class="col-sm-1 control-label no-padding-right"></label>
-			<div class="col-sm-8">
-				    <button type="button" class="btn btn-sm btn-success" onclick="submit()" name="btnSubmit">
-						Submit
-						<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
-					</button>
-			</div>
-		</div>
-		
-</div>
-</div>
-</div>
-
-
-			
-<div class="row">
-	<div class="col-xs-12">
-
-		<div class="clearfix">
-			<div class="pull-right tableTools-container"></div>
-		</div>
-		<div class="table-header">
-			Category Information
-		</div>
-
-		<!-- div.table-responsive -->
-
-		<!-- div.dataTables_borderWrap -->
-		<div id="saveResult">
-			<table id="dynamic-table" class="table table-striped table-bordered table-hover">
-				<thead>
-					<tr>
-						<th class="center" style="display:none;">
-							<label class="pos-rel">
-								<input type="checkbox" class="ace" />
-								<span class="lbl"></span>
-							</label>
-						</th>
-						<th>SL No</th>
-						<th>Category Name</th>
-						<th class="hidden-480">Description</th>
-
-						<th>Action</th>
-					</tr>
-				</thead>
-
-				<tbody>
-					<?php 
-					$BRANCHid=$this->session->userdata('BRANCHid');
-					$query = $this->db->query("SELECT * FROM tbl_productcategory where status='a' AND category_branchid = '$BRANCHid' order by ProductCategory_Name asc");
-					$row = $query->result();
-					//while($row as $row){ ?>
-					<?php $i=1; foreach($row as $row){ ?>
-					<tr>
-						<td class="center" style="display:none;">
-							<label class="pos-rel">
-								<input type="checkbox" class="ace" />
-								<span class="lbl"></span>
-							</label>
-						</td>
-
-						<td><?php echo $i++; ?></td>
-						<td><a href="#"><?php echo $row->ProductCategory_Name; ?></a></td>
-						<td class="hidden-480"><?php echo $row->ProductCategory_Description; ?></td>
-						<td>
-						<div class="hidden-sm hidden-xs action-buttons">
-								<a class="blue" href="#">
-									<i class="ace-icon fa fa-search-plus bigger-130"></i>
-								</a>
-
-								<?php if($this->session->userdata('accountType') != 'u'){?>
-								<a class="green" href="<?php echo base_url() ?>Administrator/page/catedit/<?php echo $row->ProductCategory_SlNo; ?>" title="Eidt" onclick="return confirm('Are you sure you want to Edit this item?');">
-									<i class="ace-icon fa fa-pencil bigger-130"></i>
-								</a>
-
-								<a class="red" href="#" onclick="deleted(<?php echo $row->ProductCategory_SlNo; ?>)">
-									<i class="ace-icon fa fa-trash-o bigger-130"></i>
-								</a>
-								<?php }?>
+<div id="categories">
+	<form @submit.prevent="getCategory">
+		<div class="row" style="margin: 0;">
+			<fieldset class="scheduler-border">
+				<legend class="scheduler-border">Category Entry Form</legend>
+				<div class="control-group">
+					<div class="col-xs-12 col-md-6 col-md-offset-3">
+						<div class="form-group clearfix">
+							<label class="control-label col-xs-4 col-md-4">Category Name:</label>
+							<div class="col-xs-8 col-md-8">
+								<input type="text" class="form-control" v-model="category.ProductCategory_Name" required>
 							</div>
-						</td>
-					</tr>
-					
-					<?php } ?>
-				</tbody>
-			</table>
+						</div>
+						<div class="form-group clearfix">
+							<label class="control-label col-xs-4 col-md-4">Description:</label>
+							<div class="col-xs-8 col-md-8">								
+								<textarea class="form-control" v-model="category.ProductCategory_Description"></textarea>
+							</div>
+						</div>
+						<div class="form-group clearfix">
+							<div class="col-xs-12 col-md-12 text-right">
+								<input type="submit" class="btnSave" value="Save">
+							</div>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</form>
+
+	<div class="row">
+		<div class="col-sm-12 form-inline">
+			<div class="form-group">
+				<label for="filter" class="sr-only">Filter</label>
+				<input type="text" class="form-control" v-model="filter" placeholder="Filter">
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="table-responsive">
+				<datatable :columns="columns" :data="categories" :filter-by="filter" style="margin-bottom: 5px;">
+					<template scope="{ row }">
+						<tr>
+							<td>{{ row.sl }}</td>
+							<td>{{ row.ProductCategory_Name }}</td>
+							<td>{{ row.ProductCategory_Description }}</td>
+							<td>
+								<?php if ($this->session->userdata('accountType') != 'u') { ?>
+									<i class="btnEdit fa fa-pencil" @click="editCategory(row)"></i>
+									<i class="btnDelete fa fa-trash" @click="deleteCategory(row.Unit_SlNo)"></i>
+								<?php } ?>
+							</td>
+						</tr>
+					</template>
+				</datatable>
+				<datatable-pager v-model="page" type="abbreviated" :per-page="per_page" style="margin-bottom: 50px;"></datatable-pager>
+			</div>
 		</div>
 	</div>
 </div>
-					
 
-<script type="text/javascript">
-    function submit(){
-        var catname= $("#catname").val();
-        var catdescrip= $("#catdescrip").val();
-        if(catname==""){
-            $("#msg").html("Required Filed").css("color","red");
-            return false;
-        }
-        var catname=encodeURIComponent(catname);
-        var inputdata = 'catname='+catname+'&catdescrip='+catdescrip;
-        var urldata = "<?php echo base_url();?>insertcategory";
-        $.ajax({
-            type: "POST",
-            url: urldata,
-            data: inputdata,
-            success:function(data){   
-			document.getElementById("catname").value='';
-			location.reload();
-            }
-        });
-    }
-</script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/axios.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vuejs-datatable.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue-select.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/moment.min.js"></script>
 
-<script type="text/javascript">
-    function deleted(id){
-        var deletedd= id;
-        var inputdata = 'deleted='+deletedd;
-        if(confirm("Are You Sure Want to delete This?")){
-        var urldata = "<?php echo base_url();?>catdelete";
-        $.ajax({
-            type: "POST",
-            url: urldata,
-            data: inputdata,
-            success:function(data){
-                alert(data);
-				window.location.href='<?php echo base_url(); ?>category';
-            }
-        });
-		};
-    }
+<script>
+	Vue.component('v-select', VueSelect.VueSelect);
+	new Vue({
+		el: '#categories',
+		data() {
+			return {
+				category: {
+					ProductCategory_SlNo: 0,
+					ProductCategory_Name: '',
+					ProductCategory_Description: '',
+				},
+				categories: [],
+
+				columns: [{
+						label: 'Sl',
+						field: 'sl',
+						align: 'center'
+					},
+					{
+						label: 'Category Name',
+						field: 'ProductCategory_Name',
+						align: 'center'
+					},
+					{
+						label: 'Description',
+						field: 'ProductCategory_Description',
+						align: 'center'
+					},
+					{
+						label: 'Action',
+						align: 'center',
+						filterable: false
+					}
+				],
+				page: 1,
+				per_page: 100,
+				filter: ''
+			}
+		},
+		created() {
+			this.getCategories();
+		},
+		methods: {
+			getCategories() {
+				axios.get('/get_categories').then(res => {
+					this.categories = res.data.map((item, index) => {
+						item.sl = index + 1;
+						return item;
+					});
+				})
+			},
+			getCategory() {
+				let url = '/add_category';
+				if (this.category.ProductCategory_SlNo != 0) {
+					url = '/update_category';
+				}
+
+				axios.post(url, this.category).then(res => {
+					let r = res.data;
+					alert(r.message);
+					if (r.status) {
+						this.resetForm();
+						this.getCategories();
+					}
+				})
+			},
+			editCategory(category) {
+				let keys = Object.keys(this.category);
+				keys.forEach(key => {
+					this.category[key] = category[key];
+				})
+			},
+			deleteCategory(categoryId) {
+				if (confirm('Are you sure?')) {
+					axios.post('/delete_category', {
+						categoryId: categoryId
+					}).then(res => {
+						let r = res.data;
+						alert(r.message);
+						if (r.status) {
+							this.getCategories();
+						}
+					})
+				}
+			},
+			resetForm() {
+				this.category = {
+					ProductCategory_SlNo: 0,
+					ProductCategory_Name: '',
+					ProductCategory_Description: '',
+				}
+			}
+		}
+	})
 </script>

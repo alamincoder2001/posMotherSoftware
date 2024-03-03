@@ -12,10 +12,11 @@ $route['module/(:any)'] = 'Administrator/Page/module/$1';
 $route['brachAccess/(:any)'] = 'Administrator/Login/brach_access/$1';
 $route['getBrachAccess'] = 'Administrator/Login/branch_access_main_admin';
 
-$route['get_categories'] = 'Administrator/Page/getCategories'; 
 $route['category'] = 'Administrator/Page/add_category'; 
-$route['insertcategory'] = 'Administrator/Page/insert_category';
-$route['catdelete'] = 'Administrator/page/catdelete';
+$route['get_categories'] = 'Administrator/Page/getCategories'; 
+$route['add_category'] = 'Administrator/Page/insert_category';
+$route['update_category'] = 'Administrator/Page/update_category';
+$route['delete_category'] = 'Administrator/page/catdelete';
 
 $route['get_brands'] = 'Administrator/Page/getBrands';
 $route['brand'] = 'Administrator/Page/add_brand';
@@ -59,10 +60,9 @@ $route['get_assets_report']			= 'Administrator/Assets/getAssetsReport';
 
 
 $route['unit'] = 'Administrator/Page/unit';
-$route['insertunit'] = 'Administrator/Page/insert_unit';
-$route['unitedit/(:any)'] = 'Administrator/Page/unitedit/$1';
-$route['unitupdate'] = 'Administrator/Page/unitupdate';
-$route['unitdelete'] = 'Administrator/Page/unitdelete';
+$route['add_unit'] = 'Administrator/Page/insert_unit';
+$route['update_unit'] = 'Administrator/Page/unitupdate';
+$route['delete_unit'] = 'Administrator/Page/unitdelete';
 $route['get_units'] = 'Administrator/Page/getUnits';
 
 $route['color'] = 'Administrator/Page/add_color';
@@ -72,11 +72,10 @@ $route['coloredit/(:any)'] = 'Administrator/Page/coloredit/$1';
 $route['colorupdate'] = 'Administrator/Page/colorupdate';
 
 $route['area'] = 'Administrator/Page/area';
-$route['insertarea'] = 'Administrator/Page/insert_area';
-$route['areadelete'] = 'Administrator/Page/areadelete';
-$route['areaedit/(:any)'] = 'Administrator/Page/areaedit/$1';
-$route['areaupdate'] = 'Administrator/Page/areaupdate';
-$route['get_districts'] = 'Administrator/Page/getDistricts';
+$route['add_area'] = 'Administrator/Page/insert_area';
+$route['delete_area'] = 'Administrator/Page/areadelete';
+$route['update_area'] = 'Administrator/Page/areaupdate';
+$route['get_areas'] = 'Administrator/Page/getDistricts';
 
 $route['product'] = 'Administrator/Products';
 $route['add_product'] = 'Administrator/Products/addProduct';

@@ -136,7 +136,7 @@
 				})
 			},
 			getAreas() {
-				axios.get('/get_districts').then(res => {
+				axios.get('/get_areas').then(res => {
 					this.areas = res.data;
 				})
 			},
