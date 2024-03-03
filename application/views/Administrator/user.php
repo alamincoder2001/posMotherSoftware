@@ -53,7 +53,7 @@
 							<label class="col-xs-4 control-label" for="username"> User name </label>
 							<label class="col-xs-1 control-label">:</label>
 							<div class="col-xs-6">
-								<input type="text" id="username" name="username" autocomplete="off" placeholder="User name" class="form-control" />
+								<input type="text" id="username" name="username" v-model="user.User_Name" autocomplete="off" placeholder="User name" class="form-control" />
 								<div id="usermes" class="col-xs-12"></div>
 							</div>
 						</div>
@@ -62,7 +62,7 @@
 							<label class="col-xs-4 control-label" for="Password"> Password </label>
 							<label class="col-xs-1 control-label">:</label>
 							<div class="col-xs-6">
-								<input type="password" id="assword" name="Password" placeholder="Password" autocomplete="off" class="form-control" />
+								<input type="password" id="assword" name="Password" v-model="user.Password" placeholder="Password" autocomplete="off" class="form-control" />
 								<div id="usermes" class="col-xs-12"></div>
 							</div>
 						</div>
@@ -71,7 +71,7 @@
 							<label class="col-xs-4 control-label" for="rePassword"> Re-Password </label>
 							<label class="col-xs-1 control-label">:</label>
 							<div class="col-xs-6">
-								<input type="password" id="rePassword" name="rePassword" placeholder="Re-Password" onchange="password()" class="form-control" />
+								<input type="password" id="rePassword" name="rePassword" placeholder="Re-Password" v-model="user.Re_Password" class="form-control" />
 								<div id="mes" class="col-xs-12"></div>
 							</div>
 						</div>
@@ -80,7 +80,7 @@
 							<label class="col-xs-4 control-label" for=""> </label>
 							<label class="col-xs-1 control-label"></label>
 							<div class="col-xs-6 text-right">
-								<button type="button" name="btnSave" title="Save" class="btnSave">
+								<button type="submit" name="btnSave" title="Save" class="btnSave">
 									Save
 									<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
 								</button>
@@ -154,7 +154,8 @@
 					User_Name: '',
 					UserEmail: '',
 					userBrunch_id: '',
-					User_Password: '',
+					Password: '',
+					Re_Password: '',
 					UserType: '',
 				},
 				branches: [],
@@ -236,7 +237,7 @@
 						alert(r.message);
 						if (r.success) {
 							this.clearForm();
-							this.getProducts();
+							this.getUsers();
 						}
 					})
 
