@@ -37,7 +37,7 @@
 </style>
 <div class="row" id="productLedger">
 	<div class="col-xs-12 col-md-12 col-lg-12">
-		<fieldset class="scheduler-border">
+		<fieldset class="scheduler-border scheduler-search">
 			<legend class="scheduler-border">Product Ledger</legend>
 			<div class="control-group">
 				<form v-on:submit.prevent="getProductLedger">
@@ -61,7 +61,7 @@
 
 					<div class="form-group">
 						<div class="col-sm-1">
-							<input type="submit" class="btn btn-primary" value="Show" style="margin-top:0px;border:0px;height:28px;">
+							<input type="submit" class="btn btn-primary btnSearch" value="Show" style="margin-top:0px;border:0px;height:28px;">
 						</div>
 					</div>
 				</form>

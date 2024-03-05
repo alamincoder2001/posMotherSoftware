@@ -1,1 +1,0 @@
-<input type="text" disabled="" class="inputclass" value="<?php echo $customerName; ?>">

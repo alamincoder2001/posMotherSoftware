@@ -536,7 +536,6 @@ class Products extends CI_Controller {
     public function product_name()
     {
         $data['allproduct'] =$allproduct =  $this->Billing_model->get_product_name();
-        // print_r($allproduct); exit();
         $this->load->view('Administrator/products/product_name', $data);
     }
 	
@@ -546,8 +545,10 @@ class Products extends CI_Controller {
    }
    
    public function barcodeGenerate($Product_SlNo){
+        $data['title'] = "Barcode Generate";
 		$data['product'] = $this->Billing_model->select_Product_by_id($Product_SlNo);
-	    $this->load->view('Administrator/products/barcode/barcode', $data);
+        $data['content'] = $this->load->view('Administrator/products/barcode/barcode', $data, TRUE);
+        $this->load->view('Administrator/index', $data);
    }
 
    function barcode($kode){

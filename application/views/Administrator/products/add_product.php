@@ -173,11 +173,11 @@
 		</div>
 		<div class="col-md-12">
 			<div class="table-responsive">
-				<datatable :columns="columns" :data="products" :filter-by="filter">
+				<datatable class="table-striped" :columns="columns" :data="products" :filter-by="filter">
 					<template scope="{ row }">
 						<tr>
 							<td>{{ row.Product_Code }}</td>
-							<td>{{ row.Product_Name }}</td>
+							<td style="text-align: left;padding-left:3px;">{{ row.Product_Name }}</td>
 							<td>{{ row.ProductCategory_Name }}</td>
 							<td>{{ row.Product_Purchase_Rate }}</td>
 							<td>{{ row.Product_SellingPrice }}</td>
@@ -277,7 +277,7 @@
 						align: 'center'
 					},
 					{
-						label: 'Is Service',
+						label: 'Type',
 						field: 'is_service',
 						align: 'center'
 					},

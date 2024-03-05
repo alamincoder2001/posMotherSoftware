@@ -50,9 +50,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 			<div class="navbar-header pull-left">
 				<a href="<?php echo base_url(); ?>" class="navbar-brand">
 					<small>
-						<i class="fa fa-shopping-cart"></i>
-						<!--Enterprise Resource Planning--><?php echo $companyInfo->Company_Name; ?> <span style="color:#000;font-weight:700;letter-spacing:1px;font-size:16px;"> <?php //echo $this->session->userdata('Brunch_name'); 
-																																													?> </span>
+						<i class="fa fa-shopping-cart"></i><?php echo $companyInfo->Company_Name; ?> <span style="color:#000;font-weight:700;letter-spacing:1px;font-size:16px;"> </span>
 					</small>
 				</a>
 			</div>
@@ -61,7 +59,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 				<ul class="nav ace-nav">
 					<?php
 					$userID =  $this->session->userdata('userId');
-					$CheckSuperAdmin = $this->db->where('UserType', 'm')->where('User_SlNo', $userID)->get('tbl_user')->row();
+					$CheckSuperAdmin = $this->db->where('UserType', 'm')->or_where('UserType', 'a')->where('User_SlNo', $userID)->get('tbl_user')->row();
 					if (isset($CheckSuperAdmin)) :
 					?>
 						<li class="light-blue dropdown-modal">
@@ -98,10 +96,10 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 						<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 							<?php if ($this->session->userdata('user_image')) { ?>
 
-								<img class="nav-user-photo" src="<?php echo base_url(); ?>uploads/users/<?php echo $this->session->userdata('user_image'); ?>" alt="<?php echo $this->session->userdata('FullName'); ?>" />
+								<img class="nav-user-photo" src="<?php echo base_url(); ?><?php echo $this->session->userdata('user_image'); ?>" alt="<?php echo $this->session->userdata('FullName'); ?>" />
 							<?php } else { ?>
 
-								<img class="nav-user-photo" src="<?php echo base_url(); ?>uploads/no_image.jpg ?>" alt="<?php echo $this->session->userdata('FullName'); ?>" />
+								<img class="nav-user-photo" src="<?php echo base_url(); ?>uploads/no_user.png" alt="<?php echo $this->session->userdata('FullName'); ?>" />
 							<?php } ?>
 							<span class="user-info">
 								<small>Welcome,</small>
@@ -198,16 +196,10 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 					</ul>
 
 					<div class="nav-search" id="nav-search">
-						<!-- <form class="form-search">
-								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
-									<i class="ace-icon fa fa-search  fa-lg nav-search-icon"></i>
-								</span>
-							</form> -->
 						<span style="font-weight: bold; color: #972366; font-size: 16px;">
 							<?php echo $this->session->userdata('Brunch_name');  ?>
 						</span>
-					</div><!-- /.nav-search -->
+					</div>
 				</div>
 
 				<div class="page-content">
@@ -216,9 +208,9 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 						<img src="<?php echo base_url(); ?>assets/loader.gif" style="top: 30%; left: 50%; opacity: 1; position: fixed;">
 					</div>
 					<?php echo $content; ?>
-				</div><!-- /.page-content -->
+				</div>
 			</div>
-		</div><!-- /.main-content -->
+		</div>
 
 		<div class="footer">
 			<div class="footer-inner">
@@ -241,7 +233,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 		<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 			<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
 		</a>
-	</div><!-- /.main-container -->
+	</div>
 
 	<!-- basic scripts -->
 	<script src="<?php echo base_url(); ?>assets/js/jquery-2.1.4.min.js"></script>

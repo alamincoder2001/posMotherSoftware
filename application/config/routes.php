@@ -299,17 +299,16 @@ $route['user'] = 'Administrator/User_management';
 $route['get_users'] = 'Administrator/User_management/getUsers';
 $route['get_all_users'] = 'Administrator/User_management/getAllUsers';
 $route['add_user'] = 'Administrator/User_management/user_Insert';
-$route['userUpdate'] = 'Administrator/User_management/userupdate';
-$route['userEdit/(:any)'] = 'Administrator/User_management/edit/$1';
-$route['userDeactive/(:any)'] = 'Administrator/User_management/userDeactive/$1';
-$route['userActive/(:any)'] = 'Administrator/User_management/userActive/$1';
+$route['update_user'] = 'Administrator/User_management/userupdate';
+$route['delete_user'] = 'Administrator/User_management/userDelete';
+$route['change_user_status'] = 'Administrator/User_management/userStatusChange';
+$route['check_username'] = 'Administrator/User_management/check_user_name';
 $route['access/(:any)'] = 'Administrator/User_management/user_access/$1';
 $route['get_user_access'] = 'Administrator/User_management/getUserAccess';
 $route['profile'] = 'Administrator/User_management/profile';
-$route['password_change'] = 'Administrator/User_management/password_change';
+$route['profile_update'] = 'Administrator/User_management/profileUpdate';
 $route['define_access/(:any)'] = 'Administrator/User_management/define_access/$1';
 $route['add_user_access'] = 'Administrator/User_management/addUserAccess';
-$route['upload_user_image'] = 'Administrator/User_management/uploadUserImage';
 $route['user_activity'] = 'Administrator/User_management/userActivity';
 $route['get_user_activity'] = 'Administrator/User_management/getUserActivity';
 $route['delete_user_activity'] = 'Administrator/User_management/deleteUserActivity';
@@ -460,8 +459,6 @@ $route['date_to_date_top_sale'] = 'BusinessMonitor/date_to_date_top_sale';
 $route['date_to_date_top_paid_cus'] = 'BusinessMonitor/date_to_date_top_paid_cus';
 
 /* $route['addgeneric'] = 'Setting/addgeneric'; */
-
-$route['userName'] = 'Administrator/User_management/all_user_name';
 
 // Transfer
 $route['product_transfer'] = 'Administrator/Transfer/productTransfer';

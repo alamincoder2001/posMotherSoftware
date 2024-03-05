@@ -93,7 +93,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="accountsTable" class="table-responsive">
-                            <datatable :columns="columns" :data="accounts" :filter-by="filter">
+                            <datatable :columns="columns" class="table-striped" :data="accounts" :filter-by="filter">
                                 <template scope="{ row }">
                                     <tr>
                                         <td>{{ row.Acc_Code }}</td>

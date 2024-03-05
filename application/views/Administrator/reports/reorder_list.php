@@ -55,8 +55,8 @@
                     console.log(this.reOrderList);
                 })
             },
-            async print(){
-				let reportContent = `
+            async print() {
+                let reportContent = `
 					<div class="container">
 						<h4 style="text-align:center">Re order list</h4 style="text-align:center">
 						<div class="row">
@@ -67,18 +67,18 @@
 					</div>
 				`;
 
-				var mywindow = window.open('', 'PRINT', `width=${screen.width}, height=${screen.height}`);
-				mywindow.document.write(`
-					<?php $this->load->view('Administrator/reports/reportHeader.php');?>
+                var mywindow = window.open('', 'PRINT', `width=${screen.width}, height=${screen.height}`);
+                mywindow.document.write(`
+					<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>
 				`);
 
-				mywindow.document.body.innerHTML += reportContent;
+                mywindow.document.body.innerHTML += reportContent;
 
-				mywindow.focus();
-				await new Promise(resolve => setTimeout(resolve, 1000));
-				mywindow.print();
-				mywindow.close();
-			}
+                mywindow.focus();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                mywindow.print();
+                mywindow.close();
+            }
         }
     })
 </script>

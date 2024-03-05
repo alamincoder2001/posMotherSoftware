@@ -12,7 +12,7 @@
 								<input type="text" name="txtFirstName" id="txtFirstName" placeholder="Full Name" v-model="user.FullName" class="form-control" />
 							</div>
 						</div>
-	
+
 						<div class="form-group">
 							<label class="col-xs-4 control-label" for="user_email"> User Email </label>
 							<label class="col-xs-1 control-label">:</label>
@@ -20,7 +20,7 @@
 								<input type="email" name="user_email" id="user_email" v-model="user.UserEmail" placeholder="User Email" class="form-control" />
 							</div>
 						</div>
-	
+
 						<div class="form-group">
 							<label class="col-xs-4 control-label" for="Brunch"> Select Branch </label>
 							<label class="col-xs-1 control-label">:</label>
@@ -31,7 +31,7 @@
 								</select>
 							</div>
 						</div>
-	
+
 						<div class="form-group">
 							<label class="col-xs-4 control-label" for="type"> User Type </label>
 							<label class="col-xs-1 control-label">:</label>
@@ -45,37 +45,37 @@
 								<div id="brand_" class="col-xs-12"></div>
 							</div>
 						</div>
-	
+
 					</div>
-	
+
 					<div class="col-xs-6">
 						<div class="form-group">
 							<label class="col-xs-4 control-label" for="username"> User name </label>
 							<label class="col-xs-1 control-label">:</label>
 							<div class="col-xs-6">
-								<input type="text" id="username" name="username" v-model="user.User_Name" autocomplete="off" placeholder="User name" class="form-control" />
+								<input type="text" id="username" @input="checkUserName" name="username" v-model="user.User_Name" autocomplete="off" placeholder="User name" class="form-control" />
 								<div id="usermes" class="col-xs-12"></div>
 							</div>
 						</div>
-	
+
 						<div class="form-group">
 							<label class="col-xs-4 control-label" for="Password"> Password </label>
 							<label class="col-xs-1 control-label">:</label>
 							<div class="col-xs-6">
-								<input type="password" id="assword" name="Password" v-model="user.Password" placeholder="Password" autocomplete="off" class="form-control" />
+								<input type="password" @input="checkPassword($event)" id="assword" name="Password" v-model="user.Password" placeholder="Password" autocomplete="off" class="form-control" />
 								<div id="usermes" class="col-xs-12"></div>
 							</div>
 						</div>
-	
+
 						<div class="form-group">
 							<label class="col-xs-4 control-label" for="rePassword"> Re-Password </label>
 							<label class="col-xs-1 control-label">:</label>
 							<div class="col-xs-6">
-								<input type="password" id="rePassword" name="rePassword" placeholder="Re-Password" v-model="user.Re_Password" class="form-control" />
-								<div id="mes" class="col-xs-12"></div>
+								<input type="password" @input="checkPassword($event)" id="rePassword" name="rePassword" placeholder="Re-Password" v-model="user.Re_Password" class="form-control" />
+								<div style="padding-left:0;font-style:italic;" id="error-txt" class="col-xs-12"></div>
 							</div>
 						</div>
-	
+
 						<div class="form-group">
 							<label class="col-xs-4 control-label" for=""> </label>
 							<label class="col-xs-1 control-label"></label>
@@ -89,7 +89,7 @@
 					</div>
 				</div>
 			</fieldset>
-	
+
 		</div>
 	</form>
 
@@ -102,9 +102,9 @@
 		</div>
 		<div class="col-md-12">
 			<div class="table-responsive">
-				<datatable :columns="columns" :data="users" :filter-by="filter" style="margin-bottom: 5px;">
+				<datatable :columns="columns" class="table-striped" :data="users" :filter-by="filter" style="margin-bottom: 5px;">
 					<template scope="{ row }">
-						<tr>
+						<tr @dblclick="changeStatus(row)" :style="{background: row.status == 'p' ? '#7a7a7a' : ''}">
 							<td>{{ row.sl }}</td>
 							<td>{{ row.User_ID }}</td>
 							<td>{{ row.FullName }}</td>
@@ -121,10 +121,13 @@
 								<span v-if="row.UserType == 'd'" class="badge badge-danger">Deactive</span>
 							</td>
 							<td>
-								<?php if ($this->session->userdata('accountType') != 'u') { ?>
-									<i v-if="row.UserType != 'm'" class="btnEdit fa fa-pencil" @click="editUser(row)"></i>
-									<i v-if="row.UserType != 'm'" class="btnDelete fa fa-trash" @click="deleteUser(row.District_SlNo)"></i>
-								<?php } ?>
+								<span v-if="row.status == 'a'">
+									<?php if ($this->session->userdata('accountType') != 'u') { ?>
+										<i v-if="row.UserType == 'e' || row.UserType == 'u'" class="btnAccess fa fa-users" @click="window.open('/access/'+row.User_SlNo)"></i>
+										<i v-if="row.UserType == 'e' || row.UserType == 'u' || row.UserType == 'a'" class="btnEdit fa fa-pencil" @click="editUser(row)"></i>
+										<i v-if="row.UserType == 'e' || row.UserType == 'u'" class="btnDelete fa fa-trash" @click="deleteUser(row.User_SlNo)"></i>
+									<?php } ?>
+								</span>
 							</td>
 						</tr>
 					</template>
@@ -205,7 +208,9 @@
 				],
 				page: 1,
 				per_page: 100,
-				filter: ''
+				filter: '',
+
+				userId: '<?php echo $this->session->userdata("userId"); ?>'
 			}
 		},
 		created() {
@@ -226,7 +231,7 @@
 					});
 				})
 			},
-			saveUser() {			
+			saveUser() {
 				let url = '/add_user';
 				if (this.user.User_SlNo != 0) {
 					url = '/update_user';
@@ -263,6 +268,35 @@
 					}
 				})
 			},
+
+			changeStatus(user) {
+				if (user.UserType != 'm' || this.userId != user.User_SlNo) {
+					let deleteConfirm = confirm('Are you sure?');
+					if (deleteConfirm == false) {
+						return;
+					}
+					axios.post('/change_user_status', {
+						userId: user.User_SlNo,
+						status: user.status == 'p' ? 'a' : 'p'
+					}).then(res => {
+						let r = res.data;
+						alert(r.message);
+						if (r.success) {
+							this.getUsers();
+						}
+					})
+				}
+			},
+
+			checkUserName() {
+				axios.post('/check_username', {
+					User_Name: this.user.User_Name
+				}).then(res => {
+					let r = res.data;
+					console.log(r);
+				})
+			},
+
 			clearForm() {
 				let keys = Object.keys(this.user);
 				keys.forEach(key => {
@@ -272,6 +306,24 @@
 						this.user[key] = 0;
 					}
 				})
+				$("#error-txt").text('');
+			},
+
+			checkPassword(event) {
+				$("#error-txt").text('');
+				if (this.user.Password != "" && this.user.Re_Password != '') {
+					if (this.user.Password == this.user.Re_Password) {
+						$("#error-txt").text("Both password match").css({
+							color: 'green'
+						});
+					} else {
+						$("#error-txt").text('Both Password not match').css({
+							color: 'red'
+						});
+					}
+				} else {
+					$("#error-txt").text('');
+				}
 			}
 		}
 	})

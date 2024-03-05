@@ -151,7 +151,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                            <datatable :columns="columns" :data="transactions" :filter-by="filter">
+                            <datatable :columns="columns" class="table-striped" :data="transactions" :filter-by="filter">
                                 <template scope="{ row }">
                                     <tr v-bind:class="[row.transaction_type == 'Payment' ? 'transaction-deposit' : 'transaction-withdraw']">
                                         <td>{{ row.transaction_date }}</td>

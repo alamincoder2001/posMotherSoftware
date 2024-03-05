@@ -178,7 +178,7 @@
 		</div>
 		<div class="col-md-12">
 			<div class="table-responsive">
-				<datatable :columns="columns" :data="suppliers" :filter-by="filter" style="margin-bottom: 5px;">
+				<datatable :columns="columns" class="table-striped" :data="suppliers" :filter-by="filter" style="margin-bottom: 5px;">
 					<template scope="{ row }">
 						<tr>
 							<td>{{ row.Supplier_Code }}</td>
@@ -286,7 +286,6 @@
 				axios.post(url, fd, {
 					onUploadProgress: upe => {
 						let progress = Math.round(upe.loaded / upe.total * 100);
-						console.log(progress);
 					}
 				}).then(res => {
 					let r = res.data;

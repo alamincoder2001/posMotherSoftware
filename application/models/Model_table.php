@@ -1,11 +1,14 @@
 <?php
-class Model_Table extends CI_Model{
-    public function __construct() {
+class Model_Table extends CI_Model
+{
+    public function __construct()
+    {
         parent::__construct();
     }
-   
 
-    public function userAccess(){
+
+    public function userAccess()
+    {
         $currentUrl = $this->uri->uri_string();
 
         $userAccessQuery = $this->db->where('user_id', $this->session->userdata('userId'))->get('tbl_user_access');
@@ -16,7 +19,7 @@ class Model_Table extends CI_Model{
         }
 
         $accountType = $this->session->userdata('accountType');
-        if(array_search($currentUrl, $access) > -1 || $accountType == 'm' || $accountType == 'a'){
+        if (array_search($currentUrl, $access) > -1 || $accountType == 'm' || $accountType == 'a') {
             return true;
         } else {
             return false;
@@ -25,40 +28,43 @@ class Model_Table extends CI_Model{
 
     /*---------------------------  Save Update Data  ------------------------------*/
 
-    public function generateSalesInvoice(){
+    public function generateSalesInvoice()
+    {
         $branchId = $this->session->userdata('BRANCHid');
         $branchNo = strlen($branchId) < 10 ? '0' . $branchId : $branchId;
         $invoice = date('y') . $branchNo . "00001";
         $year = date('y');
         $sales = $this->db->query("select * from tbl_salesmaster sm where sm.SaleMaster_InvoiceNo like '$year%' and SaleMaster_branchid = ?", $branchId);
-        if($sales->num_rows() != 0){
+        if ($sales->num_rows() != 0) {
             $newSalesId = $sales->num_rows() + 1;
             $zeros = array('0', '00', '000', '0000');
             $invoice = date('y') . $branchNo . (strlen($newSalesId) > count($zeros) ? $newSalesId : $zeros[count($zeros) - strlen($newSalesId)] . $newSalesId);
-		}
-		
-		return $invoice;
+        }
+
+        return $invoice;
     }
 
 
-    public function generateQuotationInvoice(){
-		$invoice = 'Q-' . date('Y') . "00001";
+    public function generateQuotationInvoice()
+    {
+        $invoice = 'Q-' . date('Y') . "00001";
         $year = date('Y');
         $quotations = $this->db->query("select * from tbl_quotation_master qm where qm.SaleMaster_InvoiceNo like 'Q-$year%'");
-        if($quotations->num_rows() != 0){
+        if ($quotations->num_rows() != 0) {
             $newQuotationId = $quotations->num_rows() + 1;
             $zeros = array('0', '00', '000', '0000');
             $invoice = 'Q-' . date('Y') . (strlen($newQuotationId) > count($zeros) ? $newQuotationId : $zeros[count($zeros) - strlen($newQuotationId)] . $newQuotationId);
-		}
-		
-		return $invoice;
+        }
+
+        return $invoice;
     }
-    
-    public function generatePurchaseInvoice(){
+
+    public function generatePurchaseInvoice()
+    {
         $invoice = date('Y') . "000001";
         $year = date('Y');
         $purchases = $this->db->query("select * from tbl_purchasemaster pm where pm.PurchaseMaster_InvoiceNo like '$year%'");
-        if($purchases->num_rows() != 0){
+        if ($purchases->num_rows() != 0) {
             $newPurchaseId = $purchases->num_rows() + 1;
             $zeros = array('0', '00', '000', '0000', '00000');
             $invoice = date('Y') . (strlen($newPurchaseId) > count($zeros) ? $newPurchaseId : $zeros[count($zeros) - strlen($newPurchaseId)] . $newPurchaseId);
@@ -67,11 +73,12 @@ class Model_Table extends CI_Model{
         return $invoice;
     }
 
-    public function generateCustomerCode(){
+    public function generateCustomerCode()
+    {
         $customerCode = "C00001";
-        
+
         $lastCustomer = $this->db->query("select * from tbl_customer order by Customer_SlNo desc limit 1");
-        if($lastCustomer->num_rows() != 0){
+        if ($lastCustomer->num_rows() != 0) {
             $newCustomerId = $lastCustomer->row()->Customer_SlNo + 1;
             $zeros = array('0', '00', '000', '0000');
             $customerCode = 'C' . (strlen($newCustomerId) > count($zeros) ? $newCustomerId : $zeros[count($zeros) - strlen($newCustomerId)] . $newCustomerId);
@@ -80,11 +87,25 @@ class Model_Table extends CI_Model{
         return $customerCode;
     }
 
-    public function generateProductCode(){
+    public function generateUserCode()
+    {
+        $userCode = "U0001";
+
+        $lastUserId = $this->db->query("select * from tbl_user order by User_SlNo desc limit 1");
+        if ($lastUserId->num_rows() != 0) {
+            $newUserId = $lastUserId->row()->User_SlNo + 1;
+            $zeros = array('0', '00', '000');
+            $userCode = 'U' . (strlen($newUserId) > count($zeros) ? $newUserId : $zeros[count($zeros) - strlen($newUserId)] . $newUserId);
+        }
+
+        return $userCode;
+    }
+    public function generateProductCode()
+    {
         $productCode = "P00001";
-        
+
         $lastProduct = $this->db->query("select * from tbl_product order by Product_SlNo desc limit 1");
-        if($lastProduct->num_rows() != 0){
+        if ($lastProduct->num_rows() != 0) {
             $newProductId = $lastProduct->row()->Product_SlNo + 1;
             $zeros = array('0', '00', '000', '0000');
             $productCode = 'P' . (strlen($newProductId) > count($zeros) ? $newProductId : $zeros[count($zeros) - strlen($newProductId)] . $newProductId);
@@ -93,11 +114,12 @@ class Model_Table extends CI_Model{
         return $productCode;
     }
 
-    public function generateSupplierCode(){
+    public function generateSupplierCode()
+    {
         $supplierCode = "S00001";
-        
+
         $lastSupplier = $this->db->query("select * from tbl_supplier order by Supplier_SlNo desc limit 1");
-        if($lastSupplier->num_rows() != 0){
+        if ($lastSupplier->num_rows() != 0) {
             $newSupplierId = $lastSupplier->row()->Supplier_SlNo + 1;
             $zeros = array('0', '00', '000', '0000');
             $supplierCode = 'S' . (strlen($newSupplierId) > count($zeros) ? $newSupplierId : $zeros[count($zeros) - strlen($newSupplierId)] . $newSupplierId);
@@ -106,11 +128,12 @@ class Model_Table extends CI_Model{
         return $supplierCode;
     }
 
-    public function generateCustomerPaymentCode(){
+    public function generateCustomerPaymentCode()
+    {
         $paymentCode = "TR00001";
-        
+
         $lastPayment = $this->db->query("select * from tbl_customer_payment order by CPayment_id desc limit 1");
-        if($lastPayment->num_rows() != 0){
+        if ($lastPayment->num_rows() != 0) {
             $newPaymentId = $lastPayment->row()->CPayment_id + 1;
             $zeros = array('0', '00', '000', '0000');
             $paymentCode = 'TR' . (strlen($newPaymentId) > count($zeros) ? $newPaymentId : $zeros[count($zeros) - strlen($newPaymentId)] . $newPaymentId);
@@ -119,11 +142,12 @@ class Model_Table extends CI_Model{
         return $paymentCode;
     }
 
-    public function generateSupplierPaymentCode(){
+    public function generateSupplierPaymentCode()
+    {
         $paymentCode = "TR00001";
-        
+
         $lastPayment = $this->db->query("select * from tbl_supplier_payment order by SPayment_id desc limit 1");
-        if($lastPayment->num_rows() != 0){
+        if ($lastPayment->num_rows() != 0) {
             $newPaymentId = $lastPayment->row()->SPayment_id + 1;
             $zeros = array('0', '00', '000', '0000');
             $paymentCode = 'TR' . (strlen($newPaymentId) > count($zeros) ? $newPaymentId : $zeros[count($zeros) - strlen($newPaymentId)] . $newPaymentId);
@@ -132,11 +156,12 @@ class Model_Table extends CI_Model{
         return $paymentCode;
     }
 
-    public function generateCashTransactionCode(){
+    public function generateCashTransactionCode()
+    {
         $transactionCode = "TR00001";
-        
+
         $lastTransaction = $this->db->query("select * from tbl_cashtransaction order by Tr_SlNo desc limit 1");
-        if($lastTransaction->num_rows() != 0){
+        if ($lastTransaction->num_rows() != 0) {
             $newTransactionId = $lastTransaction->row()->Tr_SlNo + 1;
             $zeros = array('0', '00', '000', '0000');
             $transactionCode = 'TR' . (strlen($newTransactionId) > count($zeros) ? $newTransactionId : $zeros[count($zeros) - strlen($newTransactionId)] . $newTransactionId);
@@ -145,11 +170,12 @@ class Model_Table extends CI_Model{
         return $transactionCode;
     }
 
-    public function generateDamageCode(){
+    public function generateDamageCode()
+    {
         $code = "D0001";
-        
+
         $lastDamage = $this->db->query("select * from tbl_damage order by Damage_SlNo desc limit 1");
-        if($lastDamage->num_rows() != 0){
+        if ($lastDamage->num_rows() != 0) {
             $newDamageCode = $lastDamage->row()->Damage_SlNo + 1;
             $zeros = array('0', '00', '000');
             $code = 'D' . (strlen($newDamageCode) > count($zeros) ? $newDamageCode : $zeros[count($zeros) - strlen($newDamageCode)] . $newDamageCode);
@@ -158,11 +184,12 @@ class Model_Table extends CI_Model{
         return $code;
     }
 
-    public function generateAccountCode(){
+    public function generateAccountCode()
+    {
         $code = "A0001";
-        
+
         $lastRow = $this->db->query("select * from tbl_account order by Acc_SlNo desc limit 1");
-        if($lastRow->num_rows() != 0){
+        if ($lastRow->num_rows() != 0) {
             $newCode = $lastRow->row()->Acc_SlNo + 1;
             $zeros = array('0', '00', '000');
             $code = 'A' . (strlen($newCode) > count($zeros) ? $newCode : $zeros[count($zeros) - strlen($newCode)] . $newCode);
@@ -171,7 +198,8 @@ class Model_Table extends CI_Model{
         return $code;
     }
 
-    public function getTransactionSummary($date = null){
+    public function getTransactionSummary($date = null)
+    {
         $transactionSummary = $this->db->query("
             select
             /* Received */
@@ -318,7 +346,8 @@ class Model_Table extends CI_Model{
         return $transactionSummary;
     }
 
-    public function getBankTransactionSummary($accountId = null, $date = null){
+    public function getBankTransactionSummary($accountId = null, $date = null)
+    {
         $bankTransactionSummary = $this->db->query("
             select 
                 ba.*,
@@ -381,11 +410,12 @@ class Model_Table extends CI_Model{
         return $bankTransactionSummary;
     }
 
-    public function generateInvestmentAccountCode(){
+    public function generateInvestmentAccountCode()
+    {
         $code = "I0001";
-        
+
         $lastRow = $this->db->query("select * from tbl_investment_account order by Acc_SlNo desc limit 1");
-        if($lastRow->num_rows() != 0){
+        if ($lastRow->num_rows() != 0) {
             $newCode = $lastRow->row()->Acc_SlNo + 1;
             $zeros = array('0', '00', '000');
             $code = 'I' . (strlen($newCode) > count($zeros) ? $newCode : $zeros[count($zeros) - strlen($newCode)] . $newCode);
@@ -393,8 +423,9 @@ class Model_Table extends CI_Model{
 
         return $code;
     }
-    
-    public function getLoanTransactionSummary($accountId = null, $date = null){
+
+    public function getLoanTransactionSummary($accountId = null, $date = null)
+    {
         $loanTransactionSummary = $this->db->query("
             select 
                 la.*,
@@ -434,8 +465,9 @@ class Model_Table extends CI_Model{
 
         return $loanTransactionSummary;
     }
-    
-    public function getInvestmentTransactionSummary($accountId = null, $date = null){
+
+    public function getInvestmentTransactionSummary($accountId = null, $date = null)
+    {
         $investmentTransactionSummary = $this->db->query("
             select 
                 la.*,
@@ -572,7 +604,8 @@ class Model_Table extends CI_Model{
         return $stock;
     }
 
-    public function supplierDue($clauses = "" , $date = null) {
+    public function supplierDue($clauses = "", $date = null)
+    {
         $branchId = $this->session->userdata('BRANCHid');
 
         $supplierDues = $this->db->query("
@@ -626,7 +659,8 @@ class Model_Table extends CI_Model{
         return $supplierDues;
     }
 
-    public function customerDue($clauses = "" , $date = null) {
+    public function customerDue($clauses = "", $date = null)
+    {
         $branchId = $this->session->userdata('BRANCHid');
         $dueResult = $this->db->query("
             select
@@ -680,35 +714,39 @@ class Model_Table extends CI_Model{
         return $dueResult;
     }
 
-    public function productStock($productId) {
+    public function productStock($productId)
+    {
         $stockQuery = $this->db->query("select * from tbl_currentinventory where product_id = ? and branch_id = ?", [$productId, $this->session->userdata("BRANCHid")]);
         $stockCount = $stockQuery->num_rows();
         $stock = 0;
-        if($stockCount != 0){
+        if ($stockCount != 0) {
             $stockRow = $stockQuery->row();
-            $stock = ($stockRow->purchase_quantity + $stockRow->transfer_to_quantity + $stockRow->sales_return_quantity) 
-                    - ($stockRow->sales_quantity + $stockRow->purchase_return_quantity + $stockRow->damage_quantity + $stockRow->transfer_from_quantity);
+            $stock = ($stockRow->purchase_quantity + $stockRow->transfer_to_quantity + $stockRow->sales_return_quantity)
+                - ($stockRow->sales_quantity + $stockRow->purchase_return_quantity + $stockRow->damage_quantity + $stockRow->transfer_from_quantity);
         }
 
         return $stock;
     }
 
 
-    public function payment_invoice($id){
+    public function payment_invoice($id)
+    {
         $sql = mysql_query("SELECT tbl_booking_bill.*, tbl_booking_customer.*, tbl_booking_customer.fld_id as cusID, tbl_cash_receive.fld_id as cashR_ID FROM tbl_booking_bill LEFT JOIN tbl_booking_customer ON tbl_booking_customer.fld_id=tbl_booking_bill.fld_customer_id left join tbl_cash_receive on tbl_booking_bill.fld_id =tbl_cash_receive.fld_order_id  where tbl_booking_bill.fld_id = '$id'");
-        while($d = mysql_fetch_array($sql)){
+        while ($d = mysql_fetch_array($sql)) {
             return $d;
         }
     }
-     public function ajax_cash_payment($key){
+    public function ajax_cash_payment($key)
+    {
         $sql = mysql_query("SELECT tbl_booking_bill.*, tbl_booking_customer.*, tbl_booking_customer.fld_id as cusID, tbl_cash_receive.fld_id as cashR_ID FROM tbl_booking_bill LEFT JOIN tbl_booking_customer ON tbl_booking_customer.fld_id=tbl_booking_bill.fld_customer_id left join tbl_cash_receive on tbl_booking_bill.fld_id =tbl_cash_receive.fld_order_id  where tbl_booking_bill.fld_Serial = '$key'");
-        while($d = mysql_fetch_array($sql)){
+        while ($d = mysql_fetch_array($sql)) {
             return $d;
         }
     }
-    public function ajax_cash_receive($id){
+    public function ajax_cash_receive($id)
+    {
         $sql = mysql_query("SELECT tbl_booking_bill.*, tbl_booking_customer.*, tbl_booking_customer.fld_id as cusID, tbl_cash_receive.fld_id as cashR_ID FROM tbl_booking_bill LEFT JOIN tbl_booking_customer ON tbl_booking_customer.fld_id=tbl_booking_bill.fld_customer_id left join tbl_cash_receive on tbl_booking_bill.fld_id =tbl_cash_receive.fld_order_id  where tbl_booking_bill.fld_id = '$id'");
-        while($d = mysql_fetch_array($sql)){
+        while ($d = mysql_fetch_array($sql)) {
             return $d;
         }
     }
@@ -717,12 +755,13 @@ class Model_Table extends CI_Model{
         //untuk insert data ke table product
         $this->db->insert('product', $data);
     }
-    public function save_data($table, $data){       
-        $result= $this->db->insert($table, $data);
-        if ($result) {                    
-           $this->Id = $this->db->insert_id();
-           return TRUE;
-        } 
+    public function save_data($table, $data)
+    {
+        $result = $this->db->insert($table, $data);
+        if ($result) {
+            $this->Id = $this->db->insert_id();
+            return TRUE;
+        }
         $this->Err = mysql_error();
         return FALSE;
     }
@@ -733,96 +772,106 @@ class Model_Table extends CI_Model{
         $id = $this->db->insert_id();
         return (isset($id)) ? $id : FALSE;
     }
-    
 
-    public function save_date_id($table, $data){
+
+    public function save_date_id($table, $data)
+    {
         $this->db->insert($table, $data);
         $id = $this->db->insert_id();
-        return (isset($id)) ? $id : FALSE;      
+        return (isset($id)) ? $id : FALSE;
     }
-    public function update_customer_data($table, $data, $id){       
+    public function update_customer_data($table, $data, $id)
+    {
         $this->db->where("fld_id", $id);
-        $result= $this->db->update($table, $data);
+        $result = $this->db->update($table, $data);
         $id = $this->db->insert_id();
-        return (isset($id)) ? $id : FALSE;      
-     }
-    public function update_data($table, $data, $id,$fld){       
+        return (isset($id)) ? $id : FALSE;
+    }
+    public function update_data($table, $data, $id, $fld)
+    {
         $this->db->where($fld, $id);
-        $result= $this->db->update($table, $data);
-        if (!$result) {                      
-           return FALSE;
-        } 
-        return TRUE;
-     }
-     
-    public function delete_data($table, $id, $fld){   
-		$data['status'] = 'd';    
-        $this->db->where($fld, $id);
-       // $result= $this->db->delete($table);
-        $result= $this->db->update($table, $data);
-        if (!$result) {                      
-           return FALSE;
-        } 
+        $result = $this->db->update($table, $data);
+        if (!$result) {
+            return FALSE;
+        }
         return TRUE;
     }
 
-    public function select_by_Booking_id($id){
-        $sql = mysql_query("SELECT tbl_booking_bill.*,tbl_booking_bill.fld_id as ordID, tbl_booking_customer.*, tbl_booking_customer.fld_id as cusID, tbl_cash_receive.*, tbl_cash_receive.fld_id as cashR_ID FROM tbl_booking_bill LEFT JOIN tbl_booking_customer ON tbl_booking_customer.fld_id=tbl_booking_bill.fld_customer_id left join tbl_cash_receive on tbl_booking_bill.fld_id =tbl_cash_receive.fld_order_id  where tbl_booking_bill.fld_id = '".$id."'");
-        while($d = mysql_fetch_array($sql)){
+    public function delete_data($table, $id, $fld)
+    {
+        $data['status'] = 'd';
+        $this->db->where($fld, $id);
+        // $result= $this->db->delete($table);
+        $result = $this->db->update($table, $data);
+        if (!$result) {
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    public function select_by_Booking_id($id)
+    {
+        $sql = mysql_query("SELECT tbl_booking_bill.*,tbl_booking_bill.fld_id as ordID, tbl_booking_customer.*, tbl_booking_customer.fld_id as cusID, tbl_cash_receive.*, tbl_cash_receive.fld_id as cashR_ID FROM tbl_booking_bill LEFT JOIN tbl_booking_customer ON tbl_booking_customer.fld_id=tbl_booking_bill.fld_customer_id left join tbl_cash_receive on tbl_booking_bill.fld_id =tbl_cash_receive.fld_order_id  where tbl_booking_bill.fld_id = '" . $id . "'");
+        while ($d = mysql_fetch_array($sql)) {
             return $d;
         }
     }
-    public function edit_by_id($query){
+    public function edit_by_id($query)
+    {
         $sql = mysql_query($query);
-        while($d = mysql_fetch_array($sql)){
+        while ($d = mysql_fetch_array($sql)) {
             return $d;
         }
     }
 
-    public function select_by_id($table, $id, $fld){
-        $sql = $this->db->query("SELECT * from {$table} where {$fld} = '".$id."'")->row();
+    public function select_by_id($table, $id, $fld)
+    {
+        $sql = $this->db->query("SELECT * from {$table} where {$fld} = '" . $id . "'")->row();
         return (array)$sql;
     }
-    
-    public function view_data($table){
+
+    public function view_data($table)
+    {
         $a = array();
         $sql = mysql_query($table);
-        while($d = mysql_fetch_array($sql)){
-           $a[] = $d;
-        }   
-      return $a;
+        while ($d = mysql_fetch_array($sql)) {
+            $a[] = $d;
+        }
+        return $a;
     }
 
-    
-    public function ccdata($data){
+
+    public function ccdata($data)
+    {
         $a = array();
         $sql = mysql_query($data);
-        while($d = mysql_fetch_array($sql)){
-           $a[] = $d;
-        }	
-      return $a;
-    }
-    
-    
-    public function mailcheck_availablity(){
-        $mail = $this->input->post('usermail');
-        
-        $query = $this->db->query("SELECT fld_email from tbl_superadmin where fld_email = '$mail'");
-        if($query->num_rows() > 0){
-            return false;
+        while ($d = mysql_fetch_array($sql)) {
+            $a[] = $d;
         }
-        else{
-            return true;}
+        return $a;
     }
-	
-	 // public function mailcheck_availablity(){
-		  
-	  //}
+
+
+    public function mailcheck_availablity()
+    {
+        $mail = $this->input->post('usermail');
+
+        $query = $this->db->query("SELECT fld_email from tbl_superadmin where fld_email = '$mail'");
+        if ($query->num_rows() > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    // public function mailcheck_availablity(){
+
+    //}
 
 
     public function getBrunchNameById($id)
     {
-        $q = $this->db->where('brunch_id',$id)->get('tbl_brunch')->row();
+        $q = $this->db->where('brunch_id', $id)->get('tbl_brunch')->row();
         if ($q)
             return $q->Brunch_name;
         return false;
@@ -836,23 +885,23 @@ class Model_Table extends CI_Model{
     public function getCustomerDueById($Custid)
     {
         // ====================
-        $salesMaster = $this->db->where(['SalseCustomer_IDNo'=> $Custid, 'Status'=>'a'])->select_sum('SaleMaster_DueAmount')->get('tbl_salesmaster')->row();
+        $salesMaster = $this->db->where(['SalseCustomer_IDNo' => $Custid, 'Status' => 'a'])->select_sum('SaleMaster_DueAmount')->get('tbl_salesmaster')->row();
         $dueAm = $salesMaster->SaleMaster_DueAmount;
 
         // ====================
-        $salesPaid = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType'=> '', 'CPayment_status'=>'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
+        $salesPaid = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => '', 'CPayment_status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
         $salesPaidAm = $salesPaid->CPayment_amount;
 
         // ====================
-        $paidAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType'=> 'CR', 'CPayment_status'=>'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
+        $paidAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => 'CR', 'CPayment_status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
         $paidAm = $paidAmount->CPayment_amount;
 
         // ====================
-        $payAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType'=> 'CP', 'CPayment_status'=>'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
+        $payAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => 'CP', 'CPayment_status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
         $payAm = $payAmount->CPayment_amount;
 
         // ====================
-        $returnAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType'=> 'RP', 'CPayment_status'=>'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
+        $returnAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => 'RP', 'CPayment_status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
         $returnAm = $returnAmount->CPayment_amount;
 
         // ====================
@@ -872,12 +921,11 @@ class Model_Table extends CI_Model{
         $due = ($dueAm + $payAm + $prevDue) - ($paidAm + $salesReturned);
 
 
-        if ($due):
+        if ($due) :
             return $due;
-        else:
+        else :
             return 0.00;
         endif;
-
     }
 
 
@@ -902,19 +950,18 @@ class Model_Table extends CI_Model{
         // ====================
         $returnAmount = $this->db->where('Supplier_IDdNo', $Suppid)->select_sum('PurchaseReturn_ReturnAmount')->get('tbl_purchasereturn')->row();
         $returnAm = $returnAmount->PurchaseReturn_ReturnAmount;
-     
+
         // ====================
         $prevDueAmount = $this->db->where('Supplier_SlNo', $Suppid)->get('tbl_supplier')->row();
         $prevDue = $prevDueAmount->previous_due;
 
         $due = ($paidAm + $dueAm + $prevDue) - ($payAm + $returnAm);
 
-        if ($due):
+        if ($due) :
             return $due;
-        else:
+        else :
             return 0.00;
         endif;
-
     }
 
 
@@ -933,7 +980,8 @@ class Model_Table extends CI_Model{
         $digits_1 = strlen($no);
         $i = 0;
         $str = array();
-        $words = array('0' => '', '1' => 'one', '2' => 'two',
+        $words = array(
+            '0' => '', '1' => 'one', '2' => 'two',
             '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
             '7' => 'seven', '8' => 'eight', '9' => 'nine',
             '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
@@ -942,7 +990,8 @@ class Model_Table extends CI_Model{
             '18' => 'eighteen', '19' => 'nineteen', '20' => 'twenty',
             '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
             '60' => 'sixty', '70' => 'seventy',
-            '80' => 'eighty', '90' => 'ninety');
+            '80' => 'eighty', '90' => 'ninety'
+        );
         $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
         while ($i < $digits_1) {
             $divider = ($i == 2) ? 10 : 100;
@@ -952,7 +1001,7 @@ class Model_Table extends CI_Model{
             if ($number) {
                 $plural = (($counter = count($str)) && $number > 9) ? 's' : null;
                 $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
-                $str [] = ($number < 21) ? $words[$number] .
+                $str[] = ($number < 21) ? $words[$number] .
                     //" " . $digits[$counter] . $plural . " " . $hundred
                     " " . $digits[$counter] . " " . $hundred
                     :
@@ -969,8 +1018,23 @@ class Model_Table extends CI_Model{
             $words[$point = $point % 10] : '';
         $r = $result . " Taka Only.";
         return strtoupper($r);
-
     }
-	
-  }
-?>
+
+
+    // upload image
+    public function uploadImage($imgFile, $image, $dirName, $fileName = null)
+    {
+        // directory create
+        if (!file_exists($dirName)) {
+            getcwd() . '/' . mkdir($dirName, 0777, true);
+        }
+        // upload image
+        $name = basename($imgFile[$image]["name"]);
+        $file_ext = pathinfo($name, PATHINFO_EXTENSION);
+        $fileNewName = str_replace(" ", "_", $fileName) . '_' . uniqid() . '.' . $file_ext;
+        $target_file = $dirName . '/' . $fileNewName;
+        if (move_uploaded_file($imgFile[$image]["tmp_name"], $target_file)) {
+            return $target_file;
+        }
+    }
+}

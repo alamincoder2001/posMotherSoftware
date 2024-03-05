@@ -63,8 +63,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 				<a href="<?php echo base_url(); ?>" class="navbar-brand">
 					<small>
 						<i class="fa fa-leaf"></i>
-						<!--Enterprise Resource Planning--> <?php echo $companyInfo->Company_Name; ?> <span style="color:#000;font-weight:700;letter-spacing:1px;font-size:16px;"> <?php //echo $this->session->userdata('Brunch_name'); 
-																																													?> </span>
+						<?php echo $companyInfo->Company_Name; ?> <span style="color:#000;font-weight:700;letter-spacing:1px;font-size:16px;"> </span>
 					</small>
 				</a>
 			</div>
@@ -73,7 +72,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 				<ul class="nav ace-nav">
 					<?php
 					$userID =  $this->session->userdata('userId');
-					$CheckSuperAdmin = $this->db->where('UserType', 'm')->where('User_SlNo', $userID)->get('tbl_user')->row();
+					$CheckSuperAdmin = $this->db->where('UserType', 'm')->or_where('UserType', 'a')->where('User_SlNo', $userID)->get('tbl_user')->row();
 					if (isset($CheckSuperAdmin)) :
 					?>
 						<li class="light-blue dropdown-modal">
@@ -110,12 +109,12 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 
 					<li class="light-blue dropdown-modal">
 						<a data-toggle="dropdown" href="#" class="dropdown-toggle">
-							<?php if ($this->session->userdata('user_image')) { ?>
+							<?php if (!empty($this->session->userdata('user_image'))) { ?>
 
-								<img class="nav-user-photo" src="<?php echo base_url(); ?>uploads/users/<?php echo $this->session->userdata('user_image'); ?>" alt="<?php echo $this->session->userdata('FullName'); ?>" />
+								<img class="nav-user-photo" src="<?php echo base_url(); ?><?php echo $this->session->userdata('user_image'); ?>" alt="<?php echo $this->session->userdata('FullName'); ?>" />
 							<?php } else { ?>
 
-								<img class="nav-user-photo" src="<?php echo base_url(); ?>uploads/no_image.jpg ?>" alt="<?php echo $this->session->userdata('FullName'); ?>" />
+								<img class="nav-user-photo" src="<?php echo base_url(); ?>uploads/no_user.png" alt="<?php echo $this->session->userdata('FullName'); ?>" />
 							<?php } ?>
 							<span class="user-info">
 								<small>Welcome,</small>

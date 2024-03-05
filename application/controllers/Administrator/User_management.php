@@ -28,6 +28,7 @@ class User_management extends CI_Controller
         if (!$access) {
             redirect(base_url());
         }
+
         $data['title'] = "Create User";
         $data['content'] = $this->load->view('Administrator/user', $data, TRUE);
         $this->load->view('Administrator/index', $data);
@@ -40,7 +41,7 @@ class User_management extends CI_Controller
             * 
             from tbl_user u 
             where u.Brunch_ID = ?
-            and u.status = 'a'
+            and u.status != 'd'
             order by User_SlNo desc
         ", $this->session->userdata('BRANCHid'))->result();
 
@@ -77,14 +78,15 @@ class User_management extends CI_Controller
             }
 
             $user = array(
-                "User_Name"                 => $data->User_Name,
-                "FullName"                  => $data->FullName,
-                "UserEmail"                 => $data->UserEmail,
-                "Brunch_ID"                 => $data->userBrunch_id,
-                "userBrunch_id"             => $data->userBrunch_id,
-                "User_Password"             => md5($data->Password),
-                "UserType"                  => $data->UserType,
-                "AddTime"                   => date('Y-m-d H:i:s')
+                "User_Id"       => $this->mt->generateUserCode(),
+                "User_Name"     => $data->User_Name,
+                "FullName"      => $data->FullName,
+                "UserEmail"     => $data->UserEmail,
+                "Brunch_ID"     => $data->userBrunch_id,
+                "userBrunch_id" => $data->userBrunch_id,
+                "User_Password" => md5($data->Password),
+                "UserType"      => $data->UserType,
+                "AddTime"       => date('Y-m-d H:i:s')
             );
 
             $this->db->insert("tbl_user", $user);
@@ -97,92 +99,79 @@ class User_management extends CI_Controller
         echo json_encode($res);
     }
 
-    public function edit($id)
-    {
-        if ($this->accountType == 'u') {
-            redirect("Administrator/Page");
-        }
-        $data['title'] = "User Update Form";
-        $query = $this->db->query("SELECT tbl_user.*,tbl_brunch.* FROM tbl_user left join tbl_brunch on tbl_brunch.brunch_id=tbl_user.userBrunch_id WHERE tbl_user.User_SlNo = '$id'");
-        $data['selected'] = $query->row();
-        $data['content'] = $this->load->view('Administrator/edit/edit', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
     public function userupdate()
     {
-        if ($this->accountType == 'u') {
-            redirect("Administrator/Page");
-        }
-
-        $id = $this->input->post('id');
         $res = ['success' => false, 'message' => ''];
-        $checkUsername = $this->db->query("select * from tbl_user where User_Name = ? and User_SlNo != ?", [$this->input->post('username', TRUE), $id])->num_rows();
-        if ($checkUsername > 0) {
-            $res = ['success' => false, 'message' => 'Username already exists'];
-            echo json_encode($res);
-            exit;
-        }
-
-        $pass = $this->input->post('rePassword', TRUE);
-        $fld = 'User_SlNo';
-        if ($pass != null) {
-            $data = array(
-                "User_Name"                 => $this->input->post('username', TRUE),
-                "FullName"                  => $this->input->post('txtFirstName', TRUE),
-                "UserEmail"                  => $this->input->post('user_email', TRUE),
-                "Brunch_ID"                  => $this->input->post('Brunch', TRUE),
-                "userBrunch_id"              => $this->input->post('Brunch', TRUE),
-                "User_Password"             => md5($this->input->post('rePassword', TRUE)),
-                "UserType"                  => $this->input->post('type', TRUE),
-                "AddTime"                   => date('Y-m-d H:i:s')
+        try {
+            $data = json_decode($this->input->raw_input_stream);
+            $checkUsername = $this->db->query("select * from tbl_user where User_Name = ? and User_SlNo != ?", [$data->User_Name, $data->User_SlNo])->num_rows();
+            if ($checkUsername > 0) {
+                $res = ['success' => false, 'message' => 'Username already exists'];
+                echo json_encode($res);
+                exit;
+            }
+            $user = array(
+                "User_Name"     => $data->User_Name,
+                "FullName"      => $data->FullName,
+                "UserEmail"     => $data->UserEmail,
+                "Brunch_ID"     => $data->userBrunch_id,
+                "userBrunch_id" => $data->userBrunch_id,
+                "UserType"      => $data->UserType,
+                "UpdateBy"      => $this->access,
+                "UpdateTime"    => date('Y-m-d H:i:s')
             );
-            $this->mt->update_data("tbl_user", $data, $id, $fld);
-        } else {
-            $data = array(
-                "User_Name"                 => $this->input->post('username', TRUE),
-                "FullName"                  => $this->input->post('txtFirstName', TRUE),
-                "UserEmail"                  => $this->input->post('user_email', TRUE),
-                "userBrunch_id"              => $this->input->post('Brunch', TRUE),
-                "Brunch_ID"                  => $this->input->post('Brunch', TRUE),
-                //"User_Password"             => md5($this->input->post('rePassword',TRUE)),
-                "UserType"                  => $this->input->post('type', TRUE),
-                "AddTime"                   => date('Y-m-d H:i:s')
-            );
-            $this->mt->update_data("tbl_user", $data, $id, $fld);
+            if (!empty($data->Password)) {
+                $user['User_Password'] = md5($data->Password);
+            }
+            $this->db->where('User_SlNo', $data->User_SlNo);
+            $this->db->update('tbl_user', $user);
+            $res = ['success' => true, 'message' => 'User update successfully'];
+        } catch (\Throwable $th) {
+            $res = ['success' => false, 'message' => $th->getMessage()];
         }
-        $res = ['success' => true, 'message' => 'Updated successfully'];
 
         echo json_encode($res);
     }
 
-    public function userActive($id)
+    public function userStatusChange()
     {
-        if ($this->accountType == 'u') {
-            redirect("Administrator/Page");
+        $res = ['success' => false, 'message' => ''];
+        try {
+            $data = json_decode($this->input->raw_input_stream);
+            $userInfo = array(
+                "status"     => $data->status,
+                "UpdateBy"   => $this->access,
+                "UpdateTime" => date('Y-m-d H:i:s')
+            );
+
+            $this->db->where('User_SlNo', $data->userId);
+            $this->db->update('tbl_user', $userInfo);
+            $msg = $data->status == 'p' ? 'User Deactive successfully' : 'User Active successfully';
+            $res = ['success' => true, 'message' => $msg];
+        } catch (\Throwable $th) {
+            $res = ['success' => true, 'message' => $th->getMessage()];
         }
-        $fld = 'User_SlNo';
-        if ($this->Billing_model->active_user("tbl_user", $id, $fld)) {
-            $sdata['status'] = 'Delete Success';
-        } else {
-            $sdata['status'] = 'Try Again';
-        }
-        $this->session->set_userdata($sdata);
-        redirect("user");
+        echo json_encode($res);
     }
 
-    public function userDeactive($id)
+    public function userDelete()
     {
-        if ($this->accountType == 'u') {
-            redirect("Administrator/Page");
+        $res = ['success' => false, 'message' => ''];
+        try {
+            $data = json_decode($this->input->raw_input_stream);
+            $userInfo = array(
+                "status"     => "d",
+                "UpdateBy"   => $this->access,
+                "UpdateTime" => date('Y-m-d H:i:s')
+            );
+
+            $this->db->where('User_SlNo', $data->userId);
+            $this->db->update('tbl_user', $userInfo);
+            $res = ['success' => true, 'message' => 'User delete successfully'];
+        } catch (\Throwable $th) {
+            $res = ['success' => true, 'message' => $th->getMessage()];
         }
-        $fld = 'User_SlNo';
-        if ($this->Billing_model->deactive_user("tbl_user", $id, $fld)) {
-            $sdata['status'] = 'Delete Success';
-        } else {
-            $sdata['status'] = 'Try Again';
-        }
-        $this->session->set_userdata($sdata);
-        redirect("user");
+        echo json_encode($res);
     }
     public function check_username_availablity()
     {
@@ -195,14 +184,13 @@ class User_management extends CI_Controller
 
     public function check_user_name()
     {
-        $username = $this->input->post('username', TRUE);
-        $query = $this->db->query("select User_Name from tbl_user where User_Name = ?", $username);
-        if ($query->num_rows() > 0) {
-            echo '<span style="color:red;">This user name already exist</span>';
-            exit;
+        $data = json_decode($this->input->raw_input_stream);
+        $query = $this->db->query("select User_Name from tbl_user where User_Name = ?", $data->User_Name)->row();
+        if (!empty($query)) {
+            echo json_encode(['status' => true]);
+        } else {
+            echo json_encode(['status' => false]);
         }
-
-        $result = $query->row();
     }
 
     public function check_email()
@@ -269,24 +257,10 @@ class User_management extends CI_Controller
         echo json_encode($res);
     }
 
-    public function select_user_by_branch($id)
-    {
-        $this->db->SELECT('*');
-        $this->db->from('tbl_user');
-        $this->db->where('userBrunch_id', $id);
-        $query = $this->db->get();
-        $result = $query->result();
-        foreach ($result as $vresult) {
-?>
-            <option value="<?php echo $vresult->User_SlNo; ?>"><?php echo $vresult->FullName; ?></option>
-<?php
-        }
-    }
-
 
     public function profile()
     {
-        $data['title'] = "user profile";
+        $data['title'] = "User Profile";
 
         $user = $this->db->where('User_SlNo', $this->access)->get('tbl_user')->row();
         $data['branch_info'] = $this->db->where('brunch_id', $user->userBrunch_id)->get('tbl_brunch')->row();
@@ -295,101 +269,41 @@ class User_management extends CI_Controller
         $this->load->view('Administrator/index', $data);
     }
 
-    public function password_change()
+    public function profileUpdate()
     {
-
-        $this->form_validation->set_rules('current_password', 'Current Password', 'required|trim');
-        $this->form_validation->set_rules('password', 'New Password', 'required|trim|min_length[6]');
-        $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'required|trim|min_length[6]|matches[password]');
-
-        if ($this->form_validation->run() == FALSE) {
-            $data['title'] = "user profile";
-            $user = $this->db->where('User_SlNo', $this->access)->get('tbl_user')->row();
-            $data['branch_info'] = $this->db->where('brunch_id', $user->userBrunch_id)->get('tbl_brunch')->row();
-            $data['user'] = $user;
-            $data['content'] = $this->load->view('Administrator/profile', $data, TRUE);
-            $this->load->view('Administrator/index', $data);
-        } else {
-
-            $user_name = $this->session->userdata('User_Name');
-            $check = $this->db->where('User_Name', $user_name)->where('User_Password', md5($this->input->post('current_password')))->get('tbl_user')->row();
-
-            if ($check) {
-                $attr = array(
-                    'User_Password' => md5($this->input->post('password'))
-                );
-                $this->db->where('User_SlNo', $this->access);
-                $res = $this->db->update('tbl_user', $attr);
-
-                if ($this->db->affected_rows()) {
-                    $data['msg'] = 'Password Update Successful..!';
-                    $this->session->set_flashdata($data);
-                    return redirect('profile');
-                } else {
-                    $data['msg'] = 'Password Update Un-Successful..!';
-                    $this->session->set_flashdata($data);
-                    return redirect('profile');
-                }
-            } else {
-                $data['msg'] = 'Current Password not match..!';
-                $this->session->set_flashdata($data);
-                return redirect('profile');
-            }
-        }
-    }
-
-
-    public function all_user_name()
-    {
-        $res = $this->db->select('FullName')->where('status', 'a')->where('userBrunch_id', $this->brunch)->get('tbl_user')->result();
-        $data['allUser'] = $res;
-        $this->load->view('Administrator/user_list', $data);
-    }
-
-    public function uploadUserImage()
-    {
+        $res = ['success' => false, 'message' => ""];
         try {
-            $userId = $this->access;
+            $password = $this->input->post('password');
+            $current_password = $this->input->post('current_password');
 
-            if (!empty($_FILES)) {
-                if (file_exists("./uploads/users/{$this->session->userdata('user_image')}")) {
-                    unlink("./uploads/users/{$this->session->userdata('user_image')}");
+            $data = array();
+            if (!empty($password)) {
+                $hashpass = $this->db->query("select User_Password from tbl_user where User_SlNo = ?", $this->access)->row()->User_Password;
+                if ($hashpass != md5($current_password)) {
+                    $res = ['success' => false, 'message' => "Current password does not match"];
+                    echo json_encode($res);
+                    exit;
                 }
-
-                if (!is_dir("./uploads/users")) {
-                    mkdir("./uploads/users", 0777, true);
-                }
-
-                $config['upload_path'] = './uploads/users/';
-                $config['allowed_types'] = 'gif|jpg|png|jpeg';
-
-                $imageName = $userId;
-                $config['file_name'] = $imageName;
-                $this->load->library('upload', $config);
-                $this->upload->do_upload('image');
-                //$imageName = $this->upload->data('file_ext'); /*for geting uploaded image name*/
-
-                $config['image_library'] = 'gd2';
-                $config['source_image'] = './uploads/users/' . $imageName;
-                $config['new_image'] = './uploads/users/';
-                $config['maintain_ratio'] = TRUE;
-                $config['width']    = 640;
-                $config['height']   = 480;
-
-                $this->load->library('image_lib', $config);
-                $this->image_lib->resize();
-
-                $imageName = $userId . $this->upload->data('file_ext');
-
-                $this->db->query("update tbl_user set image_name = ? where User_SlNo = ?", [$imageName, $userId]);
-
-                $this->session->userdata['user_image'] = $imageName;
+                $data['User_Password'] = md5($password);
             }
-
-            echo "Image uploaded";
-        } catch (Exception $ex) {
-            throw new Exception($ex->getMessage());
+            if (!empty($_FILES)) {
+                $oldImgFile = $this->session->userdata('user_image');
+                if (file_exists($oldImgFile)) {
+                    unlink($oldImgFile);
+                }
+                $imagePath = $this->mt->uploadImage($_FILES, 'user_image', 'uploads/users', $this->session->userdata('FullName'));
+                $this->session->userdata['user_image'] = $imagePath;
+                $data['user_image'] = $imagePath;
+            }
+            if (!empty($_FILES) || !empty($password)) {
+                $this->db->where('User_SlNo', $this->access);
+                $this->db->update('tbl_user', $data);
+            }
+            $res = ['success' => true, 'message' => "Profile update successfully"];
+        } catch (\Throwable $th) {
+            $res = ['success' => false, 'message' => $th->getMessage()];
         }
+        echo json_encode($res);
     }
 
     public function userActivity()

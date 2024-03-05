@@ -198,14 +198,23 @@ legend {
   font-style: italic;
 }
 
+
 fieldset.scheduler-border {
   border: 2px solid #a7a7a7 !important;
-  padding: 0 1em 1em 1em !important;
-  margin: 0 0 1.5em 0 !important;
+  padding: 0 1em 1em 1em;
+  margin: 0 0 1.5em 0;
   -webkit-box-shadow: 0px 0px 0px 0px #000;
   box-shadow: 0px 1px 1px 0px #b9b9b9;
   border-radius: 5px;
   background: #93d2f5;
+}
+
+.scheduler-search {
+  padding: 0 1em 0.5em 1em !important;
+  margin: 0 !important;
+}
+.scheduler-search legend {
+  margin: 0 !important;
 }
 
 legend.scheduler-border {
@@ -229,11 +238,12 @@ legend.scheduler-border {
 }
 
 .pagination {
-    margin: 0px !important;
+  margin: 0px !important;
 }
-.pagination>li>a, .pagination>li>span {
-    padding: 4px 8px !important;
-    line-height: 1 !important;
+.pagination > li > a,
+.pagination > li > span {
+  padding: 4px 8px !important;
+  line-height: 1 !important;
 }
 
 .btnSave {
@@ -249,38 +259,72 @@ legend.scheduler-border {
   background: blue !important;
 }
 
-.btnEdit{
-    color: blue;
-    font-size: 16px;
-    cursor: pointer;
-    margin-right: 5px;
-    transition: 0.01ms ease-in-out;
+.btnSearch {
+  margin-top: 0px !important;
+  border: 0px !important;
+  height: 26px !important;
+  padding: 0 10px !important;
 }
-.btnEdit:hover{
-    transform: scale(1.1);
+
+.btnEdit {
+  color: blue;
+  font-size: 16px;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: 0.01ms ease-in-out;
 }
-.btnBarcode{
-    color: #000;
-    font-size: 16px;
-    cursor: pointer;
-    margin-left: 5px;
-    transition: 0.01ms ease-in-out;
+.btnEdit:hover {
+  transform: scale(1.1);
 }
-.btnBarcode:hover{
-    transform: scale(1.1);
+.btnBarcode {
+  color: #000;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 5px;
+  transition: 0.01ms ease-in-out;
 }
-.btnDelete{
-    color: red;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.01ms ease-in-out;
+.btnBarcode:hover {
+  transform: scale(1.1);
 }
-.btnDelete:hover{
-    transform: scale(1.1);
+.btnDelete {
+  color: red;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.01ms ease-in-out;
+}
+.btnDelete:hover {
+  transform: scale(1.1);
+}
+.btnAccess {
+  color: orange;
+  margin-right: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.01ms ease-in-out;
+}
+.btnAccess:hover {
+  transform: scale(1.1);
 }
 
 .badge {
   padding: 2px 6px;
   line-height: 1;
   font-size: 11px !important;
+}
+
+select {
+  padding: 0 !important;
+  border-radius: 4px !important;
+}
+
+/* table style */
+.table {
+  margin-bottom: 5px !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(even) {
+  background-color: #c5c5c5 !important;
+}
+.table-hover>tbody>tr:hover {
+  background-color: #c5faff !important;
 }
