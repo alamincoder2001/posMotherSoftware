@@ -180,55 +180,67 @@ class Employee extends CI_Controller
         $this->load->view('Administrator/index', $data);
     }
 
+    public function getDesignations()
+    {
+        $designations = $this->db->query("select * from tbl_designation where status = 'a'")->result();
+        echo json_encode($designations);
+    }
+
     public function insert_designation()
     {
-        $mail = $this->input->post('Designation');
-        $query = $this->db->query("SELECT Designation_Name from tbl_designation where Designation_Name = '$mail'");
+        $res = ['status' => false];
+        try {
+            $data = json_decode($this->input->raw_input_stream);
 
-        if ($query->num_rows() > 0) {
-            $data['exists'] = "This Name is Already Exists";
-            $this->load->view('Administrator/ajax/designation', $data);
-        } else {
-            $data = array(
-                "Designation_Name" => $this->input->post('Designation', TRUE),
-                "AddBy" => $this->session->userdata("FullName"),
-                "AddTime" => date("Y-m-d H:i:s")
+            $designation = array(
+                "Designation_Name" => $data->Designation_Name,
+                "status"          => 'a',
+                "AddBy"           => $this->session->userdata("FullName"),
+                "AddTime"         => date("Y-m-d H:i:s"),
+
             );
-            $this->mt->save_data('tbl_designation', $data);
-            //$this->load->view('Administrator/ajax/designation');
+            $this->db->insert('tbl_designation', $designation);
+            $res = ['status' => true, 'message' => "Designation added successfull"];
+        } catch (\Throwable $th) {
+            $res = ['status' => false, 'message' => $th->getMessage()];
         }
+        echo json_encode($res);
     }
 
-    public function designationedit($id)
-    {
-        $data['title'] = "Edit Designation";
-        $fld = 'Designation_SlNo';
-        $data['selected'] = $this->Billing_model->select_by_id('tbl_designation', $id, $fld);
-        $this->load->view('Administrator/edit/designation_edit', $data);
-    }
 
     public function designationupdate()
     {
-        $id = $this->input->post('id');
-        $fld = 'Designation_SlNo';
-        $data = array(
-            "Designation_Name" => $this->input->post('Designation', TRUE),
-            "UpdateBy" => $this->session->userdata("FullName"),
-            "UpdateTime" => date("Y-m-d H:i:s")
-        );
-        $this->mt->update_data("tbl_designation", $data, $id, $fld);
+        $res = ['status' => false];
+        try {
+            $data = json_decode($this->input->raw_input_stream);
+
+            $designation = array(
+                "Designation_Name" => $data->Designation_Name,
+                "UpdateBy"         => $this->session->userdata("FullName"),
+                "UpdateTime"       => date("Y-m-d H:i:s")
+            );
+            $this->db->where('Designation_SlNo', $data->Designation_SlNo);
+            $this->db->update('tbl_designation', $designation);
+            $res = ['status' => true, 'message' => "Designation Update"];
+        } catch (\Throwable $th) {
+            $res = ['status' => false, 'message' => $th->getMessage()];
+        }
+        echo json_encode($res);
     }
 
     public function designationdelete()
     {
-        $fld = 'Designation_SlNo';
-        $id = $this->input->post('deleted');
-        $this->mt->delete_data("tbl_designation", $id, $fld);
-        //$this->load->view('Administrator/ajax/designation');
-
+        $data = json_decode($this->input->raw_input_stream);
+        $designation = array(
+            'status'     => 'd',
+            "UpdateBy"   => $this->session->userdata("FullName"),
+            "UpdateTime" => date("Y-m-d H:i:s")
+        );
+        $this->db->where('Designation_SlNo', $data->designationId);
+        $this->db->update('tbl_designation', $designation);
+        echo json_encode(['status' => true, 'message' => 'Designation delete successfully']);
     }
-    //^^^^^^^^^^^^^^^^^^^^^^^^^
-    //
+
     public function depertment()
     {
         $access = $this->mt->userAccess();
@@ -240,55 +252,65 @@ class Employee extends CI_Controller
         $this->load->view('Administrator/index', $data);
     }
 
-    public function insert_depertment()
-    {
-        $mail = $this->input->post('Depertment');
-        $query = $this->db->query("SELECT Department_Name from tbl_department where Department_Name = '$mail'");
 
-        if ($query->num_rows() > 0) {
-            $exists = "This Name is Already Exists";
-            echo json_encode($exists);
-            //$this->load->view('Administrator/ajax/depertment', $data);
-        } else {
-            $data = array(
-                "Department_Name" => $this->input->post('Depertment', TRUE),
-                "AddBy" => $this->session->userdata("FullName"),
-                "AddTime" => date("Y-m-d H:i:s")
-            );
-            $this->mt->save_data('tbl_department', $data);
-            $message = "Save Successful";
-            echo json_encode($message);
-        }
+    public function getDepartments()
+    {
+        $departments = $this->db->query("select * from tbl_department where status = 'a'")->result();
+        echo json_encode($departments);
     }
 
-    public function depertmentedit($id)
+    public function insert_depertment()
     {
-        $data['title'] = "Edit Department";
-        $fld = 'Department_SlNo';
-        $data['selected'] = $this->Billing_model->select_by_id('tbl_department', $id, $fld);
-        $data['content'] = $this->load->view('Administrator/edit/depertment_edit', $data);
-        //$this->load->view('Administrator/index', $data);
+        $res = ['status' => false];
+        try {
+            $data = json_decode($this->input->raw_input_stream);
+
+            $department = array(
+                "Department_Name" => $data->Department_Name,
+                "status"          => 'a',
+                "AddBy"           => $this->session->userdata("FullName"),
+                "AddTime"         => date("Y-m-d H:i:s"),
+
+            );
+            $this->db->insert('tbl_department', $department);
+            $res = ['status' => true, 'message' => "Department added successfull"];
+        } catch (\Throwable $th) {
+            $res = ['status' => false, 'message' => $th->getMessage()];
+        }
+        echo json_encode($res);
     }
 
     public function depertmentupdate()
     {
-        $id = $this->input->post('id');
-        $fld = 'Department_SlNo';
-        $data = array(
-            "Department_Name" => $this->input->post('Depertment', TRUE),
-            "UpdateBy" => $this->session->userdata("FullName"),
-            "UpdateTime" => date("Y-m-d H:i:s")
-        );
-        $this->mt->update_data("tbl_department", $data, $id, $fld);
+        $res = ['status' => false];
+        try {
+            $data = json_decode($this->input->raw_input_stream);
+
+            $department = array(
+                "Department_Name" => $data->Department_Name,
+                "UpdateBy"                    => $this->session->userdata("FullName"),
+                "UpdateTime"                  => date("Y-m-d H:i:s")
+            );
+            $this->db->where('Department_SlNo', $data->Department_SlNo);
+            $this->db->update('tbl_department', $department);
+            $res = ['status' => true, 'message' => "Department Update"];
+        } catch (\Throwable $th) {
+            $res = ['status' => false, 'message' => $th->getMessage()];
+        }
+        echo json_encode($res);
     }
 
     public function depertmentdelete()
     {
-        $fld = 'Department_SlNo';
-        $id = $this->input->post('deleted');
-        $this->mt->delete_data("tbl_department", $id, $fld);
-        //$this->load->view('Administrator/ajax/depertment');
-
+        $data = json_decode($this->input->raw_input_stream);
+        $department = array(
+            'status'     => 'd',
+            "UpdateBy"   => $this->session->userdata("FullName"),
+            "UpdateTime" => date("Y-m-d H:i:s")
+        );
+        $this->db->where('Department_SlNo', $data->departmentId);
+        $this->db->update('tbl_department', $department);
+        echo json_encode(['status' => true, 'message' => 'Department delete successfully']);
     }
 
     //^^^^^^^^^^^^^^^^^^^^
@@ -304,32 +326,6 @@ class Employee extends CI_Controller
         $this->load->view('Administrator/index', $data);
     }
 
-    // fancybox add
-    public function fancybox_depertment()
-    {
-        $this->load->view('Administrator/employee/em_depertment');
-    }
-
-    public function fancybox_insert_depertment()
-    {
-        $mail = $this->input->post('Depertment');
-        $query = $this->db->query("SELECT Department_Name from tbl_department where Department_Name = '$mail'");
-
-        if ($query->num_rows() > 0) {
-            $data['exists'] = "This Name is Already Exists";
-            $this->load->view('Administrator/ajax/fancybox_depertmetn', $data);
-        } else {
-            $data = array(
-                "Department_Name" => $this->input->post('Depertment', TRUE),
-                "AddBy" => $this->session->userdata("FullName"),
-                "AddTime" => date("Y-m-d H:i:s")
-            );
-            $this->mt->save_data('tbl_department', $data);
-            $this->load->view('Administrator/ajax/fancybox_depertmetn');
-        }
-    }
-    //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
     // fancybox add 
     public function month()
     {
@@ -344,68 +340,40 @@ class Employee extends CI_Controller
 
     public function insert_month()
     {
-        $month_name = $this->input->post('month');
-        $query = $this->db->query("SELECT month_name from tbl_month where month_name = '$month_name'");
+        $res = ['status' => false];
+        try {
+            $data = json_decode($this->input->raw_input_stream);
 
-        if ($query->num_rows() > 0) {
-            $exists = "This Name is Already Exists";
-            echo json_encode($exists);
-        } else {
-            $data = array(
-                "month_name" => $this->input->post('month', TRUE),
-                /*   "AddBy"                  =>$this->session->userdata("FullName"),
-                  "AddTime"                =>date("Y-m-d H:i:s") */
+            $month = array(
+                "month_name" => $data->month_name,
             );
-            if ($this->mt->save_data('tbl_month', $data)) {
-                $message = "Month insert success";
-                echo json_encode($message);
-            }
+            $this->db->insert('tbl_month', $month);
+            $res = ['status' => true, 'message' => "Month added successfull"];
+        } catch (\Throwable $th) {
+            $res = ['status' => false, 'message' => $th->getMessage()];
         }
+        echo json_encode($res);
     }
 
-    public function editMonth($id)
-    {
-        $query = $this->db->query("SELECT * from tbl_month where month_id = '$id'");
-        $data['row'] = $query->row();
-        $this->load->view('Administrator/employee/edit_month', $data);
-    }
 
     public function updateMonth()
     {
-        $id = $this->input->post('month_id');
-        $fld = 'month_id';
-        $data = array(
-            "month_name" => $this->input->post('month', TRUE),
-        );
-        if ($this->mt->update_data("tbl_month", $data, $id, $fld)) {
-            redirect('month');
-        }
-    }
+        $res = ['status' => false];
+        try {
+            $data = json_decode($this->input->raw_input_stream);
 
-    public function fancybox_designation()
-    {
-        $this->load->view('Administrator/employee/em_designation');
-    }
-
-    public function fancybox_insert_designation()
-    {
-        $mail = $this->input->post('Designation');
-        $query = $this->db->query("SELECT Designation_Name from tbl_designation where Designation_Name = '$mail'");
-
-        if ($query->num_rows() > 0) {
-            $data['exists'] = "This Name is Already Exists";
-            $this->load->view('Administrator/ajax/fancybox_designation', $data);
-        } else {
-            $data = array(
-                "Designation_Name" => $this->input->post('Designation', TRUE),
-                "AddBy" => $this->session->userdata("FullName"),
-                "AddTime" => date("Y-m-d H:i:s")
+            $month = array(
+                "month_name" => $data->month_name,
             );
-            $this->mt->save_data('tbl_designation', $data);
-            $this->load->view('Administrator/ajax/fancybox_designation');
+            $this->db->where('month_id', $data->month_id);
+            $this->db->update('tbl_month', $month);
+            $res = ['status' => true, 'message' => "Month Update"];
+        } catch (\Throwable $th) {
+            $res = ['status' => false, 'message' => $th->getMessage()];
         }
+        echo json_encode($res);
     }
-    //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
     // Employee Insert
     public function employee_insert()
     {

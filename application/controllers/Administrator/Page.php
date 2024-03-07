@@ -116,11 +116,15 @@ class Page extends CI_Controller
     }
     public function catdelete()
     {
-        $id = $this->input->post('deleted');
-        $fld = 'ProductCategory_SlNo';
-        $this->mt->delete_data("tbl_productcategory", $id, $fld);
-        $success = 'Delete Success';
-        echo json_encode($success);
+        $data = json_decode($this->input->raw_input_stream);
+        $category = array(
+            'status'     => 'd',
+            "UpdateBy"   => $this->session->userdata("FullName"),
+            "UpdateTime" => date("Y-m-d H:i:s")
+        );
+        $this->db->where('ProductCategory_SlNo', $data->categoryId);
+        $this->db->update('tbl_productcategory', $category);
+        echo json_encode(['status' => true, 'message' => 'Category delete successfully']);
     }
     //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     // unit 
@@ -282,7 +286,7 @@ class Page extends CI_Controller
         $districts = $this->db->query("select * from tbl_district d where d.status = 'a'")->result();
         echo json_encode($districts);
     }
-    //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
     // Country 
     public function add_country()
     {
@@ -298,7 +302,6 @@ class Page extends CI_Controller
 
         if ($query->num_rows() > 0) {
             echo "F";
-            //$this->load->view('Administrator/ajax/Country');
         } else {
             $data = array(
                 "CountryName"          => $this->input->post('Country', TRUE),
@@ -309,27 +312,7 @@ class Page extends CI_Controller
             $this->load->view('Administrator/ajax/Country');
         }
     }
-    public function fancybox_add_country()
-    {
-        $this->load->view('Administrator/products/fancybox_add_country');
-    }
-    public function fancybox_insert_country()
-    {
-        $mail = $this->input->post('Country');
-        $query = $this->db->query("SELECT CountryName from tbl_country where CountryName = '$mail'");
 
-        if ($query->num_rows() > 0) {
-            echo "F";
-        } else {
-            $data = array(
-                "CountryName"          => $this->input->post('Country', TRUE),
-                "AddBy"                  => $this->session->userdata("FullName"),
-                "AddTime"                => date("Y-m-d H:i:s")
-            );
-            $this->mt->save_data('tbl_country', $data);
-            $this->load->view('Administrator/products/ajax_Country');
-        }
-    }
     public function countryedit($id)
     {
         $data['title'] = "Edit Country";
@@ -427,7 +410,6 @@ class Page extends CI_Controller
         $this->mt->save_data("tbl_company", $data, $id, $fld);
         $id = '1';
         redirect('Administrator/Page/company_profile');
-        //$this->load->view('Administrator/company_profile');
     }
 
     public function company_profile_Update()
@@ -482,7 +464,6 @@ class Page extends CI_Controller
             $id = '1';
             redirect('Administrator/Page/company_profile');
         }
-        //$this->load->view('Administrator/company_profile');
     }
     //^^^^^^^^^^^^^^^^^^^^^
     // Brunch Name
@@ -593,35 +574,7 @@ class Page extends CI_Controller
 
         echo json_encode($res);
     }
-    public function fancybox_add_brunch()
-    {
-        $this->load->view('brunch/fancybox_add_brunch');
-    }
-    public function fancybox_insert_brunch()
-    {
-        $mail = $this->input->post('Brunchname');
-        $query = $this->db->query("SELECT Brunch_name from tbl_brunch where Brunch_name = '$mail'");
 
-        if ($query->num_rows() > 0) {
-            $data['exists'] = "This Name is Already Exists";
-            $this->load->view('Administrator/ajax/brunch', $data);
-        } else {
-            $string = $this->input->post('brunchaddress');
-            $data = array(
-                "Brunch_name"              => $this->input->post('Brunchname', TRUE),
-                "Brunch_title"             => $this->input->post('brunchtitle', TRUE),
-                "Brunch_address"           => htmlspecialchars($string),
-                "Brunch_sales"             => $this->input->post('Access', TRUE)
-            );
-            $brid = $this->mt->save_date_id('tbl_brunch', $data);
-            $branchData = array(
-                "branch_id" => $brid
-            );
-            $this->mt->save_data('tbl_menuaccess', $branchData);
-
-            $this->load->view('Administrator/ajax/fancybox_add_brunch');
-        }
-    }
     public function brunch_edit()
     {
         $id = $this->input->post('edit');
@@ -634,8 +587,6 @@ class Page extends CI_Controller
         $id = $this->input->post('id');
         $fld = 'brunch_id';
         $string = $this->input->post('brunchaddress');
-        //echo htmlspecialchars($string);
-        //echo mysql_real_escape_string($string);
         $data = array(
             "Brunch_name"        => $this->input->post('Brunchname', TRUE),
             "Brunch_title"       => $this->input->post('brunchtitle', TRUE),
@@ -663,11 +614,7 @@ class Page extends CI_Controller
         $data['content'] = $this->load->view('Administrator/add_color', $data, TRUE);
         $this->load->view('Administrator/index', $data);
     }
-    public function Fancybox_add_color()
-    {
-        $data['title'] = "Add color";
-        $this->load->view('Administrator/products/fancybox_color', $data);
-    }
+
     public function insert_color()
     {
         $colorname = $this->input->post('colorname');
@@ -688,22 +635,7 @@ class Page extends CI_Controller
             }
         }
     }
-    public function fancybox_insert_color()
-    {
-        $mail = $this->input->post('Country');
-        $query = $this->db->query("SELECT color_name from tbl_color where color_name = '$mail'");
 
-        if ($query->num_rows() > 0) {
-            echo "F";
-            //$this->load->view('ajax/Country');
-        } else {
-            $data = array(
-                "color_name"          => $this->input->post('Country', TRUE)
-            );
-            $this->mt->save_data('tbl_color', $data);
-            $this->load->view('Administrator/products/ajax_color');
-        }
-    }
     public function colordelete()
     {
         $id = $this->input->post('deleted');
@@ -711,14 +643,7 @@ class Page extends CI_Controller
         $this->mt->delete_data("tbl_color", $id, $fld);
         echo "Success";
     }
-    public function coloredit($id)
-    {
-        $data['title'] = "Edit Color";
-        $fld = 'color_SiNo';
-        $data['selected'] = $this->Billing_model->select_by_id('tbl_color', $id, $fld);
-        $data['content'] = $this->load->view('Administrator/edit/edit_color', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
+
     public function colorupdate()
     {
         $id = $this->input->post('id');
@@ -760,249 +685,59 @@ class Page extends CI_Controller
     }
     public function insert_brand()
     {
-        $brandname = $this->input->post('brandname');
-        $branch = $this->brunch;
-        $query = $this->db->query("SELECT brand_name from tbl_brand where brand_branchid = '$branch' AND brand_name = '$brandname'");
-
-        if ($query->num_rows() > 0) {
-            $exist = false;
-            echo json_encode($exist);
-        } else {
-            $data = array(
-                "brand_name"          => $this->input->post('brandname', TRUE),
-                "status"      => 'a',
-                "brand_branchid"      => $this->brunch
-            );
-            $succ = $this->mt->save_data('tbl_brand', $data);
-            if ($succ) {
-                $msg = true;
-                echo json_encode($msg);
+        $res = ['status' => false];
+        try {
+            $data = json_decode($this->input->raw_input_stream);
+            $query = $this->db->query("select * from tbl_brand where brand_name = '$data->brand_name' and brand_branchid = ?", [$this->session->userdata('BRANCHid')])->row();
+            if (!empty($query)) {
+                $brand = array(
+                    'status'     => 'a'
+                );
+                $this->db->where('brand_SiNo', $query->brand_SiNo);
+                $this->db->update('tbl_brand', $brand);
+            } else {
+                $brand = array(
+                    "brand_name" => $data->brand_name,
+                    "status"     => 'a',
+                    'brand_branchid' => $this->session->userdata('BRANCHid')
+                );
+                $this->db->insert('tbl_brand', $brand);
             }
-            //$datas['brand'] =  $this->Billing_model->select_brand($this->brunch);
-            //$this->load->view('Administrator/ajax/add_brand',$datas);
+
+            $res = ['status' => true, 'message' => 'Brand added successfully'];
+        } catch (\Throwable $th) {
+            $res = ['status' => false, 'message' => $th->getMessage()];
         }
-    }
-    public function fancybox_add_brand()
-    {
-        $this->load->view('Administrator/products/fancybox_add_brand');
-    }
-    public function fancybox_insert_brand()
-    {
-        // $pCategory = $this->input->post('pCategory');
-        $brand = $this->input->post('brand');
-        //$query = $this->db->query("SELECT brand_name from tbl_brand where ProductCategory_SlNo = '$pCategory' && brand_name = '$brand'");
-        $query = $this->db->query("SELECT brand_name from tbl_brand where brand_name = '$brand'");
 
-        if ($query->num_rows() > 0) {
-            echo "F";
-            //$this->load->view('ajax/Country');
-        } else {
-            $data = array(
-                //"ProductCategory_SlNo"          =>$this->input->post('pCategory', TRUE),
-                "ProductCategory_SlNo"          => '0',
-                "brand_name"          => $this->input->post('brand', TRUE)
+        echo json_encode($res);
+    }
 
+    public function Update_brand()
+    {
+        $res = ['status' => false];
+        try {
+            $data = json_decode($this->input->raw_input_stream);
+            $brand = array(
+                "brand_name"  => $data->brand_name,
             );
-            $this->mt->save_data('tbl_brand', $data);
-            $this->load->view('Administrator/products/ajax_Brand');
+            $this->db->where('brand_SiNo', $data->brand_SiNo);
+            $this->db->update('tbl_brand', $brand);
+
+            $res = ['status' => true, 'message' => 'Brand update successfully'];
+        } catch (\Throwable $th) {
+            $res = ['status' => false, 'message' => $th->getMessage()];
         }
+        echo json_encode($res);
     }
     public function branddelete()
     {
-        $id = $this->input->post('deleted');
-        $fld = 'brand_SiNo';
-        $this->mt->delete_data("tbl_brand", $id, $fld);
-        echo "Success";
-    }
-    public function brandedit($id)
-    {
-        $data['title'] = "Edit Brand";
-        $fld = 'brand_SiNo';
-        $data['selected'] = $this->Billing_model->select_by_id('tbl_brand', $id, 'brand_SiNo');
-        $data['content'] = $this->load->view('Administrator/edit/edit_brand', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
-    public function Update_brand()
-    {
-        $id = $this->input->post('id');
-        $brandname = $this->input->post('brandname');
-        $branch = $this->brunch;
-        $query = $this->db->query("SELECT brand_name from tbl_brand where brand_branchid = '$branch' AND brand_name = '$brandname'");
-        if ($query->num_rows() > 0) {
-            $exist = false;
-            echo json_encode($exist);
-        } else {
-            $fld = 'brand_SiNo';
-            $data = array(
-                "brand_name" => $this->input->post('brandname', TRUE)
-            );
-            $succ = $this->mt->update_data("tbl_brand", $data, $id, $fld);
-            if ($succ) {
-                $msg = true;
-                echo json_encode($msg);
-            }
-        }
-    }
-    //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    public function add_bank()
-    {
-        $data['title'] = "Add Bank";
-        $data['bank'] = $this->Billing_model->select_bank();
-        $data['content'] = $this->load->view('Administrator/add_bank', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
-
-    // CREATE TABLE IF NOT EXISTS `tbl_Bank` (
-    //   `Bank_SiNo` int(11) NOT NULL AUTO_INCREMENT,
-    //   `Bank_name` varchar(100) NOT NULL,
-    //   `Branch` varchar(100) NOT NULL,
-    //   `Account_Title` varchar(100) NOT NULL,
-    //   `Account_No` varchar(100) NOT NULL,
-    //   PRIMARY KEY (`Bank_SiNo`)
-    // ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
-    public function insert_Bank()
-    {
-        $Bank_name = $this->input->post('Bank_name');
-        $Branch = $this->input->post('Branch');
-        $Account_Title = $this->input->post('Account_Title');
-        $Account_No = $this->input->post('Account_No');
-        $query = $this->db->query("SELECT Bank_name from tbl_bank where Bank_name = '$Bank_name'");
-
-        if ($query->num_rows() > 0) {
-            //echo "F";
-            //$this->load->view('ajax/Country');
-            $sdata['message'] = 'This Bank Name Allready Exists';
-            $this->session->set_userdata($sdata);
-            redirect('Administrator/Page/add_bank');
-        } else {
-            $data = array(
-                "Bank_name"          => $Bank_name,
-                "Branch"             => $Branch,
-                "Account_Title"      => $Account_Title,
-                "Account_No"         => $Account_No
-            );
-            $this->mt->save_data('tbl_bank', $data);
-            redirect('Administrator/Page/add_bank');
-            //$this->load->view('ajax/add_bank');
-        }
-    }
-    public function fancybox_add_bank()
-    {
-        $this->load->view('Administrator/account/fancybox_add_bank');
-    }
-    public function fancyBox_insert_Bank()
-    {
-        $Bank = $this->input->post('Bank');
-        $query = $this->db->query("SELECT Bank_name from tbl_Bank where Bank_name = '$Bank'");
-
-        if ($query->num_rows() > 0) {
-            echo "F";
-        } else {
-            $data = array(
-                "Bank_name" => $Bank
-            );
-            $this->mt->save_data('tbl_Bank', $data);
-            $this->load->view('Administrator/account/fancybox_select_add_bank');
-        }
-    }
-    public function Bankdelete()
-    {
-        $id = $this->input->post('deleted');
-        $fld = 'Bank_SiNo';
-        $this->mt->delete_data("tbl_Bank", $id, $fld);
-        echo "Success";
-    }
-    public function Bankedit($id)
-    {
-        $data['title'] = "Edit Bank";
-        $fld = 'Bank_SiNo';
-        $data['selected'] = $this->mt->select_by_id('tbl_Bank', $id, $fld);
-        $data['content'] = $this->load->view('Administrator/edit/edit_Bank', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
-    public function Update_Bank()
-    {
-        $Bank_SiNo = $this->input->post('Bank_SiNo');
-        $Bank_name = $this->input->post('Bank_name');
-        $Branch = $this->input->post('Branch');
-        $Account_Title = $this->input->post('Account_Title');
-        $Account_No = $this->input->post('Account_No');
-        //$query = $this->db->query("SELECT Bank_name from tbl_Bank where Bank_name = '$Bank_name'");
-        $query = $this->db->query("SELECT Bank_name from tbl_Bank where Bank_SiNo = '$Bank_SiNo'");
-
-        if ($query->num_rows() > 1) {
-            echo "F";
-        } else {
-            $fld = 'Bank_SiNo';
-            $data = array(
-                "Bank_name"                     => $Bank_name,
-                "Branch"                        => $Branch,
-                "Account_Title"                 => $Account_Title,
-                "Account_No"                    => $Account_No
-            );
-            $this->mt->update_data("tbl_Bank", $data, $Bank_SiNo, $fld);
-            echo "Success";
-        }
-    }
-    //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    public function select_brand_by_category($id)
-    {
-        $brand = $this->Billing_model->select_brand_by_category($id);
-?>
-        <option value="">Select Brand</option>
-        <?php
-        foreach ($brand as $vbrand) {
-        ?>
-            <option value="<?php echo $vbrand->brand_SiNo; ?>"><?php echo $vbrand->brand_name; ?></option>
-        <?php
-        }
-    }
-
-    public function select_category_by_brand($id)
-    {
-        if ($id == 'All') {
-            $category = $this->Billing_model->select_category($this->session->userdata('BRANCHid'));
-        ?>
-            <select name="pCategory" id="pCategory" style="" class="chosen-select form-control"" required>
-					<option value=" All">All</option>
-                <?php
-                foreach ($category as $vcategory) {
-                ?>
-                    <option value="<?php echo $vcategory->ProductCategory_SlNo; ?>"><?php echo $vcategory->ProductCategory_Name; ?></option>
-                <?php } ?>
-            </select>
-
-        <?php
-        } else {
-            $category = $this->Billing_model->select_category_by_brand($id);
-            //echo "<pre>";print_r($category );exit;
-        ?>
-            <select name="pCategory" id="pCategory" class="chosen-select form-control"" required>
-						<option value=" no">Select Category</option>
-                <?php
-                foreach ($category as $vcategory) {
-                ?>
-                    <option value="<?php echo $vcategory->ProductCategory_SlNo; ?>"><?php echo $vcategory->ProductCategory_Name; ?></option>
-                <?php
-                } ?>
-            </select>
-        <?php
-        }
-    }
-
-    public function select_category_by_branch($id)
-    {
-        $category = $this->Billing_model->select_category_by_branch($id);
-        ?>
-        <option value="All">Select All</option>
-        <?php
-        foreach ($category as $vcategory) {
-        ?>
-            <option value="<?php echo $vcategory->ProductCategory_SlNo; ?>"><?php echo $vcategory->ProductCategory_Name; ?></option>
-<?php
-        }
+        $data = json_decode($this->input->raw_input_stream);
+        $brand = array(
+            'status'     => 'd'
+        );
+        $this->db->where('brand_SiNo', $data->brandId);
+        $this->db->update('tbl_brand', $brand);
+        echo json_encode(['status' => true, 'message' => 'Brand delete successfully']);
     }
 
     public function databaseBackup()

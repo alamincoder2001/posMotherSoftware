@@ -209,9 +209,17 @@ fieldset.scheduler-border {
   background: #93d2f5;
 }
 
+.entryFrom {
+  padding: 7px 3px !important;
+  margin: 0 !important;
+}
+.entryFrom legend {
+  margin: 0 !important;
+}
 .scheduler-search {
   padding: 0 1em 0.5em 1em !important;
   margin: 0 !important;
+  margin-bottom: 5px !important;
 }
 .scheduler-search legend {
   margin: 0 !important;
@@ -245,6 +253,31 @@ legend.scheduler-border {
   padding: 4px 8px !important;
   line-height: 1 !important;
 }
+.table>thead>tr {
+  color: #fff;
+  font-weight: 400;
+  background: gray;
+}
+.table>thead>tr>th {
+  color: #fff !important;
+}
+.table>caption+thead>tr:first-child>td, .table>caption+thead>tr:first-child>th, .table>colgroup+thead>tr:first-child>td, .table>colgroup+thead>tr:first-child>th, .table>thead:first-child>tr:first-child>td, .table>thead:first-child>tr:first-child>th {
+  border-top: 0;
+  padding: 5px 0 !important;
+}
+
+.btnWarning {
+  padding: 3px 20px;
+  border-radius: 6px;
+  font-weight: 700;
+  background: #00cbaf !important;
+  border-width: 0;
+  color: white;
+}
+
+.btnWarning:hover {
+  background: #00cbaf !important;
+}
 
 .btnSave {
   padding: 3px 20px;
@@ -254,7 +287,6 @@ legend.scheduler-border {
   border-width: 0;
   color: white;
 }
-
 .btnSave:hover {
   background: blue !important;
 }

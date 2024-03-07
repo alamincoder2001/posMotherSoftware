@@ -46,7 +46,7 @@
 							<td>
 								<?php if ($this->session->userdata('accountType') != 'u') { ?>
 									<i class="btnEdit fa fa-pencil" @click="editCategory(row)"></i>
-									<i class="btnDelete fa fa-trash" @click="deleteCategory(row.Unit_SlNo)"></i>
+									<i class="btnDelete fa fa-trash" @click="deleteCategory(row.ProductCategory_SlNo)"></i>
 								<?php } ?>
 							</td>
 						</tr>

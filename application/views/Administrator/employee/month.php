@@ -1,174 +1,133 @@
-
-<script>
-    function editMonth(id){
-        var id = id;
-        var inputdata = 'id='+id;
-        var urldata = "<?php echo base_url();?>editMonth/"+id;
-        $.ajax({
-            type: "POST",
-            url: urldata,
-            data: inputdata,
-            success:function(data){
-			 $("#saveResult").html(data);
-            }
-        });
-    }
-</script>
-<div class="row">
-<div class="col-xs-12">
-	<!-- PAGE CONTENT BEGINS -->
-	<span id="saveResult">
-	<div class="form-horizontal">
-		
-		<div class="form-group">
-			<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Month Name  </label>
-			<label class="col-sm-1 control-label no-padding-right">:</label>
-			<div class="col-sm-8">
-				<input type="text" id="month" name="month" placeholder="Month Name" value="" class="col-xs-10 col-sm-4" />
-				<span id="msc"></span>
-			</div>
-		</div>
-		 
-		<div class="form-group">
-			<label class="col-sm-3 control-label no-padding-right" for="form-field-1"></label>
-			<label class="col-sm-1 control-label no-padding-right"></label>
-			<div class="col-sm-8">
-				    <button type="button" class="btn btn-sm btn-success" onclick="Submitdata()" name="btnSubmit">
-						Submit
-						<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
-					</button>
-			</div>
-		</div>
-		
-</div>
-</span>
-</div>
-</div>
-
-
-			
-<div class="row">
-	<div class="col-xs-12">
-
-		<div class="clearfix">
-			<div class="pull-right tableTools-container"></div>
-		</div>
-		<div class="table-header">
-			Month Information
-		</div>
-
-		<!-- div.table-responsive -->
-
-		<!-- div.dataTables_borderWrap -->
-		<div id="">
-			<table id="dynamic-table" class="table table-striped table-bordered table-hover">
-				<thead>
-					<tr>
-						<th class="center" style="display:none;">
-							<label class="pos-rel">
-								<input type="checkbox" class="ace" />
-								<span class="lbl"></span>
-							</label>
-						</th>
-						<th>SL No</th>
-						<th>Month Name</th>
-
-						<th>Action</th>
-					</tr>
-				</thead>
-
-				<tbody>
-					<?php 
-					$query = $this->db->query("SELECT * FROM tbl_month order by month_id ASC ");
-					$row = $query->result();
-					 $i=1; foreach($row as $row){ ?>
-					<tr>
-						<td class="center" style="display:none;">
-							<label class="pos-rel">
-								<input type="checkbox" class="ace" />
-								<span class="lbl"></span>
-							</label>
-						</td>
-
-						<td><?php echo $i++; ?></td>
-						<td><a href="#"><?php echo $row->month_name; ?></a></td>
-						<td>
-							<?php if($this->session->userdata('accountType') != 'u'){?>
-							<div class="hidden-sm hidden-xs action-buttons">
-							
-								<span class="green" style="cursor:pointer;" onclick="editMonth(<?php echo $row->month_id; ?>);" title="Edit">
-									<i class="ace-icon fa fa-pencil bigger-130"></i>
-								</span>
+<div id="months">
+	<form @submit.prevent="saveMonth">
+		<div class="row" style="margin: 0;">
+			<fieldset class="scheduler-border">
+				<legend class="scheduler-border">Month Entry Form</legend>
+				<div class="control-group">
+					<div class="col-xs-12 col-md-6 col-md-offset-3">
+						<div class="form-group clearfix">
+							<label class="control-label col-xs-4 col-md-4">Month Name:</label>
+							<div class="col-xs-8 col-md-8">
+								<input type="text" class="form-control" v-model="month.month_name" required>
 							</div>
-							<?php }?>
-						</td>
-					</tr>
-					
-					<?php } ?>
-				</tbody>
-			</table>
+						</div>
+						<div class="form-group clearfix">
+							<div class="col-xs-12 col-md-12 text-right">
+								<input type="submit" class="btnSave" value="Save">
+							</div>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</form>
+
+	<div class="row">
+		<div class="col-sm-12 form-inline">
+			<div class="form-group">
+				<label for="filter" class="sr-only">Filter</label>
+				<input type="text" class="form-control" v-model="filter" placeholder="Filter">
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="table-responsive">
+				<datatable :columns="columns" class="table-striped" :data="months" :filter-by="filter" style="margin-bottom: 5px;">
+					<template scope="{ row }">
+						<tr>
+							<td>{{ row.sl }}</td>
+							<td>{{ row.month_name }}</td>
+							<td>
+								<?php if ($this->session->userdata('accountType') != 'u') { ?>
+									<i class="btnEdit fa fa-pencil" @click="editMonth(row)"></i>
+								<?php } ?>
+							</td>
+						</tr>
+					</template>
+				</datatable>
+				<datatable-pager v-model="page" type="abbreviated" :per-page="per_page" style="margin-bottom: 50px;"></datatable-pager>
+			</div>
 		</div>
 	</div>
 </div>
-<script type="text/javascript">
-	 function updatedata(){
-        var month_id = $('#month_id').val();
-        var month = $('#month').val();
 
-        if(month ==""){
-            $('#msc').html('Required Field').css("color","red");
-            return false;
-        }
-            var inputdata = 'month_id='month_id+'&month='+month;
-            //alert(inputdata);
-            var urldata = "<?php echo base_url();?>updateMonth";
-            $.ajax({
-                type: "POST",
-                url: urldata,
-                data: inputdata,
-                success:function(data){
-					if(data){
-						alert(data);
-					}else{
-						return false;
+<script src="<?php echo base_url(); ?>assets/js/vue/vue.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/axios.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vuejs-datatable.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue-select.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/moment.min.js"></script>
+
+<script>
+	Vue.component('v-select', VueSelect.VueSelect);
+	new Vue({
+		el: '#months',
+		data() {
+			return {
+				month: {
+					month_id: 0,
+					month_name: '',
+				},
+				months: [],
+
+				columns: [{
+						label: 'Sl',
+						field: 'sl',
+						align: 'center'
+					},
+					{
+						label: 'Month Name',
+						field: 'month_name',
+						align: 'center'
+					},
+					{
+						label: 'Action',
+						align: 'center',
+						filterable: false
 					}
-					location.reload();
-                }
-            });
-    }
-</script>
-<script type="text/javascript">
-    function Submitdata(){
-        var month = $('#month').val();
+				],
+				page: 1,
+				per_page: 100,
+				filter: ''
+			}
+		},
+		created() {
+			this.getMonths();
+		},
+		methods: {
+			getMonths() {
+				axios.get('/get_months').then(res => {
+					this.months = res.data.map((item, index) => {
+						item.sl = index + 1;
+						return item;
+					});
+				})
+			},
+			saveMonth() {
+				let url = '/add_month';
+				if (this.month.month_id != 0) {
+					url = '/update_month';
+				}
 
-        if(month ==""){
-            $('#msc').html('Required Field').css("color","red");
-            return false;
-        }
-        var succes = "";
-        if(succes == ""){
-            var inputdata = 'month='+month;
-            //alert(inputdata);
-            var urldata = "<?php echo base_url();?>insertMonth";
-            $.ajax({
-                type: "POST",
-                url: urldata,
-                data: inputdata,
-                success:function(data){
-                    //$('#success').html('Save Success').css("color","green");
-                    //$('#Search_Resultsmonth').html(data);
-                    //alert("ok");
-                    //setTimeout(function() {$.fancybox.close()}, 500);
-					if(data){
-						alert(data);
-					}else{
-						return false;
+				axios.post(url, this.month).then(res => {
+					let r = res.data;
+					alert(r.message);
+					if (r.status) {
+						this.resetForm();
+						this.getMonths();
 					}
-					location.reload();
-                }
-            });
-        }
-    }
-
-
+				})
+			},
+			editMonth(month) {
+				let keys = Object.keys(this.month);
+				keys.forEach(key => {
+					this.month[key] = month[key];
+				})
+			},
+			resetForm() {
+				this.month = {
+					month_id: 0,
+					month_name: '',
+				}
+			}
+		}
+	})
 </script>
