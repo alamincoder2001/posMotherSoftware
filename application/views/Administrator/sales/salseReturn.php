@@ -1,62 +1,61 @@
 <style>
-	.v-select{
-		margin-top:-2.5px;
-        float: right;
-        min-width: 180px;
-        margin-left: 5px;
+	.v-select {
+		background: #fff;
+		border-radius: 4px !important;
 	}
-	.v-select .dropdown-toggle{
+
+	.v-select .dropdown-toggle {
 		padding: 0px;
-        height: 25px;
+		height: 25px;
+		border: none;
 	}
-	.v-select input[type=search], .v-select input[type=search]:focus{
+
+	.v-select input[type=search],
+	.v-select input[type=search]:focus {
 		margin: 0px;
 	}
-	.v-select .vs__selected-options{
+
+	.v-select .vs__selected-options {
 		overflow: hidden;
-		flex-wrap:nowrap;
+		flex-wrap: nowrap;
 	}
-	.v-select .selected-tag{
+
+	.v-select .selected-tag {
 		margin: 2px 0px;
 		white-space: nowrap;
-		position:absolute;
+		position: absolute;
 		left: 0px;
 	}
-	.v-select .vs__actions{
-		margin-top:-5px;
-	}
-	.v-select .dropdown-menu{
+
+	.v-select .dropdown-menu {
 		width: auto;
-		overflow-y:auto;
-	}
-	#searchForm select{
-		padding:0;
-		border-radius: 4px;
-	}
-	#searchForm .form-group{
-		margin-right: 5px;
-	}
-	#searchForm *{
-		font-size: 13px;
+		overflow-y: auto;
 	}
 </style>
 
 <div class="row" id="salesReturn">
-	<div class="col-md-12" style="border-bottom: 1px solid #ccc;padding: 3px 0;">
-		<form class="form-inline" id="searchForm">
-			<div class="form-group" style="display:none;" v-bind:style="{display: customers.length > 0 ? '' : 'none'}">
-				<label>Customer</label>
-				<v-select v-bind:options="customers" label="display_name" v-model="selectedCustomer" v-on:input="getInvoices" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
-			</div>
+	<div class="col-md-12">
+		<fieldset class="scheduler-border scheduler-search">
+			<legend class="scheduler-border">Sales Return</legend>
+			<div class="control-group">
+				<div class="form-group" style="display:none;" v-bind:style="{display: customers.length > 0 ? '' : 'none'}">
+					<label class="col-xs-1">Customer</label>
+					<div class="col-xs-3">
+						<v-select v-bind:options="customers" label="display_name" v-model="selectedCustomer" v-on:input="getInvoices" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
+					</div>
+				</div>
 
-			<div class="form-group">
-				<label>Invoice</label>
-				<v-select v-bind:options="invoices" label="SaleMaster_InvoiceNo" v-model="selectedInvoice" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
+				<div class="form-group">
+					<label class="col-xs-1">Invoice</label>
+					<div class="col-xs-2 no-padding-left">
+						<v-select v-bind:options="invoices" label="SaleMaster_InvoiceNo" v-model="selectedInvoice" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="button" style="padding: 1px 15px;" @click="getSaleDetailsForReturn" v-bind:disabled="salesReturn.returnId == 0 ? false : true">View</button>
+				</div>
 			</div>
-			<div class="form-group">
-				<button type="button" class="btn btn-info btn-xs" style="width: 100px;" @click="getSaleDetailsForReturn" v-bind:disabled="salesReturn.returnId == 0 ? false : true">View</button>
-			</div>
-		</form>
+		</fieldset>
 	</div>
 	<div style="display:none;" v-bind:style="{display: cart.length > 0 ? '' : 'none'}">
 		<div class="col-xs-12 col-md-12 col-lg-12">
@@ -76,7 +75,7 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>Sl</th>
+								<th style="width: 6%;">Sl</th>
 								<th>Product</th>
 								<th>Quantity</th>
 								<th>Amount</th>
@@ -90,13 +89,13 @@
 						<tbody>
 							<tr v-for="(product, sl) in cart">
 								<td>{{ sl + 1 }}</td>
-								<td>{{ product.Product_Name }}</td>
+								<td style="width: 30%;text-align:left;padding-left:4px;">{{ product.Product_Name }}</td>
 								<td>{{ product.SaleDetails_TotalQuantity }}</td>
 								<td>{{ product.SaleDetails_TotalAmount }}</td>
 								<td>{{ product.returned_quantity }}</td>
 								<td>{{ product.returned_amount }}</td>
-								<td><input type="text" v-model="product.return_quantity" v-on:input="productReturnTotal(sl)"></td>
-								<td><input type="text" v-model="product.return_rate" v-on:input="productReturnTotal(sl)"></td>
+								<td><input type="text" class="form-control" v-model="product.return_quantity" v-on:input="productReturnTotal(sl)"></td>
+								<td><input type="text" class="form-control" v-model="product.return_rate" v-on:input="productReturnTotal(sl)"></td>
 								<td>{{ product.return_amount }}</td>
 							</tr>
 						</tbody>
@@ -114,23 +113,23 @@
 						</tfoot>
 					</table>
 				</div>
-	
+
 			</div>
 		</div>
 
 	</div>
 </div>
 
-<script src="<?php echo base_url();?>assets/js/vue/vue.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/axios.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/vue-select.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/moment.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/axios.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue-select.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/moment.min.js"></script>
 
 <script>
 	Vue.component('v-select', VueSelect.VueSelect);
 	new Vue({
 		el: '#salesReturn',
-		data(){
+		data() {
 			return {
 				customers: [],
 				selectedCustomer: null,
@@ -145,21 +144,21 @@
 				},
 				cart: [],
 				salesReturn: {
-					returnId: parseInt('<?php echo $returnId;?>'),
+					returnId: parseInt('<?php echo $returnId; ?>'),
 					returnDate: moment().format('YYYY-MM-DD'),
 					total: 0.00,
 					note: ''
 				},
-				userType: '<?php echo $this->session->userdata("accountType");?>'
+				userType: '<?php echo $this->session->userdata("accountType"); ?>'
 			}
 		},
-		created(){
+		created() {
 			this.getCustomers();
-			if(this.salesReturn.returnId != 0) {
+			if (this.salesReturn.returnId != 0) {
 				this.getReturn();
 			}
 		},
-		methods:{
+		methods: {
 			getCustomers() {
 				axios.get('/get_customers').then(res => {
 					this.customers = res.data;
@@ -171,8 +170,8 @@
 					})
 				})
 			},
-			getInvoices(){
-				if(event.type == 'readystatechange') {
+			getInvoices() {
+				if (event.type == 'readystatechange') {
 					return;
 				}
 				this.selectedInvoice = {
@@ -184,53 +183,61 @@
 					SaleMaster_TotalDiscountAmount: 0
 				}
 				this.invoices = [];
-				if(this.selectedCustomer == null) {
+				if (this.selectedCustomer == null) {
 					return;
 				}
 
-				if(this.selectedCustomer.Customer_Type == 'G') {
-					arg = { customerType: 'G' }
+				if (this.selectedCustomer.Customer_Type == 'G') {
+					arg = {
+						customerType: 'G'
+					}
 				} else {
-					arg = { customerId: this.selectedCustomer.Customer_SlNo }
+					arg = {
+						customerId: this.selectedCustomer.Customer_SlNo
+					}
 				}
 
 				axios.post('/get_sales', arg).then(res => {
 					this.invoices = res.data.sales;
 				})
 			},
-			async getSaleDetailsForReturn(){
-				if(this.selectedInvoice.SaleMaster_InvoiceNo == ''){
+			async getSaleDetailsForReturn() {
+				if (this.selectedInvoice.SaleMaster_InvoiceNo == '') {
 					return;
 				}
-				await axios.post('/get_saledetails_for_return', {salesId: this.selectedInvoice.SaleMaster_SlNo}).then(res=>{
+				await axios.post('/get_saledetails_for_return', {
+					salesId: this.selectedInvoice.SaleMaster_SlNo
+				}).then(res => {
 					this.cart = res.data;
 				})
 			},
-			productReturnTotal(ind){
-				if(this.cart[ind].return_quantity > (this.cart[ind].SaleDetails_TotalQuantity - this.cart[ind].returned_quantity)){
+			productReturnTotal(ind) {
+				if (this.cart[ind].return_quantity > (this.cart[ind].SaleDetails_TotalQuantity - this.cart[ind].returned_quantity)) {
 					alert('Return quantity is not valid');
 					this.cart[ind].return_quantity = '';
 				}
 
-				if(parseFloat(this.cart[ind].return_rate) > parseFloat(this.cart[ind].SaleDetails_Rate)){
+				if (parseFloat(this.cart[ind].return_rate) > parseFloat(this.cart[ind].SaleDetails_Rate)) {
 					alert('Rate is not valid');
 					this.cart[ind].return_rate = '';
 				}
 				this.cart[ind].return_amount = parseFloat(this.cart[ind].return_quantity) * parseFloat(this.cart[ind].return_rate);
 				this.calculateTotal();
 			},
-			calculateTotal(){
-				this.salesReturn.total = this.cart.reduce((prev, cur) => {return prev + (cur.return_amount ? parseFloat(cur.return_amount) : 0.00)}, 0);
+			calculateTotal() {
+				this.salesReturn.total = this.cart.reduce((prev, cur) => {
+					return prev + (cur.return_amount ? parseFloat(cur.return_amount) : 0.00)
+				}, 0);
 			},
-			saveSalesReturn(){
+			saveSalesReturn() {
 				let filteredCart = this.cart.filter(product => product.return_quantity > 0 && product.return_rate > 0);
 
-				if(filteredCart.length == 0){
+				if (filteredCart.length == 0) {
 					alert('No products to return');
 					return;
 				}
 
-				if(this.salesReturn.returnDate == null || this.salesReturn.returnDate == ''){
+				if (this.salesReturn.returnDate == null || this.salesReturn.returnDate == '') {
 					alert('Enter date');
 					return;
 				}
@@ -242,17 +249,17 @@
 				}
 
 				let url = '/add_sales_return';
-				if(this.salesReturn.returnId != 0) {
+				if (this.salesReturn.returnId != 0) {
 					url = '/update_sales_return';
 				}
 
-				axios.post(url, data).then(async res=>{
+				axios.post(url, data).then(async res => {
 					let r = res.data;
 					alert(r.message);
-					if(r.success){
+					if (r.success) {
 						let conf = confirm('Success. Do you want to view invoice?');
-						if(conf){
-							window.open('/sale_return_invoice/'+r.id, '_blank');
+						if (conf) {
+							window.open('/sale_return_invoice/' + r.id, '_blank');
 							await new Promise(r => setTimeout(r, 1000));
 							window.location = '/salesReturn';
 						} else {
@@ -262,7 +269,9 @@
 				})
 			},
 			async getReturn() {
-				let returnData = await axios.post('/get_sale_returns', { id: this.salesReturn.returnId }).then(res => {
+				let returnData = await axios.post('/get_sale_returns', {
+					id: this.salesReturn.returnId
+				}).then(res => {
 					return res.data;
 				})
 

@@ -1,17 +1,5 @@
 <div class="row">
     <div class="col-xs-12">
-        <div class="clearfix">
-            <div class="pull-right tableTools-container"></div>
-        </div>
-
-        <div class="table-header">
-            Employee Information
-        </div>
-    </div>
-
-    <div class="col-xs-12">
-        <!-- div.table-responsive -->
-        <!-- div.dataTables_borderWrap -->
         <div class="table-responsive">
             <table id="dynamic-table" class="table table-striped table-bordered table-hover">
                 <thead>
@@ -23,9 +11,6 @@
                         <th class="hidden-480">Designation</th>
                         <th>Contact No</th>
                         <th>Status</th>
-                        <!--<th class="hidden-480">Purchase Rate</th>
-								<th class="hidden-480">Sell Rate</th>--->
-
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -41,7 +26,7 @@
                                         <img src="<?php echo base_url() . 'uploads/employeePhoto_thum/' . $row->Employee_Pic_thum; ?>" alt="" style="width:45px;height:45px;">
                                 </td>
                             <?php } else { ?>
-                                <img src="<?php echo base_url() . 'uploads/no_image.jpg' ?>" alt="" style="width:45px;height:45px;"></td>
+                                <img src="<?php echo base_url() . 'uploads/no_image.jpg' ?>" alt="" style="width:25px;height:25px;"></td>
                             <?php } ?>
                             </td>
                             <td><?php echo $row->Employee_ID; ?></td>
@@ -59,13 +44,10 @@
                                 <div class="hidden-sm hidden-xs action-buttons">
 
                                     <?php if ($this->session->userdata('accountType') != 'u') { ?>
-
-                                        <a class="blue" href="<?php echo base_url(); ?>employeeEdit/<?php echo $row->Employee_SlNo; ?>" style="cursor:pointer;">
-                                            <i class="ace-icon fa fa-pencil bigger-130"></i> <?php //echo $row->Status; 
-                                                                                                ?>
+                                        <a class="blue" href="<?php echo base_url(); ?>employeeEdit/<?php echo $row->Employee_SlNo; ?>">
+                                            <i class="btnEdit ace-icon fa fa-pencil bigger-130"></i>
                                         </a>
-
-                                        <span onclick="deleted(<?php echo $row->Employee_SlNo; ?>)" style="cursor:pointer;color:red;font-size:20px;margin-right:20px;"><i class="fa fa-trash-o"></i></span>
+                                        <span onclick="deleted(<?php echo $row->Employee_SlNo; ?>)"><i class="btnDelete fa fa-trash-o"></i></span>
                                     <?php } ?>
 
                                 </div>

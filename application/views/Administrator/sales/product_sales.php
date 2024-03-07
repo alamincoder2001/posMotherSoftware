@@ -177,7 +177,7 @@
 							<div class="form-group">
 								<label class="col-xs-3 control-label no-padding-right"> </label>
 								<div class="col-xs-9">
-									<button type="submit" class="btnWarning pull-right">Add to Cart</button>
+									<button type="submit" class="btnCart pull-right">Add to Cart</button>
 								</div>
 							</div>
 						</form>
@@ -517,6 +517,18 @@
 				this.getProducts();
 			},
 			async customerOnChange() {
+				if (this.selectedCustomer == null) {
+					this.selectedCustomer = {
+						Customer_SlNo: '',
+						Customer_Code: '',
+						Customer_Name: '',
+						display_name: 'Select Customer',
+						Customer_Mobile: '',
+						Customer_Address: '',
+						Customer_Type: ''
+					}
+					return
+				}
 				if (this.selectedCustomer.Customer_SlNo == '') {
 					return;
 				}
@@ -550,6 +562,20 @@
 				})
 			},
 			async productOnChange() {
+				if (this.selectedProduct == null) {
+					this.selectedProduct = {
+						Product_SlNo: '',
+						display_text: 'Select Product',
+						Product_Name: '',
+						Unit_Name: '',
+						quantity: 0,
+						Product_Purchase_Rate: '',
+						Product_SellingPrice: 0.00,
+						vat: 0.00,
+						total: 0.00
+					}
+					return
+				}
 				if ((this.selectedProduct.Product_SlNo != '' || this.selectedProduct.Product_SlNo != 0) && this.sales.isService == 'false') {
 					this.productStock = await axios.post('/get_product_stock', {
 						productId: this.selectedProduct.Product_SlNo
@@ -558,9 +584,9 @@
 					})
 
 					this.productStockText = this.productStock > 0 ? "Available Stock" : "Stock Unavailable";
+					this.$refs.quantity.focus();
 				}
 
-				this.$refs.quantity.focus();
 			},
 			toggleProductPurchaseRate() {
 				//this.productPurchaseRate = this.productPurchaseRate == '' ? this.selectedProduct.Product_Purchase_Rate : '';

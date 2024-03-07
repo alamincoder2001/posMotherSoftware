@@ -266,7 +266,7 @@ legend.scheduler-border {
   padding: 5px 0 !important;
 }
 
-.btnWarning {
+.btnCart {
   padding: 3px 20px;
   border-radius: 6px;
   font-weight: 700;
@@ -275,7 +275,7 @@ legend.scheduler-border {
   color: white;
 }
 
-.btnWarning:hover {
+.btnCart:hover {
   background: #00cbaf !important;
 }
 

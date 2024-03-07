@@ -1,91 +1,114 @@
 <style>
-    .v-select{
-		margin-top:-2.5px;
-        float: right;
-        min-width: 180px;
-        margin-left: 5px;
+	.v-select {
+		float: right;
+		min-width: 200px;
+		background: #fff;
+		margin-left: 5px;
+		border-radius: 4px !important;
+		margin-top: -2px;
 	}
-	.v-select .dropdown-toggle{
+
+	.v-select .dropdown-toggle {
 		padding: 0px;
-        height: 25px;
+		height: 25px;
+		border: none;
 	}
-	.v-select input[type=search], .v-select input[type=search]:focus{
+
+	.v-select input[type=search],
+	.v-select input[type=search]:focus {
 		margin: 0px;
 	}
-	.v-select .vs__selected-options{
+
+	.v-select .vs__selected-options {
 		overflow: hidden;
-		flex-wrap:nowrap;
+		flex-wrap: nowrap;
 	}
-	.v-select .selected-tag{
+
+	.v-select .selected-tag {
 		margin: 2px 0px;
 		white-space: nowrap;
-		position:absolute;
+		position: absolute;
 		left: 0px;
 	}
-	.v-select .vs__actions{
-		margin-top:-5px;
+
+	.v-select .vs__actions {
+		margin-top: -5px;
 	}
-	.v-select .dropdown-menu{
+
+	.v-select .dropdown-menu {
 		width: auto;
-		overflow-y:auto;
+		overflow-y: auto;
 	}
-	#searchForm select{
-		padding:0;
+
+	#searchForm select {
+		padding: 0;
 		border-radius: 4px;
 	}
-	#searchForm .form-group{
+
+	#searchForm .form-group {
 		margin-right: 5px;
 	}
-	#searchForm *{
+
+	#searchForm * {
 		font-size: 13px;
 	}
-	.record-table{
+
+	.record-table {
 		width: 100%;
 		border-collapse: collapse;
 	}
-	.record-table thead{
+
+	.record-table thead {
 		background-color: #0097df;
-		color:white;
+		color: white;
 	}
-	.record-table th, .record-table td{
+
+	.record-table th,
+	.record-table td {
 		padding: 3px;
 		border: 1px solid #454545;
 	}
-    .record-table th{
-        text-align: center;
-    }
+
+	.record-table th {
+		text-align: center;
+	}
 </style>
 <div id="purchaseReturnList">
-	<div class="row" style="border-bottom: 1px solid #ccc;padding: 3px 0;">
-		<div class="col-md-12">
-			<form class="form-inline" id="searchForm" @submit.prevent="getPurchaseReturns">
-				<div class="form-group">
-					<label>Supplier</label>
-					<v-select v-bind:options="suppliers" v-model="selectedSupplier" label="display_name"></v-select>
-				</div>
+	<div class="row" style="margin:0;">
+		<fieldset class="scheduler-border scheduler-search">
+			<legend class="scheduler-border">Sales Return Record</legend>
+			<div class="control-group">
+				<div class="col-md-12">
+					<form class="form-inline" id="searchForm" @submit.prevent="getPurchaseReturns">
+						<div class="form-group">
+							<label>Supplier</label>
+							<v-select v-bind:options="suppliers" v-model="selectedSupplier" label="display_name"></v-select>
+						</div>
 
-				<div class="form-group">
-					<input type="date" class="form-control" v-model="dateFrom">
-				</div>
+						<div class="form-group">
+							<input type="date" class="form-control" v-model="dateFrom">
+						</div>
 
-				<div class="form-group">
-					<input type="date" class="form-control" v-model="dateTo">
-				</div>
+						<div class="form-group">
+							<input type="date" class="form-control" v-model="dateTo">
+						</div>
 
-				<div class="form-group" style="margin-top: -5px;">
-					<input type="submit" value="Search">
+						<div class="form-group" style="margin-top: -5px;">
+							<input type="submit" value="Search">
+						</div>
+					</form>
 				</div>
-			</form>
-		</div>
+			</div>
+		</fieldset>
 	</div>
 
-	<div class="row" style="margin-top:15px;display:none;" v-bind:style="{display: returns.length > 0 ? '' : 'none'}">
-		<div class="col-md-12" style="margin-bottom: 10px;">
+	<div class="row" style="display:none;" v-bind:style="{display: returns.length > 0 ? '' : 'none'}">
+		<div class="col-md-12 text-right">
 			<a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
 		</div>
 		<div class="col-md-12">
 			<div class="table-responsive" id="reportContent">
-				<table class="record-table">
+				<table class="record-table table table-bordered table-hover">
 					<thead>
 						<tr>
 							<th>Invoice No.</th>
@@ -100,15 +123,15 @@
 						<tr v-for="pr in returns">
 							<td>{{ pr.PurchaseMaster_InvoiceNo }}</td>
 							<td>{{ pr.PurchaseReturn_ReturnDate }}</td>
-							<td>{{ pr.Supplier_Code }}  {{ pr.Supplier_Name }}</td>
+							<td>{{ pr.Supplier_Code }} {{ pr.Supplier_Name }}</td>
 							<td>{{ pr.PurchaseReturn_Description }}</td>
 							<td style="text-align:right;">{{ pr.PurchaseReturn_ReturnAmount | decimal }}</td>
 							<td style="text-align:center;">
 								<a href="" title="Return Invoice" v-bind:href="`/purchase_return_invoice/${pr.PurchaseReturn_SlNo}`" target="_blank"><i class="fa fa-file"></i></a>
-								<?php if($this->session->userdata('accountType') != 'u'){?>
-								<a href="" title="Edit" v-bind:href="`purchaseReturns/${pr.PurchaseReturn_SlNo}`"><i class="fa fa-edit"></i></a>
-								<a href="" title="Delete Return" @click.prevent="deletePurchaseReturn(pr.PurchaseReturn_SlNo)"><i class="fa fa-trash"></i></a>
-								<?php }?>
+								<?php if ($this->session->userdata('accountType') != 'u') { ?>
+									<a href="" title="Edit" v-bind:href="`purchaseReturns/${pr.PurchaseReturn_SlNo}`"><i class="fa fa-edit"></i></a>
+									<a href="" title="Delete Return" @click.prevent="deletePurchaseReturn(pr.PurchaseReturn_SlNo)"><i class="fa fa-trash"></i></a>
+								<?php } ?>
 							</td>
 						</tr>
 						<tr style="font-weight:bold;">
@@ -123,10 +146,10 @@
 	</div>
 </div>
 
-<script src="<?php echo base_url();?>assets/js/vue/vue.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/axios.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/vue-select.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/moment.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/axios.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue-select.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/moment.min.js"></script>
 
 <script>
 	Vue.component('v-select', VueSelect.VueSelect);
@@ -139,7 +162,7 @@
 			}
 		},
 
-		data(){
+		data() {
 			return {
 				dateFrom: moment().format('YYYY-MM-DD'),
 				dateTo: moment().format('YYYY-MM-DD'),
@@ -148,17 +171,17 @@
 				returns: []
 			}
 		},
-		created(){
+		created() {
 			this.getSuppliers();
 			this.getPurchaseReturns();
 		},
 		methods: {
-			getSuppliers(){
+			getSuppliers() {
 				axios.get('/get_suppliers').then(res => {
 					this.suppliers = res.data;
 				})
 			},
-			getPurchaseReturns(){
+			getPurchaseReturns() {
 				let filter = {
 					supplierId: this.selectedSupplier == null || this.selectedSupplier.Supplier_SlNo == '' ? '' : this.selectedSupplier.Supplier_SlNo,
 					dateFrom: this.dateFrom,
@@ -166,42 +189,44 @@
 				}
 
 				axios.post('/get_purchase_returns', filter)
-				.then(res => {
-					this.returns = res.data.returns;
-					if(res.data.length == 0){
-						alert('No records found');
-					}
-				})
-				.catch(error => {
-					if(error.response){
-						alert(`${error.response.status}, ${error.response.statusText}`);
-					}
-				})
+					.then(res => {
+						this.returns = res.data.returns;
+						if (res.data.length == 0) {
+							alert('No records found');
+						}
+					})
+					.catch(error => {
+						if (error.response) {
+							alert(`${error.response.status}, ${error.response.statusText}`);
+						}
+					})
 			},
 
 			deletePurchaseReturn(id) {
 				let conf = confirm('Are you sure?');
-				if(conf == false) {
+				if (conf == false) {
 					return;
 				}
-				axios.post('/delete_purchase_return', { id })
-				.then(res => {
-					let r = res.data;
-					alert(r.message);
-					if(r.success) {
-						this.getPurchaseReturns();
-					}
-				})
+				axios.post('/delete_purchase_return', {
+						id
+					})
+					.then(res => {
+						let r = res.data;
+						alert(r.message);
+						if (r.success) {
+							this.getPurchaseReturns();
+						}
+					})
 			},
 
-			async print(){
+			async print() {
 				let dateText = '';
-				if(this.dateFrom != '' && this.dateTo != ''){
+				if (this.dateFrom != '' && this.dateTo != '') {
 					dateText = `Statemenet from <strong>${this.dateFrom}</strong> to <strong>${this.dateTo}</strong>`;
 				}
 
 				let supplierText = '';
-				if(this.selectedSupplier != null && this.selectedSupplier.Supplier_SlNo != ''){
+				if (this.selectedSupplier != null && this.selectedSupplier.Supplier_SlNo != '') {
 					supplierText = `<strong>Supplier: </strong> ${this.selectedSupplier.Supplier_Name}<br>`;
 				}
 
@@ -230,7 +255,7 @@
 
 				var reportWindow = window.open('', 'PRINT', `height=${screen.height}, width=${screen.width}`);
 				reportWindow.document.write(`
-					<?php $this->load->view('Administrator/reports/reportHeader.php');?>
+					<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>
 				`);
 
 				reportWindow.document.head.innerHTML += `

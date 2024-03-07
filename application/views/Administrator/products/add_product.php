@@ -165,7 +165,7 @@
 	</form>
 
 	<div class="row">
-		<div class="col-sm-12 form-inline">
+		<div class="col-md-12 form-inline">
 			<div class="form-group">
 				<label for="filter" class="sr-only">Filter</label>
 				<input type="text" class="form-control" v-model="filter" placeholder="Filter">

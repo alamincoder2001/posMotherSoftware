@@ -1,66 +1,85 @@
 <style>
-	.v-select{
-		margin-bottom: 5px;
+	.v-select {
+		float: right;
+		min-width: 200px;
+		background: #fff;
+		margin-left: 5px;
+		border-radius: 4px !important;
+		margin-top: -2px;
 	}
-	.v-select .dropdown-toggle{
+
+	.v-select .dropdown-toggle {
 		padding: 0px;
+		height: 25px;
+		border: none;
 	}
-	.v-select input[type=search], .v-select input[type=search]:focus{
+
+	.v-select input[type=search],
+	.v-select input[type=search]:focus {
 		margin: 0px;
 	}
-	.v-select .vs__selected-options{
+
+	.v-select .vs__selected-options {
 		overflow: hidden;
-		flex-wrap:nowrap;
+		flex-wrap: nowrap;
 	}
-	.v-select .selected-tag{
+
+	.v-select .selected-tag {
 		margin: 2px 0px;
 		white-space: nowrap;
-		position:absolute;
+		position: absolute;
 		left: 0px;
 	}
-	.v-select .vs__actions{
-		margin-top:-5px;
+
+	.v-select .vs__actions {
+		margin-top: -5px;
 	}
-	.v-select .dropdown-menu{
+
+	.v-select .dropdown-menu {
 		width: auto;
-		overflow-y:auto;
+		overflow-y: auto;
 	}
 </style>
 
 <div id="supplierDue">
-	<div class="row">
-		<div class="col-xs-12 col-md-12 col-lg-12" style="border-bottom:1px #ccc solid;">
-			<div class="form-group">
-				<label class="col-sm-1 control-label no-padding-right" for="searchType"> Search Type </label>
-				<div class="col-sm-2">
-					<select id="searchType" class="form-control" style="padding: 0px 3px" v-model="searchType" v-on:change="onChangeSearchType">
-						<option value="all"> All </option>
-						<option value="supplier"> By Supplier </option>
-					</select>
-				</div>
-			</div>
+	<div class="row" style="margin: 0;">
+		<fieldset class="scheduler-border scheduler-search">
+			<legend class="scheduler-border">Supplier Due</legend>
+			<div class="control-group">
+				<div class="col-xs-12 col-md-12 col-lg-12" style="margin: 0;">
+					<div class="form-group">
+						<label class="col-md-1 control-label no-padding-right" style="font-size: 12px;" for="searchType"> Search Type </label>
+						<div class="col-md-2">
+							<select id="searchType" class="form-control" style="padding: 0px 3px" v-model="searchType" v-on:change="onChangeSearchType">
+								<option value="all"> All </option>
+								<option value="supplier"> By Supplier </option>
+							</select>
+						</div>
+					</div>
 
-			<div class="form-group" style="display:none" v-bind:style="{display: searchType == 'supplier' ? '' : 'none'}">
-				<label class="col-sm-1 control-label no-padding-right" for="searchType"> Suppliers </label>
-				<div class="col-sm-2">
-					<v-select v-bind:options="suppliers" v-model="selectedSupplier" label="Supplier_Name"></v-select>
-				</div>
-			</div>
+					<div class="form-group" style="display:none" v-bind:style="{display: searchType == 'supplier' ? '' : 'none'}">
+						<label class="col-md-1 control-label no-padding-right" for="searchType"> Suppliers </label>
+						<div class="col-md-2">
+							<v-select v-bind:options="suppliers" v-model="selectedSupplier" label="Supplier_Name"></v-select>
+						</div>
+					</div>
 
-			<div class="form-group">
-				<div class="col-sm-2">
-					<input type="button" class="btn btn-primary" value="Show Report" v-on:click="getDues" style="margin-top:0px;border:0px;height:28px;">
+					<div class="form-group">
+						<div class="col-sm-2">
+							<input type="button" value="Show Report" v-on:click="getDues">
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
+		</fieldset>
 	</div>
 	<div class="row" style="display:none;" v-bind:style="{display: dueList.length > 0 ? '' : 'none'}">
-		<div class="col-md-12">
-			<a href="" style="margin: 7px 0;display:block;width:50px;" v-on:click.prevent="print">
+		<div class="col-md-12 text-right">
+			<a href="" v-on:click.prevent="print">
 				<i class="fa fa-print"></i> Print
 			</a>
 			<div class="table-responsive" id="reportTable">
-				<table class="table table-bordered">
+				<table class="table table-bordered table-hover">
 					<thead>
 						<tr>
 							<th>Supplier Code</th>
@@ -135,15 +154,17 @@
 				axios.post('/get_supplier_due', {
 					supplierId: this.selectedSupplier.Supplier_SlNo
 				}).then(res => {
-					if(this.searchType == 'supplier'){
+					if (this.searchType == 'supplier') {
 						this.dueList = res.data;
 					} else {
 						this.dueList = res.data.filter(d => parseFloat(d.due) != 0);
 					}
-					this.total = this.dueList.reduce((prev, curr) => {return prev + parseFloat(curr.due)}, 0);
+					this.total = this.dueList.reduce((prev, curr) => {
+						return prev + parseFloat(curr.due)
+					}, 0);
 				})
 			},
-			async print(){
+			async print() {
 				let reportContent = `
 					<div class="container">
 						<h4 style="text-align:center">Supplier due report</h4 style="text-align:center">
@@ -157,7 +178,7 @@
 
 				var mywindow = window.open('', 'PRINT', `width=${screen.width}, height=${screen.height}`);
 				mywindow.document.write(`
-					<?php $this->load->view('Administrator/reports/reportHeader.php');?>
+					<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>
 				`);
 
 				mywindow.document.body.innerHTML += reportContent;

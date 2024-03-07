@@ -1,96 +1,119 @@
 <style>
-    .v-select{
-		margin-top:-2.5px;
-        float: right;
-        min-width: 180px;
-        margin-left: 5px;
+	.v-select {
+		float: right;
+		min-width: 200px;
+		background: #fff;
+		margin-left: 5px;
+		border-radius: 4px !important;
+		margin-top: -2px;
 	}
-	.v-select .dropdown-toggle{
+
+	.v-select .dropdown-toggle {
 		padding: 0px;
-        height: 25px;
+		height: 25px;
+		border: none;
 	}
-	.v-select input[type=search], .v-select input[type=search]:focus{
+
+	.v-select input[type=search],
+	.v-select input[type=search]:focus {
 		margin: 0px;
 	}
-	.v-select .vs__selected-options{
+
+	.v-select .vs__selected-options {
 		overflow: hidden;
-		flex-wrap:nowrap;
+		flex-wrap: nowrap;
 	}
-	.v-select .selected-tag{
+
+	.v-select .selected-tag {
 		margin: 2px 0px;
 		white-space: nowrap;
-		position:absolute;
+		position: absolute;
 		left: 0px;
 	}
-	.v-select .vs__actions{
-		margin-top:-5px;
+
+	.v-select .vs__actions {
+		margin-top: -5px;
 	}
-	.v-select .dropdown-menu{
+
+	.v-select .dropdown-menu {
 		width: auto;
-		overflow-y:auto;
+		overflow-y: auto;
 	}
-	#searchForm select{
-		padding:0;
+
+	#searchForm select {
+		padding: 0;
 		border-radius: 4px;
 	}
-	#searchForm .form-group{
+
+	#searchForm .form-group {
 		margin-right: 5px;
 	}
-	#searchForm *{
+
+	#searchForm * {
 		font-size: 13px;
 	}
-	.record-table{
+
+	.record-table {
 		width: 100%;
 		border-collapse: collapse;
 	}
-	.record-table thead{
+
+	.record-table thead {
 		background-color: #0097df;
-		color:white;
+		color: white;
 	}
-	.record-table th, .record-table td{
+
+	.record-table th,
+	.record-table td {
 		padding: 3px;
 		border: 1px solid #454545;
 	}
-    .record-table th{
-        text-align: center;
-    }
+
+	.record-table th {
+		text-align: center;
+	}
 </style>
 <div id="purchaseReturnList">
-	<div class="row" style="border-bottom: 1px solid #ccc;padding: 3px 0;">
-		<div class="col-md-12">
-			<form class="form-inline" id="searchForm" @submit.prevent="getPurchaseReturnDetails">
-				<div class="form-group">
-					<label>Supplier</label>
-					<v-select v-bind:options="suppliers" v-model="selectedSupplier" label="display_name"></v-select>
-				</div>
+	<div class="row" style="margin:0;">
+		<fieldset class="scheduler-border scheduler-search">
+			<legend class="scheduler-border">Sales Return Record</legend>
+			<div class="control-group">
+				<div class="col-md-12">
+					<form class="form-inline" id="searchForm" @submit.prevent="getPurchaseReturnDetails">
+						<div class="form-group">
+							<label>Supplier</label>
+							<v-select v-bind:options="suppliers" v-model="selectedSupplier" label="display_name"></v-select>
+						</div>
 
-				<div class="form-group">
-					<label>Product</label>
-					<v-select v-bind:options="products" v-model="selectedProduct" label="display_text"></v-select>
-				</div>
+						<div class="form-group">
+							<label>Product</label>
+							<v-select v-bind:options="products" v-model="selectedProduct" label="display_text"></v-select>
+						</div>
 
-				<div class="form-group">
-					<input type="date" class="form-control" v-model="dateFrom">
-				</div>
+						<div class="form-group">
+							<input type="date" class="form-control" v-model="dateFrom">
+						</div>
 
-				<div class="form-group">
-					<input type="date" class="form-control" v-model="dateTo">
-				</div>
+						<div class="form-group">
+							<input type="date" class="form-control" v-model="dateTo">
+						</div>
 
-				<div class="form-group" style="margin-top: -5px;">
-					<input type="submit" value="Search">
+						<div class="form-group" style="margin-top: -5px;">
+							<input type="submit" value="Search">
+						</div>
+					</form>
 				</div>
-			</form>
-		</div>
+			</div>
+		</fieldset>
 	</div>
 
-	<div class="row" style="margin-top:15px;display:none;" v-bind:style="{display: returnDetails.length > 0 ? '' : 'none'}">
-		<div class="col-md-12" style="margin-bottom: 10px;">
+	<div class="row" style="display:none;" v-bind:style="{display: returnDetails.length > 0 ? '' : 'none'}">
+		<div class="col-md-12 text-right">
 			<a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
 		</div>
 		<div class="col-md-12">
 			<div class="table-responsive" id="reportContent">
-				<table class="record-table">
+				<table class="record-table table table-bordered table-hover">
 					<thead>
 						<tr>
 							<th>Invoice No.</th>
@@ -106,7 +129,7 @@
 						<tr v-for="details in returnDetails">
 							<td>{{ details.PurchaseMaster_InvoiceNo }}</td>
 							<td>{{ details.PurchaseReturn_ReturnDate }}</td>
-							<td>{{ details.Supplier_Code }}  {{ details.Supplier_Name }}</td>
+							<td>{{ details.Supplier_Code }} {{ details.Supplier_Name }}</td>
 							<td>{{ details.Product_Code }} {{ details.Product_Name }}</td>
 							<td style="text-align:right;">{{ details.PurchaseReturnDetails_ReturnQuantity }}</td>
 							<td style="text-align:right;">{{ details.PurchaseReturnDetails_ReturnAmount }}</td>
@@ -126,16 +149,16 @@
 	</div>
 </div>
 
-<script src="<?php echo base_url();?>assets/js/vue/vue.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/axios.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/vue-select.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/moment.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/axios.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue-select.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/moment.min.js"></script>
 
 <script>
 	Vue.component('v-select', VueSelect.VueSelect);
 	new Vue({
 		el: '#purchaseReturnList',
-		data(){
+		data() {
 			return {
 				dateFrom: moment().format('YYYY-MM-DD'),
 				dateTo: moment().format('YYYY-MM-DD'),
@@ -146,22 +169,22 @@
 				returnDetails: []
 			}
 		},
-		created(){
+		created() {
 			this.getProducts();
 			this.getSuppliers();
 		},
 		methods: {
-			getProducts(){
+			getProducts() {
 				axios.get('/get_products').then(res => {
 					this.products = res.data;
 				})
 			},
-			getSuppliers(){
+			getSuppliers() {
 				axios.get('/get_suppliers').then(res => {
 					this.suppliers = res.data;
 				})
 			},
-			getPurchaseReturnDetails(){
+			getPurchaseReturnDetails() {
 				let filter = {
 					supplierId: this.selectedSupplier == null || this.selectedSupplier.Supplier_SlNo == '' ? '' : this.selectedSupplier.Supplier_SlNo,
 					productId: this.selectedProduct == null || this.selectedProduct.Product_SlNo == '' ? '' : this.selectedProduct.Product_SlNo,
@@ -170,31 +193,31 @@
 				}
 
 				axios.post('/get_purchase_return_details', filter)
-				.then(res => {
-					this.returnDetails = res.data;
-					if(res.data.length == 0){
-						alert('No records found');
-					}
-				})
-				.catch(error => {
-					if(error.response){
-						alert(`${error.response.status}, ${error.response.statusText}`);
-					}
-				})
+					.then(res => {
+						this.returnDetails = res.data;
+						if (res.data.length == 0) {
+							alert('No records found');
+						}
+					})
+					.catch(error => {
+						if (error.response) {
+							alert(`${error.response.status}, ${error.response.statusText}`);
+						}
+					})
 			},
-			async print(){
+			async print() {
 				let dateText = '';
-				if(this.dateFrom != '' && this.dateTo != ''){
+				if (this.dateFrom != '' && this.dateTo != '') {
 					dateText = `Statemenet from <strong>${this.dateFrom}</strong> to <strong>${this.dateTo}</strong>`;
 				}
 
 				let supplierText = '';
-				if(this.selectedSupplier != null && this.selectedSupplier.Supplier_SlNo != ''){
+				if (this.selectedSupplier != null && this.selectedSupplier.Supplier_SlNo != '') {
 					supplierText = `<strong>Supplier: </strong> ${this.selectedSupplier.Supplier_Name}<br>`;
 				}
 
 				let productText = '';
-				if(this.selectedProduct != null && this.selectedProduct.Product_SlNo != ''){
+				if (this.selectedProduct != null && this.selectedProduct.Product_SlNo != '') {
 					productText = `<strong>Product: </strong> ${this.selectedProduct.Product_Name}`;
 				}
 
@@ -223,7 +246,7 @@
 
 				var reportWindow = window.open('', 'PRINT', `height=${screen.height}, width=${screen.width}`);
 				reportWindow.document.write(`
-					<?php $this->load->view('Administrator/reports/reportHeader.php');?>
+					<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>
 				`);
 
 				reportWindow.document.head.innerHTML += `

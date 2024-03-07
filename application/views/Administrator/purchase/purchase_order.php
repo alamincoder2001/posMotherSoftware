@@ -155,7 +155,7 @@
 							<div class="form-group">
 								<label class="col-xs-4 control-label no-padding-right"> </label>
 								<div class="col-xs-8">
-									<button type="submit" class="btnWarning pull-right">Add Cart</button>
+									<button type="submit" class="btnCart pull-right">Add Cart</button>
 								</div>
 							</div>
 						</form>
@@ -238,95 +238,94 @@
 												<input type="number" class="form-control" id="vat" name="vat" v-model="purchase.vat" readonly />
 											</div>
 										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<div class="form-group">
+											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount</label>
+											<div class="col-xs-12">
+												<input type="number" id="discount" name="discount" class="form-control" v-model="purchase.discount" v-on:input="calculateTotal" />
+											</div>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<div class="form-group">
+											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Transport / Labour Cost</label>
+											<div class="col-xs-12">
+												<input type="number" id="freight" name="freight" class="form-control" v-model="purchase.freight" v-on:input="calculateTotal" />
+											</div>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<div class="form-group">
+											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Total</label>
+											<div class="col-xs-12">
+												<input type="number" id="total" class="form-control" v-model="purchase.total" readonly />
+											</div>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<div class="form-group">
+											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Paid</label>
+											<div class="col-xs-12">
+												<input type="number" id="paid" class="form-control" v-model="purchase.paid" v-on:input="calculateTotal" v-bind:disabled="selectedSupplier.Supplier_Type == 'G' ? true : false" />
+											</div>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<div class="form-group">
+											<label class="col-xs-6 control-label no-padding-right" style="margin:0;">Due</label>
+											<label class="col-xs-6 control-label no-padding-right" style="margin:0;">Prev. Due</label>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<div class="form-group">
+											<div class="col-xs-6">
+												<input type="number" id="due" name="due" class="form-control" v-model="purchase.due" readonly />
+											</div>
+											<div class="col-xs-6">
+												<input type="number" id="previousDue" name="previousDue" class="form-control" v-model="purchase.previousDue" readonly style="color:red;" />
+											</div>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<div class="form-group">
+											<div class="col-xs-6">
+												<input type="button" class="btn btn-success" value="Purchase" v-on:click="savePurchase" v-bind:disabled="purchaseOnProgress == true ? true : false" style="background:#000;color:#fff;padding:3px;width:100%;">
+											</div>
+											<div class="col-xs-6">
+												<input type="button" class="btn btn-info" onclick="window.location = '<?php echo base_url(); ?>purchase'" value="New Purch.." style="background:#000;color:#fff;padding:3px;width:100%;">
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
 						</div>
-						</td>
-						</tr>
-
-						<tr>
-							<td>
-								<div class="form-group">
-									<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount</label>
-									<div class="col-xs-12">
-										<input type="number" id="discount" name="discount" class="form-control" v-model="purchase.discount" v-on:input="calculateTotal" />
-									</div>
-								</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td>
-								<div class="form-group">
-									<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Transport / Labour Cost</label>
-									<div class="col-xs-12">
-										<input type="number" id="freight" name="freight" class="form-control" v-model="purchase.freight" v-on:input="calculateTotal" />
-									</div>
-								</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td>
-								<div class="form-group">
-									<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Total</label>
-									<div class="col-xs-12">
-										<input type="number" id="total" class="form-control" v-model="purchase.total" readonly />
-									</div>
-								</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td>
-								<div class="form-group">
-									<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Paid</label>
-									<div class="col-xs-12">
-										<input type="number" id="paid" class="form-control" v-model="purchase.paid" v-on:input="calculateTotal" v-bind:disabled="selectedSupplier.Supplier_Type == 'G' ? true : false" />
-									</div>
-								</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td>
-								<div class="form-group">
-									<label class="col-xs-6 control-label no-padding-right" style="margin:0;">Due</label>
-									<label class="col-xs-6 control-label no-padding-right" style="margin:0;">Prev. Due</label>
-								</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td>
-								<div class="form-group">
-									<div class="col-xs-6">
-										<input type="number" id="due" name="due" class="form-control" v-model="purchase.due" readonly />
-									</div>
-									<div class="col-xs-6">
-										<input type="number" id="previousDue" name="previousDue" class="form-control" v-model="purchase.previousDue" readonly style="color:red;" />
-									</div>
-								</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td>
-								<div class="form-group">
-									<div class="col-xs-6">
-										<input type="button" class="btn btn-success" value="Purchase" v-on:click="savePurchase" v-bind:disabled="purchaseOnProgress == true ? true : false" style="background:#000;color:#fff;padding:3px;width:100%;">
-									</div>
-									<div class="col-xs-6">
-										<input type="button" class="btn btn-info" onclick="window.location = '<?php echo base_url(); ?>purchase'" value="New Purch.." style="background:#000;color:#fff;padding:3px;width:100%;">
-									</div>
-								</div>
-							</td>
-						</tr>
-						</table>
 					</div>
 				</div>
 			</div>
+		</fieldset>
 	</div>
-	</fieldset>
-</div>
 
 </div>
 
@@ -431,6 +430,18 @@
 				})
 			},
 			onChangeSupplier() {
+				if (this.selectedSupplier == null) {
+					this.selectedSupplier = {
+						Supplier_SlNo: null,
+						Supplier_Code: '',
+						Supplier_Name: '',
+						display_name: 'Select Supplier',
+						Supplier_Mobile: '',
+						Supplier_Address: '',
+						Supplier_Type: ''
+					}
+					return
+				}
 				if (this.selectedSupplier.Supplier_SlNo == null) {
 					return;
 				}
@@ -462,6 +473,20 @@
 				this.calculateTotal();
 			},
 			onChangeProduct() {
+				if (this.selectedProduct == null) {
+					this.selectedProduct = {
+						Product_SlNo: '',
+						Product_Code: '',
+						display_text: 'Select Product',
+						Product_Name: '',
+						Unit_Name: '',
+						quantity: '',
+						Product_Purchase_Rate: '',
+						Product_SellingPrice: 0.00,
+						total: ''
+					}
+					return
+				}
 				if (this.selectedProduct.Product_SlNo == '') {
 					return
 				}

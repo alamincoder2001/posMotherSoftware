@@ -40,18 +40,6 @@
 		overflow-y: auto;
 	}
 
-	#searchForm select {
-		padding: 0;
-		border-radius: 4px;
-	}
-
-	#searchForm .form-group {
-		margin-right: 5px;
-	}
-
-	#searchForm * {
-		font-size: 13px;
-	}
 
 	.record-table {
 		width: 100%;
@@ -148,7 +136,7 @@
 		</div>
 		<div class="col-md-12">
 			<div class="table-responsive" id="reportContent">
-				<table class="table table-hover record-table" v-if="(searchTypesForRecord.includes(searchType)) && recordType == 'with_details'" style="display:none" v-bind:style="{display: (searchTypesForRecord.includes(searchType)) && recordType == 'with_details' ? '' : 'none'}">
+				<table class="table table-hover record-table table-bordered" v-if="(searchTypesForRecord.includes(searchType)) && recordType == 'with_details'" style="display:none" v-bind:style="{display: (searchTypesForRecord.includes(searchType)) && recordType == 'with_details' ? '' : 'none'}">
 					<thead>
 						<tr>
 							<th>Invoice No.</th>
@@ -206,7 +194,7 @@
 					</tbody>
 				</table>
 
-				<table class="table table-hover record-table" v-if="(searchTypesForRecord.includes(searchType)) && recordType == 'without_details'" style="display:none" v-bind:style="{display: (searchTypesForRecord.includes(searchType)) && recordType == 'without_details' ? '' : 'none'}">
+				<table class="table table-hover record-table table-bordered" v-if="(searchTypesForRecord.includes(searchType)) && recordType == 'without_details'" style="display:none" v-bind:style="{display: (searchTypesForRecord.includes(searchType)) && recordType == 'without_details' ? '' : 'none'}">
 					<thead>
 						<tr>
 							<th>Invoice No.</th>
@@ -267,7 +255,7 @@
 				</table>
 
 				<template v-if="searchTypesForDetails.includes(searchType)" style="display:none;" v-bind:style="{display: searchTypesForDetails.includes(searchType) ? '' : 'none'}">
-					<table class="table table-hover record-table" v-if="selectedProduct != null">
+					<table class="table table-hover record-table table-bordered" v-if="selectedProduct != null">
 						<thead>
 							<tr>
 								<th>Invoice No.</th>
@@ -296,7 +284,7 @@
 						</tfoot>
 					</table>
 
-					<table class="table table-hover record-table" v-if="selectedProduct == null">
+					<table class="table table-hover record-table table-bordered" v-if="selectedProduct == null">
 						<thead>
 							<tr>
 								<th>Product Id</th>

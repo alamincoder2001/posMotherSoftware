@@ -1,62 +1,81 @@
 <style>
-	.v-select{
-		margin-bottom: 5px;
+	.v-select {
+		float: right;
+		min-width: 100%;
+		background: #fff;
+		margin-left: 5px;
+		border-radius: 4px !important;
+		margin-top: -2px;
 	}
-	.v-select .dropdown-toggle{
+
+	.v-select .dropdown-toggle {
 		padding: 0px;
+		height: 25px;
+		border: none;
 	}
-	.v-select input[type=search], .v-select input[type=search]:focus{
+
+	.v-select input[type=search],
+	.v-select input[type=search]:focus {
 		margin: 0px;
 	}
-	.v-select .vs__selected-options{
+
+	.v-select .vs__selected-options {
 		overflow: hidden;
-		flex-wrap:nowrap;
+		flex-wrap: nowrap;
 	}
-	.v-select .selected-tag{
+
+	.v-select .selected-tag {
 		margin: 2px 0px;
 		white-space: nowrap;
-		position:absolute;
+		position: absolute;
 		left: 0px;
 	}
-	.v-select .vs__actions{
-		margin-top:-5px;
+
+	.v-select .vs__actions {
+		margin-top: -5px;
 	}
-	.v-select .dropdown-menu{
+
+	.v-select .dropdown-menu {
 		width: auto;
-		overflow-y:auto;
+		overflow-y: auto;
 	}
 </style>
 
 <div id="assetsReport">
 	<div class="row">
-		<div class="col-xs-12 col-md-12 col-lg-12" style="border-bottom:1px #ccc solid;">
-			<div class="form-group">
-				<label class="col-sm-1 control-label no-padding-right" for="searchType"> Search Type </label>
-				<div class="col-sm-2">
-					<select id="searchType" class="form-control" style="padding: 0px 3px" v-model="searchType" v-on:change="onChangeSearchType">
-						<option value="all"> All </option>
-						<option value="asset"> By Asset</option>
-					</select>
-				</div>
-			</div>
+		<fieldset class="scheduler-border scheduler-search">
+			<legend class="scheduler-border">Supplier Due</legend>
+			<div class="control-group">
+				<div class="col-xs-12 col-md-12 col-lg-12" style="margin:0;">
+					<div class="form-group">
+						<label class="col-md-1 control-label no-padding-right" style="font-size:12px;" for="searchType"> Search Type </label>
+						<div class="col-md-2">
+							<select id="searchType" class="form-control" v-model="searchType" v-on:change="onChangeSearchType">
+								<option value="all"> All </option>
+								<option value="asset"> By Asset</option>
+							</select>
+						</div>
+					</div>
 
-			<div class="form-group" style="display:none" v-bind:style="{display: searchType == 'asset' ? '' : 'none'}">
-				<label class="col-sm-1 control-label no-padding-right"> Assets </label>
-				<div class="col-sm-2">
-					<v-select v-bind:options="group_assets" v-model="selectedAsset" label="group_name"></v-select>
-				</div>
-			</div>
+					<div class="form-group" style="display:none" v-bind:style="{display: searchType == 'asset' ? '' : 'none'}">
+						<label class="col-md-1 control-label"> Assets </label>
+						<div class="col-md-2 no-padding-left">
+							<v-select v-bind:options="group_assets" v-model="selectedAsset" label="group_name"></v-select>
+						</div>
+					</div>
 
-			<div class="form-group">
-				<div class="col-sm-2">
-					<input type="button" class="btn btn-primary" value="Show Report" v-on:click="getReport" style="margin-top:0px;border:0px;height:28px;">
+					<div class="form-group">
+						<div class="col-md-2">
+							<input type="button" value="Show Report" v-on:click="getReport">
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
+		</fieldset>
 	</div>
 	<div class="row" style="display:none;" v-bind:style="{display: assets.length > 0 ? '' : 'none'}">
-		<div class="col-md-12">
-			<a href="" style="margin: 7px 0;display:block;width:50px;" v-on:click.prevent="print">
+		<div class="col-md-12 text-right">
+			<a href="" v-on:click.prevent="print">
 				<i class="fa fa-print"></i> Print
 			</a>
 			<div class="table-responsive" id="reportTable">
@@ -140,12 +159,14 @@
 					asset = this.selectedAsset.group_name;
 				}
 
-				axios.post('/get_assets_report', { asset }).then(res => {
+				axios.post('/get_assets_report', {
+					asset
+				}).then(res => {
 					console.log(res.data);
 					this.assets = res.data;
 				})
 			},
-			async print(){
+			async print() {
 				let reportContent = `
 					<div class="container">
 						<h4 style="text-align:center">Assets Report</h4 style="text-align:center">
@@ -159,7 +180,7 @@
 
 				var mywindow = window.open('', 'PRINT', `width=${screen.width}, height=${screen.height}`);
 				mywindow.document.write(`
-					<?php $this->load->view('Administrator/reports/reportHeader.php');?>
+					<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>
 				`);
 
 				mywindow.document.body.innerHTML += reportContent;
