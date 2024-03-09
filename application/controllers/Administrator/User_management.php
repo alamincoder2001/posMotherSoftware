@@ -293,7 +293,7 @@ class User_management extends CI_Controller
                 }
                 $imagePath = $this->mt->uploadImage($_FILES, 'user_image', 'uploads/users', $this->session->userdata('FullName'));
                 $this->session->userdata['user_image'] = $imagePath;
-                $data['user_image'] = $imagePath;
+                $data['image_name'] = $imagePath;
             }
             if (!empty($_FILES) || !empty($password)) {
                 $this->db->where('User_SlNo', $this->access);
