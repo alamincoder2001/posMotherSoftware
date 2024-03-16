@@ -356,10 +356,14 @@ class Products extends CI_Controller
 
     public function multibarcodePrint()
     {
-        $data['title'] = "Multi Barcode Generate";
-        $data['products'] = $this->session->userdata('products');
-        $data['content'] = $this->load->view('Administrator/products/barcode/multibarcodePrint', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
+        if ($this->session->has_userdata('products')) {
+            $data['title'] = "Multi Barcode Generate";
+            $data['products'] = $this->session->userdata('products');
+            $data['content'] = $this->load->view('Administrator/products/barcode/multibarcodePrint', $data, TRUE);
+            $this->load->view('Administrator/index', $data);
+        }else{
+            redirect("/module/dashboard");
+        }
     }
 
     public function productLedger()

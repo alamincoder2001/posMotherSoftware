@@ -2,7 +2,7 @@ const salesInvoice = Vue.component('sales-invoice', {
     template: `
         <div>
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-xs-12 text-right">
                     <a href="" v-on:click.prevent="print"><i class="fa fa-print"></i> Print</a>
                 </div>
             </div>
@@ -49,7 +49,7 @@ const salesInvoice = Vue.component('sales-invoice', {
                             <tbody>
                                 <tr v-for="(product, sl) in cart">
                                     <td>{{ sl + 1 }}</td>
-                                    <td>{{ product.Product_Name }}</td>
+                                    <td style="text-align:left;">{{ product.Product_Name }}</td>
                                     <td>{{ product.SaleDetails_TotalQuantity }}</td>
                                     <td>{{ product.Unit_Name }}</td>
                                     <td>{{ product.SaleDetails_Rate }}</td>

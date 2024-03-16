@@ -393,10 +393,10 @@ if ($module == 'dashboard' or $module == '') { ?>
 					<h3>Sales Module </h3>
 				</div>
 
-				<?php if (array_search("sales/product", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+				<?php if (array_search("sales", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
 					<div class="col-md-2 col-xs-6 ">
 						<div class="col-md-12 section20">
-							<a href="<?php echo base_url(); ?>sales/product">
+							<a href="<?php echo base_url(); ?>sales">
 								<div class="logo">
 									<i class="menu-icon fa fa-usd"></i>
 								</div>
@@ -407,20 +407,7 @@ if ($module == 'dashboard' or $module == '') { ?>
 						</div>
 					</div>
 				<?php endif; ?>
-				<?php if (array_search("sales/service", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
-					<div class="col-md-2 col-xs-6 ">
-						<div class="col-md-12 section20">
-							<a href="<?php echo base_url(); ?>sales/service">
-								<div class="logo">
-									<i class="menu-icon fa fa-usd"></i>
-								</div>
-								<div class="textModule">
-									Service Entry
-								</div>
-							</a>
-						</div>
-					</div>
-				<?php endif; ?>
+			
 				<?php if (array_search("salesReturn", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
 					<div class="col-md-2 col-xs-6 ">
 						<div class="col-md-12 section20">

@@ -38,8 +38,8 @@
 	}
 </style>
 <div id="customerPaymentHistory">
-	<div class="row">
-		<div class="col-xs-12 col-md-12 col-lg-12" style="margin: 0;">
+	<div class="row" style="margin: 0;">
+		<div class="col-xs-12 col-md-12 col-lg-12">
 			<fieldset class="scheduler-border scheduler-search">
 				<legend class="scheduler-border">Customer Payment History</legend>
 				<div class="control-group">

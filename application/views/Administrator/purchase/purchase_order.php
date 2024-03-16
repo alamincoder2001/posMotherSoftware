@@ -374,7 +374,6 @@
 					Supplier_Address: '',
 					Supplier_Type: 'G'
 				},
-				oldSupplierId: null,
 				oldPreviousDue: 0,
 				products: [],
 				selectedProduct: {
@@ -465,16 +464,6 @@
 				}
 				if (this.selectedSupplier.Supplier_SlNo == "") {
 					this.purchase.previousDue = 0;
-					return;
-				}
-
-				if (this.purchase.purchaseId != 0 && this.oldSupplierId != parseInt(this.selectedSupplier.Supplier_SlNo)) {
-					let changeConfirm = confirm('Changing supplier will set previous due to current due amount. Do you really want to change supplier?');
-					if (changeConfirm == false) {
-						return;
-					}
-				} else if (this.purchase.purchaseId != 0 && this.oldSupplierId == parseInt(this.selectedSupplier.Supplier_SlNo)) {
-					this.purchase.previousDue = this.oldPreviousDue;
 					return;
 				}
 
@@ -592,15 +581,12 @@
 				}, 0).toFixed(2);
 				this.purchase.vat = ((this.purchase.subTotal * parseFloat(this.vatPercent)) / 100).toFixed(2);
 				this.purchase.total = ((parseFloat(this.purchase.subTotal) + parseFloat(this.purchase.vat) + parseFloat(this.purchase.freight)) - parseFloat(this.purchase.discount)).toFixed(2);
-				if (this.selectedSupplier.Supplier_Type == 'G') {
+				
+				if (event.target.id == 'paid') {
+					this.purchase.due = (parseFloat(this.purchase.total) - parseFloat(this.purchase.paid)).toFixed(2);
+				} else {
 					this.purchase.paid = this.purchase.total;
 					this.purchase.due = 0;
-				} else {
-					if (event.target.id != 'paid') {
-						this.purchase.paid = 0;
-					}
-
-					this.purchase.due = (parseFloat(this.purchase.total) - parseFloat(this.purchase.paid)).toFixed(2);
 				}
 			},
 			savePurchase() {
@@ -661,8 +647,9 @@
 					this.selectedSupplier.Supplier_Name = purchase.Supplier_Name;
 					this.selectedSupplier.Supplier_Mobile = purchase.Supplier_Mobile;
 					this.selectedSupplier.Supplier_Address = purchase.Supplier_Address;
-					this.selectedSupplier.Supplier_Type = purchase.Supplier_Type;
-					this.selectedSupplier.display_name = purchase.Supplier_Type == 'G' ? 'General Supplier' : `${purchase.Supplier_Code} - ${purchase.Supplier_Name}`;
+					this.selectedSupplier.Supplier_Type = purchase.supplierType;
+					this.selectedSupplier.display_name = purchase.supplierType == 'G' ? 'Cash Supplier' : `${purchase.Supplier_Code} - ${purchase.Supplier_Name}`;
+					this.purchase.supplierType = purchase.supplierType;
 
 					this.purchase.invoice = purchase.PurchaseMaster_InvoiceNo;
 					this.purchase.purchaseFor = purchase.PurchaseMaster_PurchaseFor;
@@ -678,7 +665,6 @@
 					this.purchase.previousDue = purchase.previous_due;
 					this.purchase.note = purchase.PurchaseMaster_Description;
 
-					this.oldSupplierId = purchase.Supplier_SlNo;
 					this.oldPreviousDue = purchase.previous_due;
 
 					this.vatPercent = (this.purchase.vat * 100) / this.purchase.subTotal;
@@ -698,9 +684,6 @@
 
 						this.cart.push(cartProduct);
 					})
-
-					let gSupplierInd = this.suppliers.findIndex(s => s.Supplier_Type == 'G');
-					this.suppliers.splice(gSupplierInd, 1);
 				})
 			}
 		}

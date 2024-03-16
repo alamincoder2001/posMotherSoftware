@@ -1,62 +1,81 @@
 <style>
-	.v-select{
-		margin-bottom: 5px;
+	.v-select {
+		float: right;
+		min-width: 200px;
+		background: #fff;
+		margin-left: 5px;
+		border-radius: 4px !important;
+		margin-top: -2px;
 	}
-	.v-select .dropdown-toggle{
+
+	.v-select .dropdown-toggle {
 		padding: 0px;
+		height: 25px;
+		border: none;
 	}
-	.v-select input[type=search], .v-select input[type=search]:focus{
+
+	.v-select input[type=search],
+	.v-select input[type=search]:focus {
 		margin: 0px;
 	}
-	.v-select .vs__selected-options{
+
+	.v-select .vs__selected-options {
 		overflow: hidden;
-		flex-wrap:nowrap;
+		flex-wrap: nowrap;
 	}
-	.v-select .selected-tag{
+
+	.v-select .selected-tag {
 		margin: 2px 0px;
 		white-space: nowrap;
-		position:absolute;
+		position: absolute;
 		left: 0px;
 	}
-	.v-select .vs__actions{
-		margin-top:-5px;
+
+	.v-select .vs__actions {
+		margin-top: -5px;
 	}
-	.v-select .dropdown-menu{
+
+	.v-select .dropdown-menu {
 		width: auto;
-		overflow-y:auto;
+		overflow-y: auto;
+	}
+
+	input{
+		margin: 0 !important;
 	}
 </style>
-<div class="row" id="customerPaymentReport">
-	<div class="col-xs-12 col-md-12 col-lg-12" style="border-bottom:1px #ccc solid;">
-		<div class="form-group">
-			<label class="col-sm-1 control-label no-padding-right"> Customer </label>
-			<div class="col-sm-2">
-				<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name"></v-select>
+<div class="row" id="customerPaymentReport" style="margin: 0;">
+	<fieldset class="scheduler-border scheduler-search">
+		<legend class="scheduler-border">Customer Payment Reports</legend>
+		<div class="control-group">
+			<div class="col-md-12">
+				<form class="form-inline" id="searchForm" @submit.prevent="getReport">
+					<div class="form-group">
+						<label class="control-label"> Customer </label>
+						<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name"></v-select>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label"> From </label>
+						<input type="date" class="form-control" v-model="dateFrom">
+						<label class="control-label text-center" style="width:30px"> to </label>
+						<input type="date" class="form-control" v-model="dateTo">
+					</div>
+
+					<div class="form-group">
+						<input type="submit" value="Show">
+					</div>
+				</form>
 			</div>
 		</div>
+	</fieldset>
 
-		<div class="form-group">
-			<label class="col-sm-1 control-label no-padding-right"> Date from </label>
-			<div class="col-sm-2">
-				<input type="date" class="form-control" v-model="dateFrom">
-			</div>
-			<label class="col-sm-1 control-label no-padding-right text-center" style="width:30px"> to </label>
-			<div class="col-sm-2">
-				<input type="date" class="form-control" v-model="dateTo">
-			</div>
+	<div class="col-xs-12 no-padding" style="display:none;" v-bind:style="{display: showTable ? '' : 'none'}">
+		<div class="text-right">
+			<a href="" v-on:click.prevent="print">
+				<i class="fa fa-print"></i> Print
+			</a>
 		</div>
-
-		<div class="form-group">
-			<div class="col-sm-1">
-				<input type="button" class="btn btn-primary" value="Show" v-on:click="getReport" style="margin-top:0px;border:0px;height:28px;">
-			</div>
-		</div>
-	</div>
-
-	<div class="col-sm-12" style="display:none;" v-bind:style="{display: showTable ? '' : 'none'}">
-		<a href="" style="margin: 7px 0;display:block;width:50px;" v-on:click.prevent="print">
-			<i class="fa fa-print"></i> Print
-		</a>
 		<div class="table-responsive" id="reportTable">
 			<table class="table table-bordered">
 				<thead>
@@ -99,16 +118,16 @@
 	</div>
 </div>
 
-<script src="<?php echo base_url();?>assets/js/vue/vue.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/axios.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/vue-select.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/moment.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/axios.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue-select.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/moment.min.js"></script>
 
 <script>
 	Vue.component('v-select', VueSelect.VueSelect);
 	new Vue({
 		el: '#customerPaymentReport',
-		data(){
+		data() {
 			return {
 				customers: [],
 				selectedCustomer: null,
@@ -119,20 +138,20 @@
 				showTable: false
 			}
 		},
-		created(){
+		created() {
 			let today = moment().format('YYYY-MM-DD');
 			this.dateTo = today;
 			this.dateFrom = moment().format('YYYY-MM-DD');
 			this.getCustomers();
 		},
-		methods:{
-			getCustomers(){
+		methods: {
+			getCustomers() {
 				axios.get('/get_customers').then(res => {
 					this.customers = res.data;
 				})
 			},
-			getReport(){
-				if(this.selectedCustomer == null){
+			getReport() {
+				if (this.selectedCustomer == null) {
 					alert('Select customer');
 					return;
 				}
@@ -148,7 +167,7 @@
 					this.showTable = true;
 				})
 			},
-			async print(){
+			async print() {
 				let reportContent = `
 					<div class="container">
 						<h4 style="text-align:center">Customer payment report</h4 style="text-align:center">
@@ -175,7 +194,7 @@
 
 				var mywindow = window.open('', 'PRINT', `width=${screen.width}, height=${screen.height}`);
 				mywindow.document.write(`
-					<?php $this->load->view('Administrator/reports/reportHeader.php');?>
+					<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>
 				`);
 
 				mywindow.document.body.innerHTML += reportContent;

@@ -16,12 +16,6 @@ class Purchase extends CI_Controller
         $this->load->helper('form');
     }
 
-    public function index()
-    {
-
-        redirect("Administrator/Purchase/order");
-    }
-
     public function getPurchases()
     {
         $data = json_decode($this->input->raw_input_stream);
@@ -60,6 +54,7 @@ class Purchase extends CI_Controller
             select
             concat(pm.PurchaseMaster_InvoiceNo, ' - ', s.Supplier_Name) as invoice_text,
             pm.*,
+            ifnull(pm.Supplier_SlNo, '') as Supplier_SlNo,
             ifnull(s.Supplier_Name, pm.supplierName) as Supplier_Name,
             ifnull(s.Supplier_Mobile, pm.supplierMobile) as Supplier_Mobile,
             s.Supplier_Email,
@@ -336,7 +331,7 @@ class Purchase extends CI_Controller
 
     public function purchaseEdit($purchaseId)
     {
-        $data['title'] = "Purchase Order";
+        $data['title'] = "Purchase Update";
         $data['purchaseId'] = $purchaseId;
         $data['invoice'] = $this->db->query("select PurchaseMaster_InvoiceNo from tbl_purchasemaster where PurchaseMaster_SlNo = ?", $purchaseId)->row()->PurchaseMaster_InvoiceNo;
         $data['content'] = $this->load->view('Administrator/purchase/purchase_order', $data, TRUE);
@@ -447,6 +442,7 @@ class Purchase extends CI_Controller
     {
         $res = ['success' => false, 'message' => ''];
         try {
+            $this->db->trans_begin();
             $data = json_decode($this->input->raw_input_stream);
 
             $invoice = $data->purchase->invoice;
@@ -560,8 +556,6 @@ class Purchase extends CI_Controller
                     ", [$product->quantity, $product->productId, $this->session->userdata('BRANCHid')]);
                 }
 
-                // $this->db->query("update tbl_product set Product_Purchase_Rate = ?, Product_SellingPrice = ? where Product_SlNo = ?", [$product->purchaseRate, $product->salesRate, $product->productId]);
-
                 $this->db->query("
                     update tbl_product set 
                     Product_Purchase_Rate = (((Product_Purchase_Rate * ?) + ?) / ?), 
@@ -575,9 +569,10 @@ class Purchase extends CI_Controller
                     $product->productId
                 ]);
             }
-
+            $this->db->trans_commit();
             $res = ['success' => true, 'message' => 'Purchase Success', 'purchaseId' => $purchaseId];
         } catch (Exception $ex) {
+            $this->db->trans_rollback();
             $res = ['success' => false, 'message' => $ex->getMessage()];
         }
 
@@ -588,6 +583,8 @@ class Purchase extends CI_Controller
     {
         $res = ['success' => false, 'message' => ''];
         try {
+            $this->db->trans_begin();
+
             $data = json_decode($this->input->raw_input_stream);
             $purchaseId = $data->purchase->purchaseId;
             $supplierId = $data->purchase->supplierId;
@@ -596,30 +593,41 @@ class Purchase extends CI_Controller
                 $supplier = (array)$data->supplier;
                 unset($supplier['Supplier_SlNo']);
                 unset($supplier['display_name']);
-                unset($supplier['Supplier_Code']);
-                unset($supplier['Supplier_Type']);
 
-                $supplier['UpdateBy'] = $this->session->userdata("FullName");
-                $supplier['UpdateTime'] = date("Y-m-d H:i:s");
-                $supplier['Status'] = 'a';
+                $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and Supplier_brinchid = ?", [$data->supplier->Supplier_Mobile, $this->session->userdata("BRANCHid")]);
+                if (
+                    $data->supplier->Supplier_Mobile != '' &&
+                    $data->supplier->Supplier_Mobile != null &&
+                    $mobile_count->num_rows() > 0
+                ) {
 
-                if ($data->supplier->Supplier_Mobile != '' && $data->supplier->Supplier_Mobile != null) {
+                    $duplicateSupplier = $mobile_count->row();
+                    unset($supplier['Supplier_Code']);
+                    unset($supplier['Supplier_Type']);
+                    $supplier["UpdateBy"]   = $this->session->userdata("FullName");
+                    $supplier["UpdateTime"] = date("Y-m-d H:i:s");
+                    $supplier["Status"]     = 'a';
 
-                    $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and Supplier_SlNo != ? and Supplier_brinchid = ?", [$data->supplier->Supplier_Mobile, $data->supplier->Supplier_SlNo, $this->session->userdata("BRANCHid")]);
-                    if ($mobile_count->num_rows() > 0) {
-                        $duplicateSupplier = $mobile_count->row();
-                        if ($duplicateSupplier->Supplier_Type == 'G') {
-                            $supplier['Supplier_Type'] = '';
-                        }
-                        $supplierId = $duplicateSupplier->Supplier_SlNo;
+                    if ($duplicateSupplier->Supplier_Type == 'G') {
+                        $supplier["Supplier_Type"] = '';
+                    }
+                    $this->db->where('Supplier_SlNo', $duplicateSupplier->Supplier_SlNo)->update('tbl_supplier', $supplier);
+                    $supplierId = $duplicateSupplier->Supplier_SlNo;
+                } else {
+                    if ($data->supplier->Supplier_Type == 'N') {
+                        $supplier['Supplier_Code']     = $this->mt->generateSupplierCode();
+                        $supplier['Status']            = 'a';
+                        $supplier['AddBy']             = $this->session->userdata("FullName");
+                        $supplier['AddTime']           = date('Y-m-d H:i:s');
+                        $supplier['Supplier_brinchid'] = $this->session->userdata('BRANCHid');
+
+                        $this->db->insert('tbl_supplier', $supplier);
+                        $supplierId = $this->db->insert_id();
                     }
                 }
-
-                $this->db->where('Supplier_SlNo', $supplierId)->update('tbl_supplier', $supplier);
             }
 
             $purchase = array(
-                'Supplier_SlNo' => $supplierId,
                 'PurchaseMaster_InvoiceNo' => $data->purchase->invoice,
                 'PurchaseMaster_OrderDate' => $data->purchase->purchaseDate,
                 'PurchaseMaster_PurchaseFor' => $data->purchase->purchaseFor,
@@ -637,6 +645,20 @@ class Purchase extends CI_Controller
                 'UpdateTime' => date('Y-m-d H:i:s'),
                 'PurchaseMaster_BranchID' => $this->session->userdata('BRANCHid')
             );
+
+            if ($data->supplier->Supplier_Type == 'G') {
+                $purchase['Supplier_SlNo']   = Null;
+                $purchase['supplierType']    = "G";
+                $purchase['supplierName']    = $data->supplier->Supplier_Name;
+                $purchase['supplierMobile']  = $data->supplier->Supplier_Mobile;
+                $purchase['supplierAddress'] = $data->supplier->Supplier_Address;
+            } else {
+                $purchase['supplierType']  = $data->supplier->Supplier_Type == 'N' ? "retail" : 'retail';
+                $purchase['Supplier_SlNo'] = $supplierId;
+                $purchase['supplierName']    = NULL;
+                $purchase['supplierMobile']  = NULL;
+                $purchase['supplierAddress'] = NULL;
+            }
 
             $this->db->where('PurchaseMaster_SlNo', $purchaseId);
             $this->db->update('tbl_purchasemaster', $purchase);
@@ -715,8 +737,10 @@ class Purchase extends CI_Controller
                 ]);
             }
 
-            $res = ['success' => true, 'message' => 'Purchase Success', 'purchaseId' => $purchaseId];
+            $this->db->trans_commit();
+            $res = ['success' => true, 'message' => 'Purchase update success', 'purchaseId' => $purchaseId];
         } catch (Exception $ex) {
+            $this->db->trans_rollback();
             $res = ['success' => false, 'message' => $ex->getMessage()];
         }
 

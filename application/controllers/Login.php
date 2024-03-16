@@ -13,6 +13,11 @@ class Login extends CI_Controller {
         $this->load->view('login/login', $data);
     }
 
+	public function brach_access($id) {
+		$data['branch_id'] = $id;
+        $this->load->view('Administrator/branch_access',$data);
+    }
+
     function procedure(){
 
         $user = $this->input->post('user_name');
@@ -77,7 +82,6 @@ class Login extends CI_Controller {
         $this->session->unset_userdata('User_Name');
         $this->session->unset_userdata('accountType');
         $this->session->unset_userdata('module');
-        //$this->session->unset_userdata('useremail');
         redirect("Login");
 	}
 	

@@ -104,7 +104,7 @@
 											<div class="profile-info-name"> </div>
 
 											<div class="profile-info-value">
-												<button type="submit" class="btn btn-sm btn-info" style="margin-left: 16%;">Save</button>
+												<button type="submit" class="btn btn-sm btn-info" style="margin-left: 16%;">Update</button>
 											</div>
 										</div>
 									</div>

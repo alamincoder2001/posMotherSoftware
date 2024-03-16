@@ -1,19 +1,19 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 $route['default_controller'] = 'Page';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['logout'] = 'Login/logout';  
+$route['logout'] = 'Login/logout';
 
 $route['Administrator'] = 'Administrator/Page';
 $route['module/(:any)'] = 'Administrator/Page/module/$1';
 $route['brachAccess/(:any)'] = 'Administrator/Login/brach_access/$1';
 $route['getBrachAccess'] = 'Administrator/Login/branch_access_main_admin';
 
-$route['category'] = 'Administrator/Page/add_category'; 
-$route['get_categories'] = 'Administrator/Page/getCategories'; 
+$route['category'] = 'Administrator/Page/add_category';
+$route['get_categories'] = 'Administrator/Page/getCategories';
 $route['add_category'] = 'Administrator/Page/insert_category';
 $route['update_category'] = 'Administrator/Page/update_category';
 $route['delete_category'] = 'Administrator/page/catdelete';
@@ -27,34 +27,34 @@ $route['delete_brand'] = 'Administrator/Page/branddelete';
 
 
 // Expense Head=============
-$route['ExpenseHead'] 				= 'Administrator/BillController/Eindex';
-$route['expenseHeadFancyBox'] 		= 'Administrator/BillController/expenseHeadFancyBox';
-$route['expenseHeadAll'] 			= 'Administrator/BillController/expenseHeadAll';
-$route['ExpenseHead/store'] 		= 'Administrator/BillController/Estore';
-$route['ExpenseHead/edit/(:any)'] 	= 'Administrator/BillController/Eedit/$1';
+$route['ExpenseHead']                 = 'Administrator/BillController/Eindex';
+$route['expenseHeadFancyBox']         = 'Administrator/BillController/expenseHeadFancyBox';
+$route['expenseHeadAll']             = 'Administrator/BillController/expenseHeadAll';
+$route['ExpenseHead/store']         = 'Administrator/BillController/Estore';
+$route['ExpenseHead/edit/(:any)']     = 'Administrator/BillController/Eedit/$1';
 $route['ExpenseHead/update/(:any)'] = 'Administrator/BillController/Eupdate/$1';
 $route['ExpenseHead/delete/(:any)'] = 'Administrator/BillController/Edelete/$1';
 
 
 // Bill=============
-$route['BillEntry'] 				= 'Administrator/BillController/index';
-$route['BillEntry/store'] 			= 'Administrator/BillController/store';
-$route['BillEntry/edit/(:any)'] 	= 'Administrator/BillController/edit/$1';
-$route['BillEntry/update/(:any)'] 	= 'Administrator/BillController/update/$1';
-$route['BillEntry/delete/(:any)'] 	= 'Administrator/BillController/delete/$1';
-$route['BillEntry/search'] 			= 'Administrator/BillController/search';
+$route['BillEntry']                 = 'Administrator/BillController/index';
+$route['BillEntry/store']             = 'Administrator/BillController/store';
+$route['BillEntry/edit/(:any)']     = 'Administrator/BillController/edit/$1';
+$route['BillEntry/update/(:any)']     = 'Administrator/BillController/update/$1';
+$route['BillEntry/delete/(:any)']     = 'Administrator/BillController/delete/$1';
+$route['BillEntry/search']             = 'Administrator/BillController/search';
 
 
 // Assets Info===========
-$route['AssetsEntry'] 				= 'Administrator/Assets';
-$route['insertassets'] 				= 'Administrator/Assets/insert_Assets';
-$route['assetsEdit/(:any)'] 		= 'Administrator/Assets/Assets_edit/$1';
-$route['assetsUpdate/(:any)'] 		= 'Administrator/Assets/Update_Assets/$1';
-$route['assetsDelete/(:any)'] 		= 'Administrator/Assets/Assets_delete/$1';
-$route['get_assets_cost'] 			= 'Administrator/Assets/getAssetsCost';
-$route['assets_report']				= 'Administrator/Assets/assetsReport';
-$route['get_group_assets']			= 'Administrator/Assets/getGroupAssets';
-$route['get_assets_report']			= 'Administrator/Assets/getAssetsReport';
+$route['AssetsEntry']                 = 'Administrator/Assets';
+$route['insertassets']                 = 'Administrator/Assets/insert_Assets';
+$route['assetsEdit/(:any)']         = 'Administrator/Assets/Assets_edit/$1';
+$route['assetsUpdate/(:any)']         = 'Administrator/Assets/Update_Assets/$1';
+$route['assetsDelete/(:any)']         = 'Administrator/Assets/Assets_delete/$1';
+$route['get_assets_cost']             = 'Administrator/Assets/getAssetsCost';
+$route['assets_report']                = 'Administrator/Assets/assetsReport';
+$route['get_group_assets']            = 'Administrator/Assets/getGroupAssets';
+$route['get_assets_report']            = 'Administrator/Assets/getAssetsReport';
 
 
 
@@ -90,18 +90,17 @@ $route['searchStock'] = 'Administrator/Products/search_stock';
 $route['currentStockPrint'] = 'Administrator/Reports/current_stock';
 $route['stockAvailable'] = 'Administrator/Products/stockAvailable';
 $route['stockAvailablePrint'] = 'Administrator/Reports/stockAvailable';
-$route['productName']	=	'Administrator/Products/product_name';
-$route['get_products']	=	'Administrator/Products/getProducts';
-$route['get_product_stock']	=	'Administrator/Products/getProductStock';
-$route['get_current_stock']	=	'Administrator/Products/getCurrentStock';
-$route['get_total_stock']	=	'Administrator/Products/getTotalStock';
-$route['product_ledger']	=	'Administrator/Products/productLedger';
-$route['get_product_ledger']	=	'Administrator/Products/getProductLedger';
-$route['reorder_list']	=	'Administrator/Reports/reOrderList';
+$route['productName']    =    'Administrator/Products/product_name';
+$route['get_products']    =    'Administrator/Products/getProducts';
+$route['get_product_stock']    =    'Administrator/Products/getProductStock';
+$route['get_current_stock']    =    'Administrator/Products/getCurrentStock';
+$route['get_total_stock']    =    'Administrator/Products/getTotalStock';
+$route['product_ledger']    =    'Administrator/Products/productLedger';
+$route['get_product_ledger']    =    'Administrator/Products/getProductLedger';
+$route['reorder_list']    =    'Administrator/Reports/reOrderList';
 
 $route['totalStock'] = 'Administrator/Products/total_stock';
 $route['totalStockPrint'] = 'Administrator/Reports/total_stock';
-
 
 $route['GenerateBarcode/(:any)'] = 'BarcodeController/barcode_create/$1';
 $route['multibarcodeStore'] = 'Administrator/Products/multibarcodeStore';
@@ -184,8 +183,8 @@ $route['get_damages'] = 'Administrator/Purchase/getDamages';
 $route['damageList'] = 'Administrator/Purchase/damage_product_list';
 $route['SelectDamageProduct'] = 'Administrator/Purchase/damage_select_product';
 
-$route['sales/(:any)'] = 'Administrator/Sales/index/$1';
-$route['sales/(:any)/(:any)'] = 'Administrator/Sales/salesEdit/$1/$2';
+$route['sales'] = 'Administrator/Sales/index';
+$route['sales/(:any)'] = 'Administrator/Sales/salesEdit/$1';
 $route['salesinvoice'] = 'Administrator/Sales/sales_invoice';
 $route['salesOrder'] = 'Administrator/Sales/sales_order';
 $route['salesOrderUpdate'] = 'Administrator/Sales/sales_order_update';
@@ -247,7 +246,7 @@ $route['profitLoss'] = 'Administrator/Sales/profitLoss';
 $route['profitLossSearch'] = 'Administrator/Sales/profitLossSearch';
 $route['get_profit_loss'] = 'Administrator/Sales/getProfitLoss';
 $route['profitLossPrint'] = 'Administrator/Reports/profitLossPrint';
- 
+
 $route['customerDue'] = 'Administrator/Customer/customer_due';
 
 $route['user'] = 'Administrator/User_management';
@@ -335,8 +334,8 @@ $route['update_account'] = 'Administrator/Account/updateAccount';
 $route['delete_account'] = 'Administrator/Account/deleteAccount';
 $route['get_accounts'] = 'Administrator/Account/getAccounts';
 $route['get_cash_and_bank_balance'] = 'Administrator/Account/getCashAndBankBalance';
- 
-$route['TransactionReport'] = 'Administrator/Account/all_transaction_report'; 
+
+$route['TransactionReport'] = 'Administrator/Account/all_transaction_report';
 $route['TransactionReportSearch'] = 'Administrator/Account/transaction_report_search';
 $route['transactionReportPrint'] = 'Administrator/Reports/transaction_report_print';
 $route['bank_transaction_report'] = 'Administrator/Account/bankTransactionReprot';
@@ -383,19 +382,19 @@ $route['bankEdit/(:any)'] = 'Administrator/Account/Bankedit/$1';
 $route['updateBank'] = 'Administrator/Account/Update_Bank';
 $route['bankDelete'] = 'Administrator/Account/Bankdelete';
 
-$route['check/pending/list'] 	=	'Administrator/Check/check_pendaing_date_list';
-$route['check/reminder/list'] 	=	'Administrator/Check/check_reminder_date_list';
-$route['check/dis/list'] 	=	'Administrator/Check/check_dishonor_date_list';
-$route['check/paid/list'] 	=	'Administrator/Check/check_paid_date_list';
-$route['check/list'] 		=	'Administrator/Check/check_list';
-$route['check/paid/submit/(:any)'] 	=	'Administrator/Check/check_paid_submission/$1';
-$route['check/dishonor/submit/(:any)'] 	=	'Administrator/Check/check_dishonor_submission/$1';
-$route['check/entry'] 			=	'Administrator/Check/check_entry_page';
-$route['check/store'] 			=	'Administrator/Check/check_date_store';
-$route['check/view/(:any)'] 	=	'Administrator/Check/check_view_page/$1';
-$route['check/edit/(:any)'] 	=	'Administrator/Check/check_edit_page/$1';
-$route['check/update/(:any)'] 	=	'Administrator/Check/check_update_info/$1';
-$route['check/delete/(:any)'] 	=	'Administrator/Check/check_delete_info/$1';
+$route['check/pending/list']     =    'Administrator/Check/check_pendaing_date_list';
+$route['check/reminder/list']     =    'Administrator/Check/check_reminder_date_list';
+$route['check/dis/list']     =    'Administrator/Check/check_dishonor_date_list';
+$route['check/paid/list']     =    'Administrator/Check/check_paid_date_list';
+$route['check/list']         =    'Administrator/Check/check_list';
+$route['check/paid/submit/(:any)']     =    'Administrator/Check/check_paid_submission/$1';
+$route['check/dishonor/submit/(:any)']     =    'Administrator/Check/check_dishonor_submission/$1';
+$route['check/entry']             =    'Administrator/Check/check_entry_page';
+$route['check/store']             =    'Administrator/Check/check_date_store';
+$route['check/view/(:any)']     =    'Administrator/Check/check_view_page/$1';
+$route['check/edit/(:any)']     =    'Administrator/Check/check_edit_page/$1';
+$route['check/update/(:any)']     =    'Administrator/Check/check_update_info/$1';
+$route['check/delete/(:any)']     =    'Administrator/Check/check_delete_info/$1';
 
 $route['BalanceSheetReportBranch/(:any)'] = 'Administrator/Reports/balance_sheet_report_branch_wise/$1';
 

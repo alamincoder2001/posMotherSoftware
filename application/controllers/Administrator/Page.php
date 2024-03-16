@@ -14,6 +14,13 @@ class Page extends CI_Controller
         $this->load->model("Model_myclass", "mmc", TRUE);
         $this->load->model('Model_table', "mt", TRUE);
         date_default_timezone_set('Asia/Dhaka');
+
+        if ($this->session->has_userdata('products')) {
+            $this->session->unset_userdata('products');
+            $this->session->unset_userdata('xAxis');
+            $this->session->unset_userdata('yAxis');
+            $this->session->unset_userdata('single');
+        }
     }
     public function index()
     {

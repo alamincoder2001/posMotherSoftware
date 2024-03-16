@@ -2,60 +2,73 @@
 	#dayBook .buttons {
 		margin-top: -5px;
 	}
+
 	.day-book-table {
 		width: 100%;
 		margin-bottom: 50px;
 	}
+
 	.day-book-table thead {
 		background: #ebebeb;
 		border-bottom: 1px solid black;
 	}
+
 	.day-book-table th {
 		padding: 5px 10px;
 		text-align: left;
 	}
+
 	.day-book-table td {
 		padding: 0px 30px;
 	}
+
 	.day-book-table tr td:last-child {
 		text-align: right;
 		padding-right: 50px;
 	}
+
 	.day-book-table .main-heading {
 		padding-left: 10px;
 		font-weight: bold;
 	}
+
 	.day-book-table .sub-heading {
 		padding-left: 20px;
 		font-weight: bold;
 	}
+
 	.day-book-table .sub-value {
-		padding-right: 10px!important;
+		padding-right: 10px !important;
 		font-weight: bold;
 	}
 </style>
 <div id="dayBook">
-	<div class="row" style="border-bottom: 1px solid #ccc;">
-		<div class="col-md-12">
-			<form action="" class="form-inline" @submit.prevent="getDayBookData">
-				<div class="form-group">
-					<label for="">Date from</label>
-					<input type="date" class="form-control" v-model="filter.dateFrom">
-				</div>
+	<div class="row" style="margin:0;">
+		<fieldset class="scheduler-border scheduler-search">
+			<legend class="scheduler-border">Day Book Report</legend>
+			<div class="control-group">
+				<div class="col-md-12">
+					<form action="" class="form-inline" @submit.prevent="getDayBookData">
+						<div class="form-group">
+							<label for="">Date from</label>
+							<input type="date" class="form-control" v-model="filter.dateFrom">
+						</div>
 
-				<div class="form-group">
-					<label for="">to</label>
-					<input type="date" class="form-control" v-model="filter.dateTo">
-				</div>
+						<div class="form-group">
+							<label for="">to</label>
+							<input type="date" class="form-control" v-model="filter.dateTo">
+						</div>
 
-				<div class="form-group buttons">
-					<input type="submit" value="Search">
+						<div class="form-group buttons">
+							<input type="submit" value="Search">
+						</div>
+					</form>
 				</div>
-			</form>
-		</div>
+			</div>
+		</fieldset>
 	</div>
 	<div class="row">
-		<div class="col-md-12" style="padding-top:15px;">
+		<div class="col-md-12 text-right">
 			<a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
 		</div>
 	</div>
@@ -124,7 +137,7 @@
 										</tr>
 									</template>
 								</template> -->
-			
+
 								<tr>
 									<td class="main-heading">Receipt</td>
 									<td></td>
@@ -219,8 +232,8 @@
 										<td>{{ transaction.totalAmount | decimal }}</td>
 									</tr>
 								</template>
-								
-								
+
+
 								<template v-if="bankDeposits.length > 0">
 									<tr>
 										<td class="sub-heading">Bank Deposits <span style="color:red;">(Not Calculated)</span></td>
@@ -231,11 +244,10 @@
 										<td>{{ transaction.totalAmount | decimal }}</td>
 									</tr>
 								</template>
-								
+
 							</tbody>
 						</table>
-						<div style="position:absolute;bottom:0px;left:0px;padding:5px 10px;display:none;width:100%;border-top:1px solid black;font-weight:bold;"
-							v-bind:style="{display: _.isNumber(totalIn) ? 'flex' : 'none' }">
+						<div style="position:absolute;bottom:0px;left:0px;padding:5px 10px;display:none;width:100%;border-top:1px solid black;font-weight:bold;" v-bind:style="{display: _.isNumber(totalIn) ? 'flex' : 'none' }">
 							<div style="width:50%;">Total</div>
 							<div style="width:50%;text-align:right;">{{ totalIn | decimal }}</div>
 						</div>
@@ -375,7 +387,7 @@
 										</tr>
 									</template>
 								</template> -->
-								
+
 								<template v-if="closingBalance.cashBalance != null">
 									<tr>
 										<td class="sub-heading">Cash in Hand</td>
@@ -388,8 +400,7 @@
 								</template>
 							</tbody>
 						</table>
-						<div style="position:absolute;bottom:0px;left:0px;padding:5px 10px;display:none;width:100%;border-top:1px solid black;font-weight:bold;"
-							v-bind:style="{display: _.isNumber(totalOut) ? 'flex' : 'none' }">
+						<div style="position:absolute;bottom:0px;left:0px;padding:5px 10px;display:none;width:100%;border-top:1px solid black;font-weight:bold;" v-bind:style="{display: _.isNumber(totalOut) ? 'flex' : 'none' }">
 							<div style="width:50%;">Total</div>
 							<div style="width:50%;text-align:right;">{{ totalOut | decimal }}</div>
 						</div>
@@ -448,12 +459,12 @@
 			}
 		},
 		computed: {
-			totalBankOpeningBalance(){
+			totalBankOpeningBalance() {
 				return this.openingBalance.bankBalance.reduce((prev, curr) => {
 					return prev + parseFloat(curr.balance)
 				}, 0).toFixed(2);
 			},
-			totalBankClosingBalance(){
+			totalBankClosingBalance() {
 				return this.closingBalance.bankBalance.reduce((prev, curr) => {
 					return prev + parseFloat(curr.balance)
 				}, 0).toFixed(2);
@@ -538,29 +549,29 @@
 					return prev + parseFloat(curr.totalAmount)
 				}, 0).toFixed(2);
 			},
-			totalEmployeePayments(){
+			totalEmployeePayments() {
 				return this.employeePayments.reduce((prev, curr) => {
 					return prev + parseFloat(curr.totalAmount)
 				}, 0).toFixed(2);
 			},
-			totalInitialLoan(){
+			totalInitialLoan() {
 				return this.loanInitials.reduce((prev, curr) => {
 					return prev + parseFloat(curr.initial_balance)
 				}, 0).toFixed(2);
 			},
-			totalIn(){
+			totalIn() {
 				return parseFloat(this.openingBalance.cashBalance.cash_balance) +
-					parseFloat(this.totalBankOpeningBalance) +  
-					parseFloat(this.totalSales) + 
-					parseFloat(this.totalLoanReceived) + 
-					parseFloat(this.totalInvestReceived) + 
-					parseFloat(this.totalAssetSales) + 
-					parseFloat(this.totalInitialLoan) + 
-					parseFloat(this.totalReceivedFromCustomers) + 
-					parseFloat(this.totalReceivedFromSuppliers) + 
+					parseFloat(this.totalBankOpeningBalance) +
+					parseFloat(this.totalSales) +
+					parseFloat(this.totalLoanReceived) +
+					parseFloat(this.totalInvestReceived) +
+					parseFloat(this.totalAssetSales) +
+					parseFloat(this.totalInitialLoan) +
+					parseFloat(this.totalReceivedFromCustomers) +
+					parseFloat(this.totalReceivedFromSuppliers) +
 					parseFloat(this.totalCashReceived);
 			},
-			totalOut(){
+			totalOut() {
 				return parseFloat(this.totalPurchase) +
 					parseFloat(this.totalPaidToCustomers) +
 					parseFloat(this.totalPaidToSuppliers) +
@@ -572,11 +583,11 @@
 					parseFloat(this.closingBalance.cashBalance.cash_balance) +
 					parseFloat(this.totalBankClosingBalance);
 			},
-			cashBalance(){
-				return parseFloat(this.totalIn) -  parseFloat(this.totalOut);
-			}			
+			cashBalance() {
+				return parseFloat(this.totalIn) - parseFloat(this.totalOut);
+			}
 		},
-		created(){
+		created() {
 			this.getDayBookData();
 		},
 		methods: {
@@ -602,14 +613,18 @@
 				this.getEmployeePayments();
 			},
 
-			getOpeningBalance(){
-				axios.post('/get_cash_and_bank_balance', {date: this.filter.dateFrom}).then(res => {
+			getOpeningBalance() {
+				axios.post('/get_cash_and_bank_balance', {
+					date: this.filter.dateFrom
+				}).then(res => {
 					this.openingBalance = res.data;
 				})
 			},
 
-			getClosingBalance(){
-				axios.post('/get_cash_and_bank_balance', {date: moment(this.filter.dateTo).add(1, 'days').format('YYYY-MM-DD')}).then(res => {
+			getClosingBalance() {
+				axios.post('/get_cash_and_bank_balance', {
+					date: moment(this.filter.dateTo).add(1, 'days').format('YYYY-MM-DD')
+				}).then(res => {
 					this.closingBalance = res.data;
 				})
 			},
@@ -621,13 +636,15 @@
 						sales = _.groupBy(sales, 'SalseCustomer_IDNo');
 						sales = _.toArray(sales);
 						sales = sales.map(sale => {
-							sale[0].totalAmount = sale.reduce((p, c) => { return p + parseFloat(c.SaleMaster_PaidAmount) }, 0);
+							sale[0].totalAmount = sale.reduce((p, c) => {
+								return p + parseFloat(c.SaleMaster_PaidAmount)
+							}, 0);
 							return sale[0];
 						})
 						this.sales = sales;
 					})
 			},
-			getAssetSales(){
+			getAssetSales() {
 				let filter = {
 					dateFrom: this.filter.dateFrom,
 					dateTo: this.filter.dateTo,
@@ -635,18 +652,20 @@
 				}
 
 				axios.post('/get_assets_cost', filter)
-				.then(res => { 
-					let asset_sales = res.data.assets.filter(sale => sale.as_amount > 0);
-					asset_sales = _.groupBy(asset_sales, 'as_name');
-					asset_sales = _.toArray(asset_sales);
-					asset_sales = asset_sales.map(sale => {
-						sale[0].totalAmount = sale.reduce((p, c) => { return p + parseFloat(c.as_amount) }, 0);
-						return sale[0];
+					.then(res => {
+						let asset_sales = res.data.assets.filter(sale => sale.as_amount > 0);
+						asset_sales = _.groupBy(asset_sales, 'as_name');
+						asset_sales = _.toArray(asset_sales);
+						asset_sales = asset_sales.map(sale => {
+							sale[0].totalAmount = sale.reduce((p, c) => {
+								return p + parseFloat(c.as_amount)
+							}, 0);
+							return sale[0];
+						})
+						this.asset_sales = asset_sales;
 					})
-					this.asset_sales = asset_sales;
-				})
 			},
-			getAssetPurchases(){
+			getAssetPurchases() {
 				let filter = {
 					dateFrom: this.filter.dateFrom,
 					dateTo: this.filter.dateTo,
@@ -654,16 +673,18 @@
 				}
 
 				axios.post('/get_assets_cost', filter)
-				.then(res => { 
-					let asset_sales = res.data.assets.filter(sale => sale.as_amount > 0);
-					asset_sales = _.groupBy(asset_sales, 'as_name');
-					asset_sales = _.toArray(asset_sales);
-					asset_sales = asset_sales.map(sale => {
-						sale[0].totalAmount = sale.reduce((p, c) => { return p + parseFloat(c.as_amount) }, 0);
-						return sale[0];
+					.then(res => {
+						let asset_sales = res.data.assets.filter(sale => sale.as_amount > 0);
+						asset_sales = _.groupBy(asset_sales, 'as_name');
+						asset_sales = _.toArray(asset_sales);
+						asset_sales = asset_sales.map(sale => {
+							sale[0].totalAmount = sale.reduce((p, c) => {
+								return p + parseFloat(c.as_amount)
+							}, 0);
+							return sale[0];
+						})
+						this.asset_purchases = asset_sales;
 					})
-					this.asset_purchases = asset_sales;
-				})
 			},
 			getPurchases() {
 				axios.post('/get_purchases', this.filter)
@@ -672,7 +693,9 @@
 						purchases = _.groupBy(purchases, 'Supplier_SlNo');
 						purchases = _.toArray(purchases);
 						purchases = purchases.map(purchase => {
-							purchase[0].totalAmount = purchase.reduce((p, c) => { return p + parseFloat(c.PurchaseMaster_PaidAmount) }, 0);
+							purchase[0].totalAmount = purchase.reduce((p, c) => {
+								return p + parseFloat(c.PurchaseMaster_PaidAmount)
+							}, 0);
 							return purchase[0];
 						})
 						this.purchases = purchases;
@@ -691,7 +714,9 @@
 						payments = _.groupBy(payments, 'CPayment_customerID');
 						payments = _.toArray(payments);
 						payments = payments.map(payment => {
-							payment[0].totalAmount = payment.reduce((p, c) => { return p + parseFloat(c.CPayment_amount) }, 0);
+							payment[0].totalAmount = payment.reduce((p, c) => {
+								return p + parseFloat(c.CPayment_amount)
+							}, 0);
 							return payment[0];
 						})
 						this.receivedFromCustomers = payments;
@@ -710,7 +735,9 @@
 						payments = _.groupBy(payments, 'CPayment_customerID');
 						payments = _.toArray(payments);
 						payments = payments.map(payment => {
-							payment[0].totalAmount = payment.reduce((p, c) => { return p + parseFloat(c.CPayment_amount) }, 0);
+							payment[0].totalAmount = payment.reduce((p, c) => {
+								return p + parseFloat(c.CPayment_amount)
+							}, 0);
 							return payment[0];
 						})
 						this.paidToCustomers = payments;
@@ -729,7 +756,9 @@
 						payments = _.groupBy(payments, 'SPayment_customerID');
 						payments = _.toArray(payments);
 						payments = payments.map(payment => {
-							payment[0].totalAmount = payment.reduce((p, c) => { return p + parseFloat(c.SPayment_amount) }, 0);
+							payment[0].totalAmount = payment.reduce((p, c) => {
+								return p + parseFloat(c.SPayment_amount)
+							}, 0);
 							return payment[0];
 						})
 						this.paidToSuppliers = payments;
@@ -748,7 +777,9 @@
 						payments = _.groupBy(payments, 'SPayment_customerID');
 						payments = _.toArray(payments);
 						payments = payments.map(payment => {
-							payment[0].totalAmount = payment.reduce((p, c) => { return p + parseFloat(c.SPayment_amount) }, 0);
+							payment[0].totalAmount = payment.reduce((p, c) => {
+								return p + parseFloat(c.SPayment_amount)
+							}, 0);
 							return payment[0];
 						})
 						this.receivedFromSuppliers = payments;
@@ -767,7 +798,9 @@
 						transactions = _.groupBy(transactions, 'Acc_SlID');
 						transactions = _.toArray(transactions);
 						transactions = transactions.map(transaction => {
-							transaction[0].totalAmount = transaction.reduce((p, c) => { return p + parseFloat(c.In_Amount) }, 0);
+							transaction[0].totalAmount = transaction.reduce((p, c) => {
+								return p + parseFloat(c.In_Amount)
+							}, 0);
 							return transaction[0];
 						})
 						this.cashReceived = transactions;
@@ -786,7 +819,9 @@
 						transactions = _.groupBy(transactions, 'Acc_SlID');
 						transactions = _.toArray(transactions);
 						transactions = transactions.map(transaction => {
-							transaction[0].totalAmount = transaction.reduce((p, c) => { return p + parseFloat(c.Out_Amount) }, 0);
+							transaction[0].totalAmount = transaction.reduce((p, c) => {
+								return p + parseFloat(c.Out_Amount)
+							}, 0);
 							return transaction[0];
 						})
 						this.cashPaid = transactions;
@@ -805,7 +840,9 @@
 						transactions = _.groupBy(transactions, 'account_id');
 						transactions = _.toArray(transactions);
 						transactions = transactions.map(transaction => {
-							transaction[0].totalAmount = transaction.reduce((p, c) => { return p + parseFloat(c.amount) }, 0);
+							transaction[0].totalAmount = transaction.reduce((p, c) => {
+								return p + parseFloat(c.amount)
+							}, 0);
 							return transaction[0];
 						})
 						this.bankDeposits = transactions;
@@ -823,7 +860,9 @@
 						transactions = _.groupBy(transactions, 'account_id');
 						transactions = _.toArray(transactions);
 						transactions = transactions.map(transaction => {
-							transaction[0].totalAmount = transaction.reduce((p, c) => { return p + parseFloat(c.amount) }, 0);
+							transaction[0].totalAmount = transaction.reduce((p, c) => {
+								return p + parseFloat(c.amount)
+							}, 0);
 							return transaction[0];
 						})
 						this.loanPayments = transactions;
@@ -842,7 +881,9 @@
 						transactions = _.groupBy(transactions, 'account_id');
 						transactions = _.toArray(transactions);
 						transactions = transactions.map(transaction => {
-							transaction[0].totalAmount = transaction.reduce((p, c) => { return p + parseFloat(c.amount) }, 0);
+							transaction[0].totalAmount = transaction.reduce((p, c) => {
+								return p + parseFloat(c.amount)
+							}, 0);
 							return transaction[0];
 						})
 						this.investPayments = transactions;
@@ -861,7 +902,9 @@
 						transactions = _.groupBy(transactions, 'account_id');
 						transactions = _.toArray(transactions);
 						transactions = transactions.map(transaction => {
-							transaction[0].totalAmount = transaction.reduce((p, c) => { return p + parseFloat(c.amount) }, 0);
+							transaction[0].totalAmount = transaction.reduce((p, c) => {
+								return p + parseFloat(c.amount)
+							}, 0);
 							return transaction[0];
 						})
 						this.bankWithdraws = transactions;
@@ -879,7 +922,9 @@
 						transactions = _.groupBy(transactions, 'account_id');
 						transactions = _.toArray(transactions);
 						transactions = transactions.map(transaction => {
-							transaction[0].totalAmount = transaction.reduce((p, c) => { return p + parseFloat(c.amount) }, 0);
+							transaction[0].totalAmount = transaction.reduce((p, c) => {
+								return p + parseFloat(c.amount)
+							}, 0);
 							return transaction[0];
 						})
 						this.loanReceives = transactions;
@@ -901,29 +946,33 @@
 						transactions = _.groupBy(transactions, 'account_id');
 						transactions = _.toArray(transactions);
 						transactions = transactions.map(transaction => {
-							transaction[0].totalAmount = transaction.reduce((p, c) => { return p + parseFloat(c.amount) }, 0);
+							transaction[0].totalAmount = transaction.reduce((p, c) => {
+								return p + parseFloat(c.amount)
+							}, 0);
 							return transaction[0];
 						})
 						this.investReceives = transactions;
 					})
 			},
 
-			getEmployeePayments(){
+			getEmployeePayments() {
 				axios.post('/get_salary_details', this.filter)
-				.then(res => { 
-					let payments = res.data;
-					payments = _.groupBy(payments, 'employee_id');
-					payments = _.toArray(payments);
-					payments = payments.map(payment => {
-						payment[0].totalAmount = payment.reduce((p, c) => { return p + parseFloat(c.payment) }, 0);
-						return payment[0];
-					})
-					this.employeePayments = payments;
+					.then(res => {
+						let payments = res.data;
+						payments = _.groupBy(payments, 'employee_id');
+						payments = _.toArray(payments);
+						payments = payments.map(payment => {
+							payment[0].totalAmount = payment.reduce((p, c) => {
+								return p + parseFloat(c.payment)
+							}, 0);
+							return payment[0];
+						})
+						this.employeePayments = payments;
 
-				})
+					})
 			},
 
-			async print(){
+			async print() {
 				let printContent = `
 					<div class="container">
 						<h4 style="text-align:center">Receipt and Payment</h4 style="text-align:center">
@@ -940,7 +989,7 @@
 
 				var printWindow = window.open('', 'PRINT', `width=${screen.width}, height=${screen.height}`);
 				printWindow.document.write(`
-					<?php $this->load->view('Administrator/reports/reportHeader.php');?>
+					<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>
 				`);
 
 				printWindow.document.body.innerHTML += printContent;

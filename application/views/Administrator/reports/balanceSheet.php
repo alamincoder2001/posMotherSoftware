@@ -3,55 +3,61 @@
 		margin-top: -5px;
 	}
 
-	.balancesheet-table{
+	.balancesheet-table {
 		width: 100%;
 		border-collapse: collapse;
 	}
 
-	.balancesheet-table thead{
+	.balancesheet-table thead {
 		text-align: center;
 	}
 
-	.balancesheet-table tfoot{
+	.balancesheet-table tfoot {
 		font-weight: bold;
 		background-color: #eaf3fd;
 	}
 
-	.balancesheet-table td, .balancesheet-table th{
+	.balancesheet-table td,
+	.balancesheet-table th {
 		border: 1px solid #ccc;
 		padding: 5px;
 	}
 </style>
 <div id="balanceSheet">
-	<div class="row" style="border-bottom: 1px solid #ccc;">
-		<div class="col-md-12">
-			<form action="" class="form-inline" @submit.prevent="getStatements">
-				<div class="form-group">
-					<label for="">Date from</label>
-					<input type="date" class="form-control" v-model="filter.dateFrom">
-				</div>
+	<div class="row" style="margin:0;">
+		<fieldset class="scheduler-border scheduler-search">
+			<legend class="scheduler-border">Balance In Out</legend>
+			<div class="control-group">
+				<div class="col-md-12">
+					<form action="" class="form-inline" @submit.prevent="getStatements">
+						<div class="form-group">
+							<label for="">Date from</label>
+							<input type="date" class="form-control" v-model="filter.dateFrom">
+						</div>
 
-				<div class="form-group">
-					<label for="">to</label>
-					<input type="date" class="form-control" v-model="filter.dateTo">
-				</div>
+						<div class="form-group">
+							<label for="">to</label>
+							<input type="date" class="form-control" v-model="filter.dateTo">
+						</div>
 
-				<div class="form-group buttons">
-					<input type="submit" value="Search">
+						<div class="form-group buttons">
+							<input type="submit" value="Search">
+						</div>
+					</form>
 				</div>
-			</form>
-		</div>
+			</div>
+		</fieldset>
 	</div>
 
 	<div style="display:none;" v-bind:style="{display: showReport ? '' : 'none'}">
-		<div class="row" style="margin-top:15px;">
-			<div class="col-xs-12">
+		<div class="row">
+			<div class="col-xs-12 text-right">
 				<a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
 			</div>
 		</div>
 
 		<div id="printContent">
-			<div class="row" style="margin-top:15px;">
+			<div class="row">
 				<div class="col-xs-6">
 					<table class="balancesheet-table">
 						<thead>
@@ -78,12 +84,12 @@
 								<td>Withdraw from Bank</td>
 								<td style="text-align:right;">{{ totalBankWithdraw | decimal }}</td>
 							</tr>
-							
+
 							<tr>
 								<td>Loan Received</td>
 								<td style="text-align:right;">{{ totalLoanReceived | decimal }}</td>
 							</tr>
-							
+
 							<tr>
 								<td>Invest Received</td>
 								<td style="text-align:right;">{{ totalInvestReceived | decimal }}</td>
@@ -132,12 +138,12 @@
 								<td>Deposit to Bank</td>
 								<td style="text-align:right;">{{ totalBankDeposit | decimal }}</td>
 							</tr>
-							
+
 							<tr>
 								<td>Loan Payment</td>
 								<td style="text-align:right;">{{ totalLoanPayment | decimal }}</td>
 							</tr>
-							
+
 							<tr>
 								<td>Invest Payment</td>
 								<td style="text-align:right;">{{ totalInvestPayment | decimal }}</td>
@@ -284,7 +290,7 @@
 					return prev + parseFloat(curr.amount)
 				}, 0).toFixed(2);
 			},
-			
+
 			totalInvestReceived() {
 				return this.investReceives.reduce((prev, curr) => {
 					return prev + parseFloat(curr.amount)
@@ -295,7 +301,7 @@
 					return prev + parseFloat(curr.amount)
 				}, 0).toFixed(2);
 			},
-			totalEmployeePayments(){
+			totalEmployeePayments() {
 				return this.employeePayments.reduce((prev, curr) => {
 					return prev + parseFloat(curr.total_payment_amount)
 				}, 0).toFixed(2);
@@ -467,12 +473,12 @@
 				await axios.post('/get_loan_transactions', filter).then(res => {
 					this.loanReceives = res.data;
 				})
-				
+
 				await axios.post('/get_loan_initial_balance', this.filter).then(res => {
 					this.loanInitial = res.data.balance;
 				})
 			},
-			
+
 			async getLoanPayments() {
 				let filter = {
 					dateFrom: this.filter.dateFrom,
@@ -483,7 +489,7 @@
 					this.loanPayments = res.data;
 				})
 			},
-			
+
 			async getInvestReceives() {
 				let filter = {
 					dateFrom: this.filter.dateFrom,
@@ -494,7 +500,7 @@
 					this.investReceives = res.data;
 				})
 			},
-			
+
 			async getInvestPayments() {
 				let filter = {
 					dateFrom: this.filter.dateFrom,
@@ -506,14 +512,14 @@
 				})
 			},
 
-			async getEmployeePayments(){
+			async getEmployeePayments() {
 				await axios.post('/get_payments', this.filter)
-				.then(res => { 
-					this.employeePayments = res.data;
-				})
+					.then(res => {
+						this.employeePayments = res.data;
+					})
 			},
-			
-			async getAssetsCost(){
+
+			async getAssetsCost() {
 				let filter = {
 					dateFrom: this.filter.dateFrom,
 					dateTo: this.filter.dateTo,
@@ -521,12 +527,12 @@
 				}
 
 				await axios.post('/get_assets_cost', filter)
-				.then(res => { 
-					this.totalAssetsCost = res.data.cost ?? 0;
-				})
+					.then(res => {
+						this.totalAssetsCost = res.data.cost ?? 0;
+					})
 			},
 
-			async getAssetsSales(){
+			async getAssetsSales() {
 				let filter = {
 					dateFrom: this.filter.dateFrom,
 					dateTo: this.filter.dateTo,
@@ -534,9 +540,9 @@
 				}
 
 				await axios.post('/get_assets_cost', filter)
-				.then(res => { 
-					this.totalAssetsSales = res.data.cost ?? 0;
-				})
+					.then(res => {
+						this.totalAssetsSales = res.data.cost ?? 0;
+					})
 			},
 
 			async print() {

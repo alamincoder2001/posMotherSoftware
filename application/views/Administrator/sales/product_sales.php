@@ -88,9 +88,9 @@
 			<legend class="scheduler-border">Customer & Product Information</legend>
 			<div class="control-group">
 				<div class="row">
-					<div class="col-sm-5">
-						<div class="form-group clearfix" style="margin-bottom: 8px;">
-							<label class="col-xs-4 control-label no-padding-right"> Sales Type </label>
+					<div class="col-xs-12 col-md-6">
+						<div class="form-group clearfix" style="margin-bottom: 3px;">
+							<label class="col-xs-4 control-label no-padding-right" style="margin: 0;"> Sales Type </label>
 							<div class="col-xs-8">
 								<input type="radio" name="salesType" value="retail" v-model="sales.salesType" v-on:change="onSalesTypeChange"> Retail &nbsp;
 								<input type="radio" name="salesType" value="wholesale" v-model="sales.salesType" v-on:change="onSalesTypeChange"> Wholesale
@@ -106,17 +106,17 @@
 							</div>
 						</div>
 
-						<div class="form-group" style="display:none;" v-bind:style="{display: selectedCustomer.Customer_Type == 'G' ? '' : 'none'}">
+						<div class="form-group" style="display:none;" v-bind:style="{display: selectedCustomer.Customer_Type == 'G' || selectedCustomer.Customer_Type == 'N' ? '' : 'none'}">
 							<label class="col-xs-4 control-label no-padding-right"> Name </label>
 							<div class="col-xs-8">
-								<input type="text" id="customerName" placeholder="Customer Name" class="form-control" v-model="selectedCustomer.Customer_Name" v-bind:disabled="selectedCustomer.Customer_Type == 'G' ? false : true" />
+								<input type="text" id="customerName" placeholder="Customer Name" class="form-control" v-model="selectedCustomer.Customer_Name" v-bind:disabled="selectedCustomer.Customer_Type == 'G' || selectedCustomer.Customer_Type == 'N' ? false : true" />
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Mobile No </label>
 							<div class="col-xs-8">
-								<input type="text" id="mobileNo" placeholder="Mobile No" class="form-control" v-model="selectedCustomer.Customer_Mobile" v-bind:disabled="selectedCustomer.Customer_Type == 'G' ? false : true" />
+								<input type="text" id="mobileNo" placeholder="Mobile No" class="form-control" v-model="selectedCustomer.Customer_Mobile" v-bind:disabled="selectedCustomer.Customer_Type == 'G' || selectedCustomer.Customer_Type == 'N' ? false : true" />
 							</div>
 						</div>
 
@@ -128,10 +128,10 @@
 						</div>
 					</div>
 
-					<div class="col-sm-5">
+					<div class="col-xs-12 col-md-5">
 						<form v-on:submit.prevent="addToCart">
 							<div class="form-group">
-								<label class="col-xs-3 control-label no-padding-right"> Product </label>
+								<label class="col-xs-3 control-label no-padding-right"> {{selectedProduct.is_service == 'true' ? 'Service' : 'Product'}} </label>
 								<div class="col-xs-8">
 									<v-select v-bind:options="products" v-model="selectedProduct" label="display_text" v-on:input="productOnChange"></v-select>
 								</div>
@@ -183,15 +183,14 @@
 						</form>
 
 					</div>
-					<div class="col-sm-2">
-						<div style="display:none;" v-bind:style="{display:sales.isService == 'true' ? 'none' : ''}">
-							<div class="text-center" style="display:none;" v-bind:style="{color: productStock > 0 ? 'green' : 'red', display: selectedProduct.Product_SlNo == '' ? 'none' : ''}">{{ productStockText }}</div class="text-center">
+					<div class="col-xs-12 col-md-1 no-padding" style="padding-right: 2px !important;">
+						<div style="display:none;" v-bind:style="{display:selectedProduct.is_service == 'true' ? 'none' : ''}">
+							<div class="text-center" style="display:none;font-size: 10px;line-height: 1;margin-bottom: 3px;" v-bind:style="{color: productStock > 0 ? 'green' : 'red', display: selectedProduct.Product_SlNo == '' ? 'none' : ''}">{{ productStockText }}</div class="text-center">
 
-							<input type="text" id="productStock" v-model="productStock" readonly style="border:none;font-size:20px;width:100%;text-align:center;color:green"><br>
-							<input type="text" id="stockUnit" v-model="selectedProduct.Unit_Name" readonly style="border:none;font-size:12px;width:100%;text-align: center;"><br><br>
+							<input type="text" id="productStock" v-model="productStock" readonly style="border:none;font-size:13px;width:100%;text-align:center;color:green"><br>
+							<input type="text" id="stockUnit" v-model="selectedProduct.Unit_Name" readonly style="border:none;font-size:12px;width:100%;text-align: center;margin-bottom:2px;"><br>
+							<input type="password" ref="productPurchaseRate" v-model="selectedProduct.Product_Purchase_Rate" v-on:mousedown="toggleProductPurchaseRate" v-on:mouseup="toggleProductPurchaseRate" readonly title="Purchase rate (click & hold)" style="font-size:12px;width:100%;text-align: center;">
 						</div>
-						<input type="password" ref="productPurchaseRate" v-model="selectedProduct.Product_Purchase_Rate" v-on:mousedown="toggleProductPurchaseRate" v-on:mouseup="toggleProductPurchaseRate" readonly title="Purchase rate (click & hold)" style="font-size:12px;width:100%;text-align: center;">
-
 					</div>
 				</div>
 			</div>
@@ -401,7 +400,6 @@
 					paid: 0.00,
 					previousDue: 0.00,
 					due: 0.00,
-					isService: '<?php echo $isService; ?>',
 					note: ''
 				},
 				vatPercent: 0,
@@ -419,10 +417,10 @@
 					Customer_SlNo: '',
 					Customer_Code: '',
 					Customer_Name: '',
-					display_name: 'Select Customer',
+					display_name: 'Cash Customer',
 					Customer_Mobile: '',
 					Customer_Address: '',
-					Customer_Type: ''
+					Customer_Type: 'G'
 				},
 				oldCustomerId: null,
 				oldPreviousDue: 0,
@@ -474,20 +472,26 @@
 				}).then(res => {
 					this.customers = res.data;
 					this.customers.unshift({
-						Customer_SlNo: 'C01',
+						Customer_SlNo: '',
 						Customer_Code: '',
 						Customer_Name: '',
-						display_name: 'General Customer',
+						display_name: 'Cash Customer',
 						Customer_Mobile: '',
 						Customer_Address: '',
 						Customer_Type: 'G'
+					}, {
+						Customer_SlNo: '',
+						Customer_Code: '',
+						Customer_Name: '',
+						display_name: 'New Customer',
+						Customer_Mobile: '',
+						Customer_Address: '',
+						Customer_Type: 'N'
 					})
 				})
 			},
 			getProducts() {
-				axios.post('/get_products', {
-					isService: this.sales.isService
-				}).then(res => {
+				axios.post('/get_products').then(res => {
 					if (this.sales.salesType == 'wholesale') {
 						this.products = res.data.filter((product) => product.Product_WholesaleRate > 0);
 						this.products.map((product) => {
@@ -506,10 +510,10 @@
 					Customer_SlNo: '',
 					Customer_Code: '',
 					Customer_Name: '',
-					display_name: 'Select Customer',
+					display_name: 'Cash Customer',
 					Customer_Mobile: '',
 					Customer_Address: '',
-					Customer_Type: ''
+					Customer_Type: 'G'
 				}
 				this.getCustomers();
 
@@ -517,22 +521,20 @@
 				this.getProducts();
 			},
 			async customerOnChange() {
+				this.sales.previousDue = 0;
 				if (this.selectedCustomer == null) {
 					this.selectedCustomer = {
 						Customer_SlNo: '',
 						Customer_Code: '',
 						Customer_Name: '',
-						display_name: 'Select Customer',
+						display_name: 'Cash Customer',
 						Customer_Mobile: '',
 						Customer_Address: '',
-						Customer_Type: ''
+						Customer_Type: 'G'
 					}
 					return
 				}
 				if (this.selectedCustomer.Customer_SlNo == '') {
-					return;
-				}
-				if (event.type == 'readystatechange') {
 					return;
 				}
 
@@ -576,7 +578,7 @@
 					}
 					return
 				}
-				if ((this.selectedProduct.Product_SlNo != '' || this.selectedProduct.Product_SlNo != 0) && this.sales.isService == 'false') {
+				if ((this.selectedProduct.Product_SlNo != '' || this.selectedProduct.Product_SlNo != 0) && this.selectedProduct.is_service == 'false') {
 					this.productStock = await axios.post('/get_product_stock', {
 						productId: this.selectedProduct.Product_SlNo
 					}).then(res => {
@@ -589,19 +591,19 @@
 
 			},
 			toggleProductPurchaseRate() {
-				//this.productPurchaseRate = this.productPurchaseRate == '' ? this.selectedProduct.Product_Purchase_Rate : '';
 				this.$refs.productPurchaseRate.type = this.$refs.productPurchaseRate.type == 'text' ? 'password' : 'text';
 			},
 			addToCart() {
 				let product = {
-					productId: this.selectedProduct.Product_SlNo,
-					productCode: this.selectedProduct.Product_Code,
+					productId   : this.selectedProduct.Product_SlNo,
+					productCode : this.selectedProduct.Product_Code,
 					categoryName: this.selectedProduct.ProductCategory_Name,
-					name: this.selectedProduct.Product_Name,
-					salesRate: this.selectedProduct.Product_SellingPrice,
-					vat: this.selectedProduct.vat,
-					quantity: this.selectedProduct.quantity,
-					total: this.selectedProduct.total,
+					name        : this.selectedProduct.Product_Name,
+					salesRate   : this.selectedProduct.Product_SellingPrice,
+					vat         : this.selectedProduct.vat,
+					is_service  : this.selectedProduct.is_service,
+					quantity    : this.selectedProduct.quantity,
+					total       : this.selectedProduct.total,
 					purchaseRate: this.selectedProduct.Product_Purchase_Rate
 				}
 
@@ -620,7 +622,7 @@
 					return;
 				}
 
-				if (product.quantity > this.productStock && this.sales.isService == 'false') {
+				if (product.quantity > this.productStock && product.is_service == 'false') {
 					alert('Stock unavailable');
 					return;
 				}
@@ -666,18 +668,16 @@
 					this.discountPercent = (parseFloat(this.sales.discount) / parseFloat(this.sales.subTotal) * 100).toFixed(2);
 				}
 				this.sales.total = ((parseFloat(this.sales.subTotal) + parseFloat(this.sales.vat) + parseFloat(this.sales.transportCost)) - parseFloat(this.sales.discount)).toFixed(2);
-				if (this.selectedCustomer.Customer_Type == 'G') {
+
+				if (event.target.id != 'paid') {
 					this.sales.paid = this.sales.total;
 					this.sales.due = 0;
 				} else {
-					if (event.target.id != 'paid') {
-						this.sales.paid = 0;
-					}
 					this.sales.due = (parseFloat(this.sales.total) - parseFloat(this.sales.paid)).toFixed(2);
 				}
 			},
 			async saveSales() {
-				if (this.selectedCustomer.Customer_SlNo == '') {
+				if (this.selectedCustomer == null) {
 					alert('Select Customer');
 					return;
 				}
@@ -688,12 +688,9 @@
 
 				this.saleOnProgress = true;
 
-				await this.getCustomerDue();
-
 				let url = "/add_sales";
 				if (this.sales.salesId != 0) {
 					url = "/update_sales";
-					this.sales.previousDue = parseFloat((this.sales.previousDue - this.sales_due_on_update)).toFixed(2);
 				}
 
 				if (parseFloat(this.selectedCustomer.Customer_Credit_Limit) < (parseFloat(this.sales.due) + parseFloat(this.sales.previousDue))) {
@@ -707,17 +704,12 @@
 				} else {
 					this.sales.employeeId = null;
 				}
-
-				this.sales.customerId = this.selectedCustomer.Customer_SlNo;
 				this.sales.salesFrom = this.selectedBranch.brunch_id;
 
 				let data = {
 					sales: this.sales,
-					cart: this.cart
-				}
-
-				if (this.selectedCustomer.Customer_Type == 'G') {
-					data.customer = this.selectedCustomer;
+					cart: this.cart,
+					customer: this.selectedCustomer
 				}
 				axios.post(url, data).then(async res => {
 					let r = res.data;
@@ -771,13 +763,13 @@
 					}
 
 					this.selectedCustomer = {
-						Customer_SlNo: sales.SalseCustomer_IDNo,
+						Customer_SlNo: sales.SalseCustomer_IDNo == null ? '' : sales.SalseCustomer_IDNo,
 						Customer_Code: sales.Customer_Code,
 						Customer_Name: sales.Customer_Name,
-						display_name: sales.Customer_Type == 'G' ? 'General Customer' : `${sales.Customer_Code} - ${sales.Customer_Name}`,
+						display_name: sales.customerType == 'G' ? 'Cash Customer' : `${sales.Customer_Code} - ${sales.Customer_Name}`,
 						Customer_Mobile: sales.Customer_Mobile,
 						Customer_Address: sales.Customer_Address,
-						Customer_Type: sales.Customer_Type
+						Customer_Type: sales.customerType
 					}
 
 					r.saleDetails.forEach(product => {
@@ -788,6 +780,7 @@
 							name: product.Product_Name,
 							salesRate: product.SaleDetails_Rate,
 							vat: product.SaleDetails_Tax,
+							is_service: product.is_service,
 							quantity: product.SaleDetails_TotalQuantity,
 							total: product.SaleDetails_TotalAmount,
 							purchaseRate: product.Purchase_Rate,
@@ -795,9 +788,6 @@
 
 						this.cart.push(cartProduct);
 					})
-
-					let gCustomerInd = this.customers.findIndex(c => c.Customer_Type == 'G');
-					this.customers.splice(gCustomerInd, 1);
 				})
 			}
 		}
