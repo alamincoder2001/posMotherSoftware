@@ -304,9 +304,9 @@
 				})
 
 				if (supplier.image_name == null || supplier.image_name == '') {
-					this.imageUrl = null;
+					this.imageUrl = "/uploads/no_user.png";
 				} else {
-					this.imageUrl = '/uploads/suppliers/' + supplier.image_name;
+					this.imageUrl = supplier.image_name;
 				}
 			},
 			deleteSupplier(supplierId) {

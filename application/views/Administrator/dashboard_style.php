@@ -102,6 +102,9 @@
 		margin-top: 5px;
 		color: #FFF;
 	}
+	.section20 .logo i {
+		color: #000;
+	}
 
 	.section20 .textModule {
 		height: auto;
@@ -144,7 +147,8 @@
 
 	.section12,
 	.section20 {
-		background: #324372c7;
+		background: #A7ECFB;
+		/* background: #324372c7; */
 		/* background: linear-gradient(to right, #78ffd6, #a8ff78); */
 
 	}

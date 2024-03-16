@@ -85,14 +85,14 @@
 						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Supplier </label>
 							<div class="col-xs-7">
-								<v-select v-bind:options="suppliers" v-model="selectedSupplier" v-on:input="onChangeSupplier" label="display_name"></v-select>
+								<v-select v-bind:options="suppliers" v-model="selectedSupplier" v-on:input="onChangeSupplier" @search="onSearchSupplier" label="display_name"></v-select>
 							</div>
 							<div class="col-xs-1" style="padding: 0;">
 								<a href="<?= base_url('supplier') ?>" title="Add New Supplier" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
 							</div>
 						</div>
 
-						<div class="form-group" style="display:none;" v-bind:style="{display: selectedSupplier.Supplier_Type == 'G' ? '' : 'none'}">
+						<div class="form-group" style="display:none;" v-bind:style="{display: selectedSupplier.Supplier_Type == 'G' || selectedSupplier.Supplier_Type == 'N' ? '' : 'none'}">
 							<label class="col-xs-4 control-label no-padding-right"> Name </label>
 							<div class="col-xs-8">
 								<input type="text" placeholder="Supplier Name" class="form-control" v-model="selectedSupplier.Supplier_Name" />
@@ -102,14 +102,14 @@
 						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Mobile No </label>
 							<div class="col-xs-8">
-								<input type="text" placeholder="Mobile No" class="form-control" v-model="selectedSupplier.Supplier_Mobile" v-bind:disabled="selectedSupplier.Supplier_Type == 'G' ? false : true" />
+								<input type="text" placeholder="Mobile No" class="form-control" v-model="selectedSupplier.Supplier_Mobile" v-bind:disabled="selectedSupplier.Supplier_Type == 'G' || selectedSupplier.Supplier_Type == 'N' ? false : true" />
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Address </label>
 							<div class="col-xs-8">
-								<textarea class="form-control" v-model="selectedSupplier.Supplier_Address" v-bind:disabled="selectedSupplier.Supplier_Type == 'G' ? false : true"></textarea>
+								<textarea class="form-control" v-model="selectedSupplier.Supplier_Address" v-bind:disabled="selectedSupplier.Supplier_Type == 'G' || selectedSupplier.Supplier_Type == 'N' ? false : true"></textarea>
 							</div>
 						</div>
 					</div>
@@ -119,7 +119,7 @@
 							<div class="form-group">
 								<label class="col-xs-4 control-label no-padding-right"> Product </label>
 								<div class="col-xs-7">
-									<v-select v-bind:options="products" v-model="selectedProduct" label="display_text" v-on:input="onChangeProduct"></v-select>
+									<v-select v-bind:options="products" v-model="selectedProduct" label="display_text" v-on:input="onChangeProduct" @search="onSearchProduct"></v-select>
 								</div>
 								<div class="col-xs-1" style="padding: 0;">
 									<a href="<?= base_url('product') ?>" title="Add New Product" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
@@ -366,13 +366,13 @@
 				},
 				suppliers: [],
 				selectedSupplier: {
-					Supplier_SlNo: null,
+					Supplier_SlNo: "",
 					Supplier_Code: '',
 					Supplier_Name: '',
-					display_name: 'Select Supplier',
+					display_name: 'Cash Supplier',
 					Supplier_Mobile: '',
 					Supplier_Address: '',
-					Supplier_Type: ''
+					Supplier_Type: 'G'
 				},
 				oldSupplierId: null,
 				oldPreviousDue: 0,
@@ -409,44 +409,62 @@
 				})
 			},
 			async getSuppliers() {
-				await axios.get('/get_suppliers').then(res => {
+				await axios.post('/get_suppliers', {
+					forSearch: 'yes'
+				}).then(res => {
 					this.suppliers = res.data;
 					this.suppliers.unshift({
-						Supplier_SlNo: 'S01',
+						Supplier_SlNo: "",
 						Supplier_Code: '',
 						Supplier_Name: '',
-						display_name: 'General Supplier',
+						display_name: 'Cash Supplier',
 						Supplier_Mobile: '',
 						Supplier_Address: '',
 						Supplier_Type: 'G'
+					}, {
+						Supplier_SlNo: "",
+						Supplier_Code: '',
+						Supplier_Name: '',
+						display_name: 'New Supplier',
+						Supplier_Mobile: '',
+						Supplier_Address: '',
+						Supplier_Type: 'N'
 					})
 				})
 			},
-			getProducts() {
-				axios.post('/get_products', {
-					isService: 'false'
-				}).then(res => {
-					this.products = res.data;
-				})
+
+			async onSearchSupplier(val, loading) {
+				if (val.length > 2) {
+					loading(true);
+					await axios.post("/get_suppliers", {
+							name: val,
+						})
+						.then(res => {
+							let r = res.data;
+							this.suppliers = r.filter(item => item.Status == 'a')
+							loading(false)
+						})
+				} else {
+					loading(false)
+					await this.getSuppliers();
+				}
 			},
 			onChangeSupplier() {
 				if (this.selectedSupplier == null) {
 					this.selectedSupplier = {
-						Supplier_SlNo: null,
+						Supplier_SlNo: "",
 						Supplier_Code: '',
 						Supplier_Name: '',
-						display_name: 'Select Supplier',
+						display_name: 'Cash Supplier',
 						Supplier_Mobile: '',
 						Supplier_Address: '',
-						Supplier_Type: ''
+						Supplier_Type: 'G'
 					}
+					this.purchase.previousDue = 0;
 					return
 				}
-				if (this.selectedSupplier.Supplier_SlNo == null) {
-					return;
-				}
-
-				if (event.type == 'readystatechange') {
+				if (this.selectedSupplier.Supplier_SlNo == "") {
+					this.purchase.previousDue = 0;
 					return;
 				}
 
@@ -472,6 +490,31 @@
 
 				this.calculateTotal();
 			},
+			getProducts() {
+				axios.post('/get_products', {
+					isService: 'false',
+					forSearch: 'yes'
+				}).then(res => {
+					this.products = res.data;
+				})
+			},
+			async onSearchProduct(val, loading) {
+				if (val.length > 2) {
+					loading(true);
+					await axios.post("/get_products", {
+							name: val,
+							isService: 'false'
+						})
+						.then(res => {
+							let r = res.data;
+							this.products = r.filter(item => item.status == 'a');
+							loading(false)
+						})
+				} else {
+					loading(false)
+					await this.getProducts();
+				}
+			},
 			onChangeProduct() {
 				if (this.selectedProduct == null) {
 					this.selectedProduct = {
@@ -492,6 +535,7 @@
 				}
 				this.$refs.quantity.focus();
 			},
+
 			productTotal() {
 				this.selectedProduct.total = this.selectedProduct.quantity * this.selectedProduct.Product_Purchase_Rate;
 			},
@@ -560,7 +604,7 @@
 				}
 			},
 			savePurchase() {
-				if (this.selectedSupplier.Supplier_SlNo == null) {
+				if (this.selectedSupplier.Supplier_SlNo == null || this.selectedSupplier == null) {
 					alert('Select supplier');
 					return;
 				}
@@ -574,19 +618,12 @@
 					alert('Cart is empty');
 					return;
 				}
-
-				this.purchase.supplierId = this.selectedSupplier.Supplier_SlNo;
 				this.purchase.purchaseFor = this.selectedBranch.brunch_id;
-
-				this.purchaseOnProgress = true;
 
 				let data = {
 					purchase: this.purchase,
-					cartProducts: this.cart
-				}
-
-				if (this.selectedSupplier.Supplier_Type == 'G') {
-					data.supplier = this.selectedSupplier;
+					cartProducts: this.cart,
+					supplier: this.selectedSupplier,
 				}
 
 				let url = '/add_purchase';
@@ -594,6 +631,7 @@
 					url = '/update_purchase';
 				}
 
+				this.purchaseOnProgress = true;
 				axios.post(url, data).then(async res => {
 					let r = res.data;
 					alert(r.message);

@@ -104,6 +104,8 @@ $route['totalStockPrint'] = 'Administrator/Reports/total_stock';
 
 
 $route['GenerateBarcode/(:any)'] = 'BarcodeController/barcode_create/$1';
+$route['multibarcodeStore'] = 'Administrator/Products/multibarcodeStore';
+$route['multibarcodePrint'] = 'Administrator/Products/multibarcodePrint';
 
 
 $route['supplier'] = 'Administrator/Supplier';
