@@ -288,6 +288,13 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 			})
 
 		});
+
+		$(".fancybox").fancybox({
+			padding: 0,
+			transitionIn: 'elastic',
+			transitionOut: 'elastic',
+			loop: true
+		});
 	</script>
 
 </body>

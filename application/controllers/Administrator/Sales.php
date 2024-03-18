@@ -39,9 +39,12 @@ class Sales extends CI_Controller
         $res = ['success' => false, 'message' => ''];
         try {
             $this->db->trans_begin();
-
             $data = json_decode($this->input->raw_input_stream);
-
+            if ($data->sales->salesFrom != $this->session->userdata("BRANCHid")) {
+                $res = ['success' => false, 'message' => 'You have already changed your branch.', 'branch_status'=> false];
+                echo json_encode($res);
+                exit;
+            }
             $invoice = $data->sales->invoiceNo;
             $invoiceCount = $this->db->query("select * from tbl_salesmaster where SaleMaster_InvoiceNo = ?", $invoice)->num_rows();
             if ($invoiceCount != 0) {
@@ -65,6 +68,7 @@ class Sales extends CI_Controller
                     $duplicateCustomer = $mobile_count->row();
                     unset($customer['Customer_Code']);
                     unset($customer['Customer_Type']);
+                    unset($customer['District_Name']);
                     $customer["UpdateBy"]   = $this->session->userdata("FullName");
                     $customer["UpdateTime"] = date("Y-m-d H:i:s");
                     $customer["status"]     = 'a';
@@ -307,7 +311,7 @@ class Sales extends CI_Controller
         }
 
         if (isset($data->customerType) && $data->customerType != '') {
-            $clauses .= " and c.Customer_Type = '$data->customerType'";
+            $clauses .= " and sm.customerType = '$data->customerType'";
         }
 
         if (isset($data->salesId) && $data->salesId != 0 && $data->salesId != '') {
@@ -330,7 +334,7 @@ class Sales extends CI_Controller
         }
         $sales = $this->db->query("
             select 
-            concat(sm.SaleMaster_InvoiceNo, ' - ', c.Customer_Name) as invoice_text,
+            concat(sm.SaleMaster_InvoiceNo, ' - ', ifnull(c.Customer_Name, sm.customerName)) as invoice_text,
             sm.*,
             ifnull(c.Customer_Code, 'Cash Customer') as Customer_Code,
             ifnull(c.Customer_Name, sm.customerName) as Customer_Name,

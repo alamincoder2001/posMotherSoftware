@@ -15,8 +15,21 @@
 		margin: 0px;
 	}
 
+	.v-select .vs__selected-options {
+		overflow: hidden;
+		flex-wrap: nowrap;
+	}
+
 	.v-select .selected-tag {
-		margin: 0px;
+		margin: 2px 0px;
+		white-space: nowrap;
+		position: absolute;
+		left: 0px;
+	}
+
+	.v-select .dropdown-menu {
+		width: auto;
+		overflow-y: auto;
 	}
 </style>
 

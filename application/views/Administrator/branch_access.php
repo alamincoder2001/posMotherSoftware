@@ -22,7 +22,8 @@
 		</div>
 	</form>
 </div>
-
+<script src="<?php echo base_url(); ?>assets/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="<?php echo base_url() ?>assets/fancyBox/js/jquery.fancybox.js?v=2.1.5"></script>
 <script type="text/javascript">
 	function Submitdata() {
 		var branch_id = $('#branch_id').val();
@@ -35,17 +36,13 @@
 				url: urldata,
 				data: inputdata,
 				success: function(data) {
-					location.href = "<?php echo base_url(); ?>module/dashboard";
+					location.reload();
 				}
 			});
 		}
 	}
 
 	function canceltdata() {
-		var succes = "";
-		if (succes == "") {
-			var urldata = "<?php echo base_url(); ?>";
-			location.reload(urldata);
-		}
+		location.reload();
 	}
 </script>

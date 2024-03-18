@@ -164,9 +164,9 @@
 					this.customers = res.data;
 					this.customers.unshift({
 						Customer_SlNo: null,
-						Customer_Name: 'General Customers',
+						Customer_Name: 'Cash Customer',
 						Customer_Type: 'G',
-						display_name: 'General Customers'
+						display_name: 'Cash Customer'
 					})
 				})
 			},

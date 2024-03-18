@@ -84,7 +84,7 @@
 
 
 	<div class="col-xs-12 col-md-9 col-lg-9">
-		<fieldset class="scheduler-border" style="margin-bottom: 5px;padding-bottom: 5px">
+		<fieldset class="scheduler-border" style="margin-bottom: 5px;padding: 0 4px 3px 0;">
 			<legend class="scheduler-border">Customer & Product Information</legend>
 			<div class="control-group">
 				<div class="row">
@@ -99,14 +99,14 @@
 						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Customer </label>
 							<div class="col-xs-7">
-								<v-select v-bind:options="customers" label="display_name" v-model="selectedCustomer" v-on:input="customerOnChange"></v-select>
+								<v-select v-bind:options="customers" label="display_name" v-model="selectedCustomer" v-on:input="customerOnChange" @search="onSearchCustomer"></v-select>
 							</div>
 							<div class="col-xs-1" style="padding: 0;">
 								<a href="<?= base_url('customer') ?>" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank" title="Add New Customer"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
 							</div>
 						</div>
 
-						<div class="form-group" style="display:none;" v-bind:style="{display: selectedCustomer.Customer_Type == 'G' || selectedCustomer.Customer_Type == 'N' ? '' : 'none'}">
+						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Name </label>
 							<div class="col-xs-8">
 								<input type="text" id="customerName" placeholder="Customer Name" class="form-control" v-model="selectedCustomer.Customer_Name" v-bind:disabled="selectedCustomer.Customer_Type == 'G' || selectedCustomer.Customer_Type == 'N' ? false : true" />
@@ -133,7 +133,7 @@
 							<div class="form-group">
 								<label class="col-xs-3 control-label no-padding-right"> {{selectedProduct.is_service == 'true' ? 'Service' : 'Product'}} </label>
 								<div class="col-xs-8">
-									<v-select v-bind:options="products" v-model="selectedProduct" label="display_text" v-on:input="productOnChange"></v-select>
+									<v-select v-bind:options="products" v-model="selectedProduct" label="display_text" @input="productOnChange" @search="onSearchProduct"></v-select>
 								</div>
 								<div class="col-xs-1" style="padding: 0;">
 									<a href="<?= base_url('product') ?>" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank" title="Add New Product"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
@@ -183,7 +183,7 @@
 						</form>
 
 					</div>
-					<div class="col-xs-12 col-md-1 no-padding" style="padding-right: 2px !important;">
+					<div class="col-xs-12 col-md-1" style="padding-left: 0px !important;">
 						<div style="display:none;" v-bind:style="{display:selectedProduct.is_service == 'true' ? 'none' : ''}">
 							<div class="text-center" style="display:none;font-size: 10px;line-height: 1;margin-bottom: 3px;" v-bind:style="{color: productStock > 0 ? 'green' : 'red', display: selectedProduct.Product_SlNo == '' ? 'none' : ''}">{{ productStockText }}</div class="text-center">
 
@@ -400,7 +400,7 @@
 					paid: 0.00,
 					previousDue: 0.00,
 					due: 0.00,
-					note: ''
+					note: '',
 				},
 				vatPercent: 0,
 				discountPercent: 0,
@@ -490,8 +490,24 @@
 					})
 				})
 			},
+			async onSearchCustomer(val, loading) {
+				if (val.length > 2) {
+					loading(true);
+					await axios.post("/get_customers", {
+							name: val,
+						})
+						.then(res => {
+							let r = res.data;
+							this.customers = r.filter(item => item.status == 'a')
+							loading(false)
+						})
+				} else {
+					loading(false)
+					await this.getCustomers();
+				}
+			},
 			getProducts() {
-				axios.post('/get_products').then(res => {
+				axios.post('/get_products', {forSearch: 'yes'}).then(res => {
 					if (this.sales.salesType == 'wholesale') {
 						this.products = res.data.filter((product) => product.Product_WholesaleRate > 0);
 						this.products.map((product) => {
@@ -501,6 +517,22 @@
 						this.products = res.data;
 					}
 				})
+			},
+			async onSearchProduct(val, loading) {
+				if (val.length > 2) {
+					loading(true);
+					await axios.post("/get_products", {
+							name: val,
+						})
+						.then(res => {
+							let r = res.data;
+							this.products = r.filter(item => item.status == 'a');
+							loading(false)
+						})
+				} else {
+					loading(false)
+					await this.getProducts();
+				}
 			},
 			productTotal() {
 				this.selectedProduct.total = (parseFloat(this.selectedProduct.quantity) * parseFloat(this.selectedProduct.Product_SellingPrice)).toFixed(2);
@@ -595,15 +627,15 @@
 			},
 			addToCart() {
 				let product = {
-					productId   : this.selectedProduct.Product_SlNo,
-					productCode : this.selectedProduct.Product_Code,
+					productId: this.selectedProduct.Product_SlNo,
+					productCode: this.selectedProduct.Product_Code,
 					categoryName: this.selectedProduct.ProductCategory_Name,
-					name        : this.selectedProduct.Product_Name,
-					salesRate   : this.selectedProduct.Product_SellingPrice,
-					vat         : this.selectedProduct.vat,
-					is_service  : this.selectedProduct.is_service,
-					quantity    : this.selectedProduct.quantity,
-					total       : this.selectedProduct.total,
+					name: this.selectedProduct.Product_Name,
+					salesRate: this.selectedProduct.Product_SellingPrice,
+					vat: this.selectedProduct.vat,
+					is_service: this.selectedProduct.is_service,
+					quantity: this.selectedProduct.quantity,
+					total: this.selectedProduct.total,
 					purchaseRate: this.selectedProduct.Product_Purchase_Rate
 				}
 
@@ -718,13 +750,14 @@
 						if (conf) {
 							window.open('/sale_invoice_print/' + r.salesId, '_blank');
 							await new Promise(r => setTimeout(r, 1000));
-							window.location = this.sales.isService == 'false' ? '/sales/product' : '/sales/service';
-						} else {
-							window.location = this.sales.isService == 'false' ? '/sales/product' : '/sales/service';
+							window.location = '/sales';
 						}
 					} else {
 						alert(r.message);
 						this.saleOnProgress = false;
+						if (r.branch_status == false) {
+							location.reload();
+						}
 					}
 				})
 			},

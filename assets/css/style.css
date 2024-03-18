@@ -198,11 +198,10 @@ legend {
   font-style: italic;
 }
 
-
 fieldset.scheduler-border {
   border: 2px solid #a7a7a7 !important;
-  padding: 0 1em 1em 1em;
-  margin: 0 0 1.5em 0;
+  padding: 0 0em 3px 0em;
+  margin: 0 0 8px 0;
   -webkit-box-shadow: 0px 0px 0px 0px #000;
   box-shadow: 0px 1px 1px 0px #b9b9b9;
   border-radius: 5px;
@@ -253,15 +252,20 @@ legend.scheduler-border {
   padding: 4px 8px !important;
   line-height: 1 !important;
 }
-.table>thead>tr {
+.table > thead > tr {
   color: #fff;
   font-weight: 400;
   background: gray;
 }
-.table>thead>tr>th {
+.table > thead > tr > th {
   color: #fff !important;
 }
-.table>caption+thead>tr:first-child>td, .table>caption+thead>tr:first-child>th, .table>colgroup+thead>tr:first-child>td, .table>colgroup+thead>tr:first-child>th, .table>thead:first-child>tr:first-child>td, .table>thead:first-child>tr:first-child>th {
+.table > caption + thead > tr:first-child > td,
+.table > caption + thead > tr:first-child > th,
+.table > colgroup + thead > tr:first-child > td,
+.table > colgroup + thead > tr:first-child > th,
+.table > thead:first-child > tr:first-child > td,
+.table > thead:first-child > tr:first-child > th {
   border-top: 0;
   padding: 5px 0 !important;
 }
@@ -270,25 +274,36 @@ legend.scheduler-border {
   padding: 3px 20px;
   border-radius: 6px;
   font-weight: 700;
-  background: #00cbaf !important;
+  background: #B74635 !important;
   border-width: 0;
   color: white;
 }
 
 .btnCart:hover {
-  background: #00cbaf !important;
+  background: #B74635 !important;
 }
 
-.btnSave {
-  padding: 3px 20px;
+.btnReset {
+  padding: 4px 25px !important;
   border-radius: 6px;
   font-weight: 700;
-  background: blue !important;
+  background: #B74635 !important;
+  border-width: 0;
+  color: white;
+}
+.btnReset:hover {
+  background: #B74635 !important;
+}
+.btnSave {
+  padding: 4px 25px !important;
+  border-radius: 6px;
+  font-weight: 700;
+  background: #428BCA !important;
   border-width: 0;
   color: white;
 }
 .btnSave:hover {
-  background: blue !important;
+  background: #428BCA !important;
 }
 
 .btnSearch {
@@ -354,9 +369,21 @@ select {
   margin-bottom: 5px !important;
 }
 
-.table-striped > tbody > tr:nth-of-type(even) {
+/* .table-striped > tbody > tr:nth-of-type(even) {
   background-color: #c5c5c5 !important;
+} */
+.table > thead:first-child > tr:first-child > th {
+  border-top: 0;
+  padding: 2px 0 !important;
 }
-.table-hover>tbody>tr:hover {
+.table > thead:first-child > tr:first-child > th {
+  font-size: 12px !important;
+}
+.table > tbody > tr > td {
+  padding: 0px;
+  line-height: 1 !important;
+  font-size: 13px;
+}
+.table-hover > tbody > tr:hover {
   background-color: #c5faff !important;
 }

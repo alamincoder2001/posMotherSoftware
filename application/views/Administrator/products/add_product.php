@@ -80,19 +80,17 @@
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Category:</label>
 							<div class="col-md-7">
-								<select class="form-control" v-if="categories.length == 0"></select>
-								<v-select v-bind:options="categories" v-model="selectedCategory" label="ProductCategory_Name" v-if="categories.length > 0"></v-select>
+								<v-select v-bind:options="categories" v-model="selectedCategory" label="ProductCategory_Name"></v-select>
 							</div>
-							<div class="col-md-1" style="padding:0;margin-left: -15px;"><a href="/category" target="_blank" class="add-button"><i class="fa fa-plus"></i></a></div>
+							<div class="col-md-1" style="padding:0;"><a href="/category" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank" class="add-button"><i class="fa fa-plus"></i></a></div>
 						</div>
 
 						<div class="form-group clearfix" style="display:none;">
 							<label class="control-label col-md-4">Brand:</label>
 							<div class="col-md-7">
-								<select class="form-control" v-if="brands.length == 0"></select>
-								<v-select v-bind:options="brands" v-model="selectedBrand" label="brand_name" v-if="brands.length > 0"></v-select>
+								<v-select v-bind:options="brands" v-model="selectedBrand" label="brand_name"></v-select>
 							</div>
-							<div class="col-md-1" style="padding:0;margin-left: -15px;"><a href="" class="add-button"><i class="fa fa-plus"></i></a></div>
+							<div class="col-md-1" style="padding:0;"><a href="" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" class="add-button"><i class="fa fa-plus"></i></a></div>
 						</div>
 
 						<div class="form-group clearfix">
@@ -105,10 +103,9 @@
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Unit:</label>
 							<div class="col-md-7">
-								<select class="form-control" v-if="units.length == 0"></select>
-								<v-select v-bind:options="units" v-model="selectedUnit" label="Unit_Name" v-if="units.length > 0"></v-select>
+								<v-select v-bind:options="units" v-model="selectedUnit" label="Unit_Name"></v-select>
 							</div>
-							<div class="col-md-1" style="padding:0;margin-left: -15px;"><a href="/unit" target="_blank" class="add-button"><i class="fa fa-plus"></i></a></div>
+							<div class="col-md-1" style="padding:0;"><a href="/unit" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank" class="add-button"><i class="fa fa-plus"></i></a></div>
 						</div>
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">VAT:</label>
@@ -155,6 +152,7 @@
 
 						<div class="form-group clearfix">
 							<div class="col-md-7 col-md-offset-4 text-right">
+								<input type="button" @click="clearForm" class="btnReset" value="Reset">
 								<input type="submit" class="btnSave" value="Save">
 							</div>
 						</div>
@@ -173,7 +171,7 @@
 		</div>
 		<div class="col-md-12">
 			<div class="table-responsive">
-				<datatable class="table-striped" :columns="columns" :data="products" :filter-by="filter">
+				<datatable :columns="columns" :data="products" :filter-by="filter">
 					<template scope="{ row }">
 						<tr>
 							<td>{{ row.Product_Code }}</td>
@@ -403,6 +401,7 @@
 						this.product[key] = 0;
 					}
 				})
+				this.product.Product_Code = "<?php echo $this->mt->generateProductCode();?>";
 			}
 		}
 	})

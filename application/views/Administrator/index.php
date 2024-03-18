@@ -260,6 +260,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 	</div><!-- /.main-container -->
 
 	<!-- basic scripts -->
+	<script src="<?php echo base_url(); ?>assets/js/jquery-2.1.4.min.js"></script>
 	<script type="text/javascript">
 		if ('ontouchstart' in document.documentElement) document.write("<script src='<?php echo base_url(); ?>assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
 	</script>
@@ -315,6 +316,13 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 				}
 			})
 
+		});
+
+		$(".fancybox").fancybox({
+			padding: 0,
+			transitionIn: 'elastic',
+			transitionOut: 'elastic',
+			loop: true
 		});
 	</script>
 </body>

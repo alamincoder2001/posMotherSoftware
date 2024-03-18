@@ -43,8 +43,17 @@ class Customer extends CI_Controller
         $data = json_decode($this->input->raw_input_stream);
 
         $customerTypeClause = "";
+        $limit = "";
         if (isset($data->customerType) && $data->customerType != null) {
             $customerTypeClause = " and Customer_Type = '$data->customerType'";
+        }
+        if (isset($data->forSearch) && $data->forSearch != '') {
+            $limit .= "limit 20";
+        }
+        if (isset($data->name) && $data->name != '') {
+            $customerTypeClause .= "or c.Customer_Code like '$data->name%'";
+            $customerTypeClause .= "or c.Customer_Name like '$data->name%'";
+            $customerTypeClause .= "or c.Customer_Mobile like '$data->name%'";
         }
         $customers = $this->db->query("
             select
@@ -55,8 +64,9 @@ class Customer extends CI_Controller
             left join tbl_district d on d.District_SlNo = c.area_ID
             where c.status = 'a'
             and c.Customer_Type != 'G'
-            and (c.Customer_brunchid = ? or c.Customer_brunchid = 0)
             $customerTypeClause
+            and (c.Customer_brunchid = ? or c.Customer_brunchid = 0)
+            $limit
             order by c.Customer_SlNo desc
         ", $this->session->userdata('BRANCHid'))->result();
         echo json_encode($customers);

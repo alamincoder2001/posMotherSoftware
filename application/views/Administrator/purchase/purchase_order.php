@@ -496,7 +496,7 @@
 						})
 						.then(res => {
 							let r = res.data;
-							this.products = r.filter(item => item.status == 'a');
+							this.products = r.filter(item => item.status == 'a' && item.is_service == 'false');
 							loading(false)
 						})
 				} else {
@@ -631,6 +631,9 @@
 							window.location = '/purchase';
 						}
 					} else {
+						if (r.branch_status == false) {
+							location.reload();
+						}
 						this.purchaseOnProgress = false;
 					}
 				})

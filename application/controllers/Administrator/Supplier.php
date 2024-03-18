@@ -292,6 +292,7 @@ class Supplier extends CI_Controller
         if (isset($data->name) && $data->name != '') {
             $clauses .= "or s.Supplier_Code like '$data->name%'";
             $clauses .= "or s.Supplier_Name like '$data->name%'";
+            $clauses .= "or s.Supplier_Mobile like '$data->name%'";
         }
 
         $suppliers = $this->db->query("

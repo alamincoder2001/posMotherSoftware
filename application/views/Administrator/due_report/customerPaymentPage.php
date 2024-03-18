@@ -165,7 +165,7 @@
 		</div>
 		<div class="col-md-12">
 			<div class="table-responsive">
-				<datatable :columns="columns" class="table-striped" :data="payments" :filter-by="filter" style="margin-bottom: 5px;">
+				<datatable :columns="columns" :data="payments" :filter-by="filter" style="margin-bottom: 5px;">
 					<template scope="{ row }">
 						<tr>
 							<td>{{ row.CPayment_invoice }}</td>

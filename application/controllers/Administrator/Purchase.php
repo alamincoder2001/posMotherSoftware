@@ -52,7 +52,7 @@ class Purchase extends CI_Controller
         }
         $purchases = $this->db->query("
             select
-            concat(pm.PurchaseMaster_InvoiceNo, ' - ', s.Supplier_Name) as invoice_text,
+            concat(pm.PurchaseMaster_InvoiceNo, ' - ', ifnull(s.Supplier_Name, pm.supplierName)) as invoice_text,
             pm.*,
             ifnull(pm.Supplier_SlNo, '') as Supplier_SlNo,
             ifnull(s.Supplier_Name, pm.supplierName) as Supplier_Name,
@@ -445,6 +445,12 @@ class Purchase extends CI_Controller
             $this->db->trans_begin();
             $data = json_decode($this->input->raw_input_stream);
 
+            if ($data->purchase->purchaseFor != $this->session->userdata("BRANCHid")) {
+                $res = ['success' => false, 'message' => 'You have already changed your branch.', 'branch_status'=> false];
+                echo json_encode($res);
+                exit;
+            }
+
             $invoice = $data->purchase->invoice;
             $invoiceCount = $this->db->query("select * from tbl_purchasemaster where PurchaseMaster_InvoiceNo = ?", $invoice)->num_rows();
             if ($invoiceCount != 0) {
@@ -454,7 +460,7 @@ class Purchase extends CI_Controller
             if (isset($data->supplier)) {
                 $supplier = (array)$data->supplier;
                 unset($supplier['Supplier_SlNo']);
-                unset($supplier['display_name']);
+                unset($supplier['display_name']);                
 
                 $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and Supplier_brinchid = ?", [$data->supplier->Supplier_Mobile, $this->session->userdata("BRANCHid")]);
                 if (
@@ -465,7 +471,7 @@ class Purchase extends CI_Controller
 
                     $duplicateSupplier = $mobile_count->row();
                     unset($supplier['Supplier_Code']);
-                    unset($supplier['Supplier_Type']);
+                    unset($supplier['Supplier_Type']);                    
                     $supplier["UpdateBy"]   = $this->session->userdata("FullName");
                     $supplier["UpdateTime"] = date("Y-m-d H:i:s");
                     $supplier["Status"]     = 'a';
