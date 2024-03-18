@@ -41,14 +41,14 @@
 				<div class="form-group" style="display:none;" v-bind:style="{display: customers.length > 0 ? '' : 'none'}">
 					<label class="col-xs-1">Customer</label>
 					<div class="col-xs-3">
-						<v-select v-bind:options="customers" label="display_name" v-model="selectedCustomer" v-on:input="getInvoices" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
+						<v-select v-bind:options="customers" label="display_name" v-model="selectedCustomer" v-on:input="getInvoices" @search="onSearchCustomer" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label class="col-xs-1">Invoice</label>
 					<div class="col-xs-2 no-padding-left">
-						<v-select v-bind:options="invoices" label="SaleMaster_InvoiceNo" v-model="selectedInvoice" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
+						<v-select v-bind:options="invoices" label="SaleMaster_InvoiceNo" v-model="selectedInvoice" @search="onSearchInvoice" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
 					</div>
 				</div>
 				<div class="form-group">
@@ -72,7 +72,7 @@
 			</div>
 			<div class="col-md-12">
 				<div class="table-responsive">
-					<table class="table table-bordered">
+					<table class="table table-bordered table-hover">
 						<thead>
 							<tr>
 								<th style="width: 6%;">Sl</th>
@@ -160,7 +160,9 @@
 		},
 		methods: {
 			getCustomers() {
-				axios.get('/get_customers').then(res => {
+				axios.post('/get_customers', {
+					forSearch: 'yes'
+				}).then(res => {
 					this.customers = res.data;
 					this.customers.unshift({
 						Customer_SlNo: null,
@@ -169,6 +171,22 @@
 						display_name: 'Cash Customer'
 					})
 				})
+			},
+			async onSearchCustomer(val, loading) {
+				if (val.length > 2) {
+					loading(true);
+					await axios.post("/get_customers", {
+							name: val,
+						})
+						.then(res => {
+							let r = res.data;
+							this.customers = r.filter(item => item.status == 'a')
+							loading(false)
+						})
+				} else {
+					loading(false)
+					await this.getCustomers();
+				}
 			},
 			getInvoices() {
 				if (event.type == 'readystatechange') {
@@ -193,13 +211,31 @@
 					}
 				} else {
 					arg = {
-						customerId: this.selectedCustomer.Customer_SlNo
+						customerId: this.selectedCustomer.Customer_SlNo,
+						forSearch: 'yes'
 					}
 				}
 
 				axios.post('/get_sales', arg).then(res => {
 					this.invoices = res.data.sales;
 				})
+			},
+			async onSearchInvoice(val, loading) {
+				if (val.length > 2) {
+					loading(true);
+					await axios.post("/get_sales", {
+							customerType: this.selectedCustomer.Customer_Type,
+							name: val,
+						})
+						.then(res => {
+							let r = res.data;
+							this.invoices = r.sales
+							loading(false)
+						})
+				} else {
+					loading(false)
+					await this.getInvoices();
+				}
 			},
 			async getSaleDetailsForReturn() {
 				if (this.selectedInvoice.SaleMaster_InvoiceNo == '') {

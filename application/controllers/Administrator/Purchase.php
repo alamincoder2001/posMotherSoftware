@@ -22,12 +22,21 @@ class Purchase extends CI_Controller
         $branchId = $this->session->userdata('BRANCHid');
 
         $clauses = "";
+        $limit = "";
+        
+        if (isset($data->name) && $data->name != '') {
+            $clauses .= " or pm.PurchaseMaster_InvoiceNo like '$data->name%'";
+        }
         if (isset($data->dateFrom) && $data->dateFrom != '' && isset($data->dateTo) && $data->dateTo != '') {
             $clauses .= " and pm.PurchaseMaster_OrderDate between '$data->dateFrom' and '$data->dateTo'";
         }
 
         if (isset($data->supplierId) && $data->supplierId != '') {
             $clauses .= " and pm.Supplier_SlNo = '$data->supplierId'";
+        }
+        
+        if (isset($data->forSearch) && $data->forSearch != '') {
+            $limit .= "limit 20";
         }
 
         $purchaseIdClause = "";
@@ -66,6 +75,7 @@ class Purchase extends CI_Controller
             and pm.status = 'a'
             $purchaseIdClause $clauses
             order by pm.PurchaseMaster_SlNo desc
+            $limit
         ")->result();
 
         $res['purchases'] = $purchases;

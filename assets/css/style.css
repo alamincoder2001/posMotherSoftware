@@ -274,36 +274,36 @@ legend.scheduler-border {
   padding: 3px 20px;
   border-radius: 6px;
   font-weight: 700;
-  background: #B74635 !important;
+  background: #b74635 !important;
   border-width: 0;
   color: white;
 }
 
 .btnCart:hover {
-  background: #B74635 !important;
+  background: #b74635 !important;
 }
 
 .btnReset {
   padding: 4px 25px !important;
   border-radius: 6px;
   font-weight: 700;
-  background: #B74635 !important;
+  background: #b74635 !important;
   border-width: 0;
   color: white;
 }
 .btnReset:hover {
-  background: #B74635 !important;
+  background: #b74635 !important;
 }
 .btnSave {
   padding: 4px 25px !important;
   border-radius: 6px;
   font-weight: 700;
-  background: #428BCA !important;
+  background: #428bca !important;
   border-width: 0;
   color: white;
 }
 .btnSave:hover {
-  background: #428BCA !important;
+  background: #428bca !important;
 }
 
 .btnSearch {

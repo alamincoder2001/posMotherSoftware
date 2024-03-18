@@ -41,7 +41,7 @@
 				<div class="form-group">
 					<label class="col-xs-1 control-label no-padding-right" for="purchaseInvoiceno"> Invoice no </label>
 					<div class="col-xs-3">
-						<v-select v-bind:options="invoices" label="invoice_text" v-model="selectedInvoice" v-bind:disabled="purchaseReturn.returnId == 0 ? false : true"></v-select>
+						<v-select v-bind:options="invoices" label="invoice_text" v-model="selectedInvoice" v-bind:disabled="purchaseReturn.returnId == 0 ? false : true" @search="onSearchInvoice"></v-select>
 					</div>
 					<div class="col-xs-2">
 						<button type="button" style="padding: 1px 15px;" @click="getPurchaseDetailsForReturn" v-bind:disabled="purchaseReturn.returnId == 0 ? false : true">View</button>
@@ -143,9 +143,25 @@
 		},
 		methods: {
 			getPurchases() {
-				axios.get('/get_purchases').then(res => {
+				axios.post('/get_purchases', {forSearch: 'yes'}).then(res => {
 					this.invoices = res.data.purchases;
 				})
+			},
+			async onSearchInvoice(val, loading) {
+				if (val.length > 2) {
+					loading(true);
+					await axios.post("/get_purchases", {
+							name: val,
+						})
+						.then(res => {
+							let r = res.data;
+							this.invoices = r.purchases
+							loading(false)
+						})
+				} else {
+					loading(false)
+					await this.getPurchases();
+				}
 			},
 			async getPurchaseDetailsForReturn() {
 				if (this.selectedInvoice == null) {

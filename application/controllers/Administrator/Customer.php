@@ -51,9 +51,9 @@ class Customer extends CI_Controller
             $limit .= "limit 20";
         }
         if (isset($data->name) && $data->name != '') {
-            $customerTypeClause .= "or c.Customer_Code like '$data->name%'";
-            $customerTypeClause .= "or c.Customer_Name like '$data->name%'";
-            $customerTypeClause .= "or c.Customer_Mobile like '$data->name%'";
+            $customerTypeClause .= " or c.Customer_Code like '$data->name%'";
+            $customerTypeClause .= " or c.Customer_Name like '$data->name%'";
+            $customerTypeClause .= " or c.Customer_Mobile like '$data->name%'";
         }
         $customers = $this->db->query("
             select
@@ -66,8 +66,8 @@ class Customer extends CI_Controller
             and c.Customer_Type != 'G'
             $customerTypeClause
             and (c.Customer_brunchid = ? or c.Customer_brunchid = 0)
-            $limit
             order by c.Customer_SlNo desc
+            $limit
         ", $this->session->userdata('BRANCHid'))->result();
         echo json_encode($customers);
     }

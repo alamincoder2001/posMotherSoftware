@@ -294,6 +294,11 @@ class Sales extends CI_Controller
         $branchId = $this->session->userdata("BRANCHid");
 
         $clauses = "";
+        $limit = "";
+        
+        if (isset($data->name) && $data->name != '') {
+            $clauses .= " or sm.SaleMaster_InvoiceNo like '$data->name%'";
+        }
         if (isset($data->dateFrom) && $data->dateFrom != '' && isset($data->dateTo) && $data->dateTo != '') {
             $clauses .= " and sm.SaleMaster_SaleDate between '$data->dateFrom' and '$data->dateTo'";
         }
@@ -312,6 +317,10 @@ class Sales extends CI_Controller
 
         if (isset($data->customerType) && $data->customerType != '') {
             $clauses .= " and sm.customerType = '$data->customerType'";
+        }
+
+        if (isset($data->forSearch) && $data->forSearch != '') {
+            $limit .= "limit 20";
         }
 
         if (isset($data->salesId) && $data->salesId != 0 && $data->salesId != '') {
@@ -351,6 +360,7 @@ class Sales extends CI_Controller
             and sm.Status = 'a'
             $clauses
             order by sm.SaleMaster_SlNo desc
+            $limit
         ")->result();
 
         $res['sales'] = $sales;
