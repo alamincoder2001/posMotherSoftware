@@ -70,7 +70,7 @@
             </fieldset>
         </div>
         <fieldset class="scheduler-border">
-            <legend class="scheduler-border">Product Information</legend>
+            <legend class="scheduler-border">Damage Product Information</legend>
             <div class="control-group">
                 <div class="col-md-4">
                     <form class="form" @submit.prevent="addToCart">
@@ -84,21 +84,21 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label no-padding-right"> Quantity: </label>
                             <div class="col-md-9">
-                                <input type="number" placeholder="Quantity" class="form-control" v-model="damage.DamageDetails_DamageQuantity" required v-on:input="calculateTotal" />
+                                <input type="number" id="quantity" placeholder="Quantity" class="form-control" v-model="selectedProduct.quantity" required v-on:input="productTotal" />
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-md-3 control-label no-padding-right"> Rate: </label>
                             <div class="col-md-9">
-                                <input type="number" step="0.01" placeholder="Rate" class="form-control" v-model="damage.damage_rate" required v-on:input="calculateTotal" />
+                                <input type="number" min="0" step="0.01" placeholder="Rate" class="form-control" v-model="selectedProduct.Product_Purchase_Rate" required v-on:input="productTotal" />
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-md-3 control-label no-padding-right"> Amount: </label>
                             <div class="col-md-9">
-                                <input type="number" placeholder="Amount" class="form-control" v-model="damage.damage_amount" required disabled />
+                                <input type="number" min="0" step="any" placeholder="Amount" class="form-control" v-model="selectedProduct.total" required disabled />
                             </div>
                         </div>
                         <div class="form-group">
@@ -139,10 +139,26 @@
                                 <td>{{item.rate}}</td>
                                 <td>{{item.total}}</td>
                                 <td>
-                                    <i class="fa fa-trash btnDelete"></i>
+                                    <i class="fa fa-trash btnDelete" @click="removeCart(sl)"></i>
                                 </td>
                             </tr>
                         </tbody>
+                        <tfoot style="display: none;" :style="{display: carts.length > 0 ? '' : 'none'}" v-if="carts.length > 0">
+                            <tr>
+                                <th colspan="4">Total</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <th colspan="4">{{damage.damage_amount}}</th>
+                                <th>
+                                    <button type="button" class="btnReset" @click="resetForm">Reset</button>
+                                </th>
+                                <th>
+                                    <button type="button" class="btnSave" @click="addDamage">Save</button>
+                                </th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -160,22 +176,15 @@
                 <datatable :columns="columns" :data="damages" :filter-by="filter">
                     <template scope="{ row }">
                         <tr>
+                            <td>{{ row.sl }}</td>
                             <td>{{ row.Damage_InvoiceNo }}</td>
                             <td>{{ row.Damage_Date }}</td>
-                            <td>{{ row.Product_Code }}</td>
-                            <td>{{ row.Product_Name }}</td>
-                            <td>{{ row.DamageDetails_DamageQuantity }}</td>
-                            <td>{{ row.damage_rate }}</td>
                             <td>{{ row.damage_amount }}</td>
                             <td>{{ row.Damage_Description }}</td>
                             <td>
                                 <?php if ($this->session->userdata('accountType') != 'u') { ?>
-                                    <button type="button" class="button edit" @click="editDamage(row)">
-                                        <i class="fa fa-pencil"></i>
-                                    </button>
-                                    <button type="button" class="button" @click="deleteDamage(row.Damage_SlNo)">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
+                                    <i class="fa fa-pencil btnEdit" @click="editDamage(row)"></i>
+                                    <i class="fa fa-trash btnDelete" @click="deleteDamage(row.Damage_SlNo)"></i>
                                 <?php } ?>
                             </td>
                         </tr>
@@ -204,10 +213,8 @@
                     Damage_InvoiceNo: '<?php echo $damageCode; ?>',
                     Damage_Date: moment().format('YYYY-MM-DD'),
                     Damage_Description: '',
-                    Product_SlNo: '',
-                    DamageDetails_DamageQuantity: '',
-                    damage_rate: '',
                     damage_amount: 0,
+                    damageFor: "<?php echo $this->session->userdata('BRANCHid'); ?>"
                 },
                 products: [],
                 selectedProduct: {
@@ -223,6 +230,11 @@
                 productUnit: '',
                 damages: [],
                 columns: [{
+                        label: 'Sl',
+                        field: 'sl',
+                        align: 'center'
+                    },
+                    {
                         label: 'Code',
                         field: 'Damage_InvoiceNo',
                         align: 'center',
@@ -231,26 +243,6 @@
                     {
                         label: 'Date',
                         field: 'Damage_Date',
-                        align: 'center'
-                    },
-                    {
-                        label: 'Product Code',
-                        field: 'Product_Code',
-                        align: 'center'
-                    },
-                    {
-                        label: 'Product Name',
-                        field: 'Product_Name',
-                        align: 'center'
-                    },
-                    {
-                        label: 'Quantity',
-                        field: 'DamageDetails_DamageQuantity',
-                        align: 'center'
-                    },
-                    {
-                        label: 'Damage Rate',
-                        field: 'damage_rate',
                         align: 'center'
                     },
                     {
@@ -279,21 +271,6 @@
             this.getDamages();
         },
         methods: {
-            async productOnChange() {
-                if ((this.selectedProduct.Product_SlNo != '' || this.selectedProduct.Product_SlNo != 0)) {
-                    // this.damage.damage_rate = this.selectedProduct.Product_Purchase_Rate;
-
-                    // let damage_amount = parseFloat(this.damage.damage_rate) * parseFloat(this.damage.DamageDetails_DamageQuantity);
-                    // this.damage.damage_amount = isNaN(damage_amount) ? 0 : damage_amount;
-
-                    this.productStock = await axios.post('/get_product_stock', {
-                        productId: this.selectedProduct.Product_SlNo
-                    }).then(res => {
-                        this.productUnit = this.selectedProduct.Unit_Name
-                        return res.data;
-                    })
-                }
-            },
             getProducts() {
                 axios.post('/get_products', {
                     isService: 'false'
@@ -301,6 +278,23 @@
                     this.products = res.data;
                 })
             },
+
+            async productOnChange() {
+                if ((this.selectedProduct.Product_SlNo != '' || this.selectedProduct.Product_SlNo != 0)) {
+                    this.productStock = await axios.post('/get_product_stock', {
+                        productId: this.selectedProduct.Product_SlNo
+                    }).then(res => {
+                        this.productUnit = this.selectedProduct.Unit_Name
+                        document.querySelector("#quantity").focus();
+                        return res.data;
+                    })
+                }
+            },
+
+            productTotal() {
+                this.selectedProduct.total = parseFloat(this.selectedProduct.Product_Purchase_Rate * this.selectedProduct.quantity).toFixed(2)
+            },
+
             addToCart() {
                 if (this.selectedProduct == null) {
                     alert("Product is empty");
@@ -315,32 +309,69 @@
                     total: this.selectedProduct.total,
                 }
 
-                this.carts.push(product);
-            },
-            addDamage() {
-                if (this.selectedProduct == null) {
-                    alert('Select product');
-                    return;
-                }
-
-                if (this.damage.DamageDetails_DamageQuantity > this.productStock) {
+                if (product.quantity > this.productStock) {
                     alert('Stock unavailable');
                     return;
                 }
 
-                this.damage.Product_SlNo = this.selectedProduct.Product_SlNo;
+                if (product.productName == '') {
+                    alert("Product name is empty");
+                    return;
+                }
+
+                let findIndex = this.carts.findIndex(item => item.product_id == product.product_id);
+                if (findIndex > -1) {
+                    this.carts.splice(findIndex, 1);
+                }
+
+                this.carts.push(product);
+                this.clearProduct();
+                this.calculateTotal();
+            },
+
+            removeCart(sl) {
+                this.carts.splice(sl, 1);
+                this.calculateTotal();
+            },
+
+            clearProduct() {
+                this.selectedProduct = {
+                    Product_SlNo: "",
+                    Product_Code: "",
+                    Product_Name: "",
+                    quantity: 0,
+                    Product_Purchase_Rate: 0,
+                    total: 0,
+                }
+                this.productStock = 0;
+            },
+
+            addDamage() {
+                if (this.carts.length == 0) {
+                    alert('Cart is empty');
+                    return;
+                }
 
                 let url = '/add_damage';
                 if (this.damage.Damage_SlNo != 0) {
                     url = '/update_damage'
                 }
-                axios.post(url, this.damage).then(res => {
+                let filter = {
+                    damage: this.damage,
+                    carts: this.carts
+                }
+
+                axios.post(url, filter).then(res => {
                     let r = res.data;
                     alert(r.message);
                     if (r.success) {
                         this.resetForm();
-                        this.damage.Damage_InvoiceNo = r.newCode;
+                        this.damage.Damage_InvoiceNo = r.damageCode;
                         this.getDamages();
+                    } else {
+                        if (r.branch_status == false) {
+                            location.reload();
+                        }
                     }
                 })
             },
@@ -349,16 +380,25 @@
                 let keys = Object.keys(this.damage);
                 keys.forEach(key => this.damage[key] = damage[key]);
 
-                this.selectedProduct = {
-                    Product_SlNo: damage.Product_SlNo,
-                    display_text: `${damage.Product_Name} - ${damage.Product_Code}`,
-                    Product_Purchase_Rate: damage.damage_rate
-                }
+                this.carts = [];
+                damage.damageDetail.forEach(item => {
+                    let product = {
+                        product_id: item.Product_SlNo,
+                        productCode: item.Product_Code,
+                        productName: item.Product_Name,
+                        quantity: item.DamageDetails_DamageQuantity,
+                        rate: item.damage_rate,
+                        total: item.damage_amount,
+                    }
+                    this.carts.push(product)
+                })
+
             },
 
             calculateTotal() {
-                let damage_amount = parseFloat(this.damage.damage_rate) * parseFloat(this.damage.DamageDetails_DamageQuantity);
-                this.damage.damage_amount = isNaN(damage_amount) ? 0 : damage_amount;
+                this.damage.damage_amount = this.carts.reduce((prev, curr) => {
+                    return prev + parseFloat(curr.total)
+                }, 0).toFixed(2);
             },
 
             deleteDamage(damageId) {
@@ -379,19 +419,21 @@
 
             getDamages() {
                 axios.get('/get_damages').then(res => {
-                    this.damages = res.data;
+                    this.damages = res.data.map((item, index) => {
+                        item.sl = index + 1;
+                        return item;
+                    });
                 })
             },
 
             resetForm() {
                 this.damage.Damage_SlNo = '';
                 this.damage.Damage_Description = '';
-                this.damage.Product_SlNo = '';
-                this.damage.DamageDetails_DamageQuantity = '';
-                this.damage.damage_rate = '';
                 this.damage.damage_amount = 0;
-                this.selectedProduct = null;
-                this.productStock = '';
+                this.damage.damageFor = "<?php echo $this->session->userdata('BRANCHid'); ?>";
+                this.carts = [];
+
+                this.damage.Damage_InvoiceNo = "<?php echo $this->mt->generateDamageCode();?>"
             }
         }
     })

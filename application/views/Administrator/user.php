@@ -118,7 +118,7 @@
 							</td>
 							<td>
 								<span v-if="row.status == 'a'" class="badge badge-success">Active</span>
-								<span v-if="row.UserType == 'd'" class="badge badge-danger">Deactive</span>
+								<span v-if="row.status == 'p'" class="badge badge-danger">Deactive</span>
 							</td>
 							<td>
 								<span v-if="row.status == 'a'">

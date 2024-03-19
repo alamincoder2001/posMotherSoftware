@@ -468,9 +468,8 @@ class Employee extends CI_Controller
     {
         $data['title'] = "Edit Employee";
         $query = $this->db->query("SELECT tbl_employee.* FROM tbl_employee  where Employee_SlNo = '$id'");
-        $data['selected'] = $query->row();
-        // echo "<pre>";print_r($data);exit;
-        $data['content'] = $this->load->view('Administrator/edit/employee_edit', $data, TRUE);
+        $data['employee'] = $query->row();
+        $data['content'] = $this->load->view('Administrator/employee/edit_employee', $data, TRUE);
         $this->load->view('Administrator/index', $data);
     }
 

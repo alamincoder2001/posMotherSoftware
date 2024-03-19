@@ -1,79 +1,92 @@
 <style>
-	.v-select{
-		margin-bottom: 5px;
-		float:right;
+	.v-select {
+		float: right;
 		min-width: 200px;
+		background: #fff;
+		margin-left: 5px;
+		border-radius: 4px !important;
 	}
-	.v-select .dropdown-toggle{
+
+	.v-select .dropdown-toggle {
 		padding: 0px;
 		height: 25px;
+		border: none;
 	}
-	.v-select input[type=search], .v-select input[type=search]:focus{
+
+	.v-select input[type=search],
+	.v-select input[type=search]:focus {
 		margin: 0px;
 	}
-	.v-select .vs__selected-options{
+
+	.v-select .vs__selected-options {
 		overflow: hidden;
-		flex-wrap:nowrap;
+		flex-wrap: nowrap;
 	}
-	.v-select .selected-tag{
+
+	.v-select .selected-tag {
 		margin: 2px 0px;
 		white-space: nowrap;
-		position:absolute;
+		position: absolute;
 		left: 0px;
 	}
-	.v-select .vs__actions{
-		margin-top:-5px;
-	}
-	.v-select .dropdown-menu{
+
+	.v-select .dropdown-menu {
 		width: auto;
-		overflow-y:auto;
+		overflow-y: auto;
 	}
-	#table1{
+
+	#table1 {
 		border-collapse: collapse;
 		width: 100%;
 	}
 
-	#table1 td, #table1 th{
+	#table1 td,
+	#table1 th {
 		padding: 5px;
 		border: 1px solid #909090;
 	}
 
-	#table1 th{
+	#table1 th {
 		text-align: center;
 	}
 
-	#table1 thead{
+	#table1 thead {
 		background-color: #cbd6e7;
 	}
 </style>
 <div id="profitLoss">
-	<div class="row" style="border-bottom: 1px solid #ccc;">
-		<div class="col-md-12">
-			<form class="form-inline" v-on:submit.prevent="getProfitLoss">
-				<div class="form-group" style="margin-right: 15px;">
-					<label>Customer &nbsp;</label>
-					<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name" placeholder="Select Customer"></v-select>
-				</div>
+	<div class="row" style="margin:0;">
+		<fieldset class="scheduler-border scheduler-search">
+			<legend class="scheduler-border">Profit Loss</legend>
+			<div class="control-group">
+				<div class="col-md-12">
+					<form class="form-inline" v-on:submit.prevent="getProfitLoss">
+						<div class="form-group" style="margin-right: 15px;">
+							<label>Customer &nbsp;</label>
+							<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name" placeholder="Select Customer"></v-select>
+						</div>
 
-				<div class="form-group">
-					<label>Date from </label>
-					<input type="date" class="form-control" v-model="filter.dateFrom">
-				</div>
+						<div class="form-group">
+							<label>Date from </label>
+							<input type="date" class="form-control" v-model="filter.dateFrom">
+						</div>
 
-				<div class="form-group">
-					<label>to </label>
-					<input type="date" class="form-control" v-model="filter.dateTo">
-				</div>
+						<div class="form-group">
+							<label>to </label>
+							<input type="date" class="form-control" v-model="filter.dateTo">
+						</div>
 
-				<div class="form-group">
-					<input type="submit" class="btn btn-info btn-xs" value="Search" style="padding-top:0px;padding-bottom:0px;margin-top:-4px;">
+						<div class="form-group">
+							<input type="submit" class="btn btn-info btn-xs" value="Search" style="padding-top:0px;padding-bottom:0px;margin-top:-4px;">
+						</div>
+					</form>
 				</div>
-			</form>
-		</div>
+			</div>
+		</fieldset>
 	</div>
 
 	<div class="row" style="display:none;" :style="{display: show_report ? '' : 'none'}">
-		<div class="col-md-12" style="margin: 10px 0;">
+		<div class="col-md-12 text-right">
 			<a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
 		</div>
 		<div class="col-md-12">
@@ -93,8 +106,8 @@
 					<tbody v-for="data in reportData">
 						<tr>
 							<td colspan="7" style="background-color: #e3eae7;">
-								<strong>Invoice: </strong> {{ data.SaleMaster_InvoiceNo }} | 
-								<strong>Sales Date: </strong> {{ data.SaleMaster_SaleDate }} | 
+								<strong>Invoice: </strong> {{ data.SaleMaster_InvoiceNo }} |
+								<strong>Sales Date: </strong> {{ data.SaleMaster_SaleDate }} |
 								<strong>Customer: </strong> {{ data.Customer_Name }} |
 								<strong>Discount: </strong> {{ data.SaleMaster_TotalDiscountAmount | decimal }} |
 								<strong>VAT: </strong> {{ data.SaleMaster_TaxAmount | decimal }} |
@@ -121,21 +134,21 @@
 						<tr>
 							<td style="text-align:right;" colspan="4">Total Profit</td>
 							<td style="text-align:right;">
-								{{ 
+								{{
 									reportData.reduce((prev, cur) => { return prev + parseFloat(
 										cur.saleDetails.reduce((p, c) => { return p + parseFloat(c.purchased_amount) }, 0)
 									)}, 0).toFixed(2)
 								}}
 							</td>
 							<td style="text-align:right;">
-								{{ 
+								{{
 									reportData.reduce((prev, cur) => { return prev + parseFloat(
 										cur.saleDetails.reduce((p, c) => { return p + parseFloat(c.SaleDetails_TotalAmount) }, 0)
 									)}, 0).toFixed(2)
 								}}
 							</td>
 							<td style="text-align:right;">
-								{{ 
+								{{
 									totalProfit = reportData.reduce((prev, cur) => { return prev + parseFloat(
 										cur.saleDetails.reduce((p, c) => { return p + parseFloat(c.profit_loss) }, 0)
 									)}, 0).toFixed(2)
@@ -207,7 +220,7 @@
 							<td colspan="4" style="text-align:right;">Profit</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">
-								{{  ((parseFloat(totalProfit) + parseFloat(totalVat) + parseFloat(otherIncome)) - 
+								{{ ((parseFloat(totalProfit) + parseFloat(totalVat) + parseFloat(otherIncome)) - 
 									(parseFloat(totalDiscount) + parseFloat(otherIncomeExpense.returned_amount) + parseFloat(otherIncomeExpense.damaged_amount) + parseFloat(otherIncomeExpense.expense) + parseFloat(otherIncomeExpense.employee_payment) + parseFloat(otherIncomeExpense.profit_distribute) + parseFloat(otherIncomeExpense.loan_interest) + parseFloat(otherIncomeExpense.assets_sales_profit_loss))).toFixed(2) }}
 							</td>
 						</tr>
@@ -218,16 +231,16 @@
 	</div>
 </div>
 
-<script src="<?php echo base_url();?>assets/js/vue/vue.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/axios.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/vue-select.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/moment.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/axios.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue-select.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/moment.min.js"></script>
 
 <script>
 	Vue.component('v-select', VueSelect.VueSelect);
 	new Vue({
 		el: '#profitLoss',
-		data(){
+		data() {
 			return {
 				filter: {
 					customer: null,
@@ -255,38 +268,40 @@
 		},
 		filters: {
 			decimal(value) {
-				return value ==  null || value == undefined ? '0.00' : parseFloat(value).toFixed(2);
+				return value == null || value == undefined ? '0.00' : parseFloat(value).toFixed(2);
 			}
 		},
-		created(){
+		created() {
 			this.getCustomers();
 		},
-		computed:{
-			totalTransportCost(){
-				return this.reportData.reduce((prev, cur) => { return prev + parseFloat(cur.SaleMaster_Freight) }, 0).toFixed(2);
+		computed: {
+			totalTransportCost() {
+				return this.reportData.reduce((prev, cur) => {
+					return prev + parseFloat(cur.SaleMaster_Freight)
+				}, 0).toFixed(2);
 			},
-			otherIncome(){
-				return ( 
+			otherIncome() {
+				return (
 					(
-					parseFloat(this.totalTransportCost) + 
-					parseFloat(this.otherIncomeExpense.income) + 
-					parseFloat(this.otherIncomeExpense.purchase_discount)
+						parseFloat(this.totalTransportCost) +
+						parseFloat(this.otherIncomeExpense.income) +
+						parseFloat(this.otherIncomeExpense.purchase_discount)
 					) - (
-					parseFloat(this.otherIncomeExpense.purchase_vat) + 
-					parseFloat(this.otherIncomeExpense.purchase_transport_cost)
-					) 
+						parseFloat(this.otherIncomeExpense.purchase_vat) +
+						parseFloat(this.otherIncomeExpense.purchase_transport_cost)
+					)
 				).toFixed(2);
 			}
 		},
 		methods: {
-			getCustomers(){
+			getCustomers() {
 				axios.get('/get_customers').then(res => {
 					this.customers = res.data;
 				})
 			},
 
-			async getProfitLoss(){
-				if(this.selectedCustomer != null){
+			async getProfitLoss() {
+				if (this.selectedCustomer != null) {
 					this.filter.customer = this.selectedCustomer.Customer_SlNo;
 				} else {
 					this.filter.customer = null;
@@ -300,12 +315,12 @@
 				})
 
 				this.show_report = true;
-				
+
 			},
 
-			async print(){
+			async print() {
 				let customerText = '';
-				if(this.selectedCustomer != null){
+				if (this.selectedCustomer != null) {
 					customerText = `
 						<strong>Customer Id: </strong> ${this.selectedCustomer.Customer_Code}<br>
 						<strong>Name: </strong> ${this.selectedCustomer.Customer_Name}<br>
@@ -315,7 +330,7 @@
 				}
 
 				let dateText = '';
-				if(this.filter.dateFrom != '' && this.filter.dateTo != ''){
+				if (this.filter.dateFrom != '' && this.filter.dateTo != '') {
 					dateText = `
 						Statement from <strong>${this.filter.dateFrom}</strong> to <strong>${this.filter.dateTo}</strong>
 					`;
@@ -337,7 +352,7 @@
 
 				var mywindow = window.open('', 'PRINT', `width=${screen.width}, height=${screen.height}`);
 				mywindow.document.write(`
-					<?php $this->load->view('Administrator/reports/reportHeader.php');?>
+					<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>
 				`);
 
 				mywindow.document.head.innerHTML += `

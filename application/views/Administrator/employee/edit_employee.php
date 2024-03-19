@@ -26,12 +26,12 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="Product_id"> Employee ID </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-2">
-							<input type="text" name="Employeer_id" id="Employeer_id" value="<?php echo $generateCode; ?>" class="form-control" readonly />
+							<input type="text" name="Employeer_id" id="Employeer_id" value="<?php echo $employee->Employee_ID; ?>" class="form-control" readonly />
 						</div>
 
 						<label class="col-md-2 control-label" for="bio_id"> Bio ID: </label>
 						<div class="col-md-2">
-							<input type="text" name="bio_id" id="bio_id" value="" class="form-control" />
+							<input type="text" name="bio_id" id="bio_id" value="<?php echo $employee->bio_id; ?>" class="form-control" />
 						</div>
 					</div>
 
@@ -39,7 +39,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="em_name"> Employee Name </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="text" id="em_name" name="em_name" value="<?php echo set_value('em_name'); ?>" placeholder="Employee Name .." class="form-control" />
+							<input type="text" id="em_name" name="em_name" value="<?php echo $employee->Employee_Name; ?>" placeholder="Employee Name .." class="form-control" />
 							<div id="em_name_" class="col-md-12"></div>
 						</div>
 					</div>
@@ -54,7 +54,7 @@ if ($serial[1] >= 9) {
 								$query = $this->db->query("SELECT * FROM tbl_designation where Status='a' order by Designation_Name asc");
 								$row = $query->result();
 								foreach ($row as $row) { ?>
-									<option value="<?php echo $row->Designation_SlNo; ?>"><?php echo $row->Designation_Name; ?></option>
+									<option value="<?php echo $row->Designation_SlNo; ?>" <?= $employee->Designation_ID == $row->Designation_SlNo ? 'selected' : ''; ?>><?php echo $row->Designation_Name; ?></option>
 								<?php } ?>
 							</select>
 							<div id="em_Designation_" class="col-md-12"></div>
@@ -74,7 +74,7 @@ if ($serial[1] >= 9) {
 								$dquery = $this->db->query("SELECT * FROM tbl_department order by Department_Name asc ");
 								$drow = $dquery->result();
 								foreach ($drow as $drow) { ?>
-									<option value="<?php echo $drow->Department_SlNo; ?>"><?php echo $drow->Department_Name; ?></option>
+									<option value="<?php echo $drow->Department_SlNo; ?>" <?= $employee->Department_ID == $drow->Department_SlNo ? 'selected' : ''; ?>><?php echo $drow->Department_Name; ?></option>
 								<?php } ?>
 							</select>
 							<div id="em_Depertment_" class="col-md-12"></div>
@@ -88,7 +88,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="em_Joint_date">Joint Date</label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input class="form-control date-picker" name="em_Joint_date" id="em_Joint_date" type="date" data-date-format="yyyy-mm-dd" style="border-radius: 5px !important;" value="<?php echo date("Y-m-d") ?>" />
+							<input class="form-control date-picker" name="em_Joint_date" id="em_Joint_date" type="date" data-date-format="yyyy-mm-dd" style="border-radius: 5px !important;" value="<?php echo $employee->Employee_JoinDate; ?>" />
 						</div>
 					</div>
 
@@ -97,7 +97,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="salary_range">Salary Range</label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="text" id="salary_range" name="salary_range" value="<?php echo set_value('phone_number'); ?>" placeholder="Salary Range .." class="form-control" />
+							<input type="text" id="salary_range" name="salary_range" value="<?php echo $employee->salary_range; ?>" placeholder="Salary Range .." class="form-control" />
 							<div id="salary_range_" class="col-md-12"></div>
 						</div>
 					</div>
@@ -108,8 +108,8 @@ if ($serial[1] >= 9) {
 						<div class="col-md-6">
 							<select class="chosen-select form-control" name="status" id="status" data-placeholder="Choose a status...">
 								<option value=""> </option>
-								<option value="a"> Active </option>
-								<option value="p"> Deactive </option>
+								<option value="a" <?= $employee->status == 'a' ? 'selected' : '' ?>> Active </option>
+								<option value="p" <?= $employee->status == 'p' ? 'selected' : '' ?>> Deactive </option>
 							</select>
 						</div>
 					</div>
@@ -128,7 +128,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="em_Present_address"> Present Address </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="text" id="em_Present_address" name="em_Present_address" placeholder="Present Address" class="form-control" />
+							<input type="text" id="em_Present_address" value="<?= $employee->Employee_PrasentAddress ?>" name="em_Present_address" placeholder="Present Address" class="form-control" />
 						</div>
 					</div>
 
@@ -136,7 +136,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="em_Permanent_address"> Permanent Address </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="text" id="em_Permanent_address" name="em_Permanent_address" placeholder="Present Address" class="form-control" />
+							<input type="text" id="em_Permanent_address" value="<?= $employee->Employee_PermanentAddress ?>" name="em_Permanent_address" placeholder="Present Address" class="form-control" />
 						</div>
 					</div>
 
@@ -144,7 +144,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="em_contact"> Contact No </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="text" id="em_contact" name="em_contact" placeholder="Contact No" class="form-control" />
+							<input type="text" id="em_contact" name="em_contact" value="<?= $employee->Employee_ContactNo ?>" placeholder="Contact No" class="form-control" />
 						</div>
 					</div>
 
@@ -152,7 +152,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="ec_email"> E-mail </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="text" id="ec_email" name="ec_email" placeholder="E-mail" class="form-control" />
+							<input type="text" id="ec_email" name="ec_email" value="<?= $employee->Employee_Email ?>" placeholder="E-mail" class="form-control" />
 						</div>
 					</div>
 
@@ -168,7 +168,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="em_photo"> Reference </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<textarea id="em_reference" name="em_reference" placeholder="Reference" class="form-control"></textarea>
+							<textarea id="em_reference" name="em_reference" placeholder="Reference" value="<?= $employee->Employee_Reference ?>" class="form-control"></textarea>
 						</div>
 					</div>
 
@@ -177,7 +177,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-1 control-label"></label>
 						<div class="col-md-6 text-right">
 							<button type="button" onclick="Employee_submit()" name="btnSubmit" title="Save" class="btnSave">
-								Save
+								Update
 								<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
 							</button>
 						</div>
@@ -194,7 +194,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="form-field-1"> Father's Name </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="text" id="em_father" name="em_father" placeholder="Father's Name" class="form-control" />
+							<input type="text" id="em_father" name="em_father" placeholder="Father's Name" class="form-control" value="<?= $employee->Employee_FatherName ?>"/>
 						</div>
 					</div>
 
@@ -202,7 +202,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="form-field-1"> Mother's Name </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="text" id="mother_name" name="mother_name" placeholder="Mother's Name" class="form-control" />
+							<input type="text" id="mother_name" name="mother_name" placeholder="Mother's Name" class="form-control" value="<?= $employee->Employee_MotherName ?>"/>
 						</div>
 					</div>
 
@@ -212,8 +212,8 @@ if ($serial[1] >= 9) {
 						<div class="col-md-6">
 							<select class="chosen-select form-control" name="Gender" id="Gender" data-placeholder="Choose a Gender...">
 								<option value=""> </option>
-								<option value="Male">Male</option>
-								<option value="Female">Female</option>
+								<option value="Male" <?= $employee->Employee_Gender == 'Male' ?'selected' : '' ?>>Male</option>
+								<option value="Female" <?= $employee->Employee_Gender == 'Female' ?'selected' : '' ?>>Female</option>
 							</select>
 						</div>
 					</div>
@@ -222,7 +222,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="em_dob">Date of Birth</label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input class="form-control date-picker" name="em_dob" id="em_dob" type="text" data-date-format="yyyy-mm-dd" style="border-radius: 5px !important;" value="<?php echo date("Y-m-d") ?>" />
+							<input class="form-control date-picker" name="em_dob" id="em_dob" type="text" data-date-format="yyyy-mm-dd" style="border-radius: 5px !important;" value="<?php echo $employee->Employee_BirthDate; ?>" />
 						</div>
 					</div>
 
@@ -232,8 +232,8 @@ if ($serial[1] >= 9) {
 						<div class="col-md-6">
 							<select class="chosen-select form-control" name="Marital" id="Marital" data-placeholder="Choose a Marital Status...">
 								<option value=""> </option>
-								<option value="married">Married</option>
-								<option value="unmarried">Unmarried</option>
+								<option value="married" <?= $employee->Employee_MaritalStatus == 'married' ?'selected' : '' ?>>Married</option>
+								<option value="unmarried" <?= $employee->Employee_MaritalStatus == 'unmarried' ?'selected' : '' ?>>Unmarried</option>
 							</select>
 						</div>
 					</div>
@@ -321,6 +321,7 @@ if ($serial[1] >= 9) {
 
 		var fd = new FormData();
 		fd.append('em_photo', $('#em_photo')[0].files[0]);
+		fd.append('iidd', "<?php echo $employee->Employee_SlNo;?>");
 		fd.append('Employeer_id', $('#Employeer_id').val());
 		fd.append('em_name', $('#em_name').val());
 		fd.append('em_Designation', $('#em_Designation').val());
@@ -342,7 +343,7 @@ if ($serial[1] >= 9) {
 		fd.append('status', $('#status').val());
 
 		var x = $.ajax({
-			url: "<?php echo base_url(); ?>employeeInsert",
+			url: "<?php echo base_url(); ?>employeeUpdate",
 			type: "POST",
 			data: fd,
 			enctype: 'multipart/form-data',
@@ -352,7 +353,7 @@ if ($serial[1] >= 9) {
 				let resp = $.parseJSON(res);
 				alert(resp.message);
 				if (resp.success) {
-					location.reload();
+					location.href = '/employee'
 				}
 			}
 		});

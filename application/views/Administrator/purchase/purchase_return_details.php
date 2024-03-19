@@ -76,7 +76,7 @@
 <div id="purchaseReturnList">
 	<div class="row" style="margin:0;">
 		<fieldset class="scheduler-border scheduler-search">
-			<legend class="scheduler-border">Sales Return Record</legend>
+			<legend class="scheduler-border">Purchase Return Record</legend>
 			<div class="control-group">
 				<div class="col-md-12">
 					<form class="form-inline" id="searchForm" @submit.prevent="getPurchaseReturnDetails">
@@ -254,10 +254,6 @@
 						.record-table{
 							width: 100%;
 							border-collapse: collapse;
-						}
-						.record-table thead{
-							background-color: #0097df;
-							color:white;
 						}
 						.record-table th, .record-table td{
 							padding: 3px;

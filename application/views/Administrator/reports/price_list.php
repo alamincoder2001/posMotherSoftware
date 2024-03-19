@@ -69,8 +69,8 @@
         </div>
     </div>
 
-    <div class="row" style="display:none;margin-top: 15px;" v-bind:style="{display: products.length > 0 ? '' : 'none'}">
-        <div class="col-md-12" style="margin-bottom: 10px;">
+    <div class="row" style="display:none;" v-bind:style="{display: products.length > 0 ? '' : 'none'}">
+        <div class="col-md-12 text-right">
             <a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
         </div>
         <div class="col-md-12">

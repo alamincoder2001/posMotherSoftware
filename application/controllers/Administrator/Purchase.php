@@ -23,7 +23,7 @@ class Purchase extends CI_Controller
 
         $clauses = "";
         $limit = "";
-        
+
         if (isset($data->name) && $data->name != '') {
             $clauses .= " or pm.PurchaseMaster_InvoiceNo like '$data->name%'";
         }
@@ -34,7 +34,7 @@ class Purchase extends CI_Controller
         if (isset($data->supplierId) && $data->supplierId != '') {
             $clauses .= " and pm.Supplier_SlNo = '$data->supplierId'";
         }
-        
+
         if (isset($data->forSearch) && $data->forSearch != '') {
             $limit .= "limit 20";
         }
@@ -456,7 +456,7 @@ class Purchase extends CI_Controller
             $data = json_decode($this->input->raw_input_stream);
 
             if ($data->purchase->purchaseFor != $this->session->userdata("BRANCHid")) {
-                $res = ['success' => false, 'message' => 'You have already changed your branch.', 'branch_status'=> false];
+                $res = ['success' => false, 'message' => 'You have already changed your branch.', 'branch_status' => false];
                 echo json_encode($res);
                 exit;
             }
@@ -470,7 +470,7 @@ class Purchase extends CI_Controller
             if (isset($data->supplier)) {
                 $supplier = (array)$data->supplier;
                 unset($supplier['Supplier_SlNo']);
-                unset($supplier['display_name']);                
+                unset($supplier['display_name']);
 
                 $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and Supplier_brinchid = ?", [$data->supplier->Supplier_Mobile, $this->session->userdata("BRANCHid")]);
                 if (
@@ -481,7 +481,7 @@ class Purchase extends CI_Controller
 
                     $duplicateSupplier = $mobile_count->row();
                     unset($supplier['Supplier_Code']);
-                    unset($supplier['Supplier_Type']);                    
+                    unset($supplier['Supplier_Type']);
                     $supplier["UpdateBy"]   = $this->session->userdata("FullName");
                     $supplier["UpdateTime"] = date("Y-m-d H:i:s");
                     $supplier["Status"]     = 'a';
@@ -1266,40 +1266,50 @@ class Purchase extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
 
+            if ($data->damage->damageFor != $this->session->userdata("BRANCHid")) {
+                $res = ['success' => false, 'message' => 'You have already changed your branch.', 'branch_status' => false];
+                echo json_encode($res);
+                exit;
+            }
+
             $damage = array(
-                'Damage_InvoiceNo' => $data->Damage_InvoiceNo,
-                'Damage_Date' => $data->Damage_Date,
-                'Damage_Description' => $data->Damage_Description,
-                'status' => 'a',
-                'AddBy' => $this->session->userdata("FullName"),
-                'AddTime' => date('Y-m-d H:i:s'),
-                'Damage_brunchid' => $this->session->userdata('BRANCHid')
+                'Damage_InvoiceNo'   => $data->damage->Damage_InvoiceNo,
+                'Damage_Date'        => $data->damage->Damage_Date,
+                'damage_amount'      => $data->damage->damage_amount,
+                'Damage_Description' => $data->damage->Damage_Description,
+                'status'             => 'a',
+                'AddBy'              => $this->session->userdata("FullName"),
+                'AddTime'            => date('Y-m-d H:i:s'),
+                'Damage_brunchid'    => $this->session->userdata('BRANCHid')
             );
 
             $this->db->insert('tbl_damage', $damage);
             $damageId = $this->db->insert_id();
 
-            $damageDetails = array(
-                'Damage_SlNo' => $damageId,
-                'Product_SlNo' => $data->Product_SlNo,
-                'DamageDetails_DamageQuantity' => $data->DamageDetails_DamageQuantity,
-                'damage_rate' => $data->damage_rate,
-                'damage_amount' => $data->damage_amount,
-                'status' => 'a',
-                'AddBy' => $this->session->userdata("FullName"),
-                'AddTime' => date('Y-m-d H:i:s')
-            );
+            foreach ($data->carts as $key => $product) {
+                $damageDetails = array(
+                    'Damage_SlNo'                  => $damageId,
+                    'Product_SlNo'                 => $product->product_id,
+                    'DamageDetails_DamageQuantity' => $product->quantity,
+                    'damage_rate'                  => $product->rate,
+                    'damage_amount'                => $product->total,
+                    'status'                       => 'a',
+                    'AddBy'                        => $this->session->userdata("FullName"),
+                    'AddTime'                      => date('Y-m-d H:i:s'),
+                    'Damage_brunchid'              => $this->session->userdata('BRANCHid'),
+                );
 
-            $this->db->insert('tbl_damagedetails', $damageDetails);
+                $this->db->insert('tbl_damagedetails', $damageDetails);
 
-            $this->db->query("
-                update tbl_currentinventory ci 
-                set ci.damage_quantity = ci.damage_quantity + ? 
-                where product_id = ? 
-                and ci.branch_id = ?
-            ", [$data->DamageDetails_DamageQuantity, $data->Product_SlNo, $this->session->userdata('BRANCHid')]);
+                $this->db->query("
+                    update tbl_currentinventory ci 
+                    set ci.damage_quantity = ci.damage_quantity + ? 
+                    where product_id = ? 
+                    and ci.branch_id = ?
+                ", [$product->quantity, $product->product_id, $this->session->userdata('BRANCHid')]);
+            }
 
-            $res = ['success' => true, 'message' => 'Damage entry success', 'newCode' => $this->mt->generateDamageCode()];
+            $res = ['success' => true, 'message' => 'Damage entry success', 'damageCode' => $this->mt->generateDamageCode()];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage()];
         }
@@ -1312,46 +1322,55 @@ class Purchase extends CI_Controller
         $res = ['success' => false, 'message' => ''];
         try {
             $data = json_decode($this->input->raw_input_stream);
-            $damageId = $data->Damage_SlNo;
+            $damageId = $data->damage->Damage_SlNo;
 
             $damage = array(
-                'Damage_InvoiceNo' => $data->Damage_InvoiceNo,
-                'Damage_Date' => $data->Damage_Date,
-                'Damage_Description' => $data->Damage_Description,
-                'UpdateBy' => $this->session->userdata("FullName"),
-                'UpdateTime' => date('Y-m-d H:i:s')
+                'Damage_InvoiceNo'   => $data->damage->Damage_InvoiceNo,
+                'Damage_Date'        => $data->damage->Damage_Date,
+                'damage_amount'      => $data->damage->damage_amount,
+                'Damage_Description' => $data->damage->Damage_Description,
+                'UpdateBy'           => $this->session->userdata("FullName"),
+                'UpdateTime'         => date('Y-m-d H:i:s')
             );
-
             $this->db->where('Damage_SlNo', $damageId)->update('tbl_damage', $damage);
 
-            $oldProduct = $this->db->query("select * from tbl_damagedetails where Damage_SlNo = ?", $damageId)->row();
+            $oldProduct = $this->db->query("select * from tbl_damagedetails where Damage_SlNo = ?", $damageId)->result();
+            foreach ($oldProduct as $key => $item) {
+                $this->db->query("
+                    update tbl_currentinventory ci 
+                    set ci.damage_quantity = ci.damage_quantity - ? 
+                    where product_id = ? 
+                    and ci.branch_id = ?
+                ", [$item->DamageDetails_DamageQuantity, $item->Product_SlNo, $this->session->userdata('BRANCHid')]);
+            }
+            $this->db->query("DELETE FROM `tbl_damagedetails` WHERE  Damage_SlNo = ?", $damageId);
 
-            $this->db->query("
-                update tbl_currentinventory ci 
-                set ci.damage_quantity = ci.damage_quantity - ? 
-                where product_id = ? 
-                and ci.branch_id = ?
-            ", [$oldProduct->DamageDetails_DamageQuantity, $oldProduct->Product_SlNo, $this->session->userdata('BRANCHid')]);
+            foreach ($data->carts as $key => $product) {
+                $damageDetails = array(
+                    'Damage_SlNo'                  => $damageId,
+                    'Product_SlNo'                 => $product->product_id,
+                    'DamageDetails_DamageQuantity' => $product->quantity,
+                    'damage_rate'                  => $product->rate,
+                    'damage_amount'                => $product->total,
+                    'status'                       => 'a',
+                    'AddBy'                        => $this->session->userdata("FullName"),
+                    'AddTime'                      => date('Y-m-d H:i:s'),
+                    'UpdateBy'                     => $this->session->userdata("FullName"),
+                    'UpdateTime'                   => date('Y-m-d H:i:s'),
+                    'Damage_brunchid'              => $this->session->userdata('BRANCHid')
+                );
 
-            $damageDetails = array(
-                'Product_SlNo' => $data->Product_SlNo,
-                'DamageDetails_DamageQuantity' => $data->DamageDetails_DamageQuantity,
-                'damage_rate' => $data->damage_rate,
-                'damage_amount' => $data->damage_amount,
-                'UpdateBy' => $this->session->userdata("FullName"),
-                'UpdateTime' => date('Y-m-d H:i:s')
-            );
+                $this->db->insert('tbl_damagedetails', $damageDetails);
 
-            $this->db->where('Damage_SlNo', $damageId)->update('tbl_damagedetails', $damageDetails);
+                $this->db->query("
+                    update tbl_currentinventory ci 
+                    set ci.damage_quantity = ci.damage_quantity + ? 
+                    where product_id = ? 
+                    and ci.branch_id = ?
+                ", [$product->quantity, $product->product_id, $this->session->userdata('BRANCHid')]);
+            }
 
-            $this->db->query("
-                update tbl_currentinventory ci 
-                set ci.damage_quantity = ci.damage_quantity + ? 
-                where product_id = ? 
-                and ci.branch_id = ?
-            ", [$data->DamageDetails_DamageQuantity, $data->Product_SlNo, $this->session->userdata('BRANCHid')]);
-
-            $res = ['success' => true, 'message' => 'Damage updated successfully', 'newCode' => $this->mt->generateDamageCode()];
+            $res = ['success' => true, 'message' => 'Damage updated successfully', 'damageCode' => $this->mt->generateDamageCode()];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage()];
         }
@@ -1362,29 +1381,34 @@ class Purchase extends CI_Controller
     public function getDamages()
     {
         $data = json_decode($this->input->raw_input_stream);
-
         $clauses = "";
-        if (isset($data->damageId) && $data->damageId != '') {
-            $clauses .= " and d.Product_SlNo = '$data->damageId'";
+
+        if (isset($data->dateFrom) && $data->dateFrom != "") {
+            $clauses .= " and d.Damage_Date between '$data->dateFrom' and '$data->dateTo'";
         }
-        $damages = $this->db->query("
-            select
-                dd.Product_SlNo,
-                dd.DamageDetails_DamageQuantity,
-                dd.damage_rate,
-                dd.damage_amount,
-                d.Damage_SlNo,
-                d.Damage_InvoiceNo,
-                d.Damage_Date,
-                d.Damage_Description,
-                p.Product_Code,
-                p.Product_Name
-            from tbl_damagedetails dd
-            join tbl_damage d on d.Damage_SlNo = dd.Damage_SlNo
-            join tbl_product p on p.Product_SlNo = dd.Product_SlNo
-            where d.status = 'a' and dd.status = 'a'
-            $clauses
-        ")->result();
+
+        $damages = $this->db->query("select d.*
+                        from tbl_damage d
+                        where d.status = 'a'
+                        and d.Damage_brunchid = ?
+                        $clauses
+                        order by d.Damage_SlNo desc
+                    ", $this->session->userdata('BRANCHid'))->result();
+
+        foreach ($damages as $key => $item) {
+            $item->damageDetail = $this->db->query("
+                select
+                    dd.*,
+                    p.Product_Code,
+                    p.Product_Name
+                from tbl_damagedetails dd
+                join tbl_product p on p.Product_SlNo = dd.Product_SlNo
+                where dd.status = 'a'
+                and dd.Damage_brunchid = ?
+                and dd.Damage_SlNo = ?
+            ", [$this->session->userdata('BRANCHid'), $item->Damage_SlNo])->result();
+        }
+
 
         echo json_encode($damages);
     }
@@ -1396,16 +1420,18 @@ class Purchase extends CI_Controller
             $data = json_decode($this->input->raw_input_stream);
             $damageId = $data->damageId;
 
-            $oldProduct = $this->db->query("select * from tbl_damagedetails where Damage_SlNo = ?", $damageId)->row();
-            $this->db->query("
-                update tbl_currentinventory ci 
-                set ci.damage_quantity = ci.damage_quantity - ? 
-                where product_id = ? 
-                and ci.branch_id = ?
-            ", [$oldProduct->DamageDetails_DamageQuantity, $oldProduct->Product_SlNo, $this->session->userdata('BRANCHid')]);
+            $oldProduct = $this->db->query("select * from tbl_damagedetails where Damage_SlNo = ?", $damageId)->result();
+            foreach ($oldProduct as $key => $item) {
+                $this->db->query("
+                    update tbl_currentinventory ci 
+                    set ci.damage_quantity = ci.damage_quantity - ? 
+                    where product_id = ? 
+                    and ci.branch_id = ?
+                ", [$item->DamageDetails_DamageQuantity, $item->Product_SlNo, $this->session->userdata('BRANCHid')]);
 
-            $this->db->where('Damage_SlNo', $damageId)->update('tbl_damage', ['status' => 'd']);
-            $this->db->where('Damage_SlNo', $damageId)->update('tbl_damagedetails', ['status' => 'd']);
+                $this->db->where('Damage_SlNo', $damageId)->update('tbl_damage', ['status' => 'd']);
+                $this->db->where('Damage_SlNo', $damageId)->update('tbl_damagedetails', ['status' => 'd']);
+            }
 
             $res = ['success' => true, 'message' => 'Damage deleted successfully', 'newCode' => $this->mt->generateDamageCode()];
         } catch (Exception $ex) {
@@ -1421,8 +1447,7 @@ class Purchase extends CI_Controller
         if (!$access) {
             redirect(base_url());
         }
-        $data['title'] = "Product damage list";
-        $data['products'] = $this->db->query("select * from tbl_product p where p.status = 'a' and p.is_service = 'false'")->result();
+        $data['title'] = "Product Damage List";
         $data['content'] = $this->load->view('Administrator/purchase/damage_list', $data, TRUE);
         $this->load->view('Administrator/index', $data);
     }
