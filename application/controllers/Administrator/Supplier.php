@@ -298,7 +298,7 @@ class Supplier extends CI_Controller
         $suppliers = $this->db->query("
             select 
             s.*,
-            concat(s.Supplier_Code, ' - ', s.Supplier_Name) as display_name
+            concat(s.Supplier_Name, ' - ', s.Supplier_Code, ' - ', s.Supplier_Mobile) as display_name
             from tbl_supplier s
             where s.Status = 'a'
             and s.Supplier_Type != 'G'

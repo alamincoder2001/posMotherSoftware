@@ -59,7 +59,7 @@ class Customer extends CI_Controller
             select
                 c.*,
                 d.District_Name,
-                concat_ws(' - ', c.Customer_Code, c.Customer_Name, c.owner_name, c.Customer_Mobile) as display_name
+                concat_ws(' - ', c.Customer_Name, c.Customer_Code, c.Customer_Mobile) as display_name
             from tbl_customer c
             left join tbl_district d on d.District_SlNo = c.area_ID
             where c.status = 'a'

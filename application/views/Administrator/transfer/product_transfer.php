@@ -147,9 +147,9 @@
                             <td>{{ sl + 1 }}</td>
                             <td>{{ product.product_code }}</td>
                             <td>{{ product.name }}</td>
-                            <td><input type="number" style="padding: 0 6px;margin: 2px;font-size: 13px;width: 80px;" v-model="product.quantity" v-on:input="onChangeCartQuantity(product.product_id)"></td>
+                            <td><input type="number" :readonly="transfer.transfer_id != 0 ? true : false" style="padding: 0 6px;margin: 2px;font-size: 13px;width: 80px;" v-model="product.quantity" v-on:input="onChangeCartQuantity(product)"></td>
                             <td>{{ product.total }}</td>
-                            <td><a href="" v-on:click.prevent="removeFromCart(sl)"><i class="fa fa-trash"></i></a></td>
+                            <td><a href="" v-on:click.prevent="removeFromCart(product)"><i class="fa fa-trash"></i></a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -281,11 +281,11 @@
                 productSearchBox.focus();
             },
 
-            async onChangeCartQuantity(productId) {
-                let cartInd = this.cart.findIndex(product => product.product_id == productId);
+            async onChangeCartQuantity(product) {
+                let cartInd = this.cart.findIndex(item => item.product_id == product.product_id);
 
                 if (this.transfer.transfer_id == 0) {
-                    let stock = await this.getProductStock(productId);
+                    let stock = await this.getProductStock(product.product_id);
 
                     if (this.cart[cartInd].quantity > stock) {
                         alert('Stock not available');
@@ -294,11 +294,28 @@
                 }
 
                 this.cart[cartInd].total = this.cart[cartInd].quantity * this.cart[cartInd].purchase_rate;
-
             },
 
-            removeFromCart(cartInd) {
-                this.cart.splice(cartInd, 1);
+            async removeFromCart(product) {
+                if (this.transfer.transfer_id != 0) {
+                    let filter = {
+                        productId: product.product_id,
+                        branchId: this.transfer.transfer_to
+                    }
+                    let transferProductStock = await axios.post("/get_transter_product_stock", filter)
+                        .then(res => {
+                            return res.data;
+                        })
+
+                    if (product.quantity > transferProductStock) {
+                        alert(product.name + " - " + product.product_code + " stock not available");
+                        return;
+                    }
+                }
+                let cartInd = this.cart.findIndex(item => item.product_id == product.product_id);
+                if (cartInd > -1) {
+                    this.cart.splice(cartInd, 1);
+                }
             },
 
             saveProductTransfer() {

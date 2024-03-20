@@ -329,10 +329,10 @@
 					Customer_SlNo: '',
 					Customer_Code: '',
 					Customer_Name: '',
-					display_name: 'Select Customer',
+					display_name: 'Cash Customer',
 					Customer_Mobile: '',
 					Customer_Address: '',
-					Customer_Type: ''
+					Customer_Type: 'G'
 				},
 				vatPercent: 0,
 				discountPercent: 0,
@@ -378,7 +378,7 @@
 						Customer_SlNo: 'C01',
 						Customer_Code: '',
 						Customer_Name: '',
-						display_name: 'General Customer',
+						display_name: 'Cash Customer',
 						Customer_Mobile: '',
 						Customer_Address: '',
 						Customer_Type: 'G'
@@ -421,10 +421,10 @@
 						Customer_SlNo: '',
 						Customer_Code: '',
 						Customer_Name: '',
-						display_name: 'Select Customer',
+						display_name: 'Cash Customer',
 						Customer_Mobile: '',
 						Customer_Address: '',
-						Customer_Type: ''
+						Customer_Type: 'G'
 					}
 					return
 				}
@@ -507,7 +507,8 @@
 
 				let data = {
 					quotation: this.quotation,
-					cart: this.cart
+					cart: this.cart,
+					customer: this.selectedCustomer
 				}
 				axios.post(url, data).then(async res => {
 					let r = res.data;
@@ -530,9 +531,6 @@
 				}).then(res => {
 					let r = res.data;
 					let quotation = r.quotations[0];
-					this.quotation.customerName = quotation.SaleMaster_customer_name;
-					this.quotation.customerMobile = quotation.SaleMaster_customer_mobile;
-					this.quotation.customerAddress = quotation.SaleMaster_customer_address;
 					this.quotation.quotationBy = quotation.AddBy;
 					this.quotation.invoiceNo = quotation.SaleMaster_InvoiceNo;
 					this.quotation.salesFrom = quotation.SaleMaster_branchid;
@@ -544,6 +542,14 @@
 
 					this.vatPercent = parseFloat(this.quotation.vat) * 100 / parseFloat(this.quotation.subTotal);
 					this.discountPercent = parseFloat(this.quotation.discount) * 100 / parseFloat(this.quotation.subTotal);
+					this.selectedCustomer = {
+						Customer_SlNo: quotation.SalseCustomer_IDNo ?? "",
+						Customer_Name: quotation.SaleMaster_customer_name,
+						Customer_Mobile: quotation.SaleMaster_customer_mobile,
+						Customer_Address: quotation.SaleMaster_customer_address,
+						Customer_Type: quotation.customerType,
+						display_name: quotation.owner_name == null ? "Cash Customer" : `${quotation.Customer_Name} - ${quotation.Customer_Code} - ${quotation.SaleMaster_customer_mobile}`
+					}
 
 					r.quotationDetails.forEach(product => {
 						let cartProduct = {

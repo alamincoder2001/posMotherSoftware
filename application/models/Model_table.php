@@ -728,6 +728,20 @@ class Model_Table extends CI_Model
         return $stock;
     }
 
+    public function transferBranchStock($productId, $branchId)
+    {
+        $stockQuery = $this->db->query("select * from tbl_currentinventory where product_id = ? and branch_id = ?", [$productId, $branchId]);
+        $stockCount = $stockQuery->num_rows();
+        $stock = 0;
+        if ($stockCount != 0) {
+            $stockRow = $stockQuery->row();
+            $stock = ($stockRow->purchase_quantity + $stockRow->transfer_to_quantity + $stockRow->sales_return_quantity)
+                - ($stockRow->sales_quantity + $stockRow->purchase_return_quantity + $stockRow->damage_quantity + $stockRow->transfer_from_quantity);
+        }
+
+        return $stock;
+    }
+
 
     public function payment_invoice($id)
     {

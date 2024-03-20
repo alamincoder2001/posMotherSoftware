@@ -349,10 +349,14 @@ class Transfer extends CI_Controller
             $transferId = $data->transferId;
 
             $oldTransfer = $this->db->query("select * from tbl_transfermaster where transfer_id = ?", $transferId)->row();
-            $oldTransferDetails = $this->db->query("select * from tbl_transferdetails where transfer_id = ?", $transferId)->result();
-
-            $this->db->query("delete from tbl_transfermaster where transfer_id = ?", $transferId);
-            $this->db->query("delete from tbl_transferdetails where transfer_id = ?", $transferId);
+            $oldTransferDetails = $this->db->query("select *, p.Product_Code, p.Product_Name from tbl_transferdetails left join tbl_product p on p.Product_SlNo = product_id where transfer_id = ?", $transferId)->result();
+            foreach ($oldTransferDetails as $item) {
+                $productStock = $this->mt->transferBranchStock($item->product_id, $oldTransfer->transfer_to);
+                if ($item->quantity > $productStock) {
+                    echo json_encode(['status' => false, 'message' => "{$item->Product_Name} - {$item->Product_Code} stock not available"]);
+                    exit;
+                }
+            }
             foreach ($oldTransferDetails as $oldDetails) {
                 $this->db->query("
                         update tbl_currentinventory 
@@ -367,7 +371,13 @@ class Transfer extends CI_Controller
                         where product_id = ?
                         and branch_id = ?
                     ", [$oldDetails->quantity, $oldDetails->product_id, $oldTransfer->transfer_to]);
+
+                $this->db->where("transferdetails_id", $oldDetails->transferdetails_id);
+                $this->db->update("tbl_transferdetails", ['status' => 'd', 'UpdateBy' => $this->session->userdata("FullName"), 'UpdateTime' => date('Y-m-d H:i:s')]);
             }
+
+            $this->db->where("transfer_id", $transferId);
+            $this->db->update("tbl_transfermaster", ['status' => 'd', 'updated_by' => $this->session->userdata("FullName"), 'updated_datetime' => date('Y-m-d H:i:s')]);
 
             $res = ['success' => true, 'message' => 'Transfer deleted'];
         } catch (Exception $ex) {

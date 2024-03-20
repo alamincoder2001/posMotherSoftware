@@ -255,7 +255,7 @@ legend.scheduler-border {
 .table > thead > tr {
   color: #fff;
   font-weight: 400;
-  background: gray;
+  background: #3e2e6b;
 }
 .table > thead > tr > th {
   color: #fff !important;
@@ -380,7 +380,7 @@ select {
   font-size: 12px !important;
 }
 .table > tbody > tr > td {
-  padding: 0px;
+  padding: 0px 3px;
   line-height: 1 !important;
   font-size: 13px;
 }

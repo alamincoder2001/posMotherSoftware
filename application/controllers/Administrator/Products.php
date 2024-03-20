@@ -157,6 +157,12 @@ class Products extends CI_Controller
         echo json_encode($products);
     }
 
+    public function getTransferProductStock()
+    {
+        $inputs = json_decode($this->input->raw_input_stream);
+        $stock = $this->mt->transferBranchStock($inputs->productId, $inputs->branchId);
+        echo $stock;
+    }
     public function getProductStock()
     {
         $inputs = json_decode($this->input->raw_input_stream);
@@ -361,7 +367,7 @@ class Products extends CI_Controller
             $data['products'] = $this->session->userdata('products');
             $data['content'] = $this->load->view('Administrator/products/barcode/multibarcodePrint', $data, TRUE);
             $this->load->view('Administrator/index', $data);
-        }else{
+        } else {
             redirect("/module/dashboard");
         }
     }

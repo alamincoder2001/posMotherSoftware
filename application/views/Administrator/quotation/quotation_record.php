@@ -28,26 +28,31 @@
 	}
 </style>
 <div id="quotationRecord">
-	<div class="row" style="border-bottom: 1px solid #ccc;padding: 3px 0;">
-		<div class="col-md-12">
-			<form class="form-inline" id="searchForm" @submit.prevent="getQuotations">
-				<div class="form-group">
-					<input type="date" class="form-control" v-model="filter.dateFrom">
-				</div>
+	<div class="row" style="margin:0;">
+		<fieldset class="scheduler-border scheduler-search">
+			<legend class="scheduler-border">Quotation Record</legend>
+			<div class="control-group">
+				<div class="col-md-12">
+					<form class="form-inline" id="searchForm" @submit.prevent="getQuotations">
+						<div class="form-group">
+							<input type="date" class="form-control" v-model="filter.dateFrom">
+						</div>
 
-				<div class="form-group">
-					<input type="date" class="form-control" v-model="filter.dateTo">
-				</div>
+						<div class="form-group">
+							<input type="date" class="form-control" v-model="filter.dateTo">
+						</div>
 
-				<div class="form-group" style="margin-top: -5px;">
-					<input type="submit" value="Search">
+						<div class="form-group" style="margin-top: -5px;">
+							<input type="submit" value="Search">
+						</div>
+					</form>
 				</div>
-			</form>
-		</div>
+			</div>
+		</fieldset>
 	</div>
 
-	<div class="row" style="margin-top:15px;display:none;" v-bind:style="{display: quotations.length > 0 ? '' : 'none'}">
-		<div class="col-md-12" style="margin-bottom: 10px;">
+	<div class="row" style="display:none;" v-bind:style="{display: quotations.length > 0 ? '' : 'none'}">
+		<div class="col-md-12 text-right">
 			<a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
 		</div>
 		<div class="col-md-12">

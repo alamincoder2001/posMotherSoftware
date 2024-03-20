@@ -1,11 +1,13 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Quotation extends CI_Controller {
-    public function __construct() {
+class Quotation extends CI_Controller
+{
+    public function __construct()
+    {
         parent::__construct();
         $this->sbrunch = $this->session->userdata('BRANCHid');
         $access = $this->session->userdata('userId');
-         if($access == '' ){
+        if ($access == '') {
             redirect("Login");
         }
         $this->load->model('Billing_model');
@@ -13,10 +15,11 @@ class Quotation extends CI_Controller {
         $this->load->model('Model_table', "mt", TRUE);
         $this->load->helper('form');
     }
-	
-    public function index()  {
+
+    public function index()
+    {
         $access = $this->mt->userAccess();
-        if(!$access){
+        if (!$access) {
             redirect(base_url());
         }
         $data['title'] = "Quotation Entry";
@@ -25,24 +28,22 @@ class Quotation extends CI_Controller {
         $data['content'] = $this->load->view('Administrator/quotation/quotation_entry', $data, TRUE);
         $this->load->view('Administrator/index', $data);
     }
-	
-    public function addQuotation(){
-        $res = ['success'=>false, 'message'=>''];
-        try{
+
+    public function addQuotation()
+    {
+        $res = ['success' => false, 'message' => ''];
+        try {
             $data = json_decode($this->input->raw_input_stream);
 
             $invoice = $data->quotation->invoiceNo;
             $invoiceCount = $this->db->query("select * from tbl_quotation_master where SaleMaster_InvoiceNo = ?", $invoice)->num_rows();
-            if($invoiceCount != 0){
+            if ($invoiceCount != 0) {
                 $invoice = $this->mt->generateQuotationInvoice();
             }
 
             $quotation = array(
                 'SaleMaster_InvoiceNo' => $invoice,
                 'SaleMaster_SaleDate' => $data->quotation->quotationDate,
-                'SaleMaster_customer_name' => $data->quotation->customerName,
-                'SaleMaster_customer_mobile' => $data->quotation->customerMobile,
-                'SaleMaster_customer_address' => $data->quotation->customerAddress,
                 'SaleMaster_TotalSaleAmount' => $data->quotation->total,
                 'SaleMaster_TotalDiscountAmount' => $data->quotation->discount,
                 'SaleMaster_TaxAmount' => $data->quotation->vat,
@@ -52,12 +53,23 @@ class Quotation extends CI_Controller {
                 'AddTime' => date("Y-m-d H:i:s"),
                 'SaleMaster_branchid' => $this->session->userdata("BRANCHid")
             );
-    
+
+            if ($data->customer->Customer_Type == 'G') {
+                $quotation['SalseCustomer_IDNo']          = Null;
+                $quotation['customerType']                = $data->customer->Customer_Type;
+                $quotation['SaleMaster_customer_name']    = $data->customer->Customer_Name;
+                $quotation['SaleMaster_customer_mobile']  = $data->customer->Customer_Mobile;
+                $quotation['SaleMaster_customer_address'] = $data->customer->Customer_Address;
+            } else {
+                $quotation['customerType']       = $data->customer->Customer_Type;
+                $quotation['SalseCustomer_IDNo'] = $data->customer->Customer_SlNo;
+            }
+
             $this->db->insert('tbl_quotation_master', $quotation);
-            
+
             $quotationId = $this->db->insert_id();
-    
-            foreach($data->cart as $cartProduct){
+
+            foreach ($data->cart as $cartProduct) {
                 $quotationDetails = array(
                     'SaleMaster_IDNo' => $quotationId,
                     'Product_IDNo' => $cartProduct->productId,
@@ -69,21 +81,22 @@ class Quotation extends CI_Controller {
                     'AddTime' => date('Y-m-d H:i:s'),
                     'SaleDetails_BranchId' => $this->session->userdata('BRANCHid')
                 );
-    
+
                 $this->db->insert('tbl_quotation_details', $quotationDetails);
             }
 
-            $res = ['success'=>true, 'message'=>'Quotation added', 'quotationId'=>$quotationId];
-        } catch (Exception $ex){
-            $res = ['success'=>false, 'message'=>$ex->getMessage()];
+            $res = ['success' => true, 'message' => 'Quotation added', 'quotationId' => $quotationId];
+        } catch (Exception $ex) {
+            $res = ['success' => false, 'message' => $ex->getMessage()];
         }
 
         echo json_encode($res);
     }
 
-    public function updateQuotation(){
-        $res = ['success'=>false, 'message'=>''];
-        try{
+    public function updateQuotation()
+    {
+        $res = ['success' => false, 'message' => ''];
+        try {
             $data = json_decode($this->input->raw_input_stream);
 
             $quotationId = $data->quotation->quotationId;
@@ -103,12 +116,12 @@ class Quotation extends CI_Controller {
                 'AddTime' => date("Y-m-d H:i:s"),
                 'SaleMaster_branchid' => $this->session->userdata("BRANCHid")
             );
-    
+
             $this->db->where('SaleMaster_SlNo', $quotationId)->update('tbl_quotation_master', $quotation);
 
             $this->db->query("delete from tbl_quotation_details where SaleMaster_IDNo = ?", $quotationId);
-            
-            foreach($data->cart as $cartProduct){
+
+            foreach ($data->cart as $cartProduct) {
                 $quotationDetails = array(
                     'SaleMaster_IDNo' => $quotationId,
                     'Product_IDNo' => $cartProduct->productId,
@@ -120,21 +133,22 @@ class Quotation extends CI_Controller {
                     'AddTime' => date('Y-m-d H:i:s'),
                     'SaleDetails_BranchId' => $this->session->userdata('BRANCHid')
                 );
-    
+
                 $this->db->insert('tbl_quotation_details', $quotationDetails);
             }
-            
-            $res = ['success'=>true, 'message'=>'Quotation updated', 'quotationId'=>$quotationId];
-        } catch (Exception $ex){
-            $res = ['success'=>false, 'message'=>$ex->getMessage()];
+
+            $res = ['success' => true, 'message' => 'Quotation updated', 'quotationId' => $quotationId];
+        } catch (Exception $ex) {
+            $res = ['success' => false, 'message' => $ex->getMessage()];
         }
 
         echo json_encode($res);
     }
 
-    public function quotationRecord(){
+    public function quotationRecord()
+    {
         $access = $this->mt->userAccess();
-        if(!$access){
+        if (!$access) {
             redirect(base_url());
         }
         $data['title'] = "Quotation Record";
@@ -142,15 +156,16 @@ class Quotation extends CI_Controller {
         $this->load->view('Administrator/index', $data);
     }
 
-    public function getQuotations(){
+    public function getQuotations()
+    {
         $data = json_decode($this->input->raw_input_stream);
 
         $clauses = "";
-        if(isset($data->dateFrom) && $data->dateFrom != '' && isset($data->dateTo) && $data->dateTo != ''){
+        if (isset($data->dateFrom) && $data->dateFrom != '' && isset($data->dateTo) && $data->dateTo != '') {
             $clauses .= " and qm.SaleMaster_SaleDate between '$data->dateFrom' and '$data->dateTo'";
         }
 
-        if(isset($data->quotationId) && $data->quotationId != ''){
+        if (isset($data->quotationId) && $data->quotationId != '') {
             $clauses .= " and qm.SaleMaster_SlNo = '$data->quotationId'";
             $res['quotationDetails'] = $this->db->query("
                 select 
@@ -169,7 +184,14 @@ class Quotation extends CI_Controller {
         }
 
         $res['quotations'] = $this->db->query("
-            select * from tbl_quotation_master qm 
+            select *,
+            ifnull(c.Customer_Name, qm.SaleMaster_customer_name) as SaleMaster_customer_name, 
+            ifnull(c.Customer_Mobile, qm.SaleMaster_customer_mobile) as SaleMaster_customer_mobile, 
+            ifnull(c.Customer_Address, qm.SaleMaster_customer_address) as SaleMaster_customer_address,
+            c.Customer_Code,
+            c.owner_name
+            from tbl_quotation_master qm
+            left join tbl_customer c on c.Customer_SlNo = qm.SalseCustomer_IDNo 
             where qm.Status = 'a'
             and qm.SaleMaster_branchid = ?
             $clauses
@@ -179,7 +201,8 @@ class Quotation extends CI_Controller {
         echo json_encode($res);
     }
 
-    public function editQuotation($quotationId){
+    public function editQuotation($quotationId)
+    {
         $data['title'] = "Quotation Edit";
         $data['quotationId'] = $quotationId;
         $data['invoice'] = '';
@@ -187,53 +210,58 @@ class Quotation extends CI_Controller {
         $this->load->view('Administrator/index', $data);
     }
 
-    public function deleteQuotation(){
-        $res = ['success'=>false, 'message'=>''];
-        try{
+    public function deleteQuotation()
+    {
+        $res = ['success' => false, 'message' => ''];
+        try {
             $data = json_decode($this->input->raw_input_stream);
             $this->db->query("delete from tbl_quotation_master where SaleMaster_SlNo = ?", $data->quotationId);
             $this->db->query("delete from tbl_quotation_details where SaleMaster_IDNo = ?", $data->quotationId);
-            $res = ['success'=>true, 'message'=>'Quotation deleted'];
-        } catch (Exception $ex){
-            $res = ['success'=>false, 'message'=>$ex->getMessage()];
+            $res = ['success' => true, 'message' => 'Quotation deleted'];
+        } catch (Exception $ex) {
+            $res = ['success' => false, 'message' => $ex->getMessage()];
         }
-        
+
         echo json_encode($res);
     }
 
 
-    public function checkInvoice() {
+    public function checkInvoice()
+    {
         $invoice = $this->input->post('invoice');
         $row = $this->db->query("SELECT * FROM tbl_quotation_master WHERE SaleMaster_InvoiceNo = '$invoice'")->row();
-        if($row->SaleMaster_InvoiceNo == $invoice){
+        if ($row->SaleMaster_InvoiceNo == $invoice) {
             return true;
-        }else{
-            return false; 
-        } 
+        } else {
+            return false;
+        }
     }
 
-    
-    public function quotation_report()  {
+
+    public function quotation_report()
+    {
         $data['title'] = "Quotation Report";
         $id = $this->session->userdata('lastidforprint');
-		$data['selse'] =  $this->Quotation_model->find_quotation_info_by_id($id);
-		$data['quo_details'] = $this->Quotation_model->get_invoice_wise_quotation_product_details($id);
-		$data['SalesID'] = $id;
+        $data['selse'] =  $this->Quotation_model->find_quotation_info_by_id($id);
+        $data['quo_details'] = $this->Quotation_model->get_invoice_wise_quotation_product_details($id);
+        $data['SalesID'] = $id;
 
         $data['content'] = $this->load->view('Administrator/quotation/quotationReport', $data, TRUE);
         $this->load->view('Administrator/index', $data);
     }
-    
-    public function quotationInvoice($quotationId)  {
+
+    public function quotationInvoice($quotationId)
+    {
         $data['title'] = "Quotation Invoice";
         $data['quotationId'] = $quotationId;
         $data['content'] = $this->load->view('Administrator/quotation/quotation_invoice', $data, TRUE);
         $this->load->view('Administrator/index', $data);
     }
 
-    public function quotationInvoiceReport()  {
+    public function quotationInvoiceReport()
+    {
         $access = $this->mt->userAccess();
-        if(!$access){
+        if (!$access) {
             redirect(base_url());
         }
         $data['title'] = "Quotation Invoice";
@@ -241,21 +269,18 @@ class Quotation extends CI_Controller {
         $this->load->view('Administrator/index', $data);
     }
 
-    public function delete_quotation_invoice() {
+    public function delete_quotation_invoice()
+    {
         $id = $this->input->post('SaleMasteriD');
 
-        $attr = array( 'Status'  =>  'd' );
+        $attr = array('Status'  =>  'd');
 
         $qu = $this->db->where('SaleMaster_SlNo', $id)->update('tbl_quotation_master', $attr);
-        
-        if ( $this->db->affected_rows()) {
+
+        if ($this->db->affected_rows()) {
             return TRUE;
-        }else {
+        } else {
             return FALSE;
         }
     }
-
-
-
-
 }

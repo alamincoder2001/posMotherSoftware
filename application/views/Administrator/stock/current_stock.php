@@ -71,7 +71,7 @@
 
 					<div class="form-group">
 						<div class="col-md-2">
-							<input type="button" style="padding: 1px 15px;" value="Show Report" v-on:click="getStock">
+							<input type="button" style="padding: 1px 15px;" value="Show" v-on:click="getStock">
 						</div>
 					</div>
 				</div>
@@ -89,7 +89,8 @@
 				<table class="table table-bordered table-hover" v-if="searchType == 'current'" style="display:none" v-bind:style="{display: searchType == 'current' ? '' : 'none'}">
 					<thead>
 						<tr>
-							<th>Product Id</th>
+							<th>Sl</th>
+							<th>Code</th>
 							<th>Product Name</th>
 							<th>Category</th>
 							<th>Current Quantity</th>
@@ -98,19 +99,22 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="product in stock">
+						<tr v-for="(product, sl) in stock">
+							<td>{{ sl + 1 }}</td>
 							<td>{{ product.Product_Code }}</td>
 							<td style="text-align: left;padding-left:4px;">{{ product.Product_Name }}</td>
 							<td>{{ product.ProductCategory_Name }}</td>
 							<td>{{ product.current_quantity }} {{ product.Unit_Name }}</td>
-							<td>{{ product.Product_Purchase_Rate | decimal }}</td>
-							<td>{{ product.stock_value | decimal }}</td>
+							<td style="text-align: right;">{{ product.Product_Purchase_Rate | decimal }}</td>
+							<td style="text-align: right;">{{ product.stock_value | decimal }}</td>
 						</tr>
 					</tbody>
 					<tfoot>
 						<tr>
-							<th colspan="5" style="text-align:right;">Total Stock Value</th>
-							<th>{{ totalStockValue | decimal }}</th>
+							<th colspan="4" style="text-align:right;">Total</th>
+							<th>{{ stock.reduce((prev, curr) => {return prev + parseFloat(curr.current_quantity)}, 0) | decimal }}</th>
+							<th></th>
+							<th style="text-align: right;">{{ totalStockValue | decimal }}</th>
 						</tr>
 					</tfoot>
 				</table>
@@ -118,23 +122,32 @@
 				<table class="table table-bordered table-hover" v-if="searchType != 'current' && searchType != null" style="display:none;" v-bind:style="{display: searchType != 'current' && searchType != null ? '' : 'none'}">
 					<thead>
 						<tr>
-							<th>Product Id</th>
+							<th>Sl</th>
+							<th>Code</th>
 							<th style="width: 28%;">Product Name</th>
 							<th style="width: 20%;">Category</th>
-							<th>Purchase Qty</th>
-							<th>Purchase Returned Qty</th>
-							<th>Damaged Qty</th>
-							<th>Sold Qty</th>
-							<th>Sales Returned Qty</th>
-							<th>Transferred In Qty</th>
-							<th>Transferred Out Qty</th>
+							<th colspan="3">Purchase</th>
+							<th colspan="2">Sale</th>
+							<th colspan="2">Transfer</th>
 							<th style="width: 15%;">Current Qty</th>
 							<th>Rate</th>
 							<th>Stock Value</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="product in stock">
+						<tr>
+							<td colspan="4"></td>
+							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">Purchase</td>
+							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">Return</td>
+							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">Damage</td>
+							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">Sold</td>
+							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">Return</td>
+							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">In</td>
+							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">Out</td>
+							<td colspan="3"></td>
+						</tr>
+						<tr v-for="(product, sl) in stock">
+							<td>{{ sl + 1 }}</td>
 							<td>{{ product.Product_Code }}</td>
 							<td style="padding-left: 4px;text-align:left;">{{ product.Product_Name }}</td>
 							<td>{{ product.ProductCategory_Name }}</td>
@@ -146,13 +159,15 @@
 							<td>{{ product.transferred_to_quantity}}</td>
 							<td>{{ product.transferred_from_quantity}}</td>
 							<td>{{ product.current_quantity }} {{ product.Unit_Name }}</td>
-							<td>{{ product.Product_Purchase_Rate | decimal }}</td>
-							<td>{{ product.stock_value | decimal }}</td>
+							<td style="text-align: right;">{{ product.Product_Purchase_Rate | decimal }}</td>
+							<td style="text-align: right;">{{ product.stock_value | decimal }}</td>
 						</tr>
 					</tbody>
 					<tfoot>
 						<tr>
-							<th colspan="12" style="text-align:right;">Total Stock Value</th>
+							<th colspan="11" style="text-align:right;">Total</th>
+							<th>{{ stock.reduce((prev, curr) => {return prev + parseFloat(curr.current_quantity)}, 0) | decimal }}</th>
+							<th></th>
 							<th>{{ totalStockValue | decimal }}</th>
 						</tr>
 					</tfoot>
@@ -317,7 +332,7 @@
 				await new Promise(resolve => setTimeout(resolve, 1000));
 				reportWindow.print();
 				reportWindow.close();
-			}
+			},
 		}
 	})
 </script>

@@ -123,7 +123,7 @@
 						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Address </label>
 							<div class="col-xs-8">
-								<textarea id="address" placeholder="Address" class="form-control" v-model="selectedCustomer.Customer_Address" v-bind:disabled="selectedCustomer.Customer_Type == 'G' ? false : true"></textarea>
+								<input type="text" id="address" placeholder="Address" class="form-control" v-model="selectedCustomer.Customer_Address" v-bind:disabled="selectedCustomer.Customer_Type == 'G' ? false : true" />
 							</div>
 						</div>
 					</div>
@@ -750,6 +750,8 @@
 						if (conf) {
 							window.open('/sale_invoice_print/' + r.salesId, '_blank');
 							await new Promise(r => setTimeout(r, 1000));
+							window.location = '/sales';
+						}else{
 							window.location = '/sales';
 						}
 					} else {
