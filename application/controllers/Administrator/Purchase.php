@@ -1079,10 +1079,10 @@ class Purchase extends CI_Controller
                 s.Supplier_Name,
                 s.Supplier_Mobile,
                 s.Supplier_Address,
-                br.Brunch_name
+                br.Branch_name
             from tbl_purchasemaster pm
             left join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
-            left join tbl_brunch br on br.brunch_id = pm.PurchaseMaster_BranchID
+            left join tbl_branch br on br.branch_id = pm.PurchaseMaster_BranchID
             where pm.PurchaseMaster_BranchID = '$branchId'
             and pm.status = 'a'
             $clauses

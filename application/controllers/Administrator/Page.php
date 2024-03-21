@@ -484,7 +484,7 @@ class Page extends CI_Controller
                 when 'a' then 'Active'
                 else 'Inactive'
             end as active_status
-            from tbl_brunch
+            from tbl_branch
         ")->result();
         echo json_encode($branches);
     }
@@ -500,9 +500,9 @@ class Page extends CI_Controller
         $res = ['success' => false, 'message' => ''];
         try {
             $data = json_decode($this->input->raw_input_stream);
-            $status = $this->db->query("select * from tbl_brunch where brunch_id = ?", $data->branchId)->row()->status;
+            $status = $this->db->query("select * from tbl_branch where branch_id = ?", $data->branchId)->row()->status;
             $status = $status == 'a' ? 'd' : 'a';
-            $this->db->set('status', $status)->where('brunch_id', $data->branchId)->update('tbl_brunch');
+            $this->db->set('status', $status)->where('branch_id', $data->branchId)->update('tbl_branch');
             $res = ['success' => true, 'message' => 'Status changed'];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage()];
@@ -518,7 +518,7 @@ class Page extends CI_Controller
             redirect(base_url());
         }
         $data['title'] = "Add Brunch";
-        $data['content'] = $this->load->view('Administrator/brunch/add_brunch', $data, TRUE);
+        $data['content'] = $this->load->view('Administrator/brunch/add_branch', $data, TRUE);
         $this->load->view('Administrator/index', $data);
     }
     public function addBranch()
@@ -527,7 +527,7 @@ class Page extends CI_Controller
         try {
             $branch = json_decode($this->input->raw_input_stream);
 
-            $nameCount = $this->db->query("select * from tbl_brunch where Brunch_name = ?", $branch->name)->num_rows();
+            $nameCount = $this->db->query("select * from tbl_branch where Branch_name = ?", $branch->name)->num_rows();
             if ($nameCount > 0) {
                 $res = ['success' => false, 'message' => $branch->name . ' already exists'];
                 echo json_encode($res);
@@ -535,16 +535,16 @@ class Page extends CI_Controller
             }
 
             $newBranch = array(
-                'Brunch_name' => $branch->name,
-                'Brunch_title' => $branch->title,
-                'Brunch_address' => $branch->address,
-                'Brunch_sales' => '2',
+                'Branch_name' => $branch->name,
+                'Branch_title' => $branch->title,
+                'Branch_address' => $branch->address,
+                'Branch_sales' => '2',
                 'add_by' => $this->session->userdata("FullName"),
                 'add_time' => date('Y-m-d H:i:s'),
                 'status' => 'a'
             );
 
-            $this->db->insert('tbl_brunch', $newBranch);
+            $this->db->insert('tbl_branch', $newBranch);
             $res = ['success' => true, 'message' => 'Branch added'];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage()];
@@ -559,7 +559,7 @@ class Page extends CI_Controller
         try {
             $branch = json_decode($this->input->raw_input_stream);
 
-            $nameCount = $this->db->query("select * from tbl_brunch where Brunch_name = ? and brunch_id != ?", [$branch->name, $branch->branchId])->num_rows();
+            $nameCount = $this->db->query("select * from tbl_branch where Branch_name = ? and branch_id != ?", [$branch->name, $branch->branchId])->num_rows();
             if ($nameCount > 0) {
                 $res = ['success' => false, 'message' => $branch->name . ' already exists'];
                 echo json_encode($res);
@@ -567,13 +567,13 @@ class Page extends CI_Controller
             }
 
             $newBranch = array(
-                'Brunch_name' => $branch->name,
-                'Brunch_title' => $branch->title,
-                'Brunch_address' => $branch->address,
+                'Branch_name' => $branch->name,
+                'Branch_title' => $branch->title,
+                'Branch_address' => $branch->address,
                 'update_by' => $this->session->userdata("FullName")
             );
 
-            $this->db->set($newBranch)->where('brunch_id', $branch->branchId)->update('tbl_brunch');
+            $this->db->set($newBranch)->where('branch_id', $branch->branchId)->update('tbl_branch');
             $res = ['success' => true, 'message' => 'Branch updated'];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage()];
@@ -585,23 +585,23 @@ class Page extends CI_Controller
     public function brunch_edit()
     {
         $id = $this->input->post('edit');
-        $query = $this->db->query("SELECT * from tbl_brunch where brunch_id = '$id'");
+        $query = $this->db->query("SELECT * from tbl_branch where branch_id = '$id'");
         $data['selected'] = $query->row();
         $this->load->view('Administrator/edit/brunch_edit', $data);
     }
     public function brunch_update()
     {
         $id = $this->input->post('id');
-        $fld = 'brunch_id';
+        $fld = 'branch_id';
         $string = $this->input->post('brunchaddress');
         $data = array(
-            "Brunch_name"        => $this->input->post('Brunchname', TRUE),
-            "Brunch_title"       => $this->input->post('brunchtitle', TRUE),
-            "Brunch_address"     => htmlentities($string),
-            "Brunch_sales"       => $this->input->post('Access', TRUE),
+            "Branch_name"        => $this->input->post('Brunchname', TRUE),
+            "Branch_title"       => $this->input->post('brunchtitle', TRUE),
+            "Branch_address"     => htmlentities($string),
+            "Branch_sales"       => $this->input->post('Access', TRUE),
             "status"            => 'a'
         );
-        if ($this->mt->update_data("tbl_brunch", $data, $id, $fld)) {
+        if ($this->mt->update_data("tbl_branch", $data, $id, $fld)) {
             $t = true;
             echo json_encode($t);
         }
@@ -609,7 +609,7 @@ class Page extends CI_Controller
     public function brunch_delete()
     {
         $id = $this->input->post('deleted');
-        if ($this->mt->delete_data("tbl_brunch", $id, 'brunch_id')) {
+        if ($this->mt->delete_data("tbl_branch", $id, 'branch_id')) {
             $t = true;
             echo json_encode($t);
         }

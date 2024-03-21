@@ -138,7 +138,7 @@
 							<td style="color:green">{{ result.login_time | formatDateTime }}</td>
 							<td style="color:red">{{ result.logout_time | formatDateTime }}</td>
 							<td>{{ result.ip_address }}</td>
-							<td>{{ result.Brunch_name }}</td>
+							<td>{{ result.Branch_name }}</td>
 							<td style="text-align:center;">
 								<a href="" title="Delete Record" @click.prevent="deleteRecord(result.id)"><i class="fa fa-trash"></i></a>
 							</td>

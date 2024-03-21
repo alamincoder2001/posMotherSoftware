@@ -14,18 +14,18 @@ class loginVerify extends CI_Controller {
     public function Verify_Code_check(){
         $pass = ($this->input->post('txtPassword'));
         $User_Name=$this->session->userdata('User_Name');        
-        $x = "SELECT tbl_user.*,tbl_brunch.* from tbl_user left join tbl_brunch on tbl_brunch.brunch_id = tbl_user.userBrunch_id where  tbl_user.verifycode ='$pass' AND tbl_user.User_Name='$User_Name'";
+        $x = "SELECT tbl_user.*,tbl_branch.* from tbl_user left join tbl_branch on tbl_branch.branch_id = tbl_user.userBranch_id where  tbl_user.verifycode ='$pass' AND tbl_user.User_Name='$User_Name'";
         $sql = mysql_query($x);
         $d = mysql_fetch_array($sql);
         if ($d['Status']=='a') {
             if ($d['UserType'] =='a') {
                 $sdata['userId'] = $d['User_SlNo'];
-                $sdata['BRANCHid'] = $d['userBrunch_id'];
+                $sdata['BRANCHid'] = $d['userBranch_id'];
                 $sdata['FullName'] = $d['FullName'];
                 $sdata['User_Name'] = $d['User_Name'];
                 $sdata['accountType'] = $d['UserType'];
-                $sdata['userBrunch'] = $d['Brunch_sales'];
-                $sdata['Brunch_name'] = $d['Brunch_name'];
+                $sdata['userBrunch'] = $d['Branch_sales'];
+                $sdata['Branch_name'] = $d['Branch_name'];
                 $this->session->set_userdata($sdata);
                 $id=$d['User_SlNo'];
                 $fld='User_SlNo';
@@ -35,12 +35,12 @@ class loginVerify extends CI_Controller {
                 
             }else{
                 $sdata['userId'] = $d['User_SlNo'];
-                $sdata['BRANCHid'] = $d['userBrunch_id'];
+                $sdata['BRANCHid'] = $d['userBranch_id'];
                 $sdata['FullName'] = $d['FullName'];
                 $sdata['User_Name'] = $d['User_Name'];
                 $sdata['accountType'] = $d['UserType'];
-                $sdata['userBrunch'] = $d['Brunch_sales'];
-                $sdata['Brunch_name'] = $d['Brunch_name'];
+                $sdata['userBrunch'] = $d['Branch_sales'];
+                $sdata['Branch_name'] = $d['Branch_name'];
                 $this->session->set_userdata($sdata);
                 $id=$d['User_SlNo'];
                 $fld='User_SlNo';

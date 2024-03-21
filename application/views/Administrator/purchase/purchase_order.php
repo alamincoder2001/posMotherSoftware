@@ -61,7 +61,7 @@
 					<div class="form-group">
 						<label class="col-md-2 control-label no-padding-right"> Purchase For </label>
 						<div class="col-md-3">
-							<v-select id="branchDropdown" style="margin: 0;" v-bind:options="branches" v-model="selectedBranch" label="Brunch_name" disabled></v-select>
+							<v-select id="branchDropdown" style="margin: 0;" v-bind:options="branches" v-model="selectedBranch" label="Branch_name" disabled></v-select>
 						</div>
 					</div>
 
@@ -361,8 +361,8 @@
 				vatPercent: 0.00,
 				branches: [],
 				selectedBranch: {
-					brunch_id: "<?php echo $this->session->userdata('BRANCHid'); ?>",
-					Brunch_name: "<?php echo $this->session->userdata('Brunch_name'); ?>"
+					branch_id: "<?php echo $this->session->userdata('BRANCHid'); ?>",
+					Branch_name: "<?php echo $this->session->userdata('Branch_name'); ?>"
 				},
 				suppliers: [],
 				selectedSupplier: {
@@ -604,7 +604,7 @@
 					alert('Cart is empty');
 					return;
 				}
-				this.purchase.purchaseFor = this.selectedBranch.brunch_id;
+				this.purchase.purchaseFor = this.selectedBranch.branch_id;
 
 				let data = {
 					purchase: this.purchase,

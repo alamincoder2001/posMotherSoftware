@@ -19,13 +19,13 @@ class Login extends CI_Controller {
     function branch_access_main_admin(){
         $branch_id = $this->input->post('branch_id');
 
-		$row = $this->db->where('brunch_id',$branch_id)->get('tbl_brunch')->row();
+		$row = $this->db->where('branch_id',$branch_id)->get('tbl_branch')->row();
 		$comp_logo = $this->db->where('company_BrunchId',$branch_id)->get('tbl_company')->row()->Company_Logo_org;
 
-        $sdata['BRANCHid'] = $row->brunch_id;
+        $sdata['BRANCHid'] = $row->branch_id;
 		
-        $sdata['userBrunch'] = $row->Brunch_sales;
-        $sdata['Brunch_name'] = $row->Brunch_name;
+        $sdata['userBrunch'] = $row->Branch_sales;
+        $sdata['Branch_name'] = $row->Branch_name;
         $sdata['Brunch_image'] = $comp_logo;
         $this->session->set_userdata($sdata);
 		//echo "<pre>";print_r($sdata);exit;

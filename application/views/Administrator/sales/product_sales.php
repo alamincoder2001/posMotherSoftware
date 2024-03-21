@@ -68,7 +68,7 @@
 					<div class="form-group">
 						<label class="col-sm-1 control-label no-padding-right"> Sales From </label>
 						<div class="col-sm-2">
-							<v-select id="branchDropdown" v-bind:options="branches" label="Brunch_name" v-model="selectedBranch" disabled></v-select>
+							<v-select id="branchDropdown" v-bind:options="branches" label="Branch_name" v-model="selectedBranch" disabled></v-select>
 						</div>
 					</div>
 
@@ -409,8 +409,8 @@
 				selectedEmployee: null,
 				branches: [],
 				selectedBranch: {
-					brunch_id: "<?php echo $this->session->userdata('BRANCHid'); ?>",
-					Brunch_name: "<?php echo $this->session->userdata('Brunch_name'); ?>"
+					branch_id: "<?php echo $this->session->userdata('BRANCHid'); ?>",
+					Branch_name: "<?php echo $this->session->userdata('Branch_name'); ?>"
 				},
 				customers: [],
 				selectedCustomer: {
@@ -736,7 +736,7 @@
 				} else {
 					this.sales.employeeId = null;
 				}
-				this.sales.salesFrom = this.selectedBranch.brunch_id;
+				this.sales.salesFrom = this.selectedBranch.branch_id;
 
 				let data = {
 					sales: this.sales,

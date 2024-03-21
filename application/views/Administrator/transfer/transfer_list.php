@@ -50,7 +50,7 @@
                     <form class="form-inline" @submit.prevent="getTransfers">
                         <div class="form-group">
                             <label>Transfer to</label>
-                            <v-select v-bind:options="branches" v-model="selectedBranch" label="Brunch_name" placeholder="Select Branch"></v-select>
+                            <v-select v-bind:options="branches" v-model="selectedBranch" label="Branch_name" placeholder="Select Branch"></v-select>
                         </div>
 
                         <!-- <div class="form-group">
@@ -145,7 +145,7 @@
             getBranches() {
                 axios.get('/get_branches').then(res => {
                     let thisBranchId = parseInt("<?php echo $this->session->userdata('BRANCHid'); ?>");
-                    let ind = res.data.findIndex(branch => branch.brunch_id == thisBranchId);
+                    let ind = res.data.findIndex(branch => branch.branch_id == thisBranchId);
                     res.data.splice(ind, 1);
                     this.branches = res.data;
                 })
@@ -153,7 +153,7 @@
 
             getTransfers() {
                 if (this.selectedBranch != null) {
-                    this.filter.branch = this.selectedBranch.brunch_id;
+                    this.filter.branch = this.selectedBranch.branch_id;
                 } else {
                     this.filter.branch = null;
                 }

@@ -37,7 +37,7 @@ class Branch extends CI_Controller {
     {
         $User = $this->input->post('User', TRUE);
         $Bra = $this->db->where('User_SlNo',$User)->where('status','a')->get('tbl_user')->row();
-        $branch = $Bra->Brunch_ID;
+        $branch = $Bra->branch_id;
 
         $CheckUserAccess = $this->db->from('tbl_user_access')->where('user_id',$User)->where('branch_id',$branch)->count_all_results();
       

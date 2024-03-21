@@ -55,7 +55,7 @@
 					<div class="form-group">
 						<label class="col-md-1 control-label no-padding-right"> Qu. From </label>
 						<div class="col-md-2">
-							<v-select id="branchDropdown" v-bind:options="branches" label="Brunch_name" v-model="selectedBranch" disabled></v-select>
+							<v-select id="branchDropdown" v-bind:options="branches" label="Branch_name" v-model="selectedBranch" disabled></v-select>
 						</div>
 					</div>
 
@@ -339,8 +339,8 @@
 				cart: [],
 				branches: [],
 				selectedBranch: {
-					brunch_id: "<?php echo $this->session->userdata('BRANCHid'); ?>",
-					Brunch_name: "<?php echo $this->session->userdata('Brunch_name'); ?>"
+					branch_id: "<?php echo $this->session->userdata('BRANCHid'); ?>",
+					Branch_name: "<?php echo $this->session->userdata('Branch_name'); ?>"
 				},
 				products: [],
 				selectedProduct: {
@@ -503,7 +503,7 @@
 					url = "/update_quotation";
 				}
 
-				this.quotation.quotationFrom = this.selectedBranch.brunch_id;
+				this.quotation.quotationFrom = this.selectedBranch.branch_id;
 
 				let data = {
 					quotation: this.quotation,

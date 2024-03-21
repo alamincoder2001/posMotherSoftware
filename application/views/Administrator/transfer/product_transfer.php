@@ -67,7 +67,7 @@
                                 <label class="control-label col-md-4">Transfer to</label>
                                 <div class="col-md-8">
                                     <select class="form-control" v-bind:style="{display: branches.length > 0 ? 'none' : ''}"></select>
-                                    <v-select v-bind:options="branches" v-model="selectedBranch" label="Brunch_name" v-bind:style="{display: branches.length > 0 ? '' : 'none'}"></v-select>
+                                    <v-select v-bind:options="branches" v-model="selectedBranch" label="Branch_name" v-bind:style="{display: branches.length > 0 ? '' : 'none'}"></v-select>
                                 </div>
                             </div>
                         </div>
@@ -215,7 +215,7 @@
             getBranches() {
                 axios.get('/get_branches').then(res => {
                     let currentBranchId = parseInt("<?php echo $this->session->userdata('BRANCHid'); ?>");
-                    let currentBranchInd = res.data.findIndex(branch => branch.brunch_id == currentBranchId);
+                    let currentBranchInd = res.data.findIndex(branch => branch.branch_id == currentBranchId);
                     res.data.splice(currentBranchInd, 1);
                     this.branches = res.data;
                 })
@@ -339,7 +339,7 @@
                 }, 0);
 
                 this.transfer.transfer_by = this.selectedEmployee.Employee_SlNo;
-                this.transfer.transfer_to = this.selectedBranch.brunch_id;
+                this.transfer.transfer_to = this.selectedBranch.branch_id;
 
                 let data = {
                     transfer: this.transfer,
@@ -374,8 +374,8 @@
                 }
 
                 this.selectedBranch = {
-                    brunch_id: transfer.transfer_to,
-                    Brunch_name: transfer.transfer_to_name
+                    branch_id: transfer.transfer_to,
+                    Branch_name: transfer.transfer_to_name
                 }
 
                 let transferDetails = await axios.post('/get_transfer_details', {

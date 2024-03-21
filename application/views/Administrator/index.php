@@ -84,13 +84,13 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
 
 								<?php
-								$sql = $this->db->query("SELECT * FROM tbl_brunch where status = 'a' order by Brunch_name asc ");
+								$sql = $this->db->query("SELECT * FROM tbl_branch where status = 'a' order by Branch_name asc ");
 								$row = $sql->result();
 								foreach ($row as $row) { ?>
 									<li>
-										<a class="btn-add fancybox fancybox.ajax" href="<?php echo base_url(); ?>brachAccess/<?php echo $row->brunch_id; ?>">
+										<a class="btn-add fancybox fancybox.ajax" href="<?php echo base_url(); ?>brachAccess/<?php echo $row->branch_id; ?>">
 											<i class="ace-icon fa fa-bank"></i>
-											<?php echo $row->Brunch_name; ?>
+											<?php echo $row->Branch_name; ?>
 										</a>
 									</li>
 								<?php } ?>
@@ -216,7 +216,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 
 					<div class="nav-search" id="nav-search">
 						<span style="font-weight: bold; color: #972366; font-size: 16px;">
-							<?php echo $this->session->userdata('Brunch_name');  ?>
+							<?php echo $this->session->userdata('Branch_name');  ?>
 						</span>
 					</div><!-- /.nav-search -->
 				</div>

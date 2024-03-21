@@ -40,7 +40,7 @@ class User_management extends CI_Controller
             select 
             * 
             from tbl_user u 
-            where u.Brunch_ID = ?
+            where u.branch_id = ?
             and u.status != 'd'
             order by User_SlNo desc
         ", $this->session->userdata('BRANCHid'))->result();
@@ -82,8 +82,8 @@ class User_management extends CI_Controller
                 "User_Name"     => $data->User_Name,
                 "FullName"      => $data->FullName,
                 "UserEmail"     => $data->UserEmail,
-                "Brunch_ID"     => $data->userBrunch_id,
-                "userBrunch_id" => $data->userBrunch_id,
+                "branch_id"     => $data->userBranch_id,
+                "userBranch_id" => $data->userBranch_id,
                 "User_Password" => md5($data->Password),
                 "UserType"      => $data->UserType,
                 "AddTime"       => date('Y-m-d H:i:s')
@@ -114,8 +114,8 @@ class User_management extends CI_Controller
                 "User_Name"     => $data->User_Name,
                 "FullName"      => $data->FullName,
                 "UserEmail"     => $data->UserEmail,
-                "Brunch_ID"     => $data->userBrunch_id,
-                "userBrunch_id" => $data->userBrunch_id,
+                "branch_id"     => $data->userBranch_id,
+                "userBranch_id" => $data->userBranch_id,
                 "UserType"      => $data->UserType,
                 "UpdateBy"      => $this->access,
                 "UpdateTime"    => date('Y-m-d H:i:s')
@@ -263,7 +263,7 @@ class User_management extends CI_Controller
         $data['title'] = "User Profile";
 
         $user = $this->db->where('User_SlNo', $this->access)->get('tbl_user')->row();
-        $data['branch_info'] = $this->db->where('brunch_id', $user->userBrunch_id)->get('tbl_brunch')->row();
+        $data['branch_info'] = $this->db->where('branch_id', $user->userBranch_id)->get('tbl_branch')->row();
         $data['user'] = $user;
         $data['content'] = $this->load->view('Administrator/profile', $data, TRUE);
         $this->load->view('Administrator/index', $data);
@@ -341,11 +341,11 @@ class User_management extends CI_Controller
                 WHEN 'e' then 'Entry User'
                 ELSE 'Unknown'
             END as UserType,
-            b.Brunch_name
+            b.Branch_name
 
             from tbl_user_activity ua
             left join tbl_user u on u.User_SlNo = ua.user_id
-            left join tbl_brunch b on b.brunch_id = ua.branch_id
+            left join tbl_branch b on b.branch_id = ua.branch_id
             where ua.status = 'a'
             $clauses
             order by ua.id desc

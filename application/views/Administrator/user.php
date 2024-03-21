@@ -25,9 +25,9 @@
 							<label class="col-xs-4 control-label" for="Brunch"> Select Branch </label>
 							<label class="col-xs-1 control-label">:</label>
 							<div class="col-xs-6">
-								<select class="form-control" style="padding:0;" v-model="user.userBrunch_id" name="Brunch" id="Brunch" data-placeholder="Choose a Brunch...">
+								<select class="form-control" style="padding:0;" v-model="user.userBranch_id" name="Brunch" id="Brunch" data-placeholder="Choose a Brunch...">
 									<option value=""> </option>
-									<option v-for="item in branches" :value="item.brunch_id">{{item.Brunch_name}}</option>
+									<option v-for="item in branches" :value="item.branch_id">{{item.Branch_name}}</option>
 								</select>
 							</div>
 						</div>
@@ -156,7 +156,7 @@
 					FullName: '',
 					User_Name: '',
 					UserEmail: '',
-					userBrunch_id: '',
+					userBranch_id: '',
 					Password: '',
 					Re_Password: '',
 					UserType: '',

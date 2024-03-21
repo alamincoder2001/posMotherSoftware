@@ -406,12 +406,12 @@ class Billing_model extends CI_Model {
 		
 	public function select_pending_transfer_product(){
 		$BRANCHid = $this->session->userdata("BRANCHid");
-		$this->db->SELECT("TM.TransferMaster_SiNo, TM.TransferMaster_InvoiceNo, TM.TransferMaster_Date, B.Brunch_name, TD.TransferDetails_SiNo, TD.TransferDetails_TotalQuantity, TD.TransferDetails_unit, PD.Product_Code, PD.Product_Name, PC.ProductCategory_Name, BR.brand_name FROM sr_transfermaster AS TM
+		$this->db->SELECT("TM.TransferMaster_SiNo, TM.TransferMaster_InvoiceNo, TM.TransferMaster_Date, B.Branch_name, TD.TransferDetails_SiNo, TD.TransferDetails_TotalQuantity, TD.TransferDetails_unit, PD.Product_Code, PD.Product_Name, PC.ProductCategory_Name, BR.brand_name FROM sr_transfermaster AS TM
 		INNER JOIN sr_transferdetails AS TD ON TM.TransferMaster_SiNo = TD.TransferMaster_IDNo
 		INNER JOIN tbl_product AS PD ON TD.Product_IDNo = PD.Product_SlNo
 		INNER JOIN tbl_productcategory AS PC ON PC.ProductCategory_SlNo = PD.ProductCategory_ID
 		INNER JOIN tbl_brand AS BR ON BR.brand_SiNo = PD.brand
-		INNER JOIN tbl_brunch AS B ON B.brunch_id = TM.TransferMaster_Transferto
+		INNER JOIN tbl_branch AS B ON B.branch_id = TM.TransferMaster_Transferto
 		WHERE TD.fld_status='p' AND TD.Brunch_from='$BRANCHid' AND TM.TransferMaster_Transferfrom='$BRANCHid'");
 		$query = $this->db->get();
 		$result = $query->result();
@@ -420,12 +420,12 @@ class Billing_model extends CI_Model {
 	
 	public function select_receive_transfer_product(){
 		$BRANCHid = $this->session->userdata("BRANCHid");
-		$this->db->SELECT("TM.TransferMaster_SiNo, TM.TransferMaster_InvoiceNo, TM.TransferMaster_Date,TM.TransferMaster_Transferfrom,TM.TransferMaster_Transferto, B.Brunch_name, TD.TransferDetails_SiNo, TD.TransferDetails_TotalQuantity, TD.TransferDetails_unit, PD.Product_Code, PD.Product_SlNo, PD.Product_Name, PC.ProductCategory_Name, BR.brand_name FROM sr_transfermaster AS TM
+		$this->db->SELECT("TM.TransferMaster_SiNo, TM.TransferMaster_InvoiceNo, TM.TransferMaster_Date,TM.TransferMaster_Transferfrom,TM.TransferMaster_Transferto, B.Branch_name, TD.TransferDetails_SiNo, TD.TransferDetails_TotalQuantity, TD.TransferDetails_unit, PD.Product_Code, PD.Product_SlNo, PD.Product_Name, PC.ProductCategory_Name, BR.brand_name FROM sr_transfermaster AS TM
 		INNER JOIN sr_transferdetails AS TD ON TM.TransferMaster_SiNo = TD.TransferMaster_IDNo
 		INNER JOIN tbl_product AS PD ON TD.Product_IDNo = PD.Product_SlNo
 		INNER JOIN tbl_productcategory AS PC ON PC.ProductCategory_SlNo = PD.ProductCategory_ID
 		INNER JOIN tbl_brand AS BR ON BR.brand_SiNo = PD.brand
-		INNER JOIN tbl_brunch AS B ON B.brunch_id = TM.TransferMaster_Transferfrom
+		INNER JOIN tbl_branch AS B ON B.branch_id = TM.TransferMaster_Transferfrom
 		WHERE TD.fld_status='p' AND TD.Brunch_to='$BRANCHid' AND TM.TransferMaster_Transferto='$BRANCHid'");
 		$query = $this->db->get();
 		$result = $query->result();
@@ -493,19 +493,19 @@ class Billing_model extends CI_Model {
 				   
   	public function company_branch_profile($id){
 		$company = $this->db->query("select * from tbl_company order by Company_SlNo desc limit 1")->row();
-		$branch = $this->db->query("select * from tbl_brunch where brunch_id = ?", $id)->row();
+		$branch = $this->db->query("select * from tbl_branch where branch_id = ?", $id)->row();
 
 		return (object)[
 			'Company_Logo_thum' => $company->Company_Logo_thum,
 			'Company_Logo_org' => $company->Company_Logo_org,
-			'Company_Name' => $branch->Brunch_title,
-			'Repot_Heading' => $branch->Brunch_address,
+			'Company_Name' => $branch->Branch_title,
+			'Repot_Heading' => $branch->Branch_address,
 			'print_type' => $company->print_type
 		];
 	}
 
 	public function getCurrentBranch(){
-		$branchInfo = $this->db->query("select * from tbl_brunch where brunch_id = ?", $this->session->userdata('BRANCHid'))->row();
+		$branchInfo = $this->db->query("select * from tbl_branch where branch_id = ?", $this->session->userdata('BRANCHid'))->row();
 		return $branchInfo;
 	}
 		

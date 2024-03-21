@@ -255,7 +255,7 @@ class Sales extends CI_Controller
                 c.Customer_Mobile,
                 c.Customer_Address,
                 e.Employee_Name,
-                br.Brunch_name,
+                br.Branch_name,
                 (
                     select ifnull(count(*), 0) from tbl_saledetails sd 
                     where sd.SaleMaster_IDNo = 1
@@ -264,7 +264,7 @@ class Sales extends CI_Controller
             from tbl_salesmaster sm
             left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             left join tbl_employee e on e.Employee_SlNo = sm.employee_id
-            left join tbl_brunch br on br.brunch_id = sm.SaleMaster_branchid
+            left join tbl_branch br on br.branch_id = sm.SaleMaster_branchid
             where sm.SaleMaster_branchid = '$branchId'
             and sm.Status = 'a'
             $clauses
@@ -351,11 +351,11 @@ class Sales extends CI_Controller
             ifnull(c.Customer_Address, sm.customerAddress) as Customer_Address,
             c.Customer_Type,
             e.Employee_Name,
-            br.Brunch_name
+            br.Branch_name
             from tbl_salesmaster sm
             left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             left join tbl_employee e on e.Employee_SlNo = sm.employee_id
-            left join tbl_brunch br on br.brunch_id = sm.SaleMaster_branchid
+            left join tbl_branch br on br.branch_id = sm.SaleMaster_branchid
             where sm.SaleMaster_branchid = '$branchId'
             and sm.Status = 'a'
             $clauses

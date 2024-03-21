@@ -252,10 +252,10 @@ class Transfer extends CI_Controller
         $transfers = $this->db->query("
                 select
                     tm.*,
-                    b.Brunch_name as transfer_to_name,
+                    b.Branch_name as transfer_to_name,
                     e.Employee_Name as transfer_by_name
                 from tbl_transfermaster tm
-                join tbl_brunch b on b.brunch_id = tm.transfer_to
+                join tbl_branch b on b.branch_id = tm.transfer_to
                 join tbl_employee e on e.Employee_SlNo = tm.transfer_by
                 where tm.transfer_from = ? $clauses
             ", $this->session->userdata('BRANCHid'))->result();
@@ -299,10 +299,10 @@ class Transfer extends CI_Controller
         $transfers = $this->db->query("
                 select
                     tm.*,
-                    b.Brunch_name as transfer_from_name,
+                    b.Branch_name as transfer_from_name,
                     e.Employee_Name as transfer_by_name
                 from tbl_transfermaster tm
-                join tbl_brunch b on b.brunch_id = tm.transfer_from
+                join tbl_branch b on b.branch_id = tm.transfer_from
                 join tbl_employee e on e.Employee_SlNo = tm.transfer_by
                 where tm.transfer_to = ? $branchClause $dateClause
             ", $this->session->userdata('BRANCHid'))->result();
@@ -317,10 +317,10 @@ class Transfer extends CI_Controller
         $data['transfer'] = $this->db->query("
                 select
                     tm.*,
-                    b.Brunch_name as transfer_to_name,
+                    b.Branch_name as transfer_to_name,
                     e.Employee_Name as transfer_by_name
                 from tbl_transfermaster tm
-                join tbl_brunch b on b.brunch_id = tm.transfer_to
+                join tbl_branch b on b.branch_id = tm.transfer_to
                 join tbl_employee e on e.Employee_SlNo = tm.transfer_by
                 where tm.transfer_id = ?
             ", $transferId)->row();

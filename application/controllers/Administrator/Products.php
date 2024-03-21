@@ -457,13 +457,13 @@ class Products extends CI_Controller
                 'e' as sequence, 
                 trd.transferdetails_id as id,
                 tm.transfer_date as date,
-                concat('Transferred From: ', b.Brunch_name, ' - ', tm.note) as description,
+                concat('Transferred From: ', b.Branch_name, ' - ', tm.note) as description,
                 0 as rate,
                 trd.quantity as in_quantity,
                 0 as out_quantity
             from tbl_transferdetails trd
             join tbl_transfermaster tm on tm.transfer_id = trd.transfer_id
-            join tbl_brunch b on b.brunch_id = tm.transfer_from
+            join tbl_branch b on b.branch_id = tm.transfer_from
             where trd.product_id = " . $data->productId . "
             and tm.transfer_to = " . $this->brunch . "
             
@@ -472,13 +472,13 @@ class Products extends CI_Controller
                 'f' as sequence,
                 trd.transferdetails_id as id,
                 tm.transfer_date as date,
-                concat('Transferred To: ', b.Brunch_name, ' - ', tm.note) as description,
+                concat('Transferred To: ', b.Branch_name, ' - ', tm.note) as description,
                 0 as rate,
                 0 as in_quantity,
                 trd.quantity as out_quantity
             from tbl_transferdetails trd
             join tbl_transfermaster tm on tm.transfer_id = trd.transfer_id
-            join tbl_brunch b on b.brunch_id = tm.transfer_to
+            join tbl_branch b on b.branch_id = tm.transfer_to
             where trd.product_id = " . $data->productId . "
             and tm.transfer_from = " . $this->brunch . "
             

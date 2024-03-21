@@ -1,8 +1,8 @@
 <div class="content_scroll">
 <?php $bid = $this->session->userdata['bid'];
-$sql = mysql_query("SELECT tbl_menuaccess.*, tbl_brunch.* FROM tbl_menuaccess left join tbl_brunch on tbl_brunch.brunch_id = tbl_menuaccess.branch_id WHERE tbl_menuaccess.branch_id = '$bid'");
+$sql = mysql_query("SELECT tbl_menuaccess.*, tbl_branch.* FROM tbl_menuaccess left join tbl_branch on tbl_branch.branch_id = tbl_menuaccess.branch_id WHERE tbl_menuaccess.branch_id = '$bid'");
 $row = mysql_fetch_array($sql); ?>
-    <div style="background:#ddd;width:100%;height:30px;margin-bottom:5px;" align="center"><span style="line-height:30px;font-size:16px;"><?php echo $row['Brunch_name'] ?> Branch</span></div>
+    <div style="background:#ddd;width:100%;height:30px;margin-bottom:5px;" align="center"><span style="line-height:30px;font-size:16px;"><?php echo $row['Branch_name'] ?> Branch</span></div>
     <form action="<?php echo base_url() ?>Administrator/branch/menu_access_Insert" method="post">
     <input type="hidden" name="brid" value="<?php echo $bid; ?>">
 	

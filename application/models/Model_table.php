@@ -885,9 +885,9 @@ class Model_Table extends CI_Model
 
     public function getBrunchNameById($id)
     {
-        $q = $this->db->where('brunch_id', $id)->get('tbl_brunch')->row();
+        $q = $this->db->where('branch_id', $id)->get('tbl_branch')->row();
         if ($q)
-            return $q->Brunch_name;
+            return $q->Branch_name;
         return false;
     }
 

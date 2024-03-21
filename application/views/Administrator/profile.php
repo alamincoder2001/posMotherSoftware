@@ -43,7 +43,7 @@
 											<div class="profile-info-name"> Branch Name </div>
 
 											<div class="profile-info-value">
-												<span><?= ucwords($branch_info->Brunch_name) ?></span>
+												<span><?= ucwords($branch_info->Branch_name) ?></span>
 											</div>
 										</div>
 
@@ -52,8 +52,8 @@
 
 											<div class="profile-info-value">
 												<i class="fa fa-map-marker light-orange bigger-110"></i>
-												<span><?= ucwords($branch_info->Brunch_title) ?></span>
-												<span><?= ucwords($branch_info->Brunch_address) ?></span>
+												<span><?= ucwords($branch_info->Branch_title) ?></span>
+												<span><?= ucwords($branch_info->Branch_address) ?></span>
 											</div>
 										</div>
 

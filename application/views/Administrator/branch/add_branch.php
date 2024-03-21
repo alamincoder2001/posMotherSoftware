@@ -61,15 +61,15 @@
                 <tbody>
                     <tr v-for="(branch, sl) in branches">
                         <td>{{ sl + 1 }}</td>
-                        <td>{{ branch.Brunch_name }}</td>
-                        <td>{{ branch.Brunch_title }}</td>
-                        <td>{{ branch.Brunch_address }}</td>
+                        <td>{{ branch.Branch_name }}</td>
+                        <td>{{ branch.Branch_title }}</td>
+                        <td>{{ branch.Branch_address }}</td>
                         <td><span v-bind:class="branch.active_status">{{ branch.active_status }}</span></td>
                         <td>
                             <?php if($this->session->userdata('accountType') != 'u'){?>
                             <a href="" title="Edit Branch" @click.prevent="editBranch(branch)"><i class="fa fa-pencil"></i></a>&nbsp;
-                            <a href="" title="Deactive Branch" v-if="branch.status == 'a'" @click.prevent="changeStatus(branch.brunch_id)"><i class="fa fa-trash"></i></a>
-                            <a href="" title="Active Branch" v-else><i class="fa fa-check" @click.prevent="changeStatus(branch.brunch_id)"></i></a>
+                            <a href="" title="Deactive Branch" v-if="branch.status == 'a'" @click.prevent="changeStatus(branch.branch_id)"><i class="fa fa-trash"></i></a>
+                            <a href="" title="Active Branch" v-else><i class="fa fa-check" @click.prevent="changeStatus(branch.branch_id)"></i></a>
                             <?php }?>
                         </td>
                     </tr>
@@ -123,10 +123,10 @@
             },
 
             editBranch(branch){
-                this.branch.branchId = branch.brunch_id;
-                this.branch.name = branch.Brunch_name;
-                this.branch.title = branch.Brunch_title;
-                this.branch.address = branch.Brunch_address;
+                this.branch.branchId = branch.branch_id;
+                this.branch.name = branch.Branch_name;
+                this.branch.title = branch.Branch_title;
+                this.branch.address = branch.Branch_address;
             },
 
             changeStatus(branchId){
