@@ -368,7 +368,7 @@
 				selectedSupplier: {
 					Supplier_SlNo: "",
 					Supplier_Code: '',
-					Supplier_Name: '',
+					Supplier_Name: 'Cash Supplier',
 					display_name: 'Cash Supplier',
 					Supplier_Mobile: '',
 					Supplier_Address: '',
@@ -415,7 +415,7 @@
 					this.suppliers.unshift({
 						Supplier_SlNo: "",
 						Supplier_Code: '',
-						Supplier_Name: '',
+						Supplier_Name: 'Cash Supplier',
 						display_name: 'Cash Supplier',
 						Supplier_Mobile: '',
 						Supplier_Address: '',

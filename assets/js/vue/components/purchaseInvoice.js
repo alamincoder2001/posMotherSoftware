@@ -23,7 +23,7 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
                         <strong>Supplier Mobile:</strong> {{ purchase.Supplier_Mobile }}
                     </div>
                     <div class="col-xs-5 text-right">
-                        <strong>Purchase by:</strong> {{ purchase.AddBy }}<br>
+                        <strong>Purchase by:</strong> {{ purchase.FullName }}<br>
                         <strong>Invoice No.:</strong> {{ purchase.PurchaseMaster_InvoiceNo }}<br>
                         <strong>Purchase Date:</strong> {{ purchase.PurchaseMaster_OrderDate }} {{ moment(purchase.AddTime).format('h:mm a') }}
                     </div>

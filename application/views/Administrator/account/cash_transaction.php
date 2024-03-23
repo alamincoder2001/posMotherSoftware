@@ -96,8 +96,7 @@
 									<label class="col-md-4 control-label">Account</label>
 									<label class="col-md-1">:</label>
 									<div class="col-md-6 col-xs-11">
-										<select class="form-control" v-if="accounts.length == 0"></select>
-										<v-select v-bind:options="accounts" v-model="selectedAccount" label="Acc_Name" v-if="accounts.length > 0"></v-select>
+										<v-select v-bind:options="accounts" v-model="selectedAccount" label="Acc_Name"></v-select>
 									</div>
 									<div class="col-xs-1" style="padding-left:0;margin-left: -3px;">
 										<a href="/account" target="_blank" class="add-button"><i class="fa fa-plus"></i></a>
@@ -130,6 +129,7 @@
 								</div>
 								<div class="form-group">
 									<div class="col-md-7 col-md-offset-5 text-right">
+										<input type="button" class="btnReset" value="Reset">
 										<input type="submit" class="btnSave" value="Save">
 									</div>
 								</div>
@@ -160,11 +160,11 @@
 							<td>{{ row.Tr_Description }}</td>
 							<td>{{ row.In_Amount }}</td>
 							<td>{{ row.Out_Amount }}</td>
-							<td>{{ row.AddBy }}</td>
+							<td>{{ row.FullName }}</td>
 							<td>
 								<?php if ($this->session->userdata('accountType') != 'u') { ?>
-										<i @click="editTransaction(row)" class="btnEdit fa fa-pencil"></i>
-										<i class="btnDelete fa fa-trash" @click="deleteTransaction(row.Tr_SlNo)"></i>
+									<i @click="editTransaction(row)" class="btnEdit fa fa-pencil"></i>
+									<i class="btnDelete fa fa-trash" @click="deleteTransaction(row.Tr_SlNo)"></i>
 								<?php } ?>
 							</td>
 						</tr>

@@ -261,7 +261,7 @@ class Model_Table extends CI_Model
             ) as invest_received,
             (
                 select ifnull(sum(ass.as_amount), 0) from tbl_assets ass
-                where ass.branchid = " . $this->session->userdata('BRANCHid') . "
+                where ass.branch_id = " . $this->session->userdata('BRANCHid') . "
                 and ass.status = 'a'
                 and ass.buy_or_sale = 'sale'
                 " . ($date == null ? "" : " and ass.as_date < '$date'") . "
@@ -326,7 +326,7 @@ class Model_Table extends CI_Model
             ) as invest_payment,
             (
                 select ifnull(sum(ass.as_amount), 0) from tbl_assets ass
-                where ass.branchid = " . $this->session->userdata('BRANCHid') . "
+                where ass.branch_id = " . $this->session->userdata('BRANCHid') . "
                 and ass.status = 'a'
                 and ass.buy_or_sale = 'buy'
                 " . ($date == null ? "" : " and ass.as_date < '$date'") . "
@@ -520,7 +520,7 @@ class Model_Table extends CI_Model
                 where as_name = a.as_name
                 and buy_or_sale = 'buy'
                 and status = 'a'
-                and branchid = '$branchId'
+                and branch_id = '$branchId'
                 " . ($date == null ? "" : " and as_date < '$date'") . "
             ) as purchase_qty,
 
@@ -529,7 +529,7 @@ class Model_Table extends CI_Model
                 where as_name = a.as_name
                 and buy_or_sale = 'sale'
                 and status = 'a'
-                and branchid = '$branchId'
+                and branch_id = '$branchId'
                 " . ($date == null ? "" : " and as_date < '$date'") . "
             ) as sold_qty,
 
@@ -538,7 +538,7 @@ class Model_Table extends CI_Model
                 where as_name = a.as_name
                 and buy_or_sale = 'buy'
                 and status = 'a'
-                and branchid = '$branchId'
+                and branch_id = '$branchId'
                 " . ($date == null ? "" : " and as_date < '$date'") . "
             ) as purchase_amount,
 
@@ -547,7 +547,7 @@ class Model_Table extends CI_Model
                 where as_name = a.as_name
                 and buy_or_sale = 'sale'
                 and status = 'a'
-                and branchid = '$branchId'
+                and branch_id = '$branchId'
                 " . ($date == null ? "" : " and as_date < '$date'") . "
             ) as sold_amount,
 
@@ -556,7 +556,7 @@ class Model_Table extends CI_Model
                 where as_name = a.as_name
                 and buy_or_sale = 'sale'
                 and status = 'a'
-                and branchid = '$branchId'
+                and branch_id = '$branchId'
                 " . ($date == null ? "" : " and as_date < '$date'") . "
             ) as valuation_amount,
 
@@ -565,7 +565,7 @@ class Model_Table extends CI_Model
 
             from tbl_assets as a
             where a.status = 'a'
-            and a.branchid = '$branchId'
+            and a.branch_id = '$branchId'
             $clauses
             group by as_name
         ")->result();

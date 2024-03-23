@@ -23,7 +23,7 @@ const salesInvoice = Vue.component('sales-invoice', {
                         <strong>Customer Mobile:</strong> {{ sales.Customer_Mobile }}
                     </div>
                     <div class="col-xs-5 text-right">
-                        <strong>Sales by:</strong> {{ sales.AddBy }}<br>
+                        <strong>Sales by:</strong> {{ sales.FullName }}<br>
                         <strong>Invoice No.:</strong> {{ sales.SaleMaster_InvoiceNo }}<br>
                         <strong>Sales Date:</strong> {{ sales.SaleMaster_SaleDate }} {{ sales.AddTime | formatDateTime('h:mm a') }}
                     </div>

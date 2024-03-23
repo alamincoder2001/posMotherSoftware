@@ -405,10 +405,10 @@
 			},
 			getPurchaseDetails() {
 				let filter = {
-					categoryId: this.selectedCategory == null || this.selectedCategory.ProductCategory_SlNo == '' ? '' : this.selectedCategory.ProductCategory_SlNo,
-					productId: this.selectedProduct == null || this.selectedProduct.Product_SlNo == '' ? '' : this.selectedProduct.Product_SlNo,
-					dateFrom: this.dateFrom,
-					dateTo: this.dateTo
+					categoryId: this.selectedCategory == null || this.selectedCategory.ProductCategory_SlNo == '' ? '': this.selectedCategory.ProductCategory_SlNo,
+					productId : this.selectedProduct == null || this.selectedProduct.Product_SlNo == '' ? ''          : this.selectedProduct.Product_SlNo,
+					dateFrom  : this.dateFrom,
+					dateTo    : this.dateTo
 				}
 
 				axios.post('/get_purchasedetails', filter)

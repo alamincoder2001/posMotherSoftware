@@ -87,8 +87,8 @@
 						<td>{{ product.PurchaseDetails_TotalAmount }}</td>
 						<td>{{ product.returned_quantity }}</td>
 						<td>{{ product.returned_amount }}</td>
-						<td><input type="text" class="form-control" v-model="product.return_quantity" v-on:input="productReturnTotal(sl)"></td>
-						<td><input type="text" class="form-control" v-model="product.return_rate" v-on:input="productReturnTotal(sl)"></td>
+						<td><input type="text" style="padding: 2px 5px;font-size: 12px;margin:2px 0;" v-model="product.return_quantity" v-on:input="productReturnTotal(sl)"></td>
+						<td><input type="text" style="padding: 2px 5px;font-size: 12px;margin:2px 0;" v-model="product.return_rate" v-on:input="productReturnTotal(sl)"></td>
 						<td>{{ product.return_amount }}</td>
 					</tr>
 				</tbody>
@@ -263,6 +263,7 @@
 						Supplier_Name: purchaseReturn.Supplier_Name,
 						Supplier_Address: purchaseReturn.Supplier_Address,
 						Supplier_Mobile: purchaseReturn.Supplier_Mobile,
+						supplierType : purchaseReturn.supplierType 
 					}
 
 					this.purchaseReturn.returnDate = purchaseReturn.PurchaseReturn_ReturnDate;

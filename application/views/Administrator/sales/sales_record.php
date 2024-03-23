@@ -158,7 +158,7 @@
 								<td>{{ sale.SaleMaster_SaleDate }}</td>
 								<td>{{ sale.Customer_Name }}</td>
 								<td>{{ sale.Employee_Name }}</td>
-								<td>{{ sale.AddBy }}</td>
+								<td>{{ sale.FullName }}</td>
 								<td>{{ sale.saleDetails[0].Product_Name }}</td>
 								<td style="text-align:right;">{{ sale.saleDetails[0].SaleDetails_Rate }}</td>
 								<td style="text-align:center;">{{ sale.saleDetails[0].SaleDetails_TotalQuantity }}</td>
@@ -219,7 +219,7 @@
 							<td>{{ sale.SaleMaster_SaleDate }}</td>
 							<td>{{ sale.Customer_Name }}</td>
 							<td>{{ sale.Employee_Name }}</td>
-							<td>{{ sale.AddBy }}</td>
+							<td>{{ sale.FullName }}</td>
 							<td style="text-align:right;">{{ sale.SaleMaster_SubTotalAmount }}</td>
 							<td style="text-align:right;">{{ sale.SaleMaster_TaxAmount }}</td>
 							<td style="text-align:right;">{{ sale.SaleMaster_TotalDiscountAmount }}</td>
@@ -348,11 +348,7 @@
 					if (res.data.found) {
 						alert('Unable to edit. Sale return found!');
 					} else {
-						if (sale.is_service == 'true') {
-							location.replace('/sales/service/' + sale.SaleMaster_SlNo);
-						} else {
-							location.replace('/sales/product/' + sale.SaleMaster_SlNo);
-						}
+						location.replace('/sales/' + sale.SaleMaster_SlNo);
 					}
 				})
 			},

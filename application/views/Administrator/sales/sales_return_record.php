@@ -61,20 +61,20 @@
 					</div>
 
 					<div class="form-group" style="margin-top: -5px;">
-						<input type="submit" value="Search">
+						<input type="submit" @click="getReturns" value="Search">
 					</div>
 				</div>
 			</fieldset>
 		</div>
 	</div>
 
-	<div class="row" style="margin-top:15px;display:none;" v-bind:style="{display: returns.length > 0 ? '' : 'none'}">
-		<div class="col-md-12" style="margin-bottom: 10px;">
+	<div class="row" style="display:none;" v-bind:style="{display: returns.length > 0 ? '' : 'none'}">
+		<div class="col-md-12 text-right">
 			<a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
 		</div>
 		<div class="col-md-12">
 			<div class="table-responsive" id="reportContent">
-				<table class="record-table">
+				<table class="table table-hover table-bordered">
 					<thead>
 						<tr>
 							<th>Invoice No.</th>
@@ -89,7 +89,7 @@
 						<tr v-for="saleReturn in returns">
 							<td>{{ saleReturn.SaleMaster_InvoiceNo }}</td>
 							<td>{{ saleReturn.SaleReturn_ReturnDate }}</td>
-							<td>{{ saleReturn.Customer_Code }} {{ saleReturn.Customer_Name }}</td>
+							<td>{{ saleReturn.Customer_Name }}</td>
 							<td>{{ saleReturn.SaleReturn_Description }}</td>
 							<td style="text-align:right;">{{ saleReturn.SaleReturn_ReturnAmount }}</td>
 							<td style="text-align:center;">

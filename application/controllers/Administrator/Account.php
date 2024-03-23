@@ -47,10 +47,11 @@ class Account extends CI_Controller
 
             $account = (array)$accountObj;
             unset($account['Acc_SlNo']);
-            $account['status'] = 'a';
-            $account['AddBy'] = $this->session->userdata("FullName");
-            $account['AddTime'] = date('Y-m-d H:i:s');
-            $account['branch_id'] = $this->brunch;
+            $account['status']         = 'a';
+            $account['AddBy']          = $this->session->userdata("userId");
+            $account['AddTime']        = date('Y-m-d H:i:s');
+            $account['last_update_ip'] = $this->input->ip_address();
+            $account['branch_id']      = $this->brunch;
 
             $this->db->insert('tbl_account', $account);
 
@@ -78,8 +79,9 @@ class Account extends CI_Controller
 
             $account = (array)$accountObj;
             unset($account['Acc_SlNo']);
-            $account['UpdateBy'] = $this->session->userdata("FullName");
-            $account['UpdateTime'] = date('Y-m-d H:i:s');
+            $account['UpdateBy']       = $this->session->userdata("userId");
+            $account['UpdateTime']     = date('Y-m-d H:i:s');
+            $account['last_update_ip'] = $this->input->ip_address();
 
             $this->db->where('Acc_SlNo', $accountObj->Acc_SlNo)->update('tbl_account', $account);
 
@@ -96,6 +98,13 @@ class Account extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
 
+            $account = array(
+                'status' => 'd',
+                'DeletedBy' => $this->session->userdata("userId"),
+                'DeletedTime' => date('Y-m-d H:i:s'),
+                'laste_update_ip' => $this->input->ip_address()
+            );
+            
             $this->db->query("update tbl_account set status = 'd' where Acc_SlNo = ?", $data->accountId);
 
             $res = ['success' => true, 'message' => 'Account deleted'];
@@ -151,9 +160,11 @@ class Account extends CI_Controller
         $transactions = $this->db->query("
             select 
                 ct.*,
-                a.Acc_Name
+                a.Acc_Name,
+                u.FullName
             from tbl_cashtransaction ct
             join tbl_account a on a.Acc_SlNo = ct.Acc_SlID
+            left join tbl_user u on u.User_SlNo = ct.AddBy
             where ct.status = 'a'
             and ct.branch_id = ?
             $dateClause $transactionTypeClause $accountClause
@@ -176,8 +187,9 @@ class Account extends CI_Controller
 
             $transaction = (array)$transactionObj;
             $transaction['status'] = 'a';
-            $transaction['AddBy'] = $this->session->userdata("FullName");
+            $transaction['AddBy'] = $this->session->userdata("userId");
             $transaction['AddTime'] = date('Y-m-d H:i:s');
+            $transaction['last_update_ip'] = $this->input->ip_address();
             $transaction['branch_id'] = $this->session->userdata('BRANCHid');
 
             $this->db->insert('tbl_cashtransaction', $transaction);
@@ -198,8 +210,9 @@ class Account extends CI_Controller
 
             $transaction = (array)$transactionObj;
             unset($transaction['Tr_SlNo']);
-            $transaction['UpdateBy'] = $this->session->userdata("FullName");
+            $transaction['UpdateBy'] = $this->session->userdata("userId");
             $transaction['UpdateTime'] = date('Y-m-d H:i:s');
+            $transaction['last_update_ip'] = $this->input->ip_address();
 
             $this->db->where('Tr_SlNo', $transactionObj->Tr_SlNo)->update('tbl_cashtransaction', $transaction);
 
@@ -216,7 +229,13 @@ class Account extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
 
-            $this->db->set(['status' => 'd'])->where('Tr_SlNo', $data->transactionId)->update('tbl_cashtransaction');
+            $transaction = array(
+                'status' => 'd',
+                'DeletedBy' => $this->session->userdata('userId'),
+                'DeletedTime' => date('H-m-d H:i:s'),
+                'last_update_ip' => $this->input->ip_address()
+            );
+            $this->db->set($transaction)->where('Tr_SlNo', $data->transactionId)->update('tbl_cashtransaction');
 
             $res = ['success' => true, 'message' => 'Transaction deleted'];
         } catch (Exception $ex) {
@@ -224,62 +243,6 @@ class Account extends CI_Controller
         }
 
         echo json_encode($res);
-    }
-
-    public function cash_transaction_delete()
-    {
-        $id = $this->input->post('deleted');
-        $fld = 'Tr_SlNo';
-        if ($this->mt->delete_data("tbl_cashtransaction", $id, $fld)) {
-            $message = 'Delete Success';
-            echo json_encode($message);
-        }
-    }
-
-    function all_transaction_report()
-    {
-        $access = $this->mt->userAccess();
-        if (!$access) {
-            redirect(base_url());
-        }
-        $data['title'] = "Cash Transaction Report";
-        $data['content'] = $this->load->view('Administrator/account/all_transaction_report', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
-
-    function transaction_report_search()
-    {
-        $dAta['startdate'] = $startdate = $this->input->post('startdate');
-        $dAta['enddate'] = $enddate = $this->input->post('enddate');
-        $dAta['accountid'] = $accountid = $this->input->post('accountid');
-        $dAta['searchtype'] = $searchtype = $this->input->post('searchtype');
-        $this->session->set_userdata($dAta);
-        $BRANCHid = $this->session->userdata('BRANCHid');
-
-        if ($searchtype == 'All') {
-            if ($accountid == 'All') {
-                $result = $this->Other_model->transaction_account_all('A');
-            } else {
-                $result = $this->Other_model->transaction_by_account('A', $accountid);
-            }
-        } elseif ($searchtype == 'Received') {
-            if ($accountid == 'All') {
-                $result = $this->Other_model->transaction_account_all('R');
-            } else {
-                $result = $this->Other_model->transaction_by_account('R', $accountid);
-            }
-        } else {
-            if ($accountid == 'All') {
-                $result = $this->Other_model->transaction_account_all('P');
-            } else {
-                $result = $this->Other_model->transaction_by_account('P', $accountid);
-            }
-        }
-
-
-        $datas["record"] = $result;
-
-        $this->load->view('Administrator/account/transaction_report_list', $datas);
     }
 
     function getOtherIncomeExpense()
@@ -453,6 +416,7 @@ class Account extends CI_Controller
             $account = (array)$data;
             $account['AddBy'] = $this->session->userdata('userId');
             $account['AddTime'] = date('Y-m-d H:i:s');
+            $account['last_update_ip'] = $this->input->ip_address();
             $account['branch_id'] = $this->session->userdata('BRANCHid');
 
             $this->db->insert('tbl_bank_accounts', $account);
@@ -487,6 +451,7 @@ class Account extends CI_Controller
             $account = (array)$data;
             $account['UpdateBy'] = $this->session->userdata('userId');
             $account['UpdateTime'] = date('Y-m-d H:i:s');
+            $account['last_update_ip'] = $this->input->ip_address();
 
             $this->db->where('account_id', $data->account_id);
             $this->db->update('tbl_bank_accounts', $account);
@@ -518,8 +483,13 @@ class Account extends CI_Controller
         $res = ['success' => false, 'message' => ''];
         try {
             $data = json_decode($this->input->raw_input_stream);
-            $status = $data->account->status == 1 ? 0 : 1;
-            $this->db->query("update tbl_bank_accounts set status = ? where account_id = ?", [$status, $data->account->account_id]);
+            $rules = array(
+                'status' => $data->account->status == 1 ? 0 : 1,
+                'DeletedBy' => $this->session->userdata('userId'),
+                'DeletedTime' => date('H-m-d H:i:s'),
+                'last_update_ip' => $this->input->ip_address()
+            );
+            $this->db->set($rules)->where('account_id', $data->account->account_id)->update('tbl_bank_accounts');
 
             $res = ['success' => true, 'message' => 'status Changed'];
         } catch (Exception $ex) {

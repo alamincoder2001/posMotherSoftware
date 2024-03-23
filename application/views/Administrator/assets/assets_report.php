@@ -1,7 +1,7 @@
 <style>
 	.v-select {
 		float: right;
-		min-width: 100%;
+		min-width: 200px;
 		background: #fff;
 		margin-left: 5px;
 		border-radius: 4px !important;
@@ -42,33 +42,29 @@
 </style>
 
 <div id="assetsReport">
-	<div class="row">
+	<div class="row" style="margin: 0;">
 		<fieldset class="scheduler-border scheduler-search">
-			<legend class="scheduler-border">Supplier Due</legend>
+			<legend class="scheduler-border">Asset Report</legend>
 			<div class="control-group">
-				<div class="col-xs-12 col-md-12 col-lg-12" style="margin:0;">
-					<div class="form-group">
-						<label class="col-md-1 control-label no-padding-right" style="font-size:12px;" for="searchType"> Search Type </label>
-						<div class="col-md-2">
-							<select id="searchType" class="form-control" v-model="searchType" v-on:change="onChangeSearchType">
+				<div class="col-xs-12 col-md-12">
+					<form class="form-inline" @submit.prevent="getReport">
+						<div class="form-group">
+							<label class="control-label no-padding-right" for="searchType"> Search Type </label>
+							<select id="searchType" style="margin: 0;" class="form-control" v-model="searchType" v-on:change="onChangeSearchType">
 								<option value="all"> All </option>
 								<option value="asset"> By Asset</option>
 							</select>
 						</div>
-					</div>
 
-					<div class="form-group" style="display:none" v-bind:style="{display: searchType == 'asset' ? '' : 'none'}">
-						<label class="col-md-1 control-label"> Assets </label>
-						<div class="col-md-2 no-padding-left">
+						<div class="form-group" style="display:none" v-bind:style="{display: searchType == 'asset' ? '' : 'none'}">
+							<label class="control-label"> Assets </label>
 							<v-select v-bind:options="group_assets" v-model="selectedAsset" label="group_name"></v-select>
 						</div>
-					</div>
 
-					<div class="form-group">
-						<div class="col-md-2">
-							<input type="button" value="Show Report" v-on:click="getReport">
+						<div class="form-group">
+							<input type="submit" value="Show">
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		</fieldset>

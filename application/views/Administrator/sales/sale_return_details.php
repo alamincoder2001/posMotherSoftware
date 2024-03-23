@@ -108,7 +108,7 @@
 		</div>
 		<div class="col-md-12">
 			<div class="table-responsive" id="reportContent">
-				<table class="record-table">
+				<table class="table table-hover table-bordered">
 					<thead>
 						<tr>
 							<th>Invoice No.</th>
@@ -124,7 +124,7 @@
 						<tr v-for="details in returnDetails">
 							<td>{{ details.SaleMaster_InvoiceNo }}</td>
 							<td>{{ details.SaleReturn_ReturnDate }}</td>
-							<td>{{ details.Customer_Code }} {{ details.Customer_Name }}</td>
+							<td>{{ details.Customer_Name }}</td>
 							<td>{{ details.Product_Code }} {{ details.Product_Name }}</td>
 							<td style="text-align:right;">{{ details.SaleReturnDetails_ReturnQuantity }}</td>
 							<td style="text-align:right;">{{ details.SaleReturnDetails_ReturnAmount }}</td>

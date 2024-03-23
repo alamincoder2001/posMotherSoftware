@@ -83,7 +83,7 @@
 								<th>Already returned amount</th>
 								<th>Return Quantity</th>
 								<th>Return Rate</th>
-								<th>Return Amount</th>
+								<th style="width: 10%;">Return Amount</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -94,8 +94,8 @@
 								<td>{{ product.SaleDetails_TotalAmount }}</td>
 								<td>{{ product.returned_quantity }}</td>
 								<td>{{ product.returned_amount }}</td>
-								<td><input type="text" class="form-control" v-model="product.return_quantity" v-on:input="productReturnTotal(sl)"></td>
-								<td><input type="text" class="form-control" v-model="product.return_rate" v-on:input="productReturnTotal(sl)"></td>
+								<td><input type="text" style="padding: 2px 5px;margin:2px 0;font-size: 13px;" v-model="product.return_quantity" v-on:input="productReturnTotal(sl)"></td>
+								<td><input type="text" style="padding: 2px 5px;margin:2px 0;font-size: 13px;" v-model="product.return_rate" v-on:input="productReturnTotal(sl)"></td>
 								<td>{{ product.return_amount }}</td>
 							</tr>
 						</tbody>
@@ -103,10 +103,10 @@
 							<tr>
 								<td colspan="5" style="text-align:right;padding-top:15px;">Note</td>
 								<td colspan="2">
-									<textarea style="width: 100%" v-model="salesReturn.note"></textarea>
+									<textarea style="margin:2px 5px;" v-model="salesReturn.note"></textarea>
 								</td>
 								<td>
-									<button class="btn btn-success pull-left" v-on:click="saveSalesReturn">Save</button>
+									<button class="btnSave pull-left" style="margin:15px 48px;" v-on:click="saveSalesReturn">Save</button>
 								</td>
 								<td>Total: {{ salesReturn.total }}</td>
 							</tr>
@@ -318,7 +318,8 @@
 					Customer_Name: saleReturn.Customer_Name,
 					Customer_Code: saleReturn.Customer_Code,
 					Customer_Mobile: saleReturn.Customer_Mobile,
-					display_name: `${saleReturn.Customer_Code} - ${saleReturn.Customer_Name} - ${saleReturn.owner_name}`
+					display_name: saleReturn.Customer_SlNo == null ? 'Cash Customer' : `${saleReturn.Customer_Name} - ${saleReturn.Customer_Code} - ${saleReturn.Customer_Mobile}`,
+					Customer_Type: saleReturn.Customer_Type
 				}
 
 				this.selectedInvoice = {
@@ -328,6 +329,7 @@
 					Customer_Name: saleReturn.Customer_Name,
 					Customer_Mobile: saleReturn.Customer_Mobile,
 					Customer_Address: saleReturn.Customer_Address,
+					Customer_Type: saleReturn.Customer_Type,
 					SaleMaster_TotalDiscountAmount: saleReturn.SaleMaster_TotalDiscountAmount
 				}
 

@@ -235,6 +235,7 @@ class Products extends CI_Controller
                     join tbl_purchasereturn pr on pr.PurchaseReturn_SlNo = prd.PurchaseReturn_SlNo
                     where prd.PurchaseReturnDetailsProduct_SlNo = p.Product_SlNo
                     and prd.branch_id= '$branchId'
+                    and prd.status = 'a'
                     " . (isset($data->date) && $data->date != null ? " and pr.PurchaseReturn_ReturnDate <= '$data->date'" : "") . "
                 ) as purchase_returned_quantity,
                         

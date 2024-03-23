@@ -69,7 +69,7 @@ class Sales extends CI_Controller
                     unset($customer['Customer_Code']);
                     unset($customer['Customer_Type']);
                     unset($customer['District_Name']);
-                    $customer["UpdateBy"]   = $this->session->userdata("FullName");
+                    $customer["UpdateBy"]   = $this->session->userdata("userId");
                     $customer["UpdateTime"] = date("Y-m-d H:i:s");
                     $customer["status"]     = 'a';
                     if ($duplicateCustomer->Customer_Type == 'G') {
@@ -82,8 +82,9 @@ class Sales extends CI_Controller
                         $customer['Customer_Code'] = $this->mt->generateCustomerCode();
                         $customer['Customer_Type'] = $data->sales->salesType;
                         $customer['status'] = 'a';
-                        $customer['AddBy'] = $this->session->userdata("FullName");
+                        $customer['AddBy'] = $this->session->userdata("userId");
                         $customer['AddTime'] = date("Y-m-d H:i:s");
+                        $customer['last_update_ip'] = $this->input->ip_address();
                         $customer['branch_id'] = $this->session->userdata("BRANCHid");
 
                         $this->db->insert('tbl_customer', $customer);
@@ -107,8 +108,9 @@ class Sales extends CI_Controller
                 'SaleMaster_Previous_Due' => $data->sales->previousDue,
                 'SaleMaster_Description' => $data->sales->note,
                 'status' => 'a',
-                "AddBy" => $this->session->userdata("FullName"),
+                "AddBy" => $this->session->userdata("userId"),
                 'AddTime' => date("Y-m-d H:i:s"),
+                'last_update_ip' => $this->input->ip_address(),
                 'branch_id' => $this->session->userdata("BRANCHid")
             );
             if ($data->customer->Customer_Type == 'G') {
@@ -136,9 +138,10 @@ class Sales extends CI_Controller
                     'SaleDetails_TotalAmount'   => $cartProduct->total,
                     'is_service'                => $cartProduct->is_service,
                     'status'                    => 'a',
-                    'AddBy'                     => $this->session->userdata("FullName"),
+                    'AddBy'                     => $this->session->userdata("userId"),
                     'AddTime'                   => date('Y-m-d H:i:s'),
-                    'branch_id'      => $this->session->userdata('BRANCHid')
+                    'last_update_ip'            => $this->input->ip_address(),
+                    'branch_id'                 => $this->session->userdata('BRANCHid')
                 );
                 $this->db->insert('tbl_saledetails', $saleDetails);
                 if ($cartProduct->is_service == 'false') {
@@ -235,8 +238,8 @@ class Sales extends CI_Controller
             $clauses .= " and sm.SaleMaster_SaleDate between '$data->dateFrom' and '$data->dateTo'";
         }
 
-        if (isset($data->userFullName) && $data->userFullName != '') {
-            $clauses .= " and sm.AddBy = '$data->userFullName'";
+        if (isset($data->userId) && $data->userId != '') {
+            $clauses .= " and sm.AddBy = '$data->userId'";
         }
 
         if (isset($data->customerId) && $data->customerId != '') {
@@ -303,8 +306,8 @@ class Sales extends CI_Controller
             $clauses .= " and sm.SaleMaster_SaleDate between '$data->dateFrom' and '$data->dateTo'";
         }
 
-        if (isset($data->userFullName) && $data->userFullName != '') {
-            $clauses .= " and sm.AddBy = '$data->userFullName'";
+        if (isset($data->userId) && $data->userId != '') {
+            $clauses .= " and sm.AddBy = '$data->userId'";
         }
 
         if (isset($data->customerId) && $data->customerId != '') {
@@ -351,10 +354,12 @@ class Sales extends CI_Controller
             ifnull(c.Customer_Address, sm.customerAddress) as Customer_Address,
             c.Customer_Type,
             e.Employee_Name,
-            br.Branch_name
+            br.Branch_name,
+            u.FullName
             from tbl_salesmaster sm
             left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             left join tbl_employee e on e.Employee_SlNo = sm.employee_id
+            left join tbl_user u on u.User_SlNo = sm.AddBy
             left join tbl_branch br on br.branch_id = sm.branch_id
             where sm.branch_id = '$branchId'
             and sm.status = 'a'
@@ -391,7 +396,7 @@ class Sales extends CI_Controller
                     $duplicateCustomer = $mobile_count->row();
                     unset($customer['Customer_Code']);
                     unset($customer['Customer_Type']);
-                    $customer["UpdateBy"]   = $this->session->userdata("FullName");
+                    $customer["UpdateBy"]   = $this->session->userdata("userId");
                     $customer["UpdateTime"] = date("Y-m-d H:i:s");
                     $customer["status"]     = 'a';
                     if ($duplicateCustomer->Customer_Type == 'G') {
@@ -404,8 +409,9 @@ class Sales extends CI_Controller
                         $customer['Customer_Code'] = $this->mt->generateCustomerCode();
                         $customer['Customer_Type'] = $data->sales->salesType;
                         $customer['status'] = 'a';
-                        $customer['AddBy'] = $this->session->userdata("FullName");
+                        $customer['AddBy'] = $this->session->userdata("userId");
                         $customer['AddTime'] = date("Y-m-d H:i:s");
+                        $customer['last_update_ip'] = $this->input->ip_address();
                         $customer['branch_id'] = $this->session->userdata("BRANCHid");
 
                         $this->db->insert('tbl_customer', $customer);
@@ -427,9 +433,10 @@ class Sales extends CI_Controller
                 'SaleMaster_DueAmount'           => $data->sales->due,
                 'SaleMaster_Previous_Due'        => $data->sales->previousDue,
                 'SaleMaster_Description'         => $data->sales->note,
-                "UpdateBy"                       => $this->session->userdata("FullName"),
+                "UpdateBy"                       => $this->session->userdata("userId"),
                 'UpdateTime'                     => date("Y-m-d H:i:s"),
-                "branch_id"            => $this->session->userdata("BRANCHid")
+                'last_update_ip'                 => $this->input->ip_address(),
+                "branch_id"                      => $this->session->userdata("BRANCHid")
             );
             if ($data->customer->Customer_Type == 'G') {
                 $sales['SalseCustomer_IDNo']    = Null;
@@ -473,9 +480,10 @@ class Sales extends CI_Controller
                     'SaleDetails_TotalAmount'   => $cartProduct->total,
                     'is_service'                => $cartProduct->is_service,
                     'status'                    => 'a',
-                    'AddBy'                     => $this->session->userdata("FullName"),
-                    'AddTime'                   => date('Y-m-d H:i:s'),
-                    'branch_id'      => $this->session->userdata("BRANCHid")
+                    'UpdateBy'                  => $this->session->userdata("userId"),
+                    'UpdateTime'                => date('Y-m-d H:i:s'),
+                    'last_update_ip'            => $this->input->ip_address(),
+                    'branch_id'                 => $this->session->userdata("BRANCHid")
                 );
 
                 $this->db->insert('tbl_saledetails', $saleDetails);
@@ -538,16 +546,19 @@ class Sales extends CI_Controller
     {
         $res = ['success' => false, 'message' => ''];
         try {
+            $this->db->trans_begin();
+
             $data = json_decode($this->input->raw_input_stream);
             $salesReturn = array(
-                'SaleMaster_InvoiceNo' => $data->invoice->SaleMaster_InvoiceNo,
-                'SaleReturn_ReturnDate' => $data->salesReturn->returnDate,
+                'SaleMaster_InvoiceNo'    => $data->invoice->SaleMaster_InvoiceNo,
+                'SaleReturn_ReturnDate'   => $data->salesReturn->returnDate,
                 'SaleReturn_ReturnAmount' => $data->salesReturn->total,
-                'SaleReturn_Description' => $data->salesReturn->note,
-                'status' => 'a',
-                'AddBy' => $this->session->userdata("FullName"),
-                'AddTime' => date('Y-m-d H:i:s'),
-                'SaleReturn_brunchId' => $this->session->userdata("BRANCHid")
+                'SaleReturn_Description'  => $data->salesReturn->note,
+                'status'                  => 'a',
+                'AddBy'                   => $this->session->userdata("userId"),
+                'AddTime'                 => date('Y-m-d H:i:s'),
+                'last_update_ip'          => $this->input->ip_address(),
+                'branch_id'               => $this->session->userdata("BRANCHid")
             );
 
             $this->db->insert('tbl_salereturn', $salesReturn);
@@ -556,14 +567,15 @@ class Sales extends CI_Controller
             $totalReturnAmount = 0;
             foreach ($data->cart as $product) {
                 $returnDetails = array(
-                    'SaleReturn_IdNo' => $salesReturnId,
-                    'SaleReturnDetailsProduct_SlNo' => $product->Product_IDNo,
+                    'SaleReturn_IdNo'                  => $salesReturnId,
+                    'SaleReturnDetailsProduct_SlNo'    => $product->Product_IDNo,
                     'SaleReturnDetails_ReturnQuantity' => $product->return_quantity,
-                    'SaleReturnDetails_ReturnAmount' => $product->return_amount,
-                    'status' => 'a',
-                    'AddBy' => $this->session->userdata("FullName"),
-                    'AddTime' => date('Y-m-d H:i:s'),
-                    'branch_id' => $this->session->userdata("BRANCHid")
+                    'SaleReturnDetails_ReturnAmount'   => $product->return_amount,
+                    'status'                           => 'a',
+                    'AddBy'                            => $this->session->userdata("userId"),
+                    'AddTime'                          => date('Y-m-d H:i:s'),
+                    'last_update_ip'                   => $this->input->ip_address(),
+                    'branch_id'                        => $this->session->userdata("BRANCHid")
                 );
 
                 $this->db->insert('tbl_salereturndetails', $returnDetails);
@@ -579,26 +591,29 @@ class Sales extends CI_Controller
             }
 
             $customerInfo = $this->db->query("select * from tbl_customer where Customer_SlNo = ?", $data->invoice->SalseCustomer_IDNo)->row();
-            if ($customerInfo->Customer_Type == 'G') {
+            if (empty($customerInfo)) {
                 $customerPayment = array(
-                    'CPayment_date' => $data->salesReturn->returnDate,
-                    'CPayment_invoice' => $data->invoice->SaleMaster_InvoiceNo,
-                    'CPayment_customerID' => $data->invoice->SalseCustomer_IDNo,
+                    'CPayment_date'            => $data->salesReturn->returnDate,
+                    'CPayment_invoice'         => $data->invoice->SaleMaster_InvoiceNo,
+                    'CPayment_customerID'      => $data->invoice->customerType == 'G' ? NULL : $data->invoice->SalseCustomer_IDNo,
                     'CPayment_TransactionType' => 'CP',
-                    'CPayment_amount' => $totalReturnAmount,
-                    'CPayment_Paymentby' => 'cash',
-                    'branch_id' => $this->session->userdata("BRANCHid"),
-                    'CPayment_previous_due' => 0,
-                    'AddBy' => $this->session->userdata("FullName"),
-                    'AddTime' => date('Y-m-d H:i:s'),
-                    'status' => 'a'
+                    'CPayment_Paymentby'       => 'cash',
+                    'CPayment_amount'          => $totalReturnAmount,
+                    'CPayment_previous_due'    => 0,
+                    'status'                   => 'a',
+                    'AddBy'                    => $this->session->userdata("userId"),
+                    'AddTime'                  => date('Y-m-d H:i:s'),
+                    'last_update_ip'           => $this->input->ip_address(),
+                    'branch_id'                => $this->session->userdata("BRANCHid"),
                 );
 
                 $this->db->insert('tbl_customer_payment', $customerPayment);
             }
 
+            $this->db->trans_commit();
             $res = ['success' => true, 'message' => 'Return Success', 'id' => $salesReturnId];
         } catch (Exception $ex) {
+            $this->db->trans_rollback();
             $res = ['success' => false, 'message' => $ex->getMessage()];
         }
 
@@ -609,6 +624,8 @@ class Sales extends CI_Controller
     {
         $res = ['success' => false, 'message' => ''];
         try {
+            $this->db->trans_begin();
+
             $data = json_decode($this->input->raw_input_stream);
             $salesReturnId = $data->salesReturn->returnId;
 
@@ -621,9 +638,10 @@ class Sales extends CI_Controller
                 'SaleReturn_ReturnAmount' => $data->salesReturn->total,
                 'SaleReturn_Description' => $data->salesReturn->note,
                 'status' => 'a',
-                'AddBy' => $this->session->userdata("FullName"),
-                'AddTime' => date('Y-m-d H:i:s'),
-                'SaleReturn_brunchId' => $this->session->userdata("BRANCHid")
+                'UpdateBy' => $this->session->userdata("userId"),
+                'UpdateTime' => date('Y-m-d H:i:s'),
+                'last_update_ip' => $this->input->ip_address(),
+                'branch_id' => $this->session->userdata("BRANCHid")
             );
 
             $this->db->where('SaleReturn_SlNo', $salesReturnId)->update('tbl_salereturn', $salesReturn);
@@ -647,8 +665,9 @@ class Sales extends CI_Controller
                     'SaleReturnDetails_ReturnQuantity' => $product->return_quantity,
                     'SaleReturnDetails_ReturnAmount' => $product->return_amount,
                     'status' => 'a',
-                    'AddBy' => $this->session->userdata("FullName"),
-                    'AddTime' => date('Y-m-d H:i:s'),
+                    'UpdateBy' => $this->session->userdata("userId"),
+                    'UpdateTime' => date('Y-m-d H:i:s'),
+                    'last_update_ip' => $this->input->ip_address(),
                     'branch_id' => $this->session->userdata("BRANCHid")
                 );
 
@@ -665,38 +684,40 @@ class Sales extends CI_Controller
             }
 
             $customerInfo = $this->db->query("select * from tbl_customer where Customer_SlNo = ?", $data->invoice->SalseCustomer_IDNo)->row();
-            if ($customerInfo->Customer_Type == 'G') {
+            if (empty($customerInfo)) {
                 $this->db->query("
                     delete from tbl_customer_payment 
-                    where CPayment_invoice = ? 
-                    and CPayment_customerID = ?
+                    where CPayment_invoice = ?
                     and CPayment_amount = ?
+                    and CPayment_customerID is null
                     limit 1
                 ", [
                     $data->invoice->SaleMaster_InvoiceNo,
-                    $data->invoice->SalseCustomer_IDNo,
                     $oldReturn->SaleReturn_ReturnAmount
                 ]);
 
                 $customerPayment = array(
                     'CPayment_date' => $data->salesReturn->returnDate,
                     'CPayment_invoice' => $data->invoice->SaleMaster_InvoiceNo,
-                    'CPayment_customerID' => $data->invoice->SalseCustomer_IDNo,
+                    'CPayment_customerID' => NULL,
                     'CPayment_TransactionType' => 'CP',
                     'CPayment_amount' => $totalReturnAmount,
                     'CPayment_Paymentby' => 'cash',
-                    'branch_id' => $this->session->userdata("BRANCHid"),
                     'CPayment_previous_due' => 0,
-                    'AddBy' => $this->session->userdata("FullName"),
+                    'status' => 'a',
+                    'AddBy' => $this->session->userdata("userId"),
                     'AddTime' => date('Y-m-d H:i:s'),
-                    'status' => 'a'
+                    'last_update_ip' => $this->input->ip_address(),
+                    'branch_id' => $this->session->userdata("BRANCHid")
                 );
 
                 $this->db->insert('tbl_customer_payment', $customerPayment);
             }
 
+            $this->db->trans_commit();
             $res = ['success' => true, 'message' => 'Return Updated', 'id' => $salesReturnId];
         } catch (Exception $ex) {
+            $this->db->trans_rollback();
             $res = ['success' => false, 'message' => $ex->getMessage()];
         }
 
@@ -718,18 +739,17 @@ class Sales extends CI_Controller
                     c.Customer_SlNo,
                     c.Customer_Code,
                     c.Customer_Name,
-                    c.Customer_Type
+                    c.Customer_Type,
+                    sm.customerType
                 from tbl_salereturn sr
                 join tbl_salesmaster sm on sm.SaleMaster_InvoiceNo = sr.SaleMaster_InvoiceNo
-                join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+                left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
                 where sr.SaleReturn_SlNo = ?
             ", $data->id)->row();
 
-            $this->db->query("delete from tbl_salereturn where SaleReturn_SlNo = ?", $data->id);
-
             $returnDetails = $this->db->query("select * from tbl_salereturndetails srd where srd.SaleReturn_IdNo = ?", $data->id)->result();
 
-            if ($oldReturn->Customer_Type == 'G') {
+            if ($oldReturn->customerType == 'G') {
                 $this->db->query("
                     delete from tbl_customer_payment 
                     where CPayment_invoice = ? 
@@ -751,8 +771,16 @@ class Sales extends CI_Controller
                     and branch_id = ?
                 ", [$product->SaleReturnDetails_ReturnQuantity, $product->SaleReturnDetailsProduct_SlNo, $this->sbrunch]);
             }
+            $saleReturn = array(
+                'status' => 'd',
+                'DeletedBy' => $this->session->userdata('userId'),
+                'DeletedTime' => date('Y-m-d H:i:s'),
+                'last_update_ip' => $this->input->ip_address(),
+            );
 
-            $this->db->query("delete from tbl_salereturndetails where SaleReturn_IdNo = ?", $data->id);
+            $this->db->set($saleReturn)->where('SaleReturn_IdNo', $data->id)->update('tbl_salereturndetails');
+            $this->db->set($saleReturn)->where('SaleReturn_SlNo', $data->id)->update('tbl_salereturn');
+
             $res = ['success' => true, 'message' => 'Sale return deleted'];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage()];
@@ -789,9 +817,10 @@ class Sales extends CI_Controller
                 sr.*,
                 c.Customer_SlNo,
                 c.Customer_Code,
-                c.Customer_Name,
-                c.Customer_Address,
-                c.Customer_Mobile,
+                ifnull(c.Customer_Name, sm.customerName) as Customer_Name,
+                ifnull(c.Customer_Address, sm.customerAddress) as Customer_Address,
+                ifnull(c.Customer_Mobile, sm.customerMobile) as Customer_Mobile,
+                ifnull(c.Customer_Type, sm.customerType) as Customer_Type,
                 c.owner_name,
                 sm.SaleMaster_TotalDiscountAmount,
                 sm.SaleMaster_SlNo
@@ -832,13 +861,13 @@ class Sales extends CI_Controller
                 sr.SaleReturn_ReturnDate,
                 sr.SaleReturn_Description,
                 sm.SalseCustomer_IDNo,
-                c.Customer_Code,
-                c.Customer_Name
+                ifnull(c.Customer_Code, 'Cash Customer') as Customer_Code,
+                ifnull(c.Customer_Name, sm.customerName) as Customer_Name
             from tbl_salereturndetails srd
             join tbl_product p on p.Product_SlNo = srd.SaleReturnDetailsProduct_SlNo
             join tbl_salereturn sr on sr.SaleReturn_SlNo = srd.SaleReturn_IdNo
             join tbl_salesmaster sm on sm.SaleMaster_InvoiceNo = sr.SaleMaster_InvoiceNo
-            join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+            left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             where sr.branch_id= ?
             $clauses
         ", $this->session->userdata('BRANCHid'))->result();
@@ -852,267 +881,6 @@ class Sales extends CI_Controller
         $data['id'] = $id;
         $data['content'] = $this->load->view('Administrator/sales/sale_return_invoice', $data, TRUE);
         $this->load->view('Administrator/index', $data);
-    }
-
-    public function sales_order()
-    {
-
-        $query0 = $this->db->query("SELECT * FROM tbl_salesmaster ORDER BY SaleMaster_SlNo DESC LIMIT 1");
-        $row = $query0->row();
-
-        @$invoice = $row->SaleMaster_InvoiceNo;
-        $previousinvoice = substr($invoice, 3, 11);
-        if (!empty($invoice)) {
-            if ($previousinvoice < 10) {
-                $salesInvoiceno = 'CS-00' . ($previousinvoice + 1);
-            } else if ($previousinvoice < 100) {
-                $salesInvoiceno = 'CS-0' . ($previousinvoice + 1);
-            } else {
-                $salesInvoiceno = 'CS-' . ($previousinvoice + 1);
-            }
-        } else {
-            $salesInvoiceno = 'CS-001';
-        }
-
-        $SalesFrom = $this->input->post('SalesFrom');
-        $CType = $this->input->post('CType');
-        $re = 0;
-        if ($cart = $this->cart->contents()) {
-            foreach ($cart as $item) {
-                $branchID = $this->session->userdata("BRANCHid");
-                $SalesFrom = $this->input->post('SalesFrom');
-                $pid = $item['id'];
-                $qty = $item['qty'];
-                $proStock = 0;
-
-                $sql = $this->db->query("SELECT * FROM tbl_purchaseinventory WHERE PurchaseInventory_Store='$SalesFrom' AND purchProduct_IDNo = '$pid'  AND PurchaseInventory_brunchid = '$branchID'");
-
-
-                $stock = "";
-                $orw = $sql->result();
-                foreach ($orw as $orw) {
-                    $stock = $stock + $orw->PurchaseInventory_TotalQuantity;
-                    $returnQty = $orw->PurchaseInventory_ReturnQuantity;
-                    $damageQty = $orw->PurchaseInventory_DamageQuantity;
-                }
-                $sqll = $this->db->query("SELECT * FROM tbl_saleinventory WHERE SaleInventory_Store='$SalesFrom' AND sellProduct_IdNo = '$pid' AND SaleInventory_brunchid = '$branchID'");
-
-
-
-                $SaleInventory_TotalQuantity = 0;
-                $SaleInventory_ReturnQuantity = 0;
-                $rows = $sqll->result();
-                foreach ($rows as $rows) {
-                    $SaleInventory_TotalQuantity =  $SaleInventory_TotalQuantity + $rows->SaleInventory_TotalQuantity;
-                    $SaleInventory_ReturnQuantity = $SaleInventory_ReturnQuantity + $rows->SaleInventory_ReturnQuantity;
-                }
-
-
-                $tsql = $this->db->query("SELECT * FROM sr_transferdetails WHERE Product_IDNo = '$pid' AND Brunch_to = '$branchID' AND fld_status = 'a'")->result();
-                $transferQuantity = 0;
-                $transferQuantity2 = 0;
-                $curentstock = 0;
-                foreach ($tsql as $trows) {
-                    $transferQuantity =  $transferQuantity + $trows->TransferDetails_TotalQuantity;
-                }
-
-                $tsql2 = $this->db->query("SELECT * FROM sr_transferdetails WHERE Product_IDNo = '$pid' AND Brunch_from = '$branchID' AND fld_status = 'a'")->result();
-                foreach ($tsql2 as $trows2) {
-                    $transferQuantity2 =  $transferQuantity2 + $trows2->TransferDetails_TotalQuantity;
-                }
-
-
-                $curentstock = $stock - $SaleInventory_TotalQuantity;
-                $curentstock += $SaleInventory_ReturnQuantity + $transferQuantity;
-                $curentstock -= $transferQuantity2;
-
-                $roxx = $this->db->query("SELECT * FROM tbl_purchaseinventory WHERE PurchaseInventory_Store = '$SalesFrom' AND purchProduct_IDNo = '$pid' AND PurchaseInventory_brunchid = '$branchID'")->row();
-
-                $returnQty = 0;
-                $damageQty = 0;
-                //echo "<pre>";print_r($roxx);exit;
-
-                if (isset($roxx->PurchaseInventory_ReturnQuantity)) :
-                    $returnQty = $roxx->PurchaseInventory_ReturnQuantity;
-                else :
-                    $returnQty = 0;
-                endif;
-
-                if (isset($roxx->PurchaseInventory_DamageQuantity)) :
-                    $damageQty = $roxx->PurchaseInventory_DamageQuantity;
-                else :
-                    $damageQty = 0;
-                endif;
-                $curentstock = $curentstock - $returnQty;
-                $curentstock = $curentstock - $damageQty;
-
-                if ($qty > $curentstock) {
-                    $re = 0;
-                } else {
-                    $re = 1;
-                }
-            }
-        }
-
-        if ($re == 0) {
-            return false;
-        }
-
-        $sales = array(
-            "SaleMaster_InvoiceNo"          => $salesInvoiceno,
-            "SalseCustomer_IDNo"            => $this->input->post('customerID'),
-            "SaleMaster_SaleDate"           => $this->input->post('sales_date'),
-            "SaleMaster_Description"        => $this->input->post('SelesNotes'),
-            "SaleMaster_SaleType"           => $this->input->post('SalesFrom'),
-            "SaleMaster_TotalSaleAmount"    => $this->input->post('subTotal'),
-            "SaleMaster_TotalDiscountAmount" => $this->input->post('SellsDiscount'),
-            "SaleMaster_RewordDiscount"     => $this->input->post('Reword_Discount'),
-            "SaleMaster_TaxAmount"          => $this->input->post('vatPersent'),
-            "SaleMaster_Freight"            => $this->input->post('SellsFreight'),
-            "SaleMaster_SubTotalAmount"     => $this->input->post('SellTotals'),
-            "SaleMaster_PaidAmount"         => $this->input->post('SellsPaid'),
-            "SaleMaster_DueAmount"          => $this->input->post('SellsDue'),
-            "SaleMaster_Previous_Due"          => $this->input->post('SaleMaster_Previous_Due'),
-            "payment_type"                    => $this->input->post('payment_type'),
-            "AddBy"                         => $this->session->userdata("FullName"),
-            "branch_id"           => $this->session->userdata("BRANCHid"),
-            "AddTime"                       => date("Y-m-d H:i:s")
-        );
-
-        $sales_id = $this->Billing_model->SalesOrder($sales);
-        if ($CType == 'G') {
-            $G_All = array(
-                'G_Name' => $this->input->post('C_name'),
-                'G_Mobile' => $this->input->post('C_Mobile'),
-                'G_Address' => $this->input->post('C_Address'),
-                'G_Sale_Mastar_SiNO' => $sales_id,
-            );
-            $this->mt->save_data("genaral_customer_info", $G_All);
-        }
-        $data = array(
-            "CPayment_date"         => $this->input->post('sales_date', TRUE),
-            "CPayment_invoice"      => $salesInvoiceno,
-            "CPayment_customerID"   => $this->input->post('customerID', TRUE),
-            "CPayment_amount"       => $this->input->post('SellsPaid', TRUE),
-            "CPayment_notes"        => $this->input->post('SelesNotes', TRUE),
-            "AddBy"        => $this->session->userdata("FullName"),
-            "branch_id"     => $this->session->userdata("BRANCHid")
-        );
-        $this->mt->save_data("tbl_customer_payment", $data);
-
-        if ($cart = $this->cart->contents()) {
-            foreach ($cart as $item) {
-                $packagename = $item['packagename'];
-                $proname = $item['name'];
-                $packagecode = $item['packagecode'];
-                if ($packagename == $proname) {
-                    $sqqS = $this->db->query("SELECT tbl_package_create.*, tbl_product.* FROM tbl_package_create left join tbl_product on tbl_product.product_create_pack_id = tbl_package_create.create_ID WHERE tbl_package_create.create_pacageID = '$packagecode'");
-                    $romS = $sqqS->result();
-                    foreach ($romS as $romS) {
-                        $proids = $romS->Product_SlNo;
-                        $sellPRICE = $romS->create_sell_price;
-                        $PurchpackagPRICE = $romS->create_purch_price;
-                        $packagNAME = $romS->create_item;
-                        $packqty = $romS->cteate_qty * $item['qty'];
-                        $order_detail = array(
-                            'SaleMaster_IDNo'               => $sales_id,
-                            'Product_IDNo'                  => $proids,
-                            'SaleDetails_TotalQuantity'     => $packqty,
-                            'SeleDetails_qty'               => $item['qty'],
-                            'SaleDetails_Rate'              => $sellPRICE,
-                            'SaleDetails_unit'              => 'pcs',
-                            'packSellPrice'                 => $item['price'],
-                            'packageName'                   => $item['name'],
-                            'Purchase_Rate'                 => $PurchpackagPRICE
-                        );
-                        $this->Billing_model->insert_sales_detail($order_detail);
-                        $sql = $this->db->query("SELECT * FROM tbl_saleinventory WHERE SaleInventory_Store='$SalesFrom' AND  sellProduct_IdNo = '" . $proids . "'");
-                        $rox = $sql->row();
-                        $id = $rox->SaleInventory_SlNo;
-                        $oldStock = $rox->SaleInventory_TotalQuantity;
-                        $oldpackStock = $rox->SaleInventory_qty;
-
-                        if ($rox->sellProduct_IdNo == $proids) {
-                            $addStock = array(
-                                'sellProduct_IdNo'                      => $proids,
-                                'SaleInventory_TotalQuantity'           => $oldStock + $packqty,
-                                'SaleInventory_qty'                     => $oldpackStock + $item['qty'],
-                                'SaleInventory_Store' => $SalesFrom,
-                                'SaleInventory_packname'                => $packagename
-                            );
-                            $this->mt->update_data("tbl_saleinventory", $addStock, $id, 'SaleInventory_SlNo');
-                        } else {
-                            $addStock = array(
-                                'sellProduct_IdNo'                      => $proids,
-                                'SaleInventory_TotalQuantity'           => $packqty,
-                                'SaleInventory_qty'                     => $$item['qty'],
-                                'SaleInventory_Store' => $SalesFrom,
-                                'SaleInventory_packname'                => $packagename
-                            );
-                            $this->mt->save_data("tbl_saleinventory", $addStock);
-                        }
-                    }
-                } else {
-                    $order_detail = array(
-                        'SaleMaster_IDNo'               => $sales_id,
-                        'Product_IDNo'                  => $item['id'],
-                        'SaleDetails_TotalQuantity'     => $item['qty'],
-                        'SaleDetails_Rate'              => $item['price'],
-                        'SaleDetails_unit'              => $item['image'],
-                        'SaleDetails_Discount'            => $item['pro_discount'],
-                        'Discount_amount'                => $item['discount_amount'],
-                        'Purchase_Rate'                 => $item['purchaserate'],
-                        "AddTime"                       => date("Y-m-d H:i:s")
-                    );
-                    $this->Billing_model->insert_sales_detail($order_detail);
-                    // Stock add
-                    $sql = $this->db->query("SELECT * FROM tbl_saleinventory WHERE SaleInventory_Store='$SalesFrom' AND sellProduct_IdNo = '" . $item['id'] . "'");
-                    $rox = $sql->row();
-                    $id = $rox->SaleInventory_SlNo;
-                    $oldStock = $rox->SaleInventory_TotalQuantity;
-
-                    if ($rox->sellProduct_IdNo == $item['id']) {
-                        $addStock = array(
-                            'sellProduct_IdNo'            => $item['id'],
-                            'SaleInventory_TotalQuantity' => $oldStock + $item['qty'],
-                            'SaleInventory_brunchid'      => $this->sbrunch,
-                            'SaleInventory_Store'         => $SalesFrom,
-                            "UpdateBy"         => $this->session->userdata("FullName"),
-                            "UpdateTime"                  => date("Y-m-d H:i:s")
-                        );
-                        $this->mt->update_data("tbl_saleinventory", $addStock, $id, 'SaleInventory_SlNo');
-                    } else {
-                        $addStock = array(
-                            'sellProduct_IdNo'            => $item['id'],
-                            'SaleInventory_TotalQuantity' => $item['qty'],
-                            'SaleInventory_brunchid'      => $this->sbrunch,
-                            'SaleInventory_Store'         => $SalesFrom,
-                            "AddBy"         => $this->session->userdata("FullName"),
-                            "AddTime"                     => date("Y-m-d H:i:s")
-                        );
-                        $this->mt->save_data("tbl_saleinventory", $addStock);
-                    }
-                }
-
-                $Pid = $item['id'];
-                $Pfld = 'Product_SlNo';
-                $ProductPrice = array(
-                    'Product_SellingPrice' => $item['price'],
-                    'body_rate' => $item['bodyrate']
-                );
-                $this->mt->update_data("tbl_product", $ProductPrice, $Pid, $Pfld);
-            } // end foreach
-        } // end if
-
-        if ($this->input->post('payment_type') == 'Cheque') {
-            $this->Check_model->store_check_info_sale($sales_id, $this->input->post('customerID'));
-        }
-
-
-        $this->cart->destroy();
-        $sss['lastidforprint'] = $sales_id;
-        $this->session->set_userdata($sss);
-        $this->load->view('Administrator/sales/product_sales');
     }
 
     function salesreturn()
@@ -1152,108 +920,7 @@ class Sales extends CI_Controller
         $this->session->set_userdata($da);
         $this->load->view('Administrator/sales/salesReturnList', $data);
     }
-    function SalesReturnInsert()
-    {
-        $returnqty = $this->input->post('returnqty');
-        $returnamount = $this->input->post('returnamount');
-        //echo "<pre>";print_r($returnamount);exit;
-        $return_date = $this->input->post('return_date');
-        $productID = $this->input->post('productID');
-        $salseQTY = $this->input->post('salseQTY');
-        $invoices = $this->input->post('invoice');
-        $totalQty = "";
-        $RAmount = "";
-        $totalarray =  sizeof($returnqty);
-        for ($j = 0; $j < $totalarray; $j++) {
-            $rqtys = $this->input->post('returnqty');
-            $totalQty = $rqtys[$j] + $totalQty;
-            $ramounts = $this->input->post('returnamount');
-            $RAmount = $ramounts[$j] + $RAmount;
-        }
-        $sqlll = $this->db->query("SELECT * FROM tbl_salereturn where SaleMaster_InvoiceNo = '$invoices'");
-        $ros = $sqlll->row();
-        //echo "<pre>";print_r($ros);exit;
-        @$iid = $ros->SaleReturn_SlNo;
-        @$ivo = $ros->SaleMaster_InvoiceNo;
 
-        @$totalqt = $ros->SaleReturn_ReturnQuantity;
-        @$totalamou = $ros->SaleReturn_ReturnAmount;
-        $fld = 'SaleReturn_SlNo';
-
-        $return = array(
-            "SaleMaster_InvoiceNo"               => $invoices,
-            "SaleReturn_ReturnDate"              => $this->input->post('return_date'),
-            "SaleReturn_ReturnQuantity"          => $totalQty,
-            "SaleReturn_ReturnAmount"            => $RAmount,
-            "SaleReturn_Description"             => $this->input->post('Notes'),
-
-            "AddBy"                              => $this->session->userdata("FullName"),
-            "SaleReturn_brunchId"                => $this->session->userdata("BRANCHid"),
-            "AddTime"                            => date("Y-m-d H:i:s")
-        );
-        $return_id = $this->Billing_model->SalesReturn('tbl_salereturn', $return);
-        if ($return_id > 0) {
-            for ($i = 0; $i < $totalarray; $i++) {
-                $returnqtyss = $this->input->post('returnqty');
-                $returnamounts = $this->input->post('returnamount');
-                $productIDs = $this->input->post('productID');
-                $salseQTYs = $this->input->post('salseQTY');
-
-                if ($returnqtyss[$i] != 0) {
-                    $returns = array(
-                        "SaleReturn_IdNo"                           => $return_id,
-                        "SaleReturnDetails_ReturnDate"              => $this->input->post('return_date'),
-                        "SaleReturnDetailsProduct_SlNo"             => $productIDs[$i],
-                        "SaleReturnDetails_SaleQuantity"            => $salseQTYs[$i],
-                        "SaleReturnDetails_ReturnQuantity"          => $returnqtyss[$i],
-                        "SaleReturnDetails_ReturnAmount"            => $returnamount[$i],
-
-                        "AddBy"                                     => $this->session->userdata("FullName"),
-                        "branch_id"                => $this->session->userdata("BRANCHid"),
-                        "AddTime"                                   => date("Y-m-d H:i:s")
-                    );
-                    $this->Billing_model->SalesReturn('tbl_salereturndetails', $returns);
-                    $dataR = array(
-                        "CPayment_date" => date('Y-m-d'),
-                        "CPayment_invoice" => $invoices,
-                        "CPayment_TransactionType" => "RP",
-                        "CPayment_customerID" => $this->db->where('SaleMaster_InvoiceNo', $invoices)->get('tbl_salesmaster')->row()->SalseCustomer_IDNo,
-                        "CPayment_amount" => $returnamount[$i],
-                        "CPayment_notes" => 'Sale Returns',
-                        "AddBy" => $this->session->userdata("FullName"),
-                        "branch_id" => $this->session->userdata("BRANCHid")
-                    );
-                    $this->mt->save_data("tbl_customer_payment", $dataR);
-                }
-            }
-        }
-
-
-        for ($f = 0; $f < $totalarray; $f++) {
-            $productIDs = $this->input->post('productID');
-            $rqtyss = $this->input->post('returnqty');
-            //------------------------------------------
-            $productsCodes = $this->input->post('productsCodes');
-            $productsCode = $productsCodes[$f];
-            $packnames = $this->input->post('packname');
-            $packnames = $packnames[$f];
-            $productsName = $this->input->post('productsName');
-            $productsName = $productsName[$f];
-
-            $store = $this->session->userdata('Store');
-            $sqls = $this->db->query("SELECT * FROM tbl_saleinventory WHERE  SaleInventory_Store='$store' AND  sellProduct_IdNo ='" . $productIDs[$f] . "'");
-            $ROW = $sqls->row();
-            $id = $ROW->SaleInventory_SlNo;
-            $qt = $ROW->SaleInventory_ReturnQuantity;
-            $fld = "SaleInventory_SlNo";
-            $returns = array(
-                "SaleInventory_ReturnQuantity"      => $rqtyss[$f] + $qt
-            );
-            $this->mt->update_data('tbl_saleinventory', $returns, $id, $fld);
-        }
-
-        $this->load->view('Administrator/sales/blankpage');
-    }
     public function sales_invoice()
     {
         $access = $this->mt->userAccess();
@@ -1292,128 +959,6 @@ class Sales extends CI_Controller
         $this->load->view('Administrator/index', $data);
     }
 
-
-
-
-    function select_customerName()
-    {
-?>
-        <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right" for="customerID"> Select Customer </label>
-            <div class="col-sm-3">
-                <select name="" id="customerID" data-placeholder="Choose a Customer..." class="chosen-select">
-                    <option value="All">All</option>
-                    <?php
-                    $sql = $this->db->query("SELECT * FROM tbl_customer where branch_id = '" . $this->sbrunch . "' AND Customer_Type = 'Local' order by Customer_Name asc");
-                    $row = $sql->result();
-                    foreach ($row as $row) { ?>
-
-                        <option value="<?php echo $row->Customer_SlNo; ?>"><?php echo $row->Customer_Name; ?> (<?php echo $row->Customer_Code; ?>)</option>
-                    <?php } ?>
-                </select>
-            </div>
-        </div>
-    <?php
-    }
-    function select_InvCustomerName()
-    {
-    ?>
-        <div class="form-group">
-            <div class="col-sm-3">
-                <select id="Salestype" class="chosen-select" name="Salestype">
-                    <option value="All">All</option>
-                    <?php
-                    $sql = $this->db->query("SELECT * FROM tbl_customer where branch_id = '" . $this->sbrunch . "' AND Customer_Type = 'Local' order by Customer_Name asc");
-                    $row = $sql->result();
-                    foreach ($row as $row) { ?>
-
-                        <option value="<?php echo $row->Customer_SlNo; ?>"><?php echo $row->Customer_Name; ?> (<?php echo $row->Customer_Code; ?>)</option>
-                    <?php } ?>
-                </select>
-            </div>
-        </div>
-<?php
-    }
-    function sales_customerName()
-    {
-        $id = $this->input->post('customerID');
-        $sql = mysql_query("SELECT * FROM tbl_customer WHERE Customer_SlNo = '$id'");
-        $row = mysql_fetch_array($sql);
-        $datas['customerName'] = $row['Customer_Name'];
-        $this->load->view('Administrator/sales/salesrecord_customername', $datas);
-    }
-
-    function search_sales_record()
-    {
-        // print_r($this->input->post());die();
-        $data = array();
-        $dAta['searchtype'] = $searchtype = $this->input->post('searchtype');
-        $dAta['Sales_startdate'] = $Sales_startdate = $this->input->post('Sales_startdate');
-        $dAta['Sales_enddate'] = $Sales_enddate = $this->input->post('Sales_enddate');
-        $dAta['customerID'] = $customerID = $this->input->post('customerID');
-        $dAta['productID'] = $productID = $this->input->post('productID');
-        $dAta['adminId'] = $adminId = $this->input->post('adminId');
-        $dAta['Salestype'] = $Salestype = $this->input->post('Salestype');
-
-
-        $this->session->set_userdata($dAta);
-
-        if ($searchtype == "All") {
-            if ($Salestype == 'All') {
-                $data['records'] = $this->Sale_model->all_sale_record_data($Sales_startdate, $Sales_enddate);
-            } else {
-                $data['records'] = $this->Sale_model->sale_type_wise_sale_record($Salestype, $Sales_startdate, $Sales_enddate);
-            }
-            $data["invoive"] = "All";
-        }
-        if ($searchtype == "Customer") {
-            if ($Salestype == 'All') {
-
-                $data['records'] = $this->Sale_model->customer_wise_sale_record($customerID, $Sales_startdate, $Sales_enddate);
-            } else {
-                $data['records'] = $this->Sale_model->sale_type_wise_sale_record($Salestype, $Sales_startdate, $Sales_enddate);
-            }
-            $data["invoive"] = "";
-        }
-        if ($searchtype == "invoice") {
-            if ($Salestype == 'All') {
-                $data['records'] = $this->Sale_model->all_sale_record_data($Sales_startdate, $Sales_enddate);
-                $data["invoive"] = "invoice";
-            } else {
-                $data['records'] = $this->Sale_model->cus_sale_record_data($Salestype, $Sales_startdate, $Sales_enddate);
-                $data["invoive"] = "invoice";
-            }
-        }
-        if ($searchtype == "Qty") {
-            if ($productID == 'All' && $customerID == 'All') {
-                $data['records'] = $this->Sale_model->all_product_sale_qty($Sales_startdate, $Sales_enddate);
-            } else if ($productID == 'All' && $customerID != 'All') {
-                $data['records'] = $this->Sale_model->customer_wise_product_sale_qty($customerID, $Sales_startdate, $Sales_enddate);
-            } else if ($productID != 'All' && $customerID == 'All') {
-                $data['records'] = $this->Sale_model->product_sale_qty($productID, $Sales_startdate, $Sales_enddate);
-            } else {
-                $data['records'] = $this->Sale_model->customer_and_product_sale_qty($productID, $customerID, $Sales_startdate, $Sales_enddate);
-            }
-            $data["invoive"] = "Qty";
-        }
-
-        if ($searchtype == "User") {
-
-            $data['records'] = $this->Sale_model->all_sale_record_data_by_user($adminId, $Sales_startdate, $Sales_enddate);
-            $data["invoive"] = "User";
-        }
-
-        // echo "<pre>";
-        // print_r($data);die();
-        $this->load->view('Administrator/sales/sales_record_list', $data);
-    }
-
-    function sales_stock()
-    {
-        $data['title'] = "Sales Stock";
-        $data['content'] = $this->load->view('Administrator/stock/sales_stock', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
     public function saleInvoicePrint($saleId)
     {
         $data['title'] = "Sales Invoice";
@@ -1480,279 +1025,7 @@ class Sales extends CI_Controller
         $this->load->view('Administrator/index', $data);
     }
 
-    function customer_sales_search()
-    {
-        $data['customerID'] = $this->input->post('customerID', TRUE);
-        $data['startdate'] = $this->input->post('startdate', TRUE);
-        $data['enddate'] = $this->input->post('enddate', TRUE);
-        $this->session->set_userdata($data);
-        $this->load->view('Administrator/sales/customer_sales_search', $data);
-    }
-
-    function customerwise_branch_sales()
-    {
-        $data['title'] = "Branch Customerwise Sales Record";
-        $data['content'] = $this->load->view('Administrator/sales/customerwise_branch_sales', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
-
-    function branch_customer_search()
-    {
-        $data['BranchID'] = $this->input->post('BranchID', TRUE);
-        $this->load->view('Administrator/sales/branch_customer_search', $data);
-    }
-
-    function branch_customer_sales_search()
-    {
-        $data['BranchID'] = $this->input->post('BranchID', TRUE);
-        $data['customerID'] = $this->input->post('customerID', TRUE);
-        $data['startdate'] = $this->input->post('startdate', TRUE);
-        $data['enddate'] = $this->input->post('enddate', TRUE);
-        $this->session->set_userdata($data);
-        $this->load->view('Administrator/sales/branchwise_invoice_product_list', $data);
-    }
-
-    function productwise_sales()
-    {
-        $access = $this->mt->userAccess();
-        if (!$access) {
-            redirect(base_url());
-        }
-        $data['title'] = "Productwise Sales";
-        $data['products'] = $this->Product_model->products_by_brunch();
-        $data['content'] = $this->load->view('Administrator/sales/productwise_sales', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
-
-    function product_sales_search()
-    {
-        $data['ProductID'] = $this->input->post('ProductID', TRUE);
-        $data['startdate'] = $this->input->post('startdate', TRUE);
-        $data['enddate'] = $this->input->post('enddate', TRUE);
-        $this->session->set_userdata($data);
-        $this->load->view('Administrator/sales/product_sales_search', $data);
-    }
-
-    function invoice_product_list()
-    {
-        $access = $this->mt->userAccess();
-        if (!$access) {
-            redirect(base_url());
-        }
-        $data['title'] = "Invoice Product List";
-        $data['content'] = $this->load->view('Administrator/sales/sales_record_product_list', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
-
-    function branchwise_customer_search()
-    {
-        $data['BranchID'] = $this->input->post('BranchID', TRUE);
-        $this->load->view('Administrator/sales/branchwise_customer_search', $data);
-    }
-
-    function invoice_product_list_search()
-    {
-        $data['BranchID'] = $this->session->userdata('BRANCHid');
-        $data['customerID'] = $this->input->post('customerID', TRUE);
-        $data['startdate'] = $this->input->post('startdate', TRUE);
-        $data['enddate'] = $this->input->post('enddate', TRUE);
-        $this->session->set_userdata($data);
-        $this->load->view('Administrator/sales/invoice_product_list', $data);
-    }
-
-    public function sales_update_form($SaleMaster_SlNo)
-    {
-        // ====================
-        $data['products'] = $this->Product_model->products_by_brunch();
-        $cusSalesID = $this->db->where('SaleMaster_SlNo', $SaleMaster_SlNo)->get('tbl_salesmaster')->row();
-        $Custid =  $cusSalesID->SalseCustomer_IDNo;
-        $purchase = 0;
-        $paid = 0;
-        $customer = $this->db->where('Customer_SlNo', $Custid)->get('tbl_customer')->row();
-
-        // ====================
-        $salesMaster = $this->db->where('SalseCustomer_IDNo', $Custid)->select_sum('SaleMaster_DueAmount')->get('tbl_salesmaster')->row();
-        $dueAm =  $salesMaster->SaleMaster_DueAmount;
-
-        // ====================
-        $salesPaid = $this->db->where('CPayment_customerID', $Custid)->where('CPayment_TransactionType', '')->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
-        $salesPaidAm = $salesPaid->CPayment_amount;
-
-        // ====================
-        $paidAmount = $this->db->where('CPayment_customerID', $Custid)->where('CPayment_TransactionType', 'CR')->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
-        $paidAm = $paidAmount->CPayment_amount;
-
-        // ====================
-        $payAmount = $this->db->where('CPayment_customerID', $Custid)->where('CPayment_TransactionType', 'CP')->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
-        $payAm = $payAmount->CPayment_amount;
-
-        // ====================
-        $prevDueAmount = $this->db->where('Customer_SlNo', $Custid)->get('tbl_customer')->row();
-        // ====================
-        $prevDueAmount = $this->db->where('Customer_SlNo', $Custid)->get('tbl_customer')->row();
-        if (isset($prevDueAmount->previous_due)) :
-            $prevDue = $prevDueAmount->previous_due;
-        else :
-            $prevDue = 0;
-        endif;
-
-        $due = ($payAm + $dueAm + $prevDue) - ($salesPaidAm + $paidAm);
-
-
-        if ($due) :
-            $data['dueAmont'] = $due;
-        else :
-            $data['dueAmont'] = 0.00;
-        endif;
-
-        if (isset($customer->Customer_Credit_Limit)) :
-            $data['craditlimits'] = $customer->Customer_Credit_Limit;
-        else :
-            $data['craditlimits'] = 0;
-        endif;
-
-
-        $this->cart->destroy();
-        //echo $SalseCustomer_IDNo;
-        $data['title'] = "Product Sales Update";
-        $data['sm_cus'] = $cus = $this->Billing_model->select_customer_sales_master($SaleMaster_SlNo);
-
-        $data['product_mas_det'] = $oldDatas = $this->Billing_model->select_product_sales_details($SaleMaster_SlNo);
-
-        /*8888888888888888888888888888888888888888888888888888888888888888888888888888*/
-        foreach ($oldDatas as $oldData) :
-            $insert_data = array(
-                'id' => $oldData->Product_SlNo,
-                'name' => $oldData->Product_Name,
-                'price' => $oldData->SaleDetails_Rate,
-                'saleIn' => $oldData->SaleDetails_Rate,
-                'discount_amount' => $oldData->Discount_amount,
-                'purchaserate' => $oldData->Purchase_Rate,
-                'qty' => $oldData->SaleDetails_TotalQuantity,
-                'SaleMaster_InvoiceNo' => $cus->SaleMaster_InvoiceNo,
-                'SaleDetails_SlNo' => $oldData->SaleDetails_SlNo,
-                'SaleMaster_SlNo' => $cus->SaleMaster_SlNo,
-                'SaleDetails_TotalQuantity' => $oldData->SaleDetails_TotalQuantity,
-                'SaleMaster_TaxAmount' => $cus->SaleMaster_TaxAmount,
-                'SaleMaster_TotalSaleAmount' => $cus->SaleMaster_TotalSaleAmount,
-                'Product_IDNo' => $oldData->Product_IDNo,
-                'SaleMaster_PaidAmount' => $cus->SaleMaster_PaidAmount,
-                'unit' => $this->Billing_model->getUnitById($oldData->Unit_ID),
-            );
-            $this->cart->insert($insert_data);
-        endforeach;
-        /*8888888888888888888888888888888888888888888888888888888888888888888888888888*/
-
-        $data['content'] = $this->load->view('Administrator/sales/product_sales_update', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
-
-    public function sales_order_update()
-    {
-
-        $salesInvoiceno = $this->input->post('salesInvoiceno');
-        $sales_id = $this->input->post('SaleMaster_SlNo');
-
-        /*Salemaster Update*/
-        $sales = array(
-            "SaleMaster_InvoiceNo"            => $this->input->post('salesInvoiceno'),
-            "SalseCustomer_IDNo"              => $this->input->post('customerID'),
-            "SaleMaster_SaleDate"             => $this->input->post('sales_date'),
-            "SaleMaster_Description"          => $this->input->post('SelesNotes'),
-            "SaleMaster_TotalSaleAmount"      => $this->input->post('subTotal'),
-            "SaleMaster_TotalDiscountAmount"  => $this->input->post('SellsDiscount'),
-            "SaleMaster_RewordDiscount"       => $this->input->post('Reword_Discount'),
-            "SaleMaster_TaxAmount"            => $this->input->post('vatPersent'),
-            "SaleMaster_Freight"              => $this->input->post('SellsFreight'),
-            "SaleMaster_SubTotalAmount"       => $this->input->post('SellTotals'),
-            "SaleMaster_PaidAmount"           => $this->input->post('SellsPaid'),
-            "SaleMaster_DueAmount"            => $this->input->post('SellsDue'),
-            "UpdateBy"                        => $this->session->userdata("FullName"),
-            "branch_id"             => $this->session->userdata("BRANCHid"),
-            "UpdateTime"                      => date("Y-m-d H:i:s")
-        );
-        $this->Billing_model->SalesOrderUpdate($sales, $salesInvoiceno);
-
-        /*Customer Payment Update*/
-        $data = array(
-            "CPayment_date"       => $this->input->post('sales_date', TRUE),
-            "CPayment_invoice"    => $this->input->post('salesInvoiceno', TRUE),
-            "CPayment_customerID" => $this->input->post('customerID', TRUE),
-            "CPayment_amount"     => $this->input->post('SellsPaid', TRUE),
-            "CPayment_notes"      => $this->input->post('SelesNotes', TRUE),
-            "AddBy"      => $this->session->userdata("FullName"),
-            "branch_id"   => $this->session->userdata("BRANCHid")
-        );
-
-        $this->Billing_model->update_customer_payment_data("tbl_customer_payment", $data, $salesInvoiceno);
-
-        /*CartData Insert Or Update to sale details */
-        if ($cart = $this->cart->contents()) {
-            foreach ($cart as $item) {
-                $proname = $item['name'];
-                $order_detail = array(
-                    'SaleMaster_IDNo'                   => $sales_id,
-                    'Product_IDNo'                         => $item['id'],
-                    'SaleDetails_TotalQuantity'    => $item['qty'],
-                    'SaleDetails_Rate'                     => $item['price'],
-                    'SaleDetails_unit'                      => $item['unit'],
-                    'Purchase_Rate'                         => $item['purchaserate']
-                );
-
-                $oldSalesDetail =  $this->db->where('SaleMaster_IDNo', $sales_id)->where('Product_IDNo', $item['id'])->get('tbl_saledetails')->row();
-                if (count($oldSalesDetail) > 0) :
-
-                    /*update old details*/
-                    $this->db->where('SaleMaster_IDNo', $sales_id)->where('Product_IDNo', $item['id'])->update('tbl_saledetails', $order_detail);
-                    $newQty  = $item['qty'] - $oldSalesDetail->SaleDetails_TotalQuantity;
-                    $item['qty'] = $newQty;
-                    $this->_addStock($item);
-
-                else :
-
-                    /*insert new details*/
-                    $this->Billing_model->update_sales_detail($order_detail);
-                    $this->_addStock($item);
-
-                endif;
-            } // end foreach
-        } // end if
-
-        $this->cart->destroy();
-        $sss['lastidforprint'] = $sales_id;
-        $this->session->set_userdata($sss);
-        echo json_encode(true);
-    }
-
-    /*Used in Sales Update*/
-    private function _addStock($item)
-    {
-        // Stock add
-        $rox = $this->db->where('sellProduct_IdNo', $item['id'])->get('tbl_saleinventory')->row();
-        $id = $rox->SaleInventory_SlNo;
-        $oldStock = $rox->SaleInventory_TotalQuantity;
-
-        if ($rox->sellProduct_IdNo == $item['id']) {
-            $addStock = array(
-                'sellProduct_IdNo'           => $item['id'],
-                'SaleInventory_TotalQuantity' => $oldStock + $item['qty'],
-                'SaleInventory_brunchid'     => $this->sbrunch,
-                "UpdateBy"    => $this->session->userdata("FullName"),
-                "UpdateTime"                 => date("Y-m-d H:i:s")
-            );
-            $this->mt->update_data("tbl_saleinventory", $addStock, $id, 'SaleInventory_SlNo');
-        } else {
-            $addStock = array(
-                'sellProduct_IdNo'            => $item['id'],
-                'SaleInventory_TotalQuantity' => $item['qty'],
-                'SaleInventory_brunchid'      => $this->sbrunch,
-                "AddBy"     => $this->session->userdata("FullName"),
-                "AddTime"                     => date("Y-m-d H:i:s")
-            );
-            $this->mt->save_data("tbl_saleinventory", $addStock);
-        }
-    }
-
+    
 
     /*Delete Sales Record*/
     public function  deleteSales()
@@ -1790,12 +1063,16 @@ class Sales extends CI_Controller
                 /*Update Sales Inventory*/
                 $this->db->set('sales_quantity', $newQty)->where(['product_id' => $detail->Product_IDNo, 'branch_id' => $sale->branch_id])->update('tbl_currentinventory');
             }
-
+            $sale = array(
+                'status' => 'd',
+                'DeletedBy' => $this->session->userdata('userId'),
+                'DeletedTime' => date('Y-m-d H:i:s'),
+                'last_update_ip' => $this->input->ip_address(),
+            );
             /*Delete Sale Details*/
-            $this->db->set('status', 'd')->where('SaleMaster_IDNo', $saleId)->update('tbl_saledetails');
-
+            $this->db->set($sale)->where('SaleMaster_IDNo', $saleId)->update('tbl_saledetails');
             /*Delete Sale Master Data*/
-            $this->db->set('status', 'd')->where('SaleMaster_SlNo', $saleId)->update('tbl_salesmaster');
+            $this->db->set($sale)->where('SaleMaster_SlNo', $saleId)->update('tbl_salesmaster');
             $res = ['success' => true, 'message' => 'Sale deleted'];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage()];
@@ -1803,42 +1080,6 @@ class Sales extends CI_Controller
 
         echo json_encode($res);
     }
-
-
-
-
-
-
-
-    //     public function product_delete($id = null){
-    //       // $id = $this->input->post('deleted');
-    //        // $id = $this->input->post('SaleDetails_SlNo');
-    //        $Product_IDNo = $this->input->post('Product_IDNo');
-    //        $SaleMaster_SlNo = $this->input->post('SaleMaster_SlNo');
-    //        $SaleMaster_InvoiceNo = $this->input->post('SaleMaster_InvoiceNo');
-    //        $SaleDetails_TotalQuantity = $this->input->post('SaleDetails_TotalQuantity');
-    //        $SaleDetailsPrice = $this->input->post('SaleDetailsPrice');
-    //        $SaleMaster_TotalSaleAmount = $this->input->post('SaleMaster_TotalSaleAmount');
-    //        $SaleMaster_TaxAmount = $this->input->post('SaleMaster_TaxAmount');
-    //
-    //        $fld = 'SaleDetails_SlNo';
-    //        $delete = $this->mt->delete_data("tbl_saledetails", $id, $fld);
-    //        if(isset($delete))
-    //        {
-    //            $sirow = $this->db->where('sellProduct_IdNo',$Product_IDNo)->get('tbl_saleinventory')->row();
-    //
-    //
-    //            $data1['SaleInventory_TotalQuantity'] = $sirow->SaleInventory_TotalQuantity-$SaleDetails_TotalQuantity;
-    //            $this->Billing_model->update_saleinventory("tbl_saleinventory",$data1,$Product_IDNo);
-    //
-    //            $data2['SaleMaster_TotalSaleAmount'] = $SaleMaster_TotalSaleAmount-$SaleDetailsPrice;
-    //            $total = $data2['SaleMaster_TotalSaleAmount']/100*$SaleMaster_TaxAmount+$data2['SaleMaster_TotalSaleAmount'];
-    //            //$data2['SaleMaster_PaidAmount'] = $total;
-    //            $data2['SaleMaster_SubTotalAmount'] = $total;
-    //            $this->Billing_model->update_salesmaster("tbl_salesmaster",$data2,$SaleMaster_SlNo);
-    //        }
-    //        redirect('Administrator/Sales/sales_update_form/'.$SaleMaster_SlNo,'refresh');
-    //    }
 
     function profitLoss()
     {
@@ -1850,15 +1091,6 @@ class Sales extends CI_Controller
         $data['products'] = $this->Product_model->products_by_brunch();
         $data['content'] = $this->load->view('Administrator/sales/profit_loss', $data, TRUE);
         $this->load->view('Administrator/index', $data);
-    }
-    function profitLossSearch()
-    {
-        $data['searchtype'] = $this->input->post('searchtype');
-        $data['ProductID'] = $this->input->post('ProductID');
-        $data['startdate'] = $this->input->post('startdate');
-        $data['enddate'] = $this->input->post('enddate');
-        $this->session->set_userdata($data);
-        $this->load->view('Administrator/sales/profit_loss_search', $data);
     }
 
     public function getProfitLoss()
@@ -1917,7 +1149,6 @@ class Sales extends CI_Controller
     public function checkSaleReturn($invoice)
     {
         $res = ['found' => false];
-
         $returnCount = $this->db->query("select * from tbl_salereturn where SaleMaster_InvoiceNo = ? and status = 'a'", $invoice)->num_rows();
 
         if ($returnCount != 0) {

@@ -416,7 +416,7 @@
 				selectedCustomer: {
 					Customer_SlNo: '',
 					Customer_Code: '',
-					Customer_Name: '',
+					Customer_Name: 'Cash Customer',
 					display_name: 'Cash Customer',
 					Customer_Mobile: '',
 					Customer_Address: '',
@@ -474,7 +474,7 @@
 					this.customers.unshift({
 						Customer_SlNo: '',
 						Customer_Code: '',
-						Customer_Name: '',
+						Customer_Name: 'Cash Customer',
 						display_name: 'Cash Customer',
 						Customer_Mobile: '',
 						Customer_Address: '',
@@ -541,7 +541,7 @@
 				this.selectedCustomer = {
 					Customer_SlNo: '',
 					Customer_Code: '',
-					Customer_Name: '',
+					Customer_Name: 'Cash Customer',
 					display_name: 'Cash Customer',
 					Customer_Mobile: '',
 					Customer_Address: '',
@@ -558,7 +558,7 @@
 					this.selectedCustomer = {
 						Customer_SlNo: '',
 						Customer_Code: '',
-						Customer_Name: '',
+						Customer_Name: 'Cash Customer',
 						display_name: 'Cash Customer',
 						Customer_Mobile: '',
 						Customer_Address: '',

@@ -99,7 +99,7 @@ class Other_model extends CI_Model
 
 	public function get_all_asset_info(){
 
-		$res = $this->db->where('branchid', $this->BRANCHid)->where('status', 'a')->order_by('as_id', 'desc')->get('tbl_assets')->result();
+		$res = $this->db->where('branch_id', $this->BRANCHid)->where('status', 'a')->order_by('as_id', 'desc')->get('tbl_assets')->result();
 
 		if($res){
 			return $res;

@@ -24,7 +24,7 @@
 					</div>
 					<div class="col-xs-5 text-right">
 						<strong>Invoice No.:</strong> {{ purchaseReturn.PurchaseMaster_InvoiceNo }}<br>
-						<strong>Returned by:</strong> {{ purchaseReturn.AddBy }}<br>
+						<strong>Returned by:</strong> {{ purchaseReturn.FullName }}<br>
 						<strong>Return Date:</strong> {{ purchaseReturn.PurchaseReturn_ReturnDate }} {{ moment(purchaseReturn.AddTime).format('h:mm a') }}
 					</div>
 				</div>
