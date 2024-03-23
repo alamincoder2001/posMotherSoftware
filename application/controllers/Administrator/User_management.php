@@ -78,15 +78,17 @@ class User_management extends CI_Controller
             }
 
             $user = array(
-                "User_Id"       => $this->mt->generateUserCode(),
-                "User_Name"     => $data->User_Name,
-                "FullName"      => $data->FullName,
-                "UserEmail"     => $data->UserEmail,
-                "branch_id"     => $data->userBranch_id,
-                "userBranch_id" => $data->userBranch_id,
-                "User_Password" => md5($data->Password),
-                "UserType"      => $data->UserType,
-                "AddTime"       => date('Y-m-d H:i:s')
+                "User_Id"        => $this->mt->generateUserCode(),
+                "User_Name"      => $data->User_Name,
+                "FullName"       => $data->FullName,
+                "UserEmail"      => $data->UserEmail,
+                "branch_id"      => $data->userBranch_id,
+                "userBranch_id"  => $data->userBranch_id,
+                "User_Password"  => md5($data->Password),
+                "UserType"       => $data->UserType,
+                "AddBy"          => $this->session->userdata("userId"),
+                "AddTime"        => date('Y-m-d H:i:s'),
+                "last_update_ip" => $this->input->ip_address(),
             );
 
             $this->db->insert("tbl_user", $user);
@@ -117,8 +119,9 @@ class User_management extends CI_Controller
                 "branch_id"     => $data->userBranch_id,
                 "userBranch_id" => $data->userBranch_id,
                 "UserType"      => $data->UserType,
-                "UpdateBy"      => $this->access,
-                "UpdateTime"    => date('Y-m-d H:i:s')
+                "UpdateBy"      => $this->session->userdata("userId"),
+                "UpdateTime"    => date('Y-m-d H:i:s'),
+                "last_update_ip" => $this->input->ip_address(),
             );
             if (!empty($data->Password)) {
                 $user['User_Password'] = md5($data->Password);
@@ -133,15 +136,16 @@ class User_management extends CI_Controller
         echo json_encode($res);
     }
 
-    public function userStatusChange()
+    public function userstatusChange()
     {
         $res = ['success' => false, 'message' => ''];
         try {
             $data = json_decode($this->input->raw_input_stream);
             $userInfo = array(
                 "status"     => $data->status,
-                "UpdateBy"   => $this->access,
-                "UpdateTime" => date('Y-m-d H:i:s')
+                "UpdateBy"   => $this->session->userdata("userId"),
+                "UpdateTime" => date('Y-m-d H:i:s'),
+                "last_update_ip" => $this->input->ip_address(),
             );
 
             $this->db->where('User_SlNo', $data->userId);
@@ -161,8 +165,9 @@ class User_management extends CI_Controller
             $data = json_decode($this->input->raw_input_stream);
             $userInfo = array(
                 "status"     => "d",
-                "UpdateBy"   => $this->access,
-                "UpdateTime" => date('Y-m-d H:i:s')
+                "DeletedBy"   => $this->session->userdata("userId"),
+                "DeletedTime" => date('Y-m-d H:i:s'),
+                "last_update_ip" => $this->input->ip_address(),
             );
 
             $this->db->where('User_SlNo', $data->userId);
@@ -240,8 +245,8 @@ class User_management extends CI_Controller
             $access = array(
                 'user_id' => $data->userId,
                 'access' => json_encode($data->access),
-                'saved_by' => $this->session->userdata('userId'),
-                'saved_datetime' => date('Y-m-d H:i:s')
+                'AddBy' => $this->session->userdata('userId'),
+                'AddTime' => date('Y-m-d H:i:s')
             );
             if ($count == 0) {
                 $this->db->insert('tbl_user_access', $access);
@@ -322,9 +327,9 @@ class User_management extends CI_Controller
 
         $clauses = "";
         if (isset($data->dateFrom) && $data->dateFrom != '' && isset($data->dateTo) && $data->dateTo != '') {
-            $dateFrom   = $data->dateFrom . ' 00:00:00';
-            $dateTo     = $data->dateTo . ' 23:59:59';
-            $clauses .= " and ua.login_time between '$dateFrom' and '$dateTo'";
+            $dateFrom  = $data->dateFrom;
+            $dateTo    = $data->dateTo;
+            $clauses  .= " and DATE_FORMAT(ua.login_time, '%Y-%m-%d') between '$dateFrom' and '$dateTo'";
         }
 
         if (isset($data->user_id) && $data->user_id != '') {

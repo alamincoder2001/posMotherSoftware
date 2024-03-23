@@ -141,7 +141,7 @@
                             <td>
                                 <?php if ($this->session->userdata('accountType') != 'u') { ?>
                                         <i class="btnEdit fa fa-pencil" @click="editAccount(row)"></i>
-                                        <i class="btnDelete fa fa-trash" v-bind:class="{active: row.status == 1}" @click="changeStatus(row)"></i>
+                                        <i class="btnDelete fa fa-trash" v-bind:class="{active: row.status == 1}" @click="changestatus(row)"></i>
                                 <?php } ?>
                             </td>
                         </tr>
@@ -203,7 +203,7 @@
                     },
                     // { label: 'Initial Balance', field: 'initial_balance', align: 'center' },
                     {
-                        label: 'Status',
+                        label: 'status',
                         field: 'status_text',
                         align: 'center'
                     },
@@ -254,7 +254,7 @@
                 })
             },
 
-            changeStatus(account) {
+            changestatus(account) {
                 axios.post('/change_account_status', {
                         account: account
                     }).then(res => {

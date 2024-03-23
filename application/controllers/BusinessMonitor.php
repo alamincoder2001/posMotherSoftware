@@ -18,7 +18,7 @@ class BusinessMonitor extends CI_Controller {
 	public function business_monitor_page(){
 		$data['title'] = "Graph Module";
 		$data['branchID'] = $branchID =  $this->session->userdata("BRANCHid");
-		$data['transactions'] = $this->db->where('Tr_branchid', $branchID)->where('status', 'a')->order_by('Tr_SlNo', 'desc')->limit(20)->get('tbl_cashtransaction')->result();
+		$data['transactions'] = $this->db->where('branch_id', $branchID)->where('status', 'a')->order_by('Tr_SlNo', 'desc')->limit(20)->get('tbl_cashtransaction')->result();
 		$start_data = date('Y-m-d');
 		$end_data = date('Y-m-d');
 
@@ -26,14 +26,14 @@ class BusinessMonitor extends CI_Controller {
 		$this->db->select('tbl_product.*,tbl_saledetails.AddTime')->select_sum("tbl_saledetails.SaleDetails_TotalQuantity",'qty');
 		$this->db->from('tbl_saledetails');
 		$this->db->join('tbl_product', 'tbl_saledetails.Product_IDNo = tbl_product.Product_SlNo');
-		$this->db->where('tbl_product.Product_branchid',$branchID);
+		$this->db->where('tbl_product.branch_id',$branchID);
 		$this->db->where("DATE_FORMAT(tbl_saledetails.AddTime,'%Y-%m-%d') >=",$start_data)->where("DATE_FORMAT(tbl_saledetails.AddTime,'%Y-%m-%d') <=",$end_data);
 		$data['topSells'] = $dd = $this->db->group_by('tbl_saledetails.Product_IDNo')->order_by('qty','desc')->limit(10)->get()->result();
 
 		$this->db->select_sum('tbl_salesmaster.SaleMaster_PaidAmount', 'total_amount')->select("tbl_salesmaster.SalseCustomer_IDNo, tbl_customer.*");
 		$this->db->from('tbl_salesmaster');
 		$this->db->join('tbl_customer','tbl_salesmaster.SalseCustomer_IDNo = tbl_customer.Customer_SlNo');
-		$this->db->where('tbl_salesmaster.SaleMaster_branchid',$branchID);
+		$this->db->where('tbl_salesmaster.branch_id',$branchID);
 		$this->db->where("DATE_FORMAT(tbl_salesmaster.AddTime,'%Y-%m-%d') >=",$start_data)->where("DATE_FORMAT(tbl_salesmaster.AddTime,'%Y-%m-%d') <=",$end_data);
 		$data['top_cus_list'] =$this->db->group_by('tbl_salesmaster.SalseCustomer_IDNo')->order_by('total_amount','desc')->limit(10)->get()->result();
 
@@ -52,7 +52,7 @@ class BusinessMonitor extends CI_Controller {
 		$this->db->select('tbl_product.*')->select_sum("tbl_saledetails.SaleDetails_TotalQuantity",'qty');
 		$this->db->from('tbl_saledetails');
 		$this->db->join('tbl_product', 'tbl_saledetails.Product_IDNo = tbl_product.Product_SlNo');
-		$this->db->where('tbl_product.Product_branchid',$this->brunch);
+		$this->db->where('tbl_product.branch_id',$this->brunch);
 		$this->db->where("DATE_FORMAT(tbl_saledetails.AddTime,'%Y-%m-%d') >=",$start_data)->where("DATE_FORMAT(tbl_saledetails.AddTime,'%Y-%m-%d') <=",$end_data);
 		$data['topSells'] = 	$this->db->group_by('tbl_saledetails.Product_IDNo')->order_by('qty','desc')->limit(10)->get()->result();
 
@@ -66,7 +66,7 @@ class BusinessMonitor extends CI_Controller {
 		$this->db->select_sum('tbl_salesmaster.SaleMaster_PaidAmount', 'total_amount')->select("tbl_salesmaster.SalseCustomer_IDNo, tbl_customer.*");
 		$this->db->from('tbl_salesmaster');
 		$this->db->join('tbl_customer','tbl_salesmaster.SalseCustomer_IDNo = tbl_customer.Customer_SlNo');
-		$this->db->where('tbl_salesmaster.SaleMaster_branchid',$this->brunch);
+		$this->db->where('tbl_salesmaster.branch_id',$this->brunch);
 		$this->db->where("DATE_FORMAT(tbl_salesmaster.AddTime,'%Y-%m-%d') >=",$start_data)->where("DATE_FORMAT(tbl_salesmaster.AddTime,'%Y-%m-%d') <=",$end_data);
 		$data['top_cus_list'] = $dd = $this->db->group_by('tbl_salesmaster.SalseCustomer_IDNo')->order_by('total_amount','desc')->limit(10)->get()->result();
 

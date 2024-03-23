@@ -47,7 +47,7 @@ class Employee extends CI_Controller
             from tbl_employee e 
             join tbl_department dp on dp.Department_SlNo = e.Department_ID
             join tbl_designation ds on ds.Designation_SlNo = e.Designation_ID
-            where e.Employee_brinchid = ?
+            where e.branch_id = ?
             $statusClause
         ", $this->session->userdata('BRANCHid'))->result();
 
@@ -144,7 +144,7 @@ class Employee extends CI_Controller
             join tbl_designation ds on ds.Designation_SlNo = e.Designation_ID
             where e.status = 'a'
             and " . $yearMonth . " >= extract(YEAR_MONTH from e.Employee_JoinDate)
-            and e.Employee_brinchid = " . $this->session->userdata('BRANCHid') . "
+            and e.branch_id = " . $this->session->userdata('BRANCHid') . "
         ")->result();
 
         echo json_encode($summary);
@@ -384,7 +384,7 @@ class Employee extends CI_Controller
         $bio_id = $this->input->post('bio_id', true);
 
         if ($bio_id) {
-            $bio_id_count = $this->db->query("SELECT * from tbl_employee where bio_id = '$bio_id' and Employee_brinchid = '$this->brunch'")->num_rows();
+            $bio_id_count = $this->db->query("SELECT * from tbl_employee where bio_id = '$bio_id' and branch_id = '$this->brunch'")->num_rows();
             if ($bio_id_count != 0) {
                 echo json_encode(['success' => false, 'message' => 'Bio ID Already Exist!']);
                 exit;
@@ -396,7 +396,7 @@ class Employee extends CI_Controller
             where Designation_ID = '$designation_id'
             and Department_ID = '$department_id'
             and Employee_Name = '$employee_name'
-            and Employee_brinchid = '$this->brunch'
+            and branch_id = '$this->brunch'
         "
         )->num_rows();
 
@@ -426,7 +426,7 @@ class Employee extends CI_Controller
         $data['Employee_BirthDate'] = $this->input->post('em_dob', true);
         $data['Employee_ContactNo'] = $this->input->post('em_contact', true);
         $data['Employee_Email'] = $this->input->post('ec_email', true);
-        $data['Employee_MaritalStatus'] = $this->input->post('Marital', true);
+        $data['Employee_Maritalstatus'] = $this->input->post('Marital', true);
         $data['Employee_FatherName'] = $this->input->post('em_father', true);
         $data['Employee_MotherName'] = $this->input->post('mother_name', true);
         $data['Employee_PrasentAddress'] = $this->input->post('em_Present_address', true);
@@ -436,7 +436,7 @@ class Employee extends CI_Controller
         $data['status'] = $this->input->post('status', true);
 
         $data['AddBy'] = $this->session->userdata("FullName");
-        $data['Employee_brinchid'] = $this->session->userdata("BRANCHid");
+        $data['branch_id'] = $this->session->userdata("BRANCHid");
         $data['AddTime'] = date("Y-m-d H:i:s");
 
         $this->upload->do_upload('em_photo');
@@ -483,7 +483,7 @@ class Employee extends CI_Controller
         $bio_id = $this->input->post('bio_id', true);
 
         if ($bio_id) {
-            $bio_id_count = $this->db->query("SELECT * from tbl_employee where bio_id = '$bio_id' and Employee_brinchid = '$this->brunch' and Employee_SlNo != '$id'")->num_rows();
+            $bio_id_count = $this->db->query("SELECT * from tbl_employee where bio_id = '$bio_id' and branch_id = '$this->brunch' and Employee_SlNo != '$id'")->num_rows();
             if ($bio_id_count != 0) {
                 echo json_encode(['success' => false, 'message' => 'Bio ID Already Exist!']);
                 exit;
@@ -495,7 +495,7 @@ class Employee extends CI_Controller
             where Designation_ID = '$designation_id'
             and Department_ID = '$department_id'
             and Employee_Name = '$employee_name'
-            and Employee_brinchid = '$this->brunch'
+            and branch_id = '$this->brunch'
             and Employee_SlNo != '$id'
         "
         )->num_rows();
@@ -526,13 +526,13 @@ class Employee extends CI_Controller
         $data['Employee_BirthDate'] = $this->input->post('em_dob', true);
         $data['Employee_ContactNo'] = $this->input->post('em_contact', true);
         $data['Employee_Email'] = $this->input->post('ec_email', true);
-        $data['Employee_MaritalStatus'] = $this->input->post('Marital', true);
+        $data['Employee_Maritalstatus'] = $this->input->post('Marital', true);
         $data['Employee_FatherName'] = $this->input->post('em_father', true);
         $data['Employee_MotherName'] = $this->input->post('mother_name', true);
         $data['Employee_PrasentAddress'] = $this->input->post('em_Present_address', true);
         $data['Employee_Reference'] = $this->input->post('em_reference', true);
         $data['Employee_PermanentAddress'] = $this->input->post('em_Permanent_address', true);
-        $data['Employee_brinchid'] = $this->session->userdata("BRANCHid");
+        $data['branch_id'] = $this->session->userdata("BRANCHid");
         $data['salary_range'] = $this->input->post('salary_range', true);
         $data['status'] = $this->input->post('status', true);
 
@@ -651,7 +651,7 @@ class Employee extends CI_Controller
 
             $employeequery = $this->db
                 ->join('tbl_designation', 'tbl_designation.Designation_SlNo=tbl_employee.Designation_ID', 'left')
-                ->where('tbl_employee.Employee_brinchid', $BRANCHid)
+                ->where('tbl_employee.branch_id', $BRANCHid)
                 ->get('tbl_employee')->result();
             $data['employee_list'] = $employeequery;
         } else {
@@ -659,7 +659,7 @@ class Employee extends CI_Controller
 
             $employeequery = $this->db
                 ->join('tbl_designation', 'tbl_designation.Designation_SlNo=tbl_employee.Designation_ID', 'left')
-                ->where('tbl_employee.Employee_brinchid', $BRANCHid)
+                ->where('tbl_employee.branch_id', $BRANCHid)
                 ->where('tbl_employee.Employee_SlNo	', $employee_id)
                 ->get('tbl_employee')->result();
             $data['employee_list'] = $employeequery;
@@ -680,14 +680,14 @@ class Employee extends CI_Controller
 
             $employeequery = $this->db
                 ->join('tbl_designation', 'tbl_designation.Designation_SlNo=tbl_employee.Designation_ID', 'left')
-                ->where('tbl_employee.Employee_brinchid', $BRANCHid)
+                ->where('tbl_employee.branch_id', $BRANCHid)
                 ->get('tbl_employee')->result();
             $data['employee_list'] = $employeequery;
         } else {
 
             $employeequery = $this->db
                 ->join('tbl_designation', 'tbl_designation.Designation_SlNo=tbl_employee.Designation_ID', 'left')
-                ->where('tbl_employee.Employee_brinchid', $BRANCHid)
+                ->where('tbl_employee.branch_id', $BRANCHid)
                 ->where('tbl_employee.Employee_SlNo	', $employee_id)
                 ->get('tbl_employee')->result();
             $data['employee_list'] = $employeequery;
@@ -715,7 +715,7 @@ class Employee extends CI_Controller
             $paymentObj = json_decode($this->input->raw_input_stream);
             $payment = (array)$paymentObj;
             unset($payment['employee_payment_id']);
-            $payment['update_by'] = $this->session->userdata('userId');
+            $payment['UpdateBy'] = $this->session->userdata('userId');
             $payment['update_date'] = Date('Y-m-d H:i:s');
 
             $this->db->where('employee_payment_id', $paymentObj->employee_payment_id)->update('tbl_employee_payment', $payment);
@@ -780,7 +780,7 @@ class Employee extends CI_Controller
         }
 
         if (isset($data->user_id) && $data->user_id != '') {
-            $clauses .= " and ep.saved_by = '$data->user_id'";
+            $clauses .= " and ep.AddBy = '$data->user_id'";
         }
 
         if (isset($data->month_id) && $data->month_id != '') {
@@ -794,7 +794,7 @@ class Employee extends CI_Controller
 
             from tbl_employee_payment ep
             join tbl_month m on m.month_id = ep.month_id
-            left join tbl_user u on u.User_SlNo = ep.saved_by
+            left join tbl_user u on u.User_SlNo = ep.AddBy
 
             where ep.status = 'a'
             and ep.branch_id = ?
@@ -878,8 +878,8 @@ class Employee extends CI_Controller
 
             $payment = (array)$paymentObj;
             unset($payment['id']);
-            $payment['saved_by'] = $this->session->userdata("userId");
-            $payment['saved_at'] = date("Y-m-d H:i:s");
+            $payment['AddBy'] = $this->session->userdata("userId");
+            $payment['AddTime'] = date("Y-m-d H:i:s");
             $payment['branch_id'] = $this->session->userdata("BRANCHid");
             $payment['status'] = 'a';
 
@@ -898,8 +898,8 @@ class Employee extends CI_Controller
                     'net_payable'     => $emp->net_payable,
                     'payment'         => $emp->payment,
                     'comment'         => $emp->comment,
-                    'saved_by'        => $this->session->userdata("userId"),
-                    'saved_at'        => date("Y-m-d H:i:s"),
+                    'AddBy'        => $this->session->userdata("userId"),
+                    'AddTime'        => date("Y-m-d H:i:s"),
                     'branch_id'       => $this->session->userdata("BRANCHid"),
                     'status'          => 'a',
                 ];
@@ -931,7 +931,7 @@ class Employee extends CI_Controller
 
             $payment = (array)$paymentObj;
             unset($payment['id']);
-            $payment['updated_by'] = $this->session->userdata("userId");
+            $payment['UpdateBy'] = $this->session->userdata("userId");
             $payment['updated_at'] = date("Y-m-d H:i:s");
 
             $this->db->where('id', $payment_id);
@@ -949,7 +949,7 @@ class Employee extends CI_Controller
                     'net_payable'     => $emp->net_payable,
                     'payment'         => $emp->payment,
                     'comment'         => $emp->comment,
-                    'updated_by'      => $this->session->userdata("userId"),
+                    'UpdateBy'      => $this->session->userdata("userId"),
                     'updated_at'      => date("Y-m-d H:i:s"),
                 ];
 

@@ -10,7 +10,7 @@
 					<option value=""></option>
 					<?php 
 					$BRANCHid = $this->session->userdata("BRANCHid");
-					$sql = $this->db->query("SELECT * FROM tbl_employee where Employee_brinchid='$BRANCHid' and Status='a' order by Employee_Name asc");
+					$sql = $this->db->query("SELECT * FROM tbl_employee where branch_id='$BRANCHid' and status='a' order by Employee_Name asc");
 					$employee = $sql->result(); 
 					foreach($employee as $employee){ ?>
 					<option value="<?php echo $employee->Employee_SlNo; ?>" <?php if($selected->Employee_SlNo==$employee->Employee_SlNo){ ?>  selected="selected" <?php } ?>><?php echo $employee->Employee_Name; ?> (<?php echo $employee->Employee_ID; ?>)</option>
@@ -128,7 +128,7 @@
 						<?php 
 						$i=1; 
 						$BRANCHid = $this->session->userdata("BRANCHid");
-						$sql = $this->db->query("SELECT tbl_employee.*,tbl_employee_payment.*,tbl_month.* FROM tbl_employee left join tbl_employee_payment on tbl_employee_payment.Employee_SlNo=tbl_employee.Employee_SlNo left join tbl_month on tbl_employee_payment.month_id=tbl_month.month_id where tbl_employee_payment.paymentBranch_id='$BRANCHid' AND tbl_employee.Status='a' order by tbl_employee_payment.employee_payment_id desc limit 50");
+						$sql = $this->db->query("SELECT tbl_employee.*,tbl_employee_payment.*,tbl_month.* FROM tbl_employee left join tbl_employee_payment on tbl_employee_payment.Employee_SlNo=tbl_employee.Employee_SlNo left join tbl_month on tbl_employee_payment.month_id=tbl_month.month_id where tbl_employee_payment.paymentBranch_id='$BRANCHid' AND tbl_employee.status='a' order by tbl_employee_payment.employee_payment_id desc limit 50");
 						$row = $sql->result();
 						foreach($row as $row){
 						?>

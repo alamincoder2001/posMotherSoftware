@@ -43,7 +43,7 @@ class Check extends CI_Controller
         }
 		$data['title'] = 'Cheque Information';
 		$data['checks'] = $this->Check_model->get_all_check_info();
-		$data['customers'] = $this->db->select('Customer_SlNo,Customer_Code,Customer_Name')->where('Customer_brunchid',$this->branch_id)->where('status', 'a')->get('tbl_customer')->result();
+		$data['customers'] = $this->db->select('Customer_SlNo,Customer_Code,Customer_Name')->where('branch_id',$this->branch_id)->where('status', 'a')->get('tbl_customer')->result();
 		$data['content'] = $this->load->view('Administrator/check/check_entry', $data, TRUE);
 		$this->load->view('Administrator/index', $data);
 
@@ -141,7 +141,7 @@ class Check extends CI_Controller
 		if($this->form_validation->run() == FALSE){
 			$data['title'] = 'Check Information';
 			$data['checks'] = $this->Check_model->get_all_check_info();
-			$data['customers'] = $this->db->select('Customer_SlNo,Customer_Code,Customer_Name')->where('Customer_brunchid',$this->branch_id)->where('status', 'a')->get('tbl_customer')->result();
+			$data['customers'] = $this->db->select('Customer_SlNo,Customer_Code,Customer_Name')->where('branch_id',$this->branch_id)->where('status', 'a')->get('tbl_customer')->result();
 			$data['content'] = $this->load->view('Administrator/check/check_entry', $data, TRUE);
 			$this->load->view('Administrator/index', $data);
 		}else{
@@ -195,7 +195,7 @@ class Check extends CI_Controller
 		if($result = $this->Check_model->check_data_by_id($id)){
 			$data['title'] = 'Check Edit Information';
 			$data['check'] = $result;
-			$data['customers'] = $this->db->select('Customer_SlNo,Customer_Code,Customer_Name')->where('Customer_brunchid',$this->branch_id)->where('status', 'a')->get('tbl_customer')->result();
+			$data['customers'] = $this->db->select('Customer_SlNo,Customer_Code,Customer_Name')->where('branch_id',$this->branch_id)->where('status', 'a')->get('tbl_customer')->result();
 			$data['content'] = $this->load->view('Administrator/check/edit_check', $data, TRUE);
 			$this->load->view('Administrator/index', $data);
 		}else{
@@ -221,7 +221,7 @@ class Check extends CI_Controller
 		if($this->form_validation->run() == FALSE){
 			$data['title'] = 'Check Information';
 			$data['checks'] = $this->Check_model->get_all_check_info();
-			$data['customers'] = $this->db->select('Customer_SlNo,Customer_Code,Customer_Name')->where('Customer_brunchid',$this->branch_id)->where('status', 'a')->get('tbl_customer')->result();
+			$data['customers'] = $this->db->select('Customer_SlNo,Customer_Code,Customer_Name')->where('branch_id',$this->branch_id)->where('status', 'a')->get('tbl_customer')->result();
 			$data['content'] = $this->load->view('Administrator/check/check_entry', $data, TRUE);
 			$this->load->view('Administrator/index', $data);
 		}else{

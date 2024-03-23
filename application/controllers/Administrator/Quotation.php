@@ -48,10 +48,10 @@ class Quotation extends CI_Controller
                 'SaleMaster_TotalDiscountAmount' => $data->quotation->discount,
                 'SaleMaster_TaxAmount' => $data->quotation->vat,
                 'SaleMaster_SubTotalAmount' => $data->quotation->subTotal,
-                'Status' => 'a',
+                'status' => 'a',
                 "AddBy" => $this->session->userdata("FullName"),
                 'AddTime' => date("Y-m-d H:i:s"),
-                'SaleMaster_branchid' => $this->session->userdata("BRANCHid")
+                'branch_id' => $this->session->userdata("BRANCHid")
             );
 
             if ($data->customer->Customer_Type == 'G') {
@@ -76,10 +76,10 @@ class Quotation extends CI_Controller
                     'SaleDetails_TotalQuantity' => $cartProduct->quantity,
                     'SaleDetails_Rate' => $cartProduct->salesRate,
                     'SaleDetails_TotalAmount' => $cartProduct->total,
-                    'Status' => 'a',
+                    'status' => 'a',
                     'AddBy' => $this->session->userdata("FullName"),
                     'AddTime' => date('Y-m-d H:i:s'),
-                    'SaleDetails_BranchId' => $this->session->userdata('BRANCHid')
+                    'branch_id' => $this->session->userdata('BRANCHid')
                 );
 
                 $this->db->insert('tbl_quotation_details', $quotationDetails);
@@ -111,10 +111,10 @@ class Quotation extends CI_Controller
                 'SaleMaster_TotalDiscountAmount' => $data->quotation->discount,
                 'SaleMaster_TaxAmount' => $data->quotation->vat,
                 'SaleMaster_SubTotalAmount' => $data->quotation->subTotal,
-                'Status' => 'a',
+                'status' => 'a',
                 "AddBy" => $this->session->userdata("FullName"),
                 'AddTime' => date("Y-m-d H:i:s"),
-                'SaleMaster_branchid' => $this->session->userdata("BRANCHid")
+                'branch_id' => $this->session->userdata("BRANCHid")
             );
 
             $this->db->where('SaleMaster_SlNo', $quotationId)->update('tbl_quotation_master', $quotation);
@@ -128,10 +128,10 @@ class Quotation extends CI_Controller
                     'SaleDetails_TotalQuantity' => $cartProduct->quantity,
                     'SaleDetails_Rate' => $cartProduct->salesRate,
                     'SaleDetails_TotalAmount' => $cartProduct->total,
-                    'Status' => 'a',
+                    'status' => 'a',
                     'AddBy' => $this->session->userdata("FullName"),
                     'AddTime' => date('Y-m-d H:i:s'),
-                    'SaleDetails_BranchId' => $this->session->userdata('BRANCHid')
+                    'branch_id' => $this->session->userdata('BRANCHid')
                 );
 
                 $this->db->insert('tbl_quotation_details', $quotationDetails);
@@ -192,8 +192,8 @@ class Quotation extends CI_Controller
             c.owner_name
             from tbl_quotation_master qm
             left join tbl_customer c on c.Customer_SlNo = qm.SalseCustomer_IDNo 
-            where qm.Status = 'a'
-            and qm.SaleMaster_branchid = ?
+            where qm.status = 'a'
+            and qm.branch_id = ?
             $clauses
             order by qm.SaleMaster_SlNo desc
         ", $this->session->userdata('BRANCHid'))->result();
@@ -273,7 +273,7 @@ class Quotation extends CI_Controller
     {
         $id = $this->input->post('SaleMasteriD');
 
-        $attr = array('Status'  =>  'd');
+        $attr = array('status'  =>  'd');
 
         $qu = $this->db->where('SaleMaster_SlNo', $id)->update('tbl_quotation_master', $attr);
 

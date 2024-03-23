@@ -7,7 +7,7 @@
 					<th>Cheque No</th>
 					<th>Bank Name - Branch Name</th>
 					<th>Customer Name</th>
-					<th>Cheque Status</th>
+					<th>Cheque status</th>
 					<th>Cheque Amount</th>
 					<th>Action</th>
 				</tr>

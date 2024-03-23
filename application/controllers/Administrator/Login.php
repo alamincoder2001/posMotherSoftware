@@ -20,7 +20,7 @@ class Login extends CI_Controller {
         $branch_id = $this->input->post('branch_id');
 
 		$row = $this->db->where('branch_id',$branch_id)->get('tbl_branch')->row();
-		$comp_logo = $this->db->where('company_BrunchId',$branch_id)->get('tbl_company')->row()->Company_Logo_org;
+		$comp_logo = $this->db->where('branch_id',$branch_id)->get('tbl_company')->row()->Company_Logo_org;
 
         $sdata['BRANCHid'] = $row->branch_id;
 		

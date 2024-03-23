@@ -40,7 +40,7 @@ class Assets extends CI_Controller {
             "status"            =>'a',
             "AddBy"             =>$this->session->userdata("FullName"),
             "AddTime"           =>date("Y-m-d H:i:s"),
-            "branchid"          =>$this->session->userdata('BRANCHid'),
+            "branch_id"          =>$this->session->userdata('BRANCHid'),
         );
         $this->mt->save_data('tbl_assets',$data);
         echo json_encode(TRUE); 
@@ -100,7 +100,7 @@ class Assets extends CI_Controller {
         $assets = $this->db->query("
             select ass.* from tbl_assets ass
                 where ass.status = 'a'
-                and ass.branchid= " . $this->session->userdata('BRANCHid') . "
+                and ass.branch_id= " . $this->session->userdata('BRANCHid') . "
                 $clauses
         ")->result();
 
@@ -131,7 +131,7 @@ class Assets extends CI_Controller {
             SELECT as_name as group_name
             from tbl_assets
             where status = 'a'
-            and branchid = '$this->brunch'
+            and branch_id = '$this->brunch'
             group by as_name
         ")->result();
 

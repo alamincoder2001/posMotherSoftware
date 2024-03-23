@@ -19,7 +19,7 @@ class Report_model extends CI_Model
 	{	
 		$this->db->select('tbl_purchasemaster.*, tbl_supplier.*')->from('tbl_purchasemaster');
 		$this->db->join('tbl_supplier', 'tbl_supplier.Supplier_SlNo = tbl_purchasemaster.Supplier_SlNo');
-		$this->db->where('tbl_supplier.Supplier_brinchid ', $this->BRANCHid)->where('tbl_supplier.status', 'a');
+		$this->db->where('tbl_supplier.branch_id ', $this->BRANCHid)->where('tbl_supplier.status', 'a');
 		$res = $this->db->group_by('tbl_purchasemaster.Supplier_SlNo')->get()->result();
 		
 		if($res){
@@ -33,7 +33,7 @@ class Report_model extends CI_Model
 	{	
 		$this->db->select('tbl_purchasemaster.*, tbl_supplier.*')->from('tbl_purchasemaster');
 		$this->db->join('tbl_supplier', 'tbl_supplier.Supplier_SlNo = tbl_purchasemaster.Supplier_SlNo');
-		$this->db->where('tbl_purchasemaster.Supplier_SlNo', $sup_id)->where('tbl_supplier.Supplier_brinchid ', $this->BRANCHid)->where('tbl_supplier.status', 'a');
+		$this->db->where('tbl_purchasemaster.Supplier_SlNo', $sup_id)->where('tbl_supplier.branch_id ', $this->BRANCHid)->where('tbl_supplier.status', 'a');
 		$res = $this->db->group_by('tbl_purchasemaster.Supplier_SlNo')->get()->result();
 		
 		if($res){

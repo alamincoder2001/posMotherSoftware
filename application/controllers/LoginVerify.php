@@ -17,7 +17,7 @@ class loginVerify extends CI_Controller {
         $x = "SELECT tbl_user.*,tbl_branch.* from tbl_user left join tbl_branch on tbl_branch.branch_id = tbl_user.userBranch_id where  tbl_user.verifycode ='$pass' AND tbl_user.User_Name='$User_Name'";
         $sql = mysql_query($x);
         $d = mysql_fetch_array($sql);
-        if ($d['Status']=='a') {
+        if ($d['status']=='a') {
             if ($d['UserType'] =='a') {
                 $sdata['userId'] = $d['User_SlNo'];
                 $sdata['BRANCHid'] = $d['userBranch_id'];

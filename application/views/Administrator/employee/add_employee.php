@@ -51,7 +51,7 @@ if ($serial[1] >= 9) {
 							<select class="chosen-select form-control" name="em_Designation" id="em_Designation" data-placeholder="Choose a Designation...">
 								<option value=""> </option>
 								<?php
-								$query = $this->db->query("SELECT * FROM tbl_designation where Status='a' order by Designation_Name asc");
+								$query = $this->db->query("SELECT * FROM tbl_designation where status='a' order by Designation_Name asc");
 								$row = $query->result();
 								foreach ($row as $row) { ?>
 									<option value="<?php echo $row->Designation_SlNo; ?>"><?php echo $row->Designation_Name; ?></option>
@@ -103,7 +103,7 @@ if ($serial[1] >= 9) {
 					</div>
 
 					<div class="form-group">
-						<label class="col-md-4 control-label" for="form-field-1"> Activation Status</label>
+						<label class="col-md-4 control-label" for="form-field-1"> Activation status</label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
 							<select class="chosen-select form-control" name="status" id="status" data-placeholder="Choose a status...">
@@ -227,10 +227,10 @@ if ($serial[1] >= 9) {
 					</div>
 
 					<div class="form-group">
-						<label class="col-md-4 control-label" for="Marital"> Marital Status </label>
+						<label class="col-md-4 control-label" for="Marital"> Marital status </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<select class="chosen-select form-control" name="Marital" id="Marital" data-placeholder="Choose a Marital Status...">
+							<select class="chosen-select form-control" name="Marital" id="Marital" data-placeholder="Choose a Marital status...">
 								<option value=""> </option>
 								<option value="married">Married</option>
 								<option value="unmarried">Unmarried</option>

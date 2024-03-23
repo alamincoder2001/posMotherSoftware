@@ -88,21 +88,21 @@ class Billing_model extends CI_Model {
 	}
        
 	public function selectProduct($pCategory,$brand,$BRANCHid){
-		$this->db->SELECT("tbl_product.*, tbl_productcategory.*, tbl_color.*,tbl_brand.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color left join tbl_brand on tbl_brand.brand_SiNo=tbl_product.brand where tbl_product.brand='$brand' AND tbl_product.ProductCategory_ID='$pCategory' AND tbl_product.Product_branchid='$BRANCHid' order by tbl_product.Product_Code desc");
+		$this->db->SELECT("tbl_product.*, tbl_productcategory.*, tbl_color.*,tbl_brand.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color left join tbl_brand on tbl_brand.brand_SiNo=tbl_product.brand where tbl_product.brand='$brand' AND tbl_product.ProductCategory_ID='$pCategory' AND tbl_product.branch_id='$BRANCHid' order by tbl_product.Product_Code desc");
 		$query = $this->db->get();
 		$result = $query->result();
 		return $result; 
 	}
 	
 	public function select_Product_by_brand($brand,$BRANCHid){
-		$this->db->SELECT("tbl_product.*, tbl_productcategory.*, tbl_color.*,tbl_brand.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color left join tbl_brand on tbl_brand.brand_SiNo=tbl_product.brand where tbl_product.brand='$brand' AND tbl_product.Product_branchid='$BRANCHid' order by tbl_product.Product_Code desc");
+		$this->db->SELECT("tbl_product.*, tbl_productcategory.*, tbl_color.*,tbl_brand.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color left join tbl_brand on tbl_brand.brand_SiNo=tbl_product.brand where tbl_product.brand='$brand' AND tbl_product.branch_id='$BRANCHid' order by tbl_product.Product_Code desc");
 		$query = $this->db->get();
 		$result = $query->result();
 		return $result; 
 	}
 	  
 	public function select_Product_by_category($pCategory,$BRANCHid){
-		$this->db->SELECT("tbl_product.*, tbl_productcategory.*,tbl_color.*,tbl_brand.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color left join tbl_brand on tbl_brand.brand_SiNo=tbl_product.brand where tbl_product.ProductCategory_ID='$pCategory' AND tbl_product.status='a' AND tbl_product.Product_branchid='$BRANCHid' order by tbl_product.Product_Code desc");
+		$this->db->SELECT("tbl_product.*, tbl_productcategory.*,tbl_color.*,tbl_brand.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color left join tbl_brand on tbl_brand.brand_SiNo=tbl_product.brand where tbl_product.ProductCategory_ID='$pCategory' AND tbl_product.status='a' AND tbl_product.branch_id='$BRANCHid' order by tbl_product.Product_Code desc");
 		$query = $this->db->get();
 		$result = $query->result();
 		return $result; 
@@ -124,7 +124,7 @@ class Billing_model extends CI_Model {
 			left join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
 			left join tbl_color c on c.color_SiNo = p.color
 			left join tbl_brand b on b.brand_SiNo = p.brand
-			where p.Product_branchid = ?
+			where p.branch_id = ?
 		", $branchId)->result();
 
 		return $products; 
@@ -132,7 +132,7 @@ class Billing_model extends CI_Model {
 
 	public function get_product_name()
 	{
-		$res = $this->db->select('Product_SlNo,Product_Name,Product_Code')->order_by('Product_SlNo','desc')->where('status','a')->where('Product_branchid',$this->BRANCHid)->get('tbl_product')->result();
+		$res = $this->db->select('Product_SlNo,Product_Name,Product_Code')->order_by('Product_SlNo','desc')->where('status','a')->where('branch_id',$this->BRANCHid)->get('tbl_product')->result();
 		return $res;
 	}
 
@@ -145,7 +145,7 @@ class Billing_model extends CI_Model {
 		$this->db->join('tbl_color','tbl_product.color= tbl_color.color_SiNo', 'left');
 		$this->db->join('tbl_brand','tbl_product.brand= tbl_brand.brand_SiNo', 'left');
 		$this->db->join('tbl_unit','tbl_product.Unit_ID= tbl_unit.Unit_SlNo', 'left');
-		$this->db->where('tbl_product.Product_SlNo', $id)->where('tbl_product.Product_branchid',$BRANCHid)->where('tbl_product.status', 'a');
+		$this->db->where('tbl_product.Product_SlNo', $id)->where('tbl_product.branch_id',$BRANCHid)->where('tbl_product.status', 'a');
 		$result = $this->db->order_by('tbl_product.Product_SlNo', 'desc')->get()->row();
 
 		return $result;
@@ -153,7 +153,7 @@ class Billing_model extends CI_Model {
 	
 	public function select_Product_without_limit(){
 		$BRANCHid = $this->session->userdata("BRANCHid");
-		$this->db->SELECT("tbl_product.*, tbl_productcategory.*,tbl_color.*,tbl_brand.*,tbl_country.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color LEFT JOIN tbl_brand ON tbl_brand.brand_SiNo=tbl_product.brand LEFT JOIN tbl_country ON tbl_country.Country_SlNo=tbl_product.country WHERE tbl_product.status='a' AND tbl_product.Product_branchid='$BRANCHid' order by tbl_product.Product_Code desc");
+		$this->db->SELECT("tbl_product.*, tbl_productcategory.*,tbl_color.*,tbl_brand.*,tbl_country.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color LEFT JOIN tbl_brand ON tbl_brand.brand_SiNo=tbl_product.brand LEFT JOIN tbl_country ON tbl_country.Country_SlNo=tbl_product.country WHERE tbl_product.status='a' AND tbl_product.branch_id='$BRANCHid' order by tbl_product.Product_Code desc");
 		$query = $this->db->get();
 		$result = $query->result();
 		return $result; 
@@ -171,7 +171,7 @@ class Billing_model extends CI_Model {
 			LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color 
 			LEFT JOIN tbl_brand ON tbl_brand.brand_SiNo=tbl_product.brand 
 			WHERE tbl_product.status='a'
-			AND tbl_product.Product_branchid='$BRANCHid'
+			AND tbl_product.branch_id='$BRANCHid'
 			order by tbl_product.Product_Code asc
 		");
 		$query = $this->db->get();
@@ -233,7 +233,7 @@ class Billing_model extends CI_Model {
   	public function select_category($brunch){
 		$this->db->select('*');
 		$this->db->from('tbl_productcategory');
-		$this->db->where("category_branchid",$brunch);
+		$this->db->where("branch_id",$brunch);
 		$this->db->order_by("ProductCategory_Name","ASC");
 		$query = $this->db->get();
 		$result = $query->result();
@@ -325,14 +325,14 @@ class Billing_model extends CI_Model {
 
 	public function deactive_user($table, $id, $field)
 	{
-		$data['Status'] = 'd';
+		$data['status'] = 'd';
 		$this->db->where($field, $id);
         $this->db->update($table, $data);
 	}	 
 	
 	public function active_user($table, $id, $field)
 	{
-		$data['Status'] = 'a';
+		$data['status'] = 'a';
 		$this->db->where($field, $id);
         $this->db->update($table, $data);
 	}	 
@@ -348,7 +348,7 @@ class Billing_model extends CI_Model {
   	public function select_all_transaction(){
   		$this->db->select('tbl_cashtransaction.*,tbl_account.*')->from('tbl_cashtransaction');
   		$this->db->join('tbl_account', 'tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID', 'left');
-  		$this->db->where('tbl_cashtransaction.Tr_branchid',$this->BRANCHid)->where('tbl_cashtransaction.status', 'a');
+  		$this->db->where('tbl_cashtransaction.branch_id',$this->BRANCHid)->where('tbl_cashtransaction.status', 'a');
   		$res = $this->db->order_by('tbl_cashtransaction.Tr_SlNo', 'asc')->get()->result();
 
 		return $res;
@@ -357,21 +357,21 @@ class Billing_model extends CI_Model {
   	public function fatch_all_payment(){
 		$this->db->select('tbl_customer_payment.*, tbl_customer.Customer_Name')->from('tbl_customer_payment');
 		$this->db->join('tbl_customer', 'tbl_customer_payment.CPayment_customerID=tbl_customer.Customer_SlNo');
-		$result = $this->db->where('tbl_customer_payment.CPayment_status','a')->where('tbl_customer_payment.CPayment_brunchid', $this->BRANCHid)
+		$result = $this->db->where('tbl_customer_payment.status','a')->where('tbl_customer_payment.branch_id', $this->BRANCHid)
 			->order_by('tbl_customer_payment.CPayment_invoice', 'desc')->get()->result();
 		return $result;
 	}
 
 	public function fatch_all_supplier_payment(){
 		$this->db->select('*');
-		$result = $this->db->from('tbl_supplier_payment')->where('SPayment_status','a')->get()->result();
+		$result = $this->db->from('tbl_supplier_payment')->where('status','a')->get()->result();
 		return $result;
 	}
 	
   	public function select_brand($brunch){
 		$this->db->select('*');
 		$this->db->from('tbl_brand');
-		$this->db->where('brand_branchid',$brunch);
+		$this->db->where('branch_id',$brunch);
 		$query = $this->db->get();
 		$result = $query->result();
 		return $result;
@@ -473,7 +473,7 @@ class Billing_model extends CI_Model {
 	public function select_category_by_branch($id){
 		$this->db->SELECT('*');
 		$this->db->from('tbl_productcategory');
-		$this->db->where('category_branchid',$id);
+		$this->db->where('branch_id',$id);
 		$this->db->order_by("ProductCategory_Name","ASC");
 		$query = $this->db->get();
 		$result = $query->result() ;
@@ -511,7 +511,7 @@ class Billing_model extends CI_Model {
 		
 	public function cash_transaction($startdate, $enddate)
 	{	
-		$res = $this->db->where('Tr_branchid', $this->BRANCHid)
+		$res = $this->db->where('branch_id', $this->BRANCHid)
 				->where('Tr_date BETWEEN "'. date('Y-m-d', strtotime($startdate)). '" and "'. date('Y-m-d', strtotime($enddate)).'"')
 				->get('tbl_cashtransaction')->result();
 

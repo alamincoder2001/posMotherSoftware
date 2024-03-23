@@ -41,7 +41,7 @@ class Purchase_model extends CI_Model
 
 	public function all_purchase_return_invoice(){
 
-		$res = $this->db->select('PurchaseMaster_SlNo,PurchaseMaster_InvoiceNo, ')->where('PurchaseMaster_BranchID', $this->BRANCHid)
+		$res = $this->db->select('PurchaseMaster_SlNo,PurchaseMaster_InvoiceNo, ')->where('branch_id', $this->BRANCHid)
 			->where('status', 'a')->order_by('PurchaseMaster_InvoiceNo', 'desc')->get('tbl_purchasemaster')->result();
 		if($res){
 			return $res;
@@ -51,7 +51,7 @@ class Purchase_model extends CI_Model
 	}
 
 	public function get_purchase_invoice_info(){
-		$res = $this->db->select('PurchaseMaster_SlNo, PurchaseMaster_InvoiceNo')->where('PurchaseMaster_BranchID', $this->BRANCHid)
+		$res = $this->db->select('PurchaseMaster_SlNo, PurchaseMaster_InvoiceNo')->where('branch_id', $this->BRANCHid)
 			->where('status', 'a')->order_by('PurchaseMaster_InvoiceNo', 'desc')->get('tbl_purchasemaster')->result();
 		if($res){
 			return $res;
@@ -92,7 +92,7 @@ class Purchase_model extends CI_Model
 
 		$this->db->select('tbl_purchasemaster.*, tbl_purchasereturn.PurchaseMaster_InvoiceNo as purReturnInv, tbl_purchasereturn.PurchaseReturn_ReturnAmount')->from('tbl_purchasemaster');
 		$this->db->join('tbl_purchasereturn', 'tbl_purchasereturn.PurchaseMaster_InvoiceNo = tbl_purchasemaster.PurchaseMaster_InvoiceNo');
-		$this->db->where('PurchaseMaster_BranchID', $this->BRANCHid);
+		$this->db->where('branch_id', $this->BRANCHid);
 		$this->db->where('tbl_purchasemaster.PurchaseMaster_OrderDate BETWEEN "'. date('Y-m-d', strtotime($startDate)). '" and "'. date('Y-m-d', strtotime($endDate)).'"');
 		$res =  $this->db->get()->result();
 

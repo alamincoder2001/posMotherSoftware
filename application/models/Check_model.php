@@ -8,10 +8,10 @@ class Check_model extends CI_Model
 	/*======== get all data info =========*/
 	public function get_all_check_info()
 	{	
-		$this->db->select('tbl_checks.*, tbl_customer.Customer_Name,tbl_customer.Customer_Code ');
-		$this->db->from('tbl_checks');
-		$this->db->join('tbl_customer', 'tbl_checks.cus_id = tbl_customer.Customer_SlNo' );
-		$this->db->where('tbl_checks.status', 'a')->where('tbl_checks.branch_id', $this->session->userdata('BRANCHid') )->order_by('tbl_checks.id', 'desc');
+		$this->db->select('tbl_cheque.*, tbl_customer.Customer_Name,tbl_customer.Customer_Code ');
+		$this->db->from('tbl_cheque');
+		$this->db->join('tbl_customer', 'tbl_cheque.cus_id = tbl_customer.Customer_SlNo' );
+		$this->db->where('tbl_cheque.status', 'a')->where('tbl_cheque.branch_id', $this->session->userdata('BRANCHid') )->order_by('tbl_cheque.id', 'desc');
 		$result = $this->db->get()->result();
 
 		if($result){
@@ -24,10 +24,10 @@ class Check_model extends CI_Model
 	/*======== get all pending data info =========*/
 	public function get_all_pending_check_info()
 	{	
-		$this->db->select('tbl_checks.*, tbl_customer.Customer_Name ,tbl_customer.Customer_Code');
-		$this->db->from('tbl_checks');
-		$this->db->join('tbl_customer', 'tbl_checks.cus_id = tbl_customer.Customer_SlNo' );
-		$this->db->where('tbl_checks.check_status', 'Pe')->where('tbl_checks.branch_id', $this->session->userdata('BRANCHid') )->where('tbl_checks.status', 'a')->order_by('id', 'desc');
+		$this->db->select('tbl_cheque.*, tbl_customer.Customer_Name ,tbl_customer.Customer_Code');
+		$this->db->from('tbl_cheque');
+		$this->db->join('tbl_customer', 'tbl_cheque.cus_id = tbl_customer.Customer_SlNo' );
+		$this->db->where('tbl_cheque.check_status', 'Pe')->where('tbl_cheque.branch_id', $this->session->userdata('BRANCHid') )->where('tbl_cheque.status', 'a')->order_by('id', 'desc');
 		$result = $this->db->get()->result();
 
 		if($result){
@@ -39,10 +39,10 @@ class Check_model extends CI_Model
 
 	public function get_all_dis_check_info()
 	{	
-		$this->db->select('tbl_checks.*, tbl_customer.Customer_Name ,tbl_customer.Customer_Code');
-		$this->db->from('tbl_checks');
-		$this->db->join('tbl_customer', 'tbl_checks.cus_id = tbl_customer.Customer_SlNo' );
-		$this->db->where('tbl_checks.check_status', 'Di')->where('tbl_checks.branch_id', $this->session->userdata('BRANCHid') )->where('tbl_checks.status', 'a')->order_by('id', 'desc');
+		$this->db->select('tbl_cheque.*, tbl_customer.Customer_Name ,tbl_customer.Customer_Code');
+		$this->db->from('tbl_cheque');
+		$this->db->join('tbl_customer', 'tbl_cheque.cus_id = tbl_customer.Customer_SlNo' );
+		$this->db->where('tbl_cheque.check_status', 'Di')->where('tbl_cheque.branch_id', $this->session->userdata('BRANCHid') )->where('tbl_cheque.status', 'a')->order_by('id', 'desc');
 		$result = $this->db->get()->result();
 
 		if($result){
@@ -55,10 +55,10 @@ class Check_model extends CI_Model
 	/*======== get all data info =========*/
 	public function get_all_paid_check_info()
 	{	
-		$this->db->select('tbl_checks.*, tbl_customer.Customer_Name,tbl_customer.Customer_Code ');
-		$this->db->from('tbl_checks');
-		$this->db->join('tbl_customer', 'tbl_checks.cus_id = tbl_customer.Customer_SlNo' );
-		$this->db->where('tbl_checks.check_status', 'Pa')->where('tbl_checks.branch_id', $this->session->userdata('BRANCHid') )->where('tbl_checks.status', 'a')->order_by('id', 'desc');
+		$this->db->select('tbl_cheque.*, tbl_customer.Customer_Name,tbl_customer.Customer_Code ');
+		$this->db->from('tbl_cheque');
+		$this->db->join('tbl_customer', 'tbl_cheque.cus_id = tbl_customer.Customer_SlNo' );
+		$this->db->where('tbl_cheque.check_status', 'Pa')->where('tbl_cheque.branch_id', $this->session->userdata('BRANCHid') )->where('tbl_cheque.status', 'a')->order_by('id', 'desc');
 		$result = $this->db->get()->result();
 
 		if($result){
@@ -71,10 +71,10 @@ class Check_model extends CI_Model
 	/*======== get all data info =========*/
 	public function get_all_remaind_check_info()
 	{	
-		$this->db->select('tbl_checks.*, tbl_customer.Customer_Name,tbl_customer.Customer_Code ');
-		$this->db->from('tbl_checks');
-		$this->db->join('tbl_customer', 'tbl_checks.cus_id = tbl_customer.Customer_SlNo' );
-		$this->db->where('tbl_checks.remid_date >=', date('Y-m-d'))->where('tbl_checks.branch_id', $this->session->userdata('BRANCHid') )->where('tbl_checks.check_status', 'Pe')->where('tbl_checks.status', 'a')->order_by('id', 'desc');
+		$this->db->select('tbl_cheque.*, tbl_customer.Customer_Name,tbl_customer.Customer_Code ');
+		$this->db->from('tbl_cheque');
+		$this->db->join('tbl_customer', 'tbl_cheque.cus_id = tbl_customer.Customer_SlNo' );
+		$this->db->where('tbl_cheque.remid_date >=', date('Y-m-d'))->where('tbl_cheque.branch_id', $this->session->userdata('BRANCHid') )->where('tbl_cheque.check_status', 'Pe')->where('tbl_cheque.status', 'a')->order_by('id', 'desc');
 		$result = $this->db->get()->result();
 
 		if($result){
@@ -102,11 +102,11 @@ class Check_model extends CI_Model
 			'note' =>$this->input->post('note'),
 			'check_status' =>$this->input->post('check_status'),
 			'status'=>'a',
-			'created_by' =>$this->session->userdata('FullName'),
-			'created_at' =>date('Y-m-d'),
+			'AddBy' =>$this->session->userdata('FullName'),
+			'AddTime' =>date('Y-m-d'),
 		);
 
-		$result = $this->db->insert('tbl_checks', $attr);
+		$result = $this->db->insert('tbl_cheque', $attr);
 		if($result){ return TRUE;}else{return FALSE; }
 	}
 
@@ -129,11 +129,11 @@ class Check_model extends CI_Model
 			'note' =>$cheque['note'],
 			'check_status' =>'Pe',
 			'status'=>'a',
-			'created_by' =>$this->session->userdata('FullName'),
-			'created_at' =>date('Y-m-d H:i:s'),
+			'AddBy' =>$this->session->userdata('FullName'),
+			'AddTime' =>date('Y-m-d H:i:s'),
 		);
 
-		$result = $this->db->insert('tbl_checks', $attr);
+		$result = $this->db->insert('tbl_cheque', $attr);
 		if($result){ return TRUE;}else{return FALSE; }
 	}
 
@@ -141,10 +141,10 @@ class Check_model extends CI_Model
 	public function check_data_by_id($id=Null)
 	{
 		if(!is_null($id)){
-			$this->db->select('tbl_checks.*, tbl_customer.Customer_Name,tbl_customer.Customer_Code ');
-			$this->db->from('tbl_checks');
-			$this->db->join('tbl_customer', 'tbl_checks.cus_id = tbl_customer.Customer_SlNo' );
-			$this->db->where('tbl_checks.id', $id)->where('tbl_checks.branch_id', $this->session->userdata('BRANCHid') )->where('tbl_checks.status', 'a');
+			$this->db->select('tbl_cheque.*, tbl_customer.Customer_Name,tbl_customer.Customer_Code ');
+			$this->db->from('tbl_cheque');
+			$this->db->join('tbl_customer', 'tbl_cheque.cus_id = tbl_customer.Customer_SlNo' );
+			$this->db->where('tbl_cheque.id', $id)->where('tbl_cheque.branch_id', $this->session->userdata('BRANCHid') )->where('tbl_cheque.status', 'a');
 			$result = $this->db->get()->row();
 
 			if($result){ return $result; }else{ return FALSE; }
@@ -171,7 +171,7 @@ class Check_model extends CI_Model
 		);
 
 		$this->db->where('id', $id);
-		$qu = $this->db->update('tbl_checks', $attr);
+		$qu = $this->db->update('tbl_cheque', $attr);
 		
 		if ( $this->db->affected_rows()) {
 			return TRUE;
@@ -188,7 +188,7 @@ class Check_model extends CI_Model
 		);
 
 		$this->db->where('id', $id);
-		$qu = $this->db->update('tbl_checks', $attr);
+		$qu = $this->db->update('tbl_cheque', $attr);
 		
 		if ( $this->db->affected_rows()) {
 			return TRUE;
@@ -204,7 +204,7 @@ class Check_model extends CI_Model
 		);
 
 		$this->db->where('id', $id);
-		$qu = $this->db->update('tbl_checks', $attr);
+		$qu = $this->db->update('tbl_cheque', $attr);
 
 		if ( $this->db->affected_rows()) {
 			return TRUE;
@@ -219,7 +219,7 @@ class Check_model extends CI_Model
 		);
 
 		$this->db->where('id', $id);
-		$qu = $this->db->update('tbl_checks', $attr);
+		$qu = $this->db->update('tbl_cheque', $attr);
 
 		if ( $this->db->affected_rows()) {
 			return TRUE;

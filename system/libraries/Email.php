@@ -194,7 +194,7 @@ class CI_Email {
 	public $crlf		= "\n";
 
 	/**
-	 * Whether to use Delivery Status Notification.
+	 * Whether to use Delivery status Notification.
 	 *
 	 * @var	bool
 	 */

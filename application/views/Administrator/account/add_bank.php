@@ -58,7 +58,7 @@
 						<th>Bank Name</th>
 						<th class="hidden-480">Description</th>
 
-						<th>Status</th>
+						<th>status</th>
 						<th>Action</th>
 						<th></th>
 					</tr>

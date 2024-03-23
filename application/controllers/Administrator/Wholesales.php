@@ -35,7 +35,7 @@ class Wholesales extends CI_Controller {
                 $pid = $item['id'];
                 $qty = $item['qty'];
                 $proStock = 0;
-                $SPQ = mysql_query("SELECT * FROM tbl_purchasedetails WHERE Product_IDNo = '$pid' AND PurchaseDetails_branchID = '$branchID'");
+                $SPQ = mysql_query("SELECT * FROM tbl_purchasedetails WHERE Product_IDNo = '$pid' AND branch_id = '$branchID'");
                 while ($pdrow = mysql_fetch_array($SPQ)) {
                     $proStock += $pdrow['PurchaseDetails_TotalQuantity'];
                 }
@@ -73,9 +73,9 @@ class Wholesales extends CI_Controller {
             "SaleMaster_SubTotalAmount"                 =>$this->input->post('SellTotals'),
             "SaleMaster_PaidAmount"                     =>$this->input->post('SellsPaid'),
             "SaleMaster_DueAmount"                      =>$this->input->post('SellsDue'),
-            "Status"                                    =>'W',
+            "status"                                    =>'W',
             "AddBy"                                     =>$this->session->userdata("FullName"),
-            "SaleMaster_branchid"                       =>$this->session->userdata("BRANCHid"),
+            "branch_id"                       =>$this->session->userdata("BRANCHid"),
             "AddTime"                                   =>date("Y-m-d H:i:s")
         );      
         $sales_id = $this->Billing_model->SalesOrder($sales);
@@ -85,8 +85,8 @@ class Wholesales extends CI_Controller {
             "CPayment_customerID"               =>$this->input->post('customerID', TRUE),
             "CPayment_amount"                   =>$this->input->post('SellsPaid', TRUE),
             "CPayment_notes"                    =>$this->input->post('SelesNotes', TRUE),
-            "CPayment_Addby"                    =>$this->session->userdata("FullName"),
-            "CPayment_brunchid"                 =>$this->session->userdata("BRANCHid")
+            "AddBy"                    =>$this->session->userdata("FullName"),
+            "branch_id"                 =>$this->session->userdata("BRANCHid")
         );
         $this->mt->save_data("tbl_customer_payment", $data);
         

@@ -43,7 +43,7 @@ class HR_model extends CI_Model
 			from tbl_employee e 
 			join tbl_department dp on dp.Department_SlNo = e.Department_ID
 			join tbl_designation ds on ds.Designation_SlNo = e.Designation_ID
-			where e.Employee_brinchid = ?
+			where e.branch_id = ?
 			$clause
 			order by e.Employee_SlNo desc
 		", $this->BRANCHid)->result();

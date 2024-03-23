@@ -34,7 +34,7 @@ class Model_Table extends CI_Model
         $branchNo = strlen($branchId) < 10 ? '0' . $branchId : $branchId;
         $invoice = date('y') . $branchNo . "00001";
         $year = date('y');
-        $sales = $this->db->query("select * from tbl_salesmaster sm where sm.SaleMaster_InvoiceNo like '$year%' and SaleMaster_branchid = ?", $branchId);
+        $sales = $this->db->query("select * from tbl_salesmaster sm where sm.SaleMaster_InvoiceNo like '$year%' and branch_id = ?", $branchId);
         if ($sales->num_rows() != 0) {
             $newSalesId = $sales->num_rows() + 1;
             $zeros = array('0', '00', '000', '0000');
@@ -205,31 +205,31 @@ class Model_Table extends CI_Model
             /* Received */
             (
                 select ifnull(sum(sm.SaleMaster_PaidAmount), 0) from tbl_salesmaster sm
-                where sm.SaleMaster_branchid= " . $this->session->userdata('BRANCHid') . "
-                and sm.Status = 'a'
+                where sm.branch_id= " . $this->session->userdata('BRANCHid') . "
+                and sm.status = 'a'
                 " . ($date == null ? "" : " and sm.SaleMaster_SaleDate < '$date'") . "
             ) as received_sales,
             (
                 select ifnull(sum(cp.CPayment_amount), 0) from tbl_customer_payment cp
                 where cp.CPayment_TransactionType = 'CR'
-                and cp.CPayment_status = 'a'
+                and cp.status = 'a'
                 and cp.CPayment_Paymentby != 'bank'
-                and cp.CPayment_brunchid= " . $this->session->userdata('BRANCHid') . "
+                and cp.branch_id= " . $this->session->userdata('BRANCHid') . "
                 " . ($date == null ? "" : " and cp.CPayment_date < '$date'") . "
             ) as received_customer,
             (
                 select ifnull(sum(sp.SPayment_amount), 0) from tbl_supplier_payment sp
                 where sp.SPayment_TransactionType = 'CR'
-                and sp.SPayment_status = 'a'
+                and sp.status = 'a'
                 and sp.SPayment_Paymentby != 'bank'
-                and sp.SPayment_brunchid= " . $this->session->userdata('BRANCHid') . "
+                and sp.branch_id= " . $this->session->userdata('BRANCHid') . "
                 " . ($date == null ? "" : " and sp.SPayment_date < '$date'") . "
             ) as received_supplier,
             (
                 select ifnull(sum(ct.In_Amount), 0) from tbl_cashtransaction ct
                 where ct.Tr_Type = 'In Cash'
                 and ct.status = 'a'
-                and ct.Tr_branchid= " . $this->session->userdata('BRANCHid') . "
+                and ct.branch_id= " . $this->session->userdata('BRANCHid') . "
                 " . ($date == null ? "" : " and ct.Tr_date < '$date'") . "
             ) as received_cash,
             (
@@ -271,30 +271,30 @@ class Model_Table extends CI_Model
             (
                 select ifnull(sum(pm.PurchaseMaster_PaidAmount), 0) from tbl_purchasemaster pm
                 where pm.status = 'a'
-                and pm.PurchaseMaster_BranchID= " . $this->session->userdata('BRANCHid') . "
+                and pm.branch_id= " . $this->session->userdata('BRANCHid') . "
                 " . ($date == null ? "" : " and pm.PurchaseMaster_OrderDate < '$date'") . "
             ) as paid_purchase,
             (
                 select ifnull(sum(sp.SPayment_amount), 0) from tbl_supplier_payment sp
                 where sp.SPayment_TransactionType = 'CP'
-                and sp.SPayment_status = 'a'
+                and sp.status = 'a'
                 and sp.SPayment_Paymentby != 'bank'
-                and sp.SPayment_brunchid= " . $this->session->userdata('BRANCHid') . "
+                and sp.branch_id= " . $this->session->userdata('BRANCHid') . "
                 " . ($date == null ? "" : " and sp.SPayment_date < '$date'") . "
             ) as paid_supplier,
             (
                 select ifnull(sum(cp.CPayment_amount), 0) from tbl_customer_payment cp
                 where cp.CPayment_TransactionType = 'CP'
-                and cp.CPayment_status = 'a'
+                and cp.status = 'a'
                 and cp.CPayment_Paymentby != 'bank'
-                and cp.CPayment_brunchid= " . $this->session->userdata('BRANCHid') . "
+                and cp.branch_id= " . $this->session->userdata('BRANCHid') . "
                 " . ($date == null ? "" : " and cp.CPayment_date < '$date'") . "
             ) as paid_customer,
             (
                 select ifnull(sum(ct.Out_Amount), 0) from tbl_cashtransaction ct
                 where ct.Tr_Type = 'Out Cash'
                 and ct.status = 'a'
-                and ct.Tr_branchid= " . $this->session->userdata('BRANCHid') . "
+                and ct.branch_id= " . $this->session->userdata('BRANCHid') . "
                 " . ($date == null ? "" : " and ct.Tr_date < '$date'") . "
             ) as paid_cash,
             (
@@ -370,33 +370,33 @@ class Model_Table extends CI_Model
                 (
                     select ifnull(sum(cp.CPayment_amount), 0) from tbl_customer_payment cp
                     where cp.account_id = ba.account_id
-                    and cp.CPayment_status = 'a'
+                    and cp.status = 'a'
                     and cp.CPayment_TransactionType = 'CR'
-                    and cp.CPayment_brunchid = " . $this->session->userdata('BRANCHid') . "
+                    and cp.branch_id = " . $this->session->userdata('BRANCHid') . "
                     " . ($date == null ? "" : " and cp.CPayment_date < '$date'") . "
                 ) as total_received_from_customer,
                 (
                     select ifnull(sum(cp.CPayment_amount), 0) from tbl_customer_payment cp
                     where cp.account_id = ba.account_id
-                    and cp.CPayment_status = 'a'
+                    and cp.status = 'a'
                     and cp.CPayment_TransactionType = 'CP'
-                    and cp.CPayment_brunchid = " . $this->session->userdata('BRANCHid') . "
+                    and cp.branch_id = " . $this->session->userdata('BRANCHid') . "
                     " . ($date == null ? "" : " and cp.CPayment_date < '$date'") . "
                 ) as total_paid_to_customer,
                 (
                     select ifnull(sum(sp.SPayment_amount), 0) from tbl_supplier_payment sp
                     where sp.account_id = ba.account_id
-                    and sp.SPayment_status = 'a'
+                    and sp.status = 'a'
                     and sp.SPayment_TransactionType = 'CP'
-                    and sp.SPayment_brunchid = " . $this->session->userdata('BRANCHid') . "
+                    and sp.branch_id = " . $this->session->userdata('BRANCHid') . "
                     " . ($date == null ? "" : " and sp.SPayment_date < '$date'") . "
                 ) as total_paid_to_supplier,
                 (
                     select ifnull(sum(sp.SPayment_amount), 0) from tbl_supplier_payment sp
                     where sp.account_id = ba.account_id
-                    and sp.SPayment_status = 'a'
+                    and sp.status = 'a'
                     and sp.SPayment_TransactionType = 'CR'
-                    and sp.SPayment_brunchid = " . $this->session->userdata('BRANCHid') . "
+                    and sp.branch_id = " . $this->session->userdata('BRANCHid') . "
                     " . ($date == null ? "" : " and sp.SPayment_date < '$date'") . "
                 ) as total_received_from_supplier,
                 (
@@ -632,14 +632,14 @@ class Model_Table extends CI_Model
                 where sp.SPayment_customerID = s.Supplier_SlNo 
                 and sp.SPayment_TransactionType = 'CP'
                 " . ($date == null ? "" : " and sp.SPayment_date < '$date'") . "
-                and sp.SPayment_status = 'a'
+                and sp.status = 'a'
             ) as cashPaid,
                 
             (select ifnull(sum(sp2.SPayment_amount), 0.00) from tbl_supplier_payment sp2 
                 where sp2.SPayment_customerID = s.Supplier_SlNo 
                 and sp2.SPayment_TransactionType = 'CR'
                 " . ($date == null ? "" : " and sp2.SPayment_date < '$date'") . "
-                and sp2.SPayment_status = 'a'
+                and sp2.status = 'a'
             ) as cashReceived,
 
             (select ifnull(sum(pr.PurchaseReturn_ReturnAmount), 0.00) from tbl_purchasereturn pr
@@ -653,7 +653,7 @@ class Model_Table extends CI_Model
             (select (bill + cashReceived) - (paid + returned)) as due
 
             from tbl_supplier s
-            where s.Supplier_brinchid = '$branchId' $clauses
+            where s.branch_id = '$branchId' $clauses
         ")->result();
 
         return $supplierDues;
@@ -674,27 +674,27 @@ class Model_Table extends CI_Model
                 from tbl_salesmaster sm 
                 where sm.SalseCustomer_IDNo = c.Customer_SlNo
                 " . ($date == null ? "" : " and sm.SaleMaster_SaleDate < '$date'") . "
-                and sm.Status = 'a') as billAmount,
+                and sm.status = 'a') as billAmount,
 
             (select ifnull(sum(sm.SaleMaster_PaidAmount), 0.00)
                 from tbl_salesmaster sm
                 where sm.SalseCustomer_IDNo = c.Customer_SlNo
                 " . ($date == null ? "" : " and sm.SaleMaster_SaleDate < '$date'") . "
-                and sm.Status = 'a') as invoicePaid,
+                and sm.status = 'a') as invoicePaid,
 
             (select ifnull(sum(cp.CPayment_amount), 0.00) 
                 from tbl_customer_payment cp 
                 where cp.CPayment_customerID = c.Customer_SlNo 
                 and cp.CPayment_TransactionType = 'CR'
                 " . ($date == null ? "" : " and cp.CPayment_date < '$date'") . "
-                and cp.CPayment_status = 'a') as cashReceived,
+                and cp.status = 'a') as cashReceived,
 
             (select ifnull(sum(cp.CPayment_amount), 0.00) 
                 from tbl_customer_payment cp 
                 where cp.CPayment_customerID = c.Customer_SlNo 
                 and cp.CPayment_TransactionType = 'CP'
                 " . ($date == null ? "" : " and cp.CPayment_date < '$date'") . "
-                and cp.CPayment_status = 'a') as paidOutAmount,
+                and cp.status = 'a') as paidOutAmount,
 
             (select ifnull(sum(sr.SaleReturn_ReturnAmount), 0.00) 
                 from tbl_salereturn sr 
@@ -708,7 +708,7 @@ class Model_Table extends CI_Model
             (select (billAmount + paidOutAmount) - (paidAmount + returnedAmount)) as dueAmount
             
             from tbl_customer c
-            where c.Customer_brunchid = '$branchId' $clauses
+            where c.branch_id = '$branchId' $clauses
         ")->result();
 
         return $dueResult;
@@ -899,23 +899,23 @@ class Model_Table extends CI_Model
     public function getCustomerDueById($Custid)
     {
         // ====================
-        $salesMaster = $this->db->where(['SalseCustomer_IDNo' => $Custid, 'Status' => 'a'])->select_sum('SaleMaster_DueAmount')->get('tbl_salesmaster')->row();
+        $salesMaster = $this->db->where(['SalseCustomer_IDNo' => $Custid, 'status' => 'a'])->select_sum('SaleMaster_DueAmount')->get('tbl_salesmaster')->row();
         $dueAm = $salesMaster->SaleMaster_DueAmount;
 
         // ====================
-        $salesPaid = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => '', 'CPayment_status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
+        $salesPaid = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => '', 'status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
         $salesPaidAm = $salesPaid->CPayment_amount;
 
         // ====================
-        $paidAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => 'CR', 'CPayment_status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
+        $paidAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => 'CR', 'status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
         $paidAm = $paidAmount->CPayment_amount;
 
         // ====================
-        $payAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => 'CP', 'CPayment_status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
+        $payAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => 'CP', 'status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
         $payAm = $payAmount->CPayment_amount;
 
         // ====================
-        $returnAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => 'RP', 'CPayment_status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
+        $returnAmount = $this->db->where('CPayment_customerID', $Custid)->where(['CPayment_TransactionType' => 'RP', 'status' => 'a'])->select_sum('CPayment_amount')->get('tbl_customer_payment')->row();
         $returnAm = $returnAmount->CPayment_amount;
 
         // ====================

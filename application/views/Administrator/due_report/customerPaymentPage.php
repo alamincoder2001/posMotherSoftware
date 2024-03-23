@@ -175,7 +175,7 @@
 							<td>{{ row.payment_by }}</td>
 							<td>{{ row.CPayment_amount }}</td>
 							<td>{{ row.CPayment_notes }}</td>
-							<td>{{ row.CPayment_Addby }}</td>
+							<td>{{ row.AddBy }}</td>
 							<td>
 								<button type="button" class="button edit" @click="window.location = `/paymentAndReport/${row.CPayment_id}`">
 									<i class="fa fa-file-o"></i>
@@ -264,7 +264,7 @@
 					},
 					{
 						label: 'Saved By',
-						field: 'CPayment_Addby',
+						field: 'AddBy',
 						align: 'center'
 					},
 					{

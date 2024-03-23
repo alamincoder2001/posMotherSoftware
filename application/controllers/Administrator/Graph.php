@@ -32,8 +32,8 @@
                     select ifnull(sum(sm.SaleMaster_TotalSaleAmount), 0) as sales_amount 
                     from tbl_salesmaster sm 
                     where sm.SaleMaster_SaleDate = ?
-                    and sm.Status = 'a'
-                    and sm.SaleMaster_branchid = ?
+                    and sm.status = 'a'
+                    and sm.branch_id = ?
                     group by sm.SaleMaster_SaleDate
                 ", [$date, $this->branchId]);
 
@@ -55,8 +55,8 @@
                     select ifnull(sum(sm.SaleMaster_TotalSaleAmount), 0) as sales_amount 
                     from tbl_salesmaster sm 
                     where extract(year_month from sm.SaleMaster_SaleDate) = ?
-                    and sm.Status = 'a'
-                    and sm.SaleMaster_branchid = ?
+                    and sm.status = 'a'
+                    and sm.branch_id = ?
                     group by extract(year_month from sm.SaleMaster_SaleDate)
                 ", [$yearMonth, $this->branchId]);
 
@@ -84,8 +84,8 @@
                     ) as sale_text
                 from tbl_salesmaster sm 
                 join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
-                where sm.Status = 'a'
-                and sm.SaleMaster_branchid = ?
+                where sm.status = 'a'
+                and sm.branch_id = ?
                 order by sm.SaleMaster_SlNo desc limit 20
             ", $this->branchId)->result();
 
@@ -94,9 +94,9 @@
                 select 
                     ifnull(sum(ifnull(sm.SaleMaster_TotalSaleAmount, 0)), 0) as total_amount
                 from tbl_salesmaster sm
-                where sm.Status = 'a'
+                where sm.status = 'a'
                 and sm.SaleMaster_SaleDate = ?
-                and sm.SaleMaster_branchid = ?
+                and sm.branch_id = ?
             ", [date('Y-m-d'), $this->branchId])->row()->total_amount;
 
             // This Month's Sale
@@ -104,10 +104,10 @@
                 select 
                     ifnull(sum(ifnull(sm.SaleMaster_TotalSaleAmount, 0)), 0) as total_amount
                 from tbl_salesmaster sm
-                where sm.Status = 'a'
+                where sm.status = 'a'
                 and month(sm.SaleMaster_SaleDate) = ?
                 and year(sm.SaleMaster_SaleDate) = ?
-                and sm.SaleMaster_branchid = ?
+                and sm.branch_id = ?
             ", [$month, $year, $this->branchId])->row()->total_amount;
 
             // Today's Cash Collection
@@ -116,23 +116,23 @@
                 ifnull((
                     select sum(ifnull(sm.SaleMaster_PaidAmount, 0)) 
                     from tbl_salesmaster sm
-                    where sm.Status = 'a'
-                    and sm.SaleMaster_branchid = " . $this->branchId . "
+                    where sm.status = 'a'
+                    and sm.branch_id = " . $this->branchId . "
                     and sm.SaleMaster_SaleDate = '" . date('Y-m-d') . "'
                 ), 0) +
                 ifnull((
                     select sum(ifnull(cp.CPayment_amount, 0)) 
                     from tbl_customer_payment cp
-                    where cp.CPayment_status = 'a'
+                    where cp.status = 'a'
                     and cp.CPayment_TransactionType = 'CR'
-                    and cp.CPayment_brunchid = " . $this->branchId . "
+                    and cp.branch_id = " . $this->branchId . "
                     and cp.CPayment_date = '" . date('Y-m-d') . "'
                 ), 0) +
                 ifnull((
                     select sum(ifnull(ct.In_Amount, 0)) 
                     from tbl_cashtransaction ct
                     where ct.status = 'a'
-                    and ct.Tr_branchid = " . $this->branchId . "
+                    and ct.branch_id = " . $this->branchId . "
                     and ct.Tr_date = '" . date('Y-m-d') . "'
                 ), 0) as total_amount
             ")->row()->total_amount;
@@ -147,7 +147,7 @@
                 ifnull(sum(sm.SaleMaster_TotalSaleAmount), 0) as amount
                 from tbl_salesmaster sm 
                 join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
-                where sm.SaleMaster_branchid = ?
+                where sm.branch_id = ?
                 group by sm.SalseCustomer_IDNo
                 order by amount desc 
                 limit 10
@@ -212,8 +212,8 @@
                 select 
                     sm.*
                 from tbl_salesmaster sm
-                where sm.SaleMaster_branchid = ? 
-                and sm.Status = 'a'
+                where sm.branch_id = ? 
+                and sm.status = 'a'
                 and month(sm.SaleMaster_SaleDate) = ?
                 and year(sm.SaleMaster_SaleDate) = ?
             ", [$this->branchId, $month, $year])->result();
@@ -253,7 +253,7 @@
                 (
                     select ifnull(sum(ct.In_Amount), 0)
                     from tbl_cashtransaction ct
-                    where ct.Tr_branchid = '$this->branchId'
+                    where ct.branch_id = '$this->branchId'
                     and ct.status = 'a'
                     and month(ct.Tr_date) = '$month'
                     and year(ct.Tr_date) = '$year'
@@ -262,7 +262,7 @@
                 (
                     select ifnull(sum(ct.Out_Amount), 0)
                     from tbl_cashtransaction ct
-                    where ct.Tr_branchid = '$this->branchId'
+                    where ct.branch_id = '$this->branchId'
                     and ct.status = 'a'
                     and month(ct.Tr_date) = '$month'
                     and year(ct.Tr_date) = '$year'
@@ -311,7 +311,7 @@
                     select ifnull(sum(dd.damage_amount), 0) 
                     from tbl_damagedetails dd
                     join tbl_damage d on d.Damage_SlNo = dd.Damage_SlNo
-                    where d.Damage_brunchid = '$this->branchId'
+                    where d.branch_id = '$this->branchId'
                     and dd.status = 'a'
                     and month(d.Damage_Date) = '$month'
                     and year(d.Damage_Date) = '$year'
@@ -323,8 +323,8 @@
                     join tbl_salereturn r on r.SaleReturn_SlNo = rd.SaleReturn_IdNo
                     join tbl_salesmaster sm on sm.SaleMaster_InvoiceNo = r.SaleMaster_InvoiceNo
                     join tbl_saledetails sd on sd.Product_IDNo = rd.SaleReturnDetailsProduct_SlNo and sd.SaleMaster_IDNo = sm.SaleMaster_SlNo
-                    where r.Status = 'a'
-                    and r.SaleReturn_brunchId = '$this->branchId'
+                    where r.status = 'a'
+                    and r.branch_id= '$this->branchId'
                     and month(r.SaleReturn_ReturnDate) = '$month'
                     and year(r.SaleReturn_ReturnDate) = '$year'
                 ) as returned_amount

@@ -41,7 +41,7 @@ class Sales extends CI_Controller
             $this->db->trans_begin();
             $data = json_decode($this->input->raw_input_stream);
             if ($data->sales->salesFrom != $this->session->userdata("BRANCHid")) {
-                $res = ['success' => false, 'message' => 'You have already changed your branch.', 'branch_status'=> false];
+                $res = ['success' => false, 'message' => 'You have already changed your branch.', 'branch_status' => false];
                 echo json_encode($res);
                 exit;
             }
@@ -59,7 +59,7 @@ class Sales extends CI_Controller
                 unset($customer['display_name']);
                 unset($customer['Customer_Type']);
 
-                $mobile_count = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and Customer_brunchid = ?", [$data->customer->Customer_Mobile, $this->session->userdata("BRANCHid")]);
+                $mobile_count = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and branch_id = ?", [$data->customer->Customer_Mobile, $this->session->userdata("BRANCHid")]);
                 if (
                     $data->customer->Customer_Mobile != '' &&
                     $data->customer->Customer_Mobile != null &&
@@ -84,7 +84,7 @@ class Sales extends CI_Controller
                         $customer['status'] = 'a';
                         $customer['AddBy'] = $this->session->userdata("FullName");
                         $customer['AddTime'] = date("Y-m-d H:i:s");
-                        $customer['Customer_brunchid'] = $this->session->userdata("BRANCHid");
+                        $customer['branch_id'] = $this->session->userdata("BRANCHid");
 
                         $this->db->insert('tbl_customer', $customer);
                         $customerId = $this->db->insert_id();
@@ -106,10 +106,10 @@ class Sales extends CI_Controller
                 'SaleMaster_DueAmount' => $data->sales->due,
                 'SaleMaster_Previous_Due' => $data->sales->previousDue,
                 'SaleMaster_Description' => $data->sales->note,
-                'Status' => 'a',
+                'status' => 'a',
                 "AddBy" => $this->session->userdata("FullName"),
                 'AddTime' => date("Y-m-d H:i:s"),
-                'SaleMaster_branchid' => $this->session->userdata("BRANCHid")
+                'branch_id' => $this->session->userdata("BRANCHid")
             );
             if ($data->customer->Customer_Type == 'G') {
                 $sales['SalseCustomer_IDNo']    = Null;
@@ -135,10 +135,10 @@ class Sales extends CI_Controller
                     'SaleDetails_Tax'           => $cartProduct->vat,
                     'SaleDetails_TotalAmount'   => $cartProduct->total,
                     'is_service'                => $cartProduct->is_service,
-                    'Status'                    => 'a',
+                    'status'                    => 'a',
                     'AddBy'                     => $this->session->userdata("FullName"),
                     'AddTime'                   => date('Y-m-d H:i:s'),
-                    'SaleDetails_BranchId'      => $this->session->userdata('BRANCHid')
+                    'branch_id'      => $this->session->userdata('BRANCHid')
                 );
                 $this->db->insert('tbl_saledetails', $saleDetails);
                 if ($cartProduct->is_service == 'false') {
@@ -218,8 +218,8 @@ class Sales extends CI_Controller
             join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
             join tbl_salesmaster sm on sm.SaleMaster_SlNo = sd.SaleMaster_IDNo
             join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
-            where sd.Status != 'd'
-            and sm.SaleMaster_branchid = ?
+            where sd.status != 'd'
+            and sm.branch_id = ?
             $clauses
         ", $this->sbrunch)->result();
 
@@ -259,14 +259,14 @@ class Sales extends CI_Controller
                 (
                     select ifnull(count(*), 0) from tbl_saledetails sd 
                     where sd.SaleMaster_IDNo = 1
-                    and sd.Status != 'd'
+                    and sd.status != 'd'
                 ) as total_products
             from tbl_salesmaster sm
             left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             left join tbl_employee e on e.Employee_SlNo = sm.employee_id
-            left join tbl_branch br on br.branch_id = sm.SaleMaster_branchid
-            where sm.SaleMaster_branchid = '$branchId'
-            and sm.Status = 'a'
+            left join tbl_branch br on br.branch_id = sm.branch_id
+            where sm.branch_id = '$branchId'
+            and sm.status = 'a'
             $clauses
             order by sm.SaleMaster_SlNo desc
         ")->result();
@@ -281,7 +281,7 @@ class Sales extends CI_Controller
                 join tbl_product p on p.Product_SlNo = sd.Product_IDNo
                 join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
                 where sd.SaleMaster_IDNo = ?
-                and sd.Status != 'd'
+                and sd.status != 'd'
             ", $sale->SaleMaster_SlNo)->result();
         }
 
@@ -295,7 +295,7 @@ class Sales extends CI_Controller
 
         $clauses = "";
         $limit = "";
-        
+
         if (isset($data->name) && $data->name != '') {
             $clauses .= " or sm.SaleMaster_InvoiceNo like '$data->name%'";
         }
@@ -355,9 +355,9 @@ class Sales extends CI_Controller
             from tbl_salesmaster sm
             left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             left join tbl_employee e on e.Employee_SlNo = sm.employee_id
-            left join tbl_branch br on br.branch_id = sm.SaleMaster_branchid
-            where sm.SaleMaster_branchid = '$branchId'
-            and sm.Status = 'a'
+            left join tbl_branch br on br.branch_id = sm.branch_id
+            where sm.branch_id = '$branchId'
+            and sm.status = 'a'
             $clauses
             order by sm.SaleMaster_SlNo desc
             $limit
@@ -382,7 +382,7 @@ class Sales extends CI_Controller
                 unset($customer['Customer_SlNo']);
                 unset($customer['display_name']);
                 unset($customer['Customer_Type']);
-                $mobile_count = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and Customer_brunchid = ?", [$data->customer->Customer_Mobile, $this->session->userdata("BRANCHid")]);
+                $mobile_count = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and branch_id = ?", [$data->customer->Customer_Mobile, $this->session->userdata("BRANCHid")]);
                 if (
                     $data->customer->Customer_Mobile != '' &&
                     $data->customer->Customer_Mobile != null &&
@@ -406,7 +406,7 @@ class Sales extends CI_Controller
                         $customer['status'] = 'a';
                         $customer['AddBy'] = $this->session->userdata("FullName");
                         $customer['AddTime'] = date("Y-m-d H:i:s");
-                        $customer['Customer_brunchid'] = $this->session->userdata("BRANCHid");
+                        $customer['branch_id'] = $this->session->userdata("BRANCHid");
 
                         $this->db->insert('tbl_customer', $customer);
                         $customerId = $this->db->insert_id();
@@ -429,7 +429,7 @@ class Sales extends CI_Controller
                 'SaleMaster_Description'         => $data->sales->note,
                 "UpdateBy"                       => $this->session->userdata("FullName"),
                 'UpdateTime'                     => date("Y-m-d H:i:s"),
-                "SaleMaster_branchid"            => $this->session->userdata("BRANCHid")
+                "branch_id"            => $this->session->userdata("BRANCHid")
             );
             if ($data->customer->Customer_Type == 'G') {
                 $sales['SalseCustomer_IDNo']    = Null;
@@ -472,10 +472,10 @@ class Sales extends CI_Controller
                     'SaleDetails_Tax'           => $cartProduct->vat,
                     'SaleDetails_TotalAmount'   => $cartProduct->total,
                     'is_service'                => $cartProduct->is_service,
-                    'Status'                    => 'a',
+                    'status'                    => 'a',
                     'AddBy'                     => $this->session->userdata("FullName"),
                     'AddTime'                   => date('Y-m-d H:i:s'),
-                    'SaleDetails_BranchId'      => $this->session->userdata("BRANCHid")
+                    'branch_id'      => $this->session->userdata("BRANCHid")
                 );
 
                 $this->db->insert('tbl_saledetails', $saleDetails);
@@ -512,7 +512,7 @@ class Sales extends CI_Controller
                     select ifnull(sum(srd.SaleReturnDetails_ReturnQuantity), 0)
                     from tbl_salereturndetails srd
                     join tbl_salereturn sr on sr.SaleReturn_SlNo = srd.SaleReturn_IdNo
-                    where sr.Status = 'a'
+                    where sr.status = 'a'
                     and srd.SaleReturnDetailsProduct_SlNo = sd.Product_IDNo
                     and sr.SaleMaster_InvoiceNo = sm.SaleMaster_InvoiceNo
                 ) as returned_quantity,
@@ -520,7 +520,7 @@ class Sales extends CI_Controller
                     select ifnull(sum(srd.SaleReturnDetails_ReturnAmount), 0)
                     from tbl_salereturndetails srd
                     join tbl_salereturn sr on sr.SaleReturn_SlNo = srd.SaleReturn_IdNo
-                    where sr.Status = 'a'
+                    where sr.status = 'a'
                     and srd.SaleReturnDetailsProduct_SlNo = sd.Product_IDNo
                     and sr.SaleMaster_InvoiceNo = sm.SaleMaster_InvoiceNo
                 ) as returned_amount
@@ -544,7 +544,7 @@ class Sales extends CI_Controller
                 'SaleReturn_ReturnDate' => $data->salesReturn->returnDate,
                 'SaleReturn_ReturnAmount' => $data->salesReturn->total,
                 'SaleReturn_Description' => $data->salesReturn->note,
-                'Status' => 'a',
+                'status' => 'a',
                 'AddBy' => $this->session->userdata("FullName"),
                 'AddTime' => date('Y-m-d H:i:s'),
                 'SaleReturn_brunchId' => $this->session->userdata("BRANCHid")
@@ -560,10 +560,10 @@ class Sales extends CI_Controller
                     'SaleReturnDetailsProduct_SlNo' => $product->Product_IDNo,
                     'SaleReturnDetails_ReturnQuantity' => $product->return_quantity,
                     'SaleReturnDetails_ReturnAmount' => $product->return_amount,
-                    'Status' => 'a',
+                    'status' => 'a',
                     'AddBy' => $this->session->userdata("FullName"),
                     'AddTime' => date('Y-m-d H:i:s'),
-                    'SaleReturnDetails_brunchID' => $this->session->userdata("BRANCHid")
+                    'branch_id' => $this->session->userdata("BRANCHid")
                 );
 
                 $this->db->insert('tbl_salereturndetails', $returnDetails);
@@ -587,11 +587,11 @@ class Sales extends CI_Controller
                     'CPayment_TransactionType' => 'CP',
                     'CPayment_amount' => $totalReturnAmount,
                     'CPayment_Paymentby' => 'cash',
-                    'CPayment_brunchid' => $this->session->userdata("BRANCHid"),
+                    'branch_id' => $this->session->userdata("BRANCHid"),
                     'CPayment_previous_due' => 0,
-                    'CPayment_Addby' => $this->session->userdata("FullName"),
-                    'CPayment_AddDAte' => date('Y-m-d H:i:s'),
-                    'CPayment_status' => 'a'
+                    'AddBy' => $this->session->userdata("FullName"),
+                    'AddTime' => date('Y-m-d H:i:s'),
+                    'status' => 'a'
                 );
 
                 $this->db->insert('tbl_customer_payment', $customerPayment);
@@ -620,7 +620,7 @@ class Sales extends CI_Controller
                 'SaleReturn_ReturnDate' => $data->salesReturn->returnDate,
                 'SaleReturn_ReturnAmount' => $data->salesReturn->total,
                 'SaleReturn_Description' => $data->salesReturn->note,
-                'Status' => 'a',
+                'status' => 'a',
                 'AddBy' => $this->session->userdata("FullName"),
                 'AddTime' => date('Y-m-d H:i:s'),
                 'SaleReturn_brunchId' => $this->session->userdata("BRANCHid")
@@ -646,10 +646,10 @@ class Sales extends CI_Controller
                     'SaleReturnDetailsProduct_SlNo' => $product->Product_IDNo,
                     'SaleReturnDetails_ReturnQuantity' => $product->return_quantity,
                     'SaleReturnDetails_ReturnAmount' => $product->return_amount,
-                    'Status' => 'a',
+                    'status' => 'a',
                     'AddBy' => $this->session->userdata("FullName"),
                     'AddTime' => date('Y-m-d H:i:s'),
-                    'SaleReturnDetails_brunchID' => $this->session->userdata("BRANCHid")
+                    'branch_id' => $this->session->userdata("BRANCHid")
                 );
 
                 $this->db->insert('tbl_salereturndetails', $returnDetails);
@@ -685,11 +685,11 @@ class Sales extends CI_Controller
                     'CPayment_TransactionType' => 'CP',
                     'CPayment_amount' => $totalReturnAmount,
                     'CPayment_Paymentby' => 'cash',
-                    'CPayment_brunchid' => $this->session->userdata("BRANCHid"),
+                    'branch_id' => $this->session->userdata("BRANCHid"),
                     'CPayment_previous_due' => 0,
-                    'CPayment_Addby' => $this->session->userdata("FullName"),
-                    'CPayment_AddDAte' => date('Y-m-d H:i:s'),
-                    'CPayment_status' => 'a'
+                    'AddBy' => $this->session->userdata("FullName"),
+                    'AddTime' => date('Y-m-d H:i:s'),
+                    'status' => 'a'
                 );
 
                 $this->db->insert('tbl_customer_payment', $customerPayment);
@@ -798,8 +798,8 @@ class Sales extends CI_Controller
             from tbl_salereturn sr
             join tbl_salesmaster sm on sm.SaleMaster_InvoiceNo = sr.SaleMaster_InvoiceNo
             left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
-            where sr.Status = 'a'
-            and sr.SaleReturn_brunchId = '$this->sbrunch'
+            where sr.status = 'a'
+            and sr.branch_id= '$this->sbrunch'
             $clauses
         ")->result();
 
@@ -839,7 +839,7 @@ class Sales extends CI_Controller
             join tbl_salereturn sr on sr.SaleReturn_SlNo = srd.SaleReturn_IdNo
             join tbl_salesmaster sm on sm.SaleMaster_InvoiceNo = sr.SaleMaster_InvoiceNo
             join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
-            where sr.SaleReturn_brunchId = ?
+            where sr.branch_id= ?
             $clauses
         ", $this->session->userdata('BRANCHid'))->result();
 
@@ -975,7 +975,7 @@ class Sales extends CI_Controller
             "SaleMaster_Previous_Due"          => $this->input->post('SaleMaster_Previous_Due'),
             "payment_type"                    => $this->input->post('payment_type'),
             "AddBy"                         => $this->session->userdata("FullName"),
-            "SaleMaster_branchid"           => $this->session->userdata("BRANCHid"),
+            "branch_id"           => $this->session->userdata("BRANCHid"),
             "AddTime"                       => date("Y-m-d H:i:s")
         );
 
@@ -995,8 +995,8 @@ class Sales extends CI_Controller
             "CPayment_customerID"   => $this->input->post('customerID', TRUE),
             "CPayment_amount"       => $this->input->post('SellsPaid', TRUE),
             "CPayment_notes"        => $this->input->post('SelesNotes', TRUE),
-            "CPayment_Addby"        => $this->session->userdata("FullName"),
-            "CPayment_brunchid"     => $this->session->userdata("BRANCHid")
+            "AddBy"        => $this->session->userdata("FullName"),
+            "branch_id"     => $this->session->userdata("BRANCHid")
         );
         $this->mt->save_data("tbl_customer_payment", $data);
 
@@ -1209,7 +1209,7 @@ class Sales extends CI_Controller
                         "SaleReturnDetails_ReturnAmount"            => $returnamount[$i],
 
                         "AddBy"                                     => $this->session->userdata("FullName"),
-                        "SaleReturnDetails_brunchID"                => $this->session->userdata("BRANCHid"),
+                        "branch_id"                => $this->session->userdata("BRANCHid"),
                         "AddTime"                                   => date("Y-m-d H:i:s")
                     );
                     $this->Billing_model->SalesReturn('tbl_salereturndetails', $returns);
@@ -1220,8 +1220,8 @@ class Sales extends CI_Controller
                         "CPayment_customerID" => $this->db->where('SaleMaster_InvoiceNo', $invoices)->get('tbl_salesmaster')->row()->SalseCustomer_IDNo,
                         "CPayment_amount" => $returnamount[$i],
                         "CPayment_notes" => 'Sale Returns',
-                        "CPayment_Addby" => $this->session->userdata("FullName"),
-                        "CPayment_brunchid" => $this->session->userdata("BRANCHid")
+                        "AddBy" => $this->session->userdata("FullName"),
+                        "branch_id" => $this->session->userdata("BRANCHid")
                     );
                     $this->mt->save_data("tbl_customer_payment", $dataR);
                 }
@@ -1304,7 +1304,7 @@ class Sales extends CI_Controller
                 <select name="" id="customerID" data-placeholder="Choose a Customer..." class="chosen-select">
                     <option value="All">All</option>
                     <?php
-                    $sql = $this->db->query("SELECT * FROM tbl_customer where Customer_brunchid = '" . $this->sbrunch . "' AND Customer_Type = 'Local' order by Customer_Name asc");
+                    $sql = $this->db->query("SELECT * FROM tbl_customer where branch_id = '" . $this->sbrunch . "' AND Customer_Type = 'Local' order by Customer_Name asc");
                     $row = $sql->result();
                     foreach ($row as $row) { ?>
 
@@ -1323,7 +1323,7 @@ class Sales extends CI_Controller
                 <select id="Salestype" class="chosen-select" name="Salestype">
                     <option value="All">All</option>
                     <?php
-                    $sql = $this->db->query("SELECT * FROM tbl_customer where Customer_brunchid = '" . $this->sbrunch . "' AND Customer_Type = 'Local' order by Customer_Name asc");
+                    $sql = $this->db->query("SELECT * FROM tbl_customer where branch_id = '" . $this->sbrunch . "' AND Customer_Type = 'Local' order by Customer_Name asc");
                     $row = $sql->result();
                     foreach ($row as $row) { ?>
 
@@ -1668,7 +1668,7 @@ class Sales extends CI_Controller
             "SaleMaster_PaidAmount"           => $this->input->post('SellsPaid'),
             "SaleMaster_DueAmount"            => $this->input->post('SellsDue'),
             "UpdateBy"                        => $this->session->userdata("FullName"),
-            "SaleMaster_branchid"             => $this->session->userdata("BRANCHid"),
+            "branch_id"             => $this->session->userdata("BRANCHid"),
             "UpdateTime"                      => date("Y-m-d H:i:s")
         );
         $this->Billing_model->SalesOrderUpdate($sales, $salesInvoiceno);
@@ -1680,8 +1680,8 @@ class Sales extends CI_Controller
             "CPayment_customerID" => $this->input->post('customerID', TRUE),
             "CPayment_amount"     => $this->input->post('SellsPaid', TRUE),
             "CPayment_notes"      => $this->input->post('SelesNotes', TRUE),
-            "CPayment_Addby"      => $this->session->userdata("FullName"),
-            "CPayment_brunchid"   => $this->session->userdata("BRANCHid")
+            "AddBy"      => $this->session->userdata("FullName"),
+            "branch_id"   => $this->session->userdata("BRANCHid")
         );
 
         $this->Billing_model->update_customer_payment_data("tbl_customer_payment", $data, $salesInvoiceno);
@@ -1763,13 +1763,13 @@ class Sales extends CI_Controller
             $saleId = $data->saleId;
 
             $sale = $this->db->select('*')->where('SaleMaster_SlNo', $saleId)->get('tbl_salesmaster')->row();
-            if ($sale->Status != 'a') {
+            if ($sale->status != 'a') {
                 $res = ['success' => false, 'message' => 'Sale not found'];
                 echo json_encode($res);
                 exit;
             }
 
-            $returnCount = $this->db->query("select * from tbl_salereturn sr where sr.SaleMaster_InvoiceNo = ? and sr.Status = 'a'", $sale->SaleMaster_InvoiceNo)->num_rows();
+            $returnCount = $this->db->query("select * from tbl_salereturn sr where sr.SaleMaster_InvoiceNo = ? and sr.status = 'a'", $sale->SaleMaster_InvoiceNo)->num_rows();
 
             if ($returnCount != 0) {
                 $res = ['success' => false, 'message' => 'Unable to delete. Sale return found'];
@@ -1782,20 +1782,20 @@ class Sales extends CI_Controller
 
             foreach ($saleDetails as $detail) {
                 /*Get Product Current Quantity*/
-                $totalQty = $this->db->where(['product_id' => $detail->Product_IDNo, 'branch_id' => $sale->SaleMaster_branchid])->get('tbl_currentinventory')->row()->sales_quantity;
+                $totalQty = $this->db->where(['product_id' => $detail->Product_IDNo, 'branch_id' => $sale->branch_id])->get('tbl_currentinventory')->row()->sales_quantity;
 
                 /* Subtract Product Quantity form  Current Quantity  */
                 $newQty = $totalQty - $detail->SaleDetails_TotalQuantity;
 
                 /*Update Sales Inventory*/
-                $this->db->set('sales_quantity', $newQty)->where(['product_id' => $detail->Product_IDNo, 'branch_id' => $sale->SaleMaster_branchid])->update('tbl_currentinventory');
+                $this->db->set('sales_quantity', $newQty)->where(['product_id' => $detail->Product_IDNo, 'branch_id' => $sale->branch_id])->update('tbl_currentinventory');
             }
 
             /*Delete Sale Details*/
-            $this->db->set('Status', 'd')->where('SaleMaster_IDNo', $saleId)->update('tbl_saledetails');
+            $this->db->set('status', 'd')->where('SaleMaster_IDNo', $saleId)->update('tbl_saledetails');
 
             /*Delete Sale Master Data*/
-            $this->db->set('Status', 'd')->where('SaleMaster_SlNo', $saleId)->update('tbl_salesmaster');
+            $this->db->set('status', 'd')->where('SaleMaster_SlNo', $saleId)->update('tbl_salesmaster');
             $res = ['success' => true, 'message' => 'Sale deleted'];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage()];
@@ -1884,8 +1884,8 @@ class Sales extends CI_Controller
                 c.Customer_Mobile
             from tbl_salesmaster sm
             join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
-            where sm.SaleMaster_branchid = ? 
-            and sm.Status = 'a'
+            where sm.branch_id = ? 
+            and sm.status = 'a'
             $customerClause $dateClause
         ", $this->session->userdata('BRANCHid'))->result();
 
@@ -1918,7 +1918,7 @@ class Sales extends CI_Controller
     {
         $res = ['found' => false];
 
-        $returnCount = $this->db->query("select * from tbl_salereturn where SaleMaster_InvoiceNo = ? and Status = 'a'", $invoice)->num_rows();
+        $returnCount = $this->db->query("select * from tbl_salereturn where SaleMaster_InvoiceNo = ? and status = 'a'", $invoice)->num_rows();
 
         if ($returnCount != 0) {
             $res = ['found' => true];

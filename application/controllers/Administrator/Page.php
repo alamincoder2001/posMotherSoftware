@@ -38,20 +38,8 @@ class Page extends CI_Controller
         $data['content'] = $this->load->view('Administrator/dashboard', $data, TRUE);
         $this->load->view('Administrator/master_dashboard', $data);
     }
-    public function khantrading()
-    {
-        $data['title'] = "Dashboard";
-        $data['content'] = $this->load->view('Administrator/khantrading/dashboard', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
-    public function about_us()
-    {
-        $data['title'] = "About us";
-        $data['content'] = $this->load->view('Administrator/about_us', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
-    // Product Category 
 
+    // Product Category 
     public function getCategories()
     {
         $categories = $this->db->query("select * from tbl_productcategory where status = 'a' order by ProductCategory_SlNo desc")->result();
@@ -73,12 +61,13 @@ class Page extends CI_Controller
         $res = ['status' => false];
         try {
             $data = json_decode($this->input->raw_input_stream);
-            $query = $this->db->query("SELECT * from tbl_productcategory where category_branchid = '$this->brunch' AND ProductCategory_Name = '$data->ProductCategory_Name'")->row();
+            $query = $this->db->query("SELECT * from tbl_productcategory where branch_id = '$this->brunch' AND ProductCategory_Name = '$data->ProductCategory_Name'")->row();
             if (!empty($query)) {
                 $category = array(
                     'status'     => 'a',
-                    "UpdateBy"   => $this->session->userdata("FullName"),
-                    "UpdateTime" => date("Y-m-d H:i:s")
+                    "UpdateBy"   => $this->session->userdata("userId"),
+                    "UpdateTime" => date("Y-m-d H:i:s"),
+                    "last_update_ip" => $this->input->ip_address()
                 );
                 $this->db->where('ProductCategory_SlNo', $query->ProductCategory_SlNo);
                 $this->db->update('tbl_productcategory', $category);
@@ -87,9 +76,10 @@ class Page extends CI_Controller
                     "ProductCategory_Name"        => $data->ProductCategory_Name,
                     "ProductCategory_Description" => $data->ProductCategory_Description,
                     "status"                      => 'a',
-                    "AddBy"                       => $this->session->userdata("FullName"),
+                    "AddBy"                       => $this->session->userdata("userId"),
                     "AddTime"                     => date("Y-m-d H:i:s"),
-                    "category_branchid"           => $this->brunch
+                    "last_update_ip"              => $this->input->ip_address(),
+                    "branch_id"                   => $this->brunch
                 );
                 $this->db->insert('tbl_productcategory', $category);
             }
@@ -109,8 +99,9 @@ class Page extends CI_Controller
             $category = array(
                 "ProductCategory_Name"        => $data->ProductCategory_Name,
                 "ProductCategory_Description" => $data->ProductCategory_Description,
-                "UpdateBy"                    => $this->session->userdata("FullName"),
-                "UpdateTime"                  => date("Y-m-d H:i:s")
+                "UpdateBy"                    => $this->session->userdata("userId"),
+                "UpdateTime"                  => date("Y-m-d H:i:s"),
+                "last_update_ip" => $this->input->ip_address()
             );
             $this->db->where('ProductCategory_SlNo', $data->ProductCategory_SlNo);
             $this->db->update('tbl_productcategory', $category);
@@ -125,9 +116,10 @@ class Page extends CI_Controller
     {
         $data = json_decode($this->input->raw_input_stream);
         $category = array(
-            'status'     => 'd',
-            "UpdateBy"   => $this->session->userdata("FullName"),
-            "UpdateTime" => date("Y-m-d H:i:s")
+            'status'         => 'd',
+            "DeletedBy"      => $this->session->userdata("userId"),
+            "DeletedTime"    => date("Y-m-d H:i:s"),
+            "last_update_ip" => $this->input->ip_address()
         );
         $this->db->where('ProductCategory_SlNo', $data->categoryId);
         $this->db->update('tbl_productcategory', $category);
@@ -154,8 +146,9 @@ class Page extends CI_Controller
             if (!empty($query)) {
                 $unit = array(
                     'status'     => 'a',
-                    "UpdateBy"   => $this->session->userdata("FullName"),
-                    "UpdateTime" => date("Y-m-d H:i:s")
+                    "UpdateBy"   => $this->session->userdata("userId"),
+                    "UpdateTime" => date("Y-m-d H:i:s"),
+                    "last_update_ip" => $this->input->ip_address()
                 );
                 $this->db->where('Unit_SlNo', $query->Unit_SlNo);
                 $this->db->update('tbl_unit', $unit);
@@ -163,8 +156,9 @@ class Page extends CI_Controller
                 $unit = array(
                     "Unit_Name"              => $data->Unit_Name,
                     "status"              => 'a',
-                    "AddBy"                  => $this->session->userdata("FullName"),
-                    "AddTime"                => date("Y-m-d H:i:s")
+                    "AddBy"                  => $this->session->userdata("userId"),
+                    "AddTime"                => date("Y-m-d H:i:s"),
+                    "last_update_ip" => $this->input->ip_address()
                 );
                 $this->db->insert('tbl_unit', $unit);
             }
@@ -183,8 +177,9 @@ class Page extends CI_Controller
             $data = json_decode($this->input->raw_input_stream);
             $unit = array(
                 "Unit_Name"                     => $data->Unit_Name,
-                "UpdateBy"                          => $this->session->userdata("FullName"),
-                "UpdateTime"                        => date("Y-m-d H:i:s")
+                "UpdateBy"                          => $this->session->userdata("userId"),
+                "UpdateTime"                        => date("Y-m-d H:i:s"),
+                "last_update_ip" => $this->input->ip_address()
             );
             $this->db->where('Unit_SlNo', $data->Unit_SlNo);
             $this->db->update('tbl_unit', $unit);
@@ -199,9 +194,10 @@ class Page extends CI_Controller
     {
         $data = json_decode($this->input->raw_input_stream);
         $unit = array(
-            'status'     => 'd',
-            "UpdateBy"   => $this->session->userdata("FullName"),
-            "UpdateTime" => date("Y-m-d H:i:s")
+            'status'         => 'd',
+            "DeletedBy"      => $this->session->userdata("userId"),
+            "DeletedTime"    => date("Y-m-d H:i:s"),
+            "last_update_ip" => $this->input->ip_address()
         );
         $this->db->where('Unit_SlNo', $data->unitId);
         $this->db->update('tbl_unit', $unit);
@@ -234,16 +230,18 @@ class Page extends CI_Controller
             if (!empty($query)) {
                 $area = array(
                     'status'     => 'a',
-                    "UpdateBy"   => $this->session->userdata("FullName"),
-                    "UpdateTime" => date("Y-m-d H:i:s")
+                    "UpdateBy"   => $this->session->userdata("userId"),
+                    "UpdateTime" => date("Y-m-d H:i:s"),
+                    "last_update_ip" => $this->input->ip_address()
                 );
                 $this->db->where('District_SlNo', $query->District_SlNo);
                 $this->db->update('tbl_district', $area);
             } else {
                 $area = array(
                     "District_Name"          => $data->District_Name,
-                    "AddBy"                  => $this->session->userdata("FullName"),
-                    "AddTime"                => date("Y-m-d H:i:s")
+                    "AddBy"                  => $this->session->userdata("userId"),
+                    "AddTime"                => date("Y-m-d H:i:s"),
+                    "last_update_ip" => $this->input->ip_address()
                 );
                 $this->db->insert('tbl_district', $area);
             }
@@ -263,8 +261,9 @@ class Page extends CI_Controller
             $data = json_decode($this->input->raw_input_stream);
             $area = array(
                 "District_Name"                     => $data->District_Name,
-                "UpdateBy"                          => $this->session->userdata("FullName"),
-                "UpdateTime"                        => date("Y-m-d H:i:s")
+                "UpdateBy"                          => $this->session->userdata("userId"),
+                "UpdateTime"                        => date("Y-m-d H:i:s"),
+                "last_update_ip" => $this->input->ip_address()
             );
             $this->db->where('District_SlNo', $data->District_SlNo);
             $this->db->update('tbl_district', $area);
@@ -279,9 +278,10 @@ class Page extends CI_Controller
     {
         $data = json_decode($this->input->raw_input_stream);
         $area = array(
-            'status'     => 'd',
-            "UpdateBy"   => $this->session->userdata("FullName"),
-            "UpdateTime" => date("Y-m-d H:i:s")
+            'status'         => 'd',
+            "DeletedBy"      => $this->session->userdata("userId"),
+            "DeletedTime"    => date("Y-m-d H:i:s"),
+            "last_update_ip" => $this->input->ip_address()
         );
         $this->db->where('District_SlNo', $data->areaId);
         $this->db->update('tbl_district', $area);
@@ -312,7 +312,7 @@ class Page extends CI_Controller
         } else {
             $data = array(
                 "CountryName"          => $this->input->post('Country', TRUE),
-                "AddBy"                  => $this->session->userdata("FullName"),
+                "AddBy"                  => $this->session->userdata("userId"),
                 "AddTime"                => date("Y-m-d H:i:s")
             );
             $this->mt->save_data('tbl_country', $data);
@@ -334,7 +334,7 @@ class Page extends CI_Controller
         $fld = 'Country_SlNo';
         $data = array(
             "CountryName"                     => $this->input->post('Country', TRUE),
-            "UpdateBy"                          => $this->session->userdata("FullName"),
+            "UpdateBy"                          => $this->session->userdata("userId"),
             "UpdateTime"                        => date("Y-m-d H:i:s")
         );
         $this->mt->update_data("tbl_country", $data, $id, $fld);
@@ -374,7 +374,7 @@ class Page extends CI_Controller
     {
         $id = $this->brunch;
         $inpt = $this->input->post('inpt', true);
-        $fld = 'company_BrunchId';
+        $fld = 'branch_id';
         $this->load->library('upload');
         $config['upload_path'] = './uploads/company_profile_org/';
         $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -413,7 +413,7 @@ class Page extends CI_Controller
             $data['Company_Logo_thum'] = $xx['Company_Logo_thum'];
         }
         $data['print_type'] = $inpt;
-        $data['company_BrunchId'] = $this->brunch;
+        $data['branch_id'] = $this->brunch;
         $this->mt->save_data("tbl_company", $data, $id, $fld);
         $id = '1';
         redirect('Administrator/Page/company_profile');
@@ -495,7 +495,7 @@ class Page extends CI_Controller
         echo json_encode($branch);
     }
 
-    public function changeBranchStatus()
+    public function changeBranchstatus()
     {
         $res = ['success' => false, 'message' => ''];
         try {
@@ -503,7 +503,7 @@ class Page extends CI_Controller
             $status = $this->db->query("select * from tbl_branch where branch_id = ?", $data->branchId)->row()->status;
             $status = $status == 'a' ? 'd' : 'a';
             $this->db->set('status', $status)->where('branch_id', $data->branchId)->update('tbl_branch');
-            $res = ['success' => true, 'message' => 'Status changed'];
+            $res = ['success' => true, 'message' => 'status changed'];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage()];
         }
@@ -539,7 +539,7 @@ class Page extends CI_Controller
                 'Branch_title' => $branch->title,
                 'Branch_address' => $branch->address,
                 'Branch_sales' => '2',
-                'add_by' => $this->session->userdata("FullName"),
+                'add_by' => $this->session->userdata("userId"),
                 'add_time' => date('Y-m-d H:i:s'),
                 'status' => 'a'
             );
@@ -570,7 +570,7 @@ class Page extends CI_Controller
                 'Branch_name' => $branch->name,
                 'Branch_title' => $branch->title,
                 'Branch_address' => $branch->address,
-                'update_by' => $this->session->userdata("FullName")
+                'UpdateBy' => $this->session->userdata("userId")
             );
 
             $this->db->set($newBranch)->where('branch_id', $branch->branchId)->update('tbl_branch');
@@ -695,7 +695,7 @@ class Page extends CI_Controller
         $res = ['status' => false];
         try {
             $data = json_decode($this->input->raw_input_stream);
-            $query = $this->db->query("select * from tbl_brand where brand_name = '$data->brand_name' and brand_branchid = ?", [$this->session->userdata('BRANCHid')])->row();
+            $query = $this->db->query("select * from tbl_brand where brand_name = '$data->brand_name' and branch_id = ?", [$this->session->userdata('BRANCHid')])->row();
             if (!empty($query)) {
                 $brand = array(
                     'status'     => 'a'
@@ -706,7 +706,7 @@ class Page extends CI_Controller
                 $brand = array(
                     "brand_name" => $data->brand_name,
                     "status"     => 'a',
-                    'brand_branchid' => $this->session->userdata('BRANCHid')
+                    'branch_id' => $this->session->userdata('BRANCHid')
                 );
                 $this->db->insert('tbl_brand', $brand);
             }

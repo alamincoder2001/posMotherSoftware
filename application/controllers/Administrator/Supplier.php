@@ -37,19 +37,20 @@ class Supplier extends CI_Controller
 
             $supplier = (array)$supplierObj;
             unset($supplier['Supplier_SlNo']);
-            $supplier["Supplier_brinchid"] = $this->session->userdata("BRANCHid");
+            $supplier["branch_id"] = $this->session->userdata("BRANCHid");
 
             $supplierId = null;
             $res_message = "";
 
-            $supplierMobileCount = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and Supplier_brinchid = ?", [$supplierObj->Supplier_Mobile, $this->session->userdata("BRANCHid")]);
+            $supplierMobileCount = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and branch_id = ?", [$supplierObj->Supplier_Mobile, $this->session->userdata("BRANCHid")]);
             if ($supplierMobileCount->num_rows() > 0) {
                 $duplicateSupplier = $supplierMobileCount->row();
 
                 unset($supplier['Supplier_Code']);
-                $supplier["UpdateBy"]   = $this->session->userdata("FullName");
-                $supplier["UpdateTime"] = date("Y-m-d H:i:s");
-                $supplier["Status"]     = 'a';
+                $supplier["status"]         = 'a';
+                $supplier["UpdateBy"]       = $this->session->userdata("userId");
+                $supplier["UpdateTime"]     = date("Y-m-d H:i:s");
+                $supplier["last_update_ip"] = $this->input->ip_address();
                 $this->db->where('Supplier_SlNo', $duplicateSupplier->Supplier_SlNo)->update('tbl_supplier', $supplier);
 
                 $supplierId = $duplicateSupplier->Supplier_SlNo;
@@ -57,8 +58,10 @@ class Supplier extends CI_Controller
                 $res_message = 'Supplier updated successfully';
             } else {
 
-                $supplier["AddBy"] = $this->session->userdata("FullName");
+                $supplier["status"]         = 'a';
+                $supplier["AddBy"] = $this->session->userdata("userId");
                 $supplier["AddTime"] = date("Y-m-d H:i:s");
+                $supplier["last_update_ip"] = $this->input->ip_address();
                 $this->db->insert('tbl_supplier', $supplier);
 
                 $supplierId = $this->db->insert_id();
@@ -83,7 +86,7 @@ class Supplier extends CI_Controller
         $res = ['success' => false, 'message' => ''];
         try {
             $supplierObj = json_decode($this->input->post('data'));
-            $supplierMobileCount = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and Supplier_SlNo != ? and Supplier_brinchid = ?", [$supplierObj->Supplier_Mobile, $supplierObj->Supplier_SlNo, $this->session->userdata("BRANCHid")])->num_rows();
+            $supplierMobileCount = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and Supplier_SlNo != ? and branch_id = ?", [$supplierObj->Supplier_Mobile, $supplierObj->Supplier_SlNo, $this->session->userdata("BRANCHid")])->num_rows();
             if ($supplierMobileCount > 0) {
                 $res = ['success' => false, 'message' => 'Mobile number already exists'];
                 echo Json_encode($res);
@@ -93,9 +96,10 @@ class Supplier extends CI_Controller
             $supplierId = $supplierObj->Supplier_SlNo;
 
             unset($supplier["Supplier_SlNo"]);
-            $supplier["Supplier_brinchid"] = $this->session->userdata("BRANCHid");
-            $supplier["UpdateBy"] = $this->session->userdata("FullName");
+            $supplier["branch_id"] = $this->session->userdata("BRANCHid");
+            $supplier["UpdateBy"] = $this->session->userdata("userId");
             $supplier["UpdateTime"] = date("Y-m-d H:i:s");
+            $supplier["last_update_ip"] = $this->input->ip_address();
 
             $this->db->where('Supplier_SlNo', $supplierId)->update('tbl_supplier', $supplier);
 
@@ -122,7 +126,15 @@ class Supplier extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
 
-            $this->db->query("update tbl_supplier set status = 'd' where Supplier_SlNo = ?", $data->supplierId);
+            $rules = array(
+                'status'         => 'd',
+                "DeletedBy"      => $this->session->userdata("userId"),
+                "DeletedTime"    => date("Y-m-d H:i:s"),
+                "last_update_ip" => $this->input->ip_address()
+            );
+
+            $this->db->where("Supplier_SlNo", $data->supplierId);
+            $this->db->update("tbl_supplier", $rules);
 
             $res = ['success' => true, 'message' => 'Supplier deleted'];
         } catch (Exception $ex) {
@@ -173,7 +185,7 @@ class Supplier extends CI_Controller
     {
 
         $attr = array(
-            'SPayment_status'     =>   'd'
+            'status'     =>   'd'
         );
 
         $this->db->where('SPayment_id', $Suppid);
@@ -198,9 +210,9 @@ class Supplier extends CI_Controller
             "SPayment_amount"        => $this->input->post('paidAmount', TRUE),
             "SPayment_notes"         => $this->input->post('Note', TRUE),
             "SPayment_Paymentby"     => $this->input->post('Paymentby', TRUE),
-            "SPayment_Addby"         => $this->session->userdata("FullName"),
-            "SPayment_brunchid"      => $this->session->userdata("BRANCHid"),
-            "SPayment_UpdateDAte"    => date('Y-m-d'),
+            "Addby"         => $this->session->userdata("userId"),
+            "branch_id"      => $this->session->userdata("BRANCHid"),
+            "UpdateTime"    => date('Y-m-d'),
         );
 
         $this->db->where('SPayment_id', $Suppid);
@@ -224,10 +236,10 @@ class Supplier extends CI_Controller
             "SPayment_amount"        => $this->input->post('paidAmount', TRUE),
             "SPayment_notes"         => $this->input->post('Note', TRUE),
             "SPayment_Paymentby"     => $this->input->post('Paymentby', TRUE),
-            "SPayment_Addby"         => $this->session->userdata("FullName"),
-            "SPayment_brunchid"      => $this->session->userdata("BRANCHid"),
-            "SPayment_AddDAte"       => date('Y-m-d'),
-            "SPayment_status"        => 'a',
+            "Addby"         => $this->session->userdata("userId"),
+            "branch_id"      => $this->session->userdata("BRANCHid"),
+            "AddTime"       => date('Y-m-d'),
+            "status"        => 'a',
         );
         $this->mt->save_data("tbl_supplier_payment", $data);
         echo json_encode(TRUE);
@@ -300,9 +312,9 @@ class Supplier extends CI_Controller
             s.*,
             concat(s.Supplier_Name, ' - ', s.Supplier_Code, ' - ', s.Supplier_Mobile) as display_name
             from tbl_supplier s
-            where s.Status = 'a'
+            where s.status = 'a'
             and s.Supplier_Type != 'G'
-            and s.Supplier_brinchid = ? or Supplier_brinchid = 0
+            and s.branch_id = ? or branch_id = 0
             $clauses
             order by s.Supplier_SlNo desc
             $limit
@@ -365,7 +377,7 @@ class Supplier extends CI_Controller
             left join tbl_bank_accounts ba on ba.account_id = sp.account_id
             where sp.SPayment_customerID = '$data->supplierId'
             and sp.SPayment_TransactionType = 'CP'
-            and sp.SPayment_status = 'a'
+            and sp.status = 'a'
             
             UNION
             select 
@@ -388,7 +400,7 @@ class Supplier extends CI_Controller
             left join tbl_bank_accounts ba on ba.account_id = sp2.account_id
             where sp2.SPayment_customerID = '$data->supplierId'
             and sp2.SPayment_TransactionType = 'CR'
-            and sp2.SPayment_status = 'a'
+            and sp2.status = 'a'
             
             UNION
             select
@@ -469,8 +481,8 @@ class Supplier extends CI_Controller
             from tbl_supplier_payment sp
             left join tbl_bank_accounts ba on ba.account_id = sp.account_id
             join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
-            where sp.SPayment_status = 'a'
-            and sp.SPayment_brunchid = ? $paymentTypeClause $dateClause
+            where sp.status = 'a'
+            and sp.branch_id = ? $paymentTypeClause $dateClause
             order by sp.SPayment_id desc
         ", $this->session->userdata('BRANCHid'))->result();
 
@@ -485,10 +497,10 @@ class Supplier extends CI_Controller
 
             $payment = (array)$paymentObj;
             $payment['SPayment_invoice'] = $this->mt->generateSupplierPaymentCode();
-            $payment['SPayment_status'] = 'a';
-            $payment['SPayment_Addby'] = $this->session->userdata("FullName");
-            $payment['SPayment_AddDAte'] = date('Y-m-d H:i:s');
-            $payment['SPayment_brunchid'] = $this->session->userdata("BRANCHid");
+            $payment['status'] = 'a';
+            $payment['Addby'] = $this->session->userdata("userId");
+            $payment['AddTime'] = date('Y-m-d H:i:s');
+            $payment['branch_id'] = $this->session->userdata("BRANCHid");
 
             $this->db->insert('tbl_supplier_payment', $payment);
             $paymentId = $this->db->insert_id();
@@ -510,8 +522,8 @@ class Supplier extends CI_Controller
 
             $payment = (array)$paymentObj;
             unset($payment['SPayment_id']);
-            $payment['update_by'] = $this->session->userdata("FullName");
-            $payment['SPayment_UpdateDAte'] = date('Y-m-d H:i:s');
+            $payment['UpdateBy'] = $this->session->userdata("userId");
+            $payment['UpdateTime'] = date('Y-m-d H:i:s');
 
             $this->db->where('SPayment_id', $paymentObj->SPayment_id)->update('tbl_supplier_payment', $payment);
 
@@ -529,7 +541,7 @@ class Supplier extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
 
-            $this->db->set(['SPayment_status' => 'd'])->where('SPayment_id', $data->paymentId)->update('tbl_supplier_payment');
+            $this->db->set(['status' => 'd'])->where('SPayment_id', $data->paymentId)->update('tbl_supplier_payment');
 
             $res = ['success' => true, 'message' => 'Payment deleted successfully'];
         } catch (Exception $ex) {

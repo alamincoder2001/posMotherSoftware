@@ -968,16 +968,16 @@
 
 			F.ajaxLoad = $.ajax($.extend({}, coming.ajax, {
 				url: coming.href,
-				error: function (jqXHR, textStatus) {
-					if (F.coming && textStatus !== 'abort') {
+				error: function (jqXHR, textstatus) {
+					if (F.coming && textstatus !== 'abort') {
 						F._error( 'ajax', jqXHR );
 
 					} else {
 						F.hideLoading();
 					}
 				},
-				success: function (data, textStatus) {
-					if (textStatus === 'success') {
+				success: function (data, textstatus) {
+					if (textstatus === 'success') {
 						coming.content = data;
 
 						F._afterLoad();

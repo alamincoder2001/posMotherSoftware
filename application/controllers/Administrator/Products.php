@@ -46,12 +46,13 @@ class Products extends CI_Controller
                 exit;
             }
 
-            $product = (array)$productObj;
-            $product['is_service'] = $productObj->is_service == true ? 'true' : 'false';
-            $product['status'] = 'a';
-            $product['AddBy'] = $this->session->userdata("FullName");
-            $product['AddTime'] = date('Y-m-d H:i:s');
-            $product['Product_branchid'] = $this->brunch;
+            $product                   = (array)$productObj;
+            $product['is_service']     = $productObj->is_service == true ? 'true' : 'false';
+            $product['status']         = 'a';
+            $product['AddBy']          = $this->session->userdata("userId");
+            $product['AddTime']        = date('Y-m-d H:i:s');
+            $product['last_update_ip'] = $this->input->ip_address();
+            $product['branch_id']      = $this->brunch;
 
             $this->db->insert('tbl_product', $product);
 
@@ -85,9 +86,10 @@ class Products extends CI_Controller
 
             $product = (array)$productObj;
             unset($product['Product_SlNo']);
-            $product['is_service'] = $productObj->is_service == true ? 'true' : 'false';
-            $product['UpdateBy'] = $this->session->userdata("FullName");
-            $product['UpdateTime'] = date('Y-m-d H:i:s');
+            $product['is_service']     = $productObj->is_service == true ? 'true' : 'false';
+            $product['UpdateBy']       = $this->session->userdata("userId");
+            $product['UpdateTime']     = date('Y-m-d H:i:s');
+            $product['last_update_ip'] = $this->input->ip_address();
 
             $this->db->where('Product_SlNo', $productObj->Product_SlNo)->update('tbl_product', $product);
 
@@ -104,8 +106,13 @@ class Products extends CI_Controller
         $res = ['success' => false, 'message' => ''];
         try {
             $data = json_decode($this->input->raw_input_stream);
-
-            $this->db->set(['status' => 'd'])->where('Product_SlNo', $data->productId)->update('tbl_product');
+            $rules = array(
+                'status'         => 'd',
+                'DeletedBy'      => $this->session->userdata("userId"),
+                'DeletedTime'    => date('Y-m-d H:i:s'),
+                'last_update_ip' => $this->input->ip_address()
+            );
+            $this->db->set($rules)->where('Product_SlNo', $data->productId)->update('tbl_product');
 
             $res = ['success' => true, 'message' => 'Product deleted successfully'];
         } catch (Exception $ex) {
@@ -218,8 +225,8 @@ class Products extends CI_Controller
                     from tbl_purchasedetails pd 
                     join tbl_purchasemaster pm on pm.PurchaseMaster_SlNo = pd.PurchaseMaster_IDNo
                     where pd.Product_IDNo = p.Product_SlNo
-                    and pd.PurchaseDetails_branchID = '$branchId'
-                    and pd.Status = 'a'
+                    and pd.branch_id = '$branchId'
+                    and pd.status = 'a'
                     " . (isset($data->date) && $data->date != null ? " and pm.PurchaseMaster_OrderDate <= '$data->date'" : "") . "
                 ) as purchased_quantity,
                         
@@ -227,7 +234,7 @@ class Products extends CI_Controller
                     from tbl_purchasereturndetails prd 
                     join tbl_purchasereturn pr on pr.PurchaseReturn_SlNo = prd.PurchaseReturn_SlNo
                     where prd.PurchaseReturnDetailsProduct_SlNo = p.Product_SlNo
-                    and prd.PurchaseReturnDetails_brachid = '$branchId'
+                    and prd.branch_id= '$branchId'
                     " . (isset($data->date) && $data->date != null ? " and pr.PurchaseReturn_ReturnDate <= '$data->date'" : "") . "
                 ) as purchase_returned_quantity,
                         
@@ -235,8 +242,8 @@ class Products extends CI_Controller
                     from tbl_saledetails sd
                     join tbl_salesmaster sm on sm.SaleMaster_SlNo = sd.SaleMaster_IDNo
                     where sd.Product_IDNo = p.Product_SlNo
-                    and sd.SaleDetails_BranchId  = '$branchId'
-                    and sd.Status = 'a'
+                    and sd.branch_id  = '$branchId'
+                    and sd.status = 'a'
                     " . (isset($data->date) && $data->date != null ? " and sm.SaleMaster_SaleDate <= '$data->date'" : "") . "
                 ) as sold_quantity,
                         
@@ -244,7 +251,7 @@ class Products extends CI_Controller
                     from tbl_salereturndetails srd 
                     join tbl_salereturn sr on sr.SaleReturn_SlNo = srd.SaleReturn_IdNo
                     where srd.SaleReturnDetailsProduct_SlNo = p.Product_SlNo
-                    and srd.SaleReturnDetails_brunchID = '$branchId'
+                    and srd.branch_id = '$branchId'
                     " . (isset($data->date) && $data->date != null ? " and sr.SaleReturn_ReturnDate <= '$data->date'" : "") . "
                 ) as sales_returned_quantity,
                         
@@ -253,7 +260,7 @@ class Products extends CI_Controller
                     join tbl_damage dm on dm.Damage_SlNo = dmd.Damage_SlNo
                     where dmd.Product_SlNo = p.Product_SlNo
                     and dmd.status = 'a'
-                    and dm.Damage_brunchid = '$branchId'
+                    and dm.branch_id = '$branchId'
                     " . (isset($data->date) && $data->date != null ? " and dm.Damage_Date <= '$data->date'" : "") . "
                 ) as damaged_quantity,
             
@@ -399,9 +406,9 @@ class Products extends CI_Controller
             from tbl_purchasedetails pd
             join tbl_purchasemaster pm on pm.PurchaseMaster_SlNo = pd.PurchaseMaster_IDNo
             join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
-            where pd.Status = 'a'
+            where pd.status = 'a'
             and pd.Product_IDNo = " . $data->productId . "
-            and pd.PurchaseDetails_branchID = " . $this->brunch . "
+            and pd.branch_id = " . $this->brunch . "
             
             UNION
             select 
@@ -415,9 +422,9 @@ class Products extends CI_Controller
             from tbl_saledetails sd
             join tbl_salesmaster sm on sm.SaleMaster_SlNo = sd.SaleMaster_IDNo
             join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
-            where sd.Status = 'a'
+            where sd.status = 'a'
             and sd.Product_IDNo = " . $data->productId . "
-            and sd.SaleDetails_BranchId = " . $this->brunch . "
+            and sd.branch_id = " . $this->brunch . "
             
             UNION
             select 
@@ -431,9 +438,9 @@ class Products extends CI_Controller
             from tbl_purchasereturndetails prd
             join tbl_purchasereturn pr on pr.PurchaseReturn_SlNo = prd.PurchaseReturn_SlNo
             join tbl_supplier s on s.Supplier_SlNo = pr.Supplier_IDdNo
-            where prd.Status = 'a'
+            where prd.status = 'a'
             and prd.PurchaseReturnDetailsProduct_SlNo = " . $data->productId . "
-            and prd.PurchaseReturnDetails_brachid = " . $this->brunch . "
+            and prd.branch_id= " . $this->brunch . "
             
             UNION
             select
@@ -448,9 +455,9 @@ class Products extends CI_Controller
             join tbl_salereturn sr on sr.SaleReturn_SlNo = srd.SaleReturn_IdNo
             join tbl_salesmaster sm on sm.SaleMaster_InvoiceNo = sr.SaleMaster_InvoiceNo
             join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
-            where srd.Status = 'a'
+            where srd.status = 'a'
             and srd.SaleReturnDetailsProduct_SlNo = " . $data->productId . "
-            and srd.SaleReturnDetails_brunchID = " . $this->brunch . "
+            and srd.branch_id = " . $this->brunch . "
             
             UNION
             select
@@ -494,7 +501,7 @@ class Products extends CI_Controller
             from tbl_damagedetails dmd
             join tbl_damage d on d.Damage_SlNo = dmd.Damage_SlNo
             where dmd.Product_SlNo = " . $data->productId . "
-            and d.Damage_brunchid = " . $this->brunch . "
+            and d.branch_id = " . $this->brunch . "
 
             order by date, sequence, id
         ")->result();

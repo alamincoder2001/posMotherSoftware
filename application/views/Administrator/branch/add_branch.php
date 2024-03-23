@@ -54,7 +54,7 @@
                         <th>Branch Name</th>
                         <th>Branch Title</th>
                         <th>Branch Address</th>
-                        <th>Status</th>
+                        <th>status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -68,8 +68,8 @@
                         <td>
                             <?php if($this->session->userdata('accountType') != 'u'){?>
                             <a href="" title="Edit Branch" @click.prevent="editBranch(branch)"><i class="fa fa-pencil"></i></a>&nbsp;
-                            <a href="" title="Deactive Branch" v-if="branch.status == 'a'" @click.prevent="changeStatus(branch.branch_id)"><i class="fa fa-trash"></i></a>
-                            <a href="" title="Active Branch" v-else><i class="fa fa-check" @click.prevent="changeStatus(branch.branch_id)"></i></a>
+                            <a href="" title="Deactive Branch" v-if="branch.status == 'a'" @click.prevent="changestatus(branch.branch_id)"><i class="fa fa-trash"></i></a>
+                            <a href="" title="Active Branch" v-else><i class="fa fa-check" @click.prevent="changestatus(branch.branch_id)"></i></a>
                             <?php }?>
                         </td>
                     </tr>
@@ -129,7 +129,7 @@
                 this.branch.address = branch.Branch_address;
             },
 
-            changeStatus(branchId){
+            changestatus(branchId){
                 let changeConfirm = confirm('Are you sure?');
                 if(changeConfirm == false){
                     return;

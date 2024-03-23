@@ -104,7 +104,7 @@
 			<div class="table-responsive">
 				<datatable :columns="columns" :data="users" :filter-by="filter" style="margin-bottom: 5px;">
 					<template scope="{ row }">
-						<tr @dblclick="changeStatus(row)" :style="{background: row.status == 'p' ? '#7a7a7a' : ''}">
+						<tr @dblclick="changestatus(row)" :style="{background: row.status == 'p' ? '#7a7a7a' : ''}">
 							<td>{{ row.sl }}</td>
 							<td>{{ row.User_ID }}</td>
 							<td>{{ row.FullName }}</td>
@@ -196,7 +196,7 @@
 						align: 'center'
 					},
 					{
-						label: 'Status',
+						label: 'status',
 						field: 'status',
 						align: 'center'
 					},
@@ -269,7 +269,7 @@
 				})
 			},
 
-			changeStatus(user) {
+			changestatus(user) {
 				if (user.UserType != 'm' || this.userId != user.User_SlNo) {
 					let deleteConfirm = confirm('Are you sure?');
 					if (deleteConfirm == false) {

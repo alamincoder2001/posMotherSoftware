@@ -17,7 +17,7 @@ class Sale_model extends CI_Model
 
 	public function get_branch_wise_sale_invoice(){
 		$branch_id = $this->session->userdata('BRANCHid');
-		$res = $this->db->select('SaleMaster_SlNo, SaleMaster_InvoiceNo')->where('SaleMaster_branchid',$branch_id)
+		$res = $this->db->select('SaleMaster_SlNo, SaleMaster_InvoiceNo')->where('branch_id',$branch_id)
 				->order_by('SaleMaster_SlNo', 'desc')->get('tbl_salesmaster')->result();
 
 		if($res){
@@ -45,7 +45,7 @@ class Sale_model extends CI_Model
 		$this->db->select('tbl_salesmaster.*, tbl_saledetails.*, tbl_customer.*')->from('tbl_salesmaster');
 		$this->db->join('tbl_saledetails', 'tbl_saledetails.SaleMaster_IDNo = tbl_salesmaster.SaleMaster_SlNo', 'left');
 		$this->db->join('tbl_customer', 'tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo', 'left');
-		$this->db->where('tbl_salesmaster.SaleMaster_branchid', $this->BRANCHid);
+		$this->db->where('tbl_salesmaster.branch_id', $this->BRANCHid);
 		$this->db->where('tbl_salesmaster.SaleMaster_SaleDate BETWEEN "'. date('Y-m-d', strtotime($start_date)). '" and "'. date('Y-m-d', strtotime($end_date)).'"');
 		$res =  $this->db->group_by('tbl_salesmaster.SaleMaster_InvoiceNo')->order_by('tbl_salesmaster.SaleMaster_SlNo','desc')->get()->result();
 
@@ -61,7 +61,7 @@ class Sale_model extends CI_Model
         $this->db->select('tbl_salesmaster.*, tbl_saledetails.*, tbl_customer.*')->from('tbl_salesmaster');
         $this->db->join('tbl_saledetails', 'tbl_saledetails.SaleMaster_IDNo = tbl_salesmaster.SaleMaster_SlNo', 'left');
         $this->db->join('tbl_customer', 'tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo', 'left');
-        $this->db->where('tbl_salesmaster.SaleMaster_branchid', $this->BRANCHid);
+        $this->db->where('tbl_salesmaster.branch_id', $this->BRANCHid);
         $this->db->where('tbl_salesmaster.SalseCustomer_IDNo', $cus_id);
         $this->db->where('tbl_salesmaster.SaleMaster_SaleDate BETWEEN "'. date('Y-m-d', strtotime($start_date)). '" and "'. date('Y-m-d', strtotime($end_date)).'"');
         $res =  $this->db->group_by('tbl_salesmaster.SaleMaster_InvoiceNo')->order_by('tbl_salesmaster.SaleMaster_SlNo','desc')->get()->result();
@@ -79,7 +79,7 @@ class Sale_model extends CI_Model
 		$this->db->join('tbl_saledetails', 'tbl_saledetails.SaleMaster_IDNo = tbl_salesmaster.SaleMaster_SlNo', 'left');
 		$this->db->join('tbl_customer', 'tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo', 'left');
 		$this->db->where('tbl_salesmaster.SalseCustomer_IDNo', $cus_id);
-		$this->db->where('tbl_salesmaster.SaleMaster_branchid', $this->BRANCHid);
+		$this->db->where('tbl_salesmaster.branch_id', $this->BRANCHid);
 		$this->db->where('tbl_salesmaster.SaleMaster_SaleDate BETWEEN "'. date('Y-m-d', strtotime($start_date)). '" and "'. date('Y-m-d', strtotime($end_date)).'"');
 		$res =  $this->db->get()->result();
 
@@ -95,8 +95,8 @@ class Sale_model extends CI_Model
 		$this->db->select('tbl_salesmaster.*, tbl_saledetails.*, tbl_customer.*')->from('tbl_salesmaster');
 		$this->db->join('tbl_saledetails', 'tbl_saledetails.SaleMaster_IDNo = tbl_salesmaster.SaleMaster_SlNo', 'left');
 		$this->db->join('tbl_customer', 'tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo', 'left');
-		$this->db->where('tbl_salesmaster.Status', $type);
-		$this->db->where('tbl_salesmaster.SaleMaster_branchid', $this->BRANCHid);
+		$this->db->where('tbl_salesmaster.status', $type);
+		$this->db->where('tbl_salesmaster.branch_id', $this->BRANCHid);
 		$this->db->where('tbl_salesmaster.SaleMaster_SaleDate BETWEEN "'. date('Y-m-d', strtotime($start_date)). '" and "'. date('Y-m-d', strtotime($end_date)).'"');
 		$res =  $this->db->get()->result();
 
@@ -111,7 +111,7 @@ class Sale_model extends CI_Model
 	{	
 		$this->db->select('tbl_salesmaster.*,tbl_salereturn.SaleMaster_InvoiceNo as saleReturnInv, tbl_salereturn.SaleReturn_ReturnAmount')->from('tbl_salesmaster');
 		$this->db->join('tbl_salereturn', 'tbl_salereturn.SaleMaster_InvoiceNo = tbl_salesmaster.SaleMaster_InvoiceNo', 'left');
-		$this->db->where('tbl_salesmaster.SaleMaster_branchid', $this->BRANCHid);
+		$this->db->where('tbl_salesmaster.branch_id', $this->BRANCHid);
 		$this->db->where('tbl_salesmaster.SaleMaster_SaleDate BETWEEN "'. date('Y-m-d', strtotime($startdate)). '" and "'. date('Y-m-d', strtotime($enddate)).'"');
 		$res =  $this->db->get()->result();
 
@@ -127,7 +127,7 @@ class Sale_model extends CI_Model
 		$this->db->select('tbl_salesmaster.*, tbl_saledetails.*, tbl_customer.*')->from('tbl_salesmaster');
 		$this->db->join('tbl_saledetails', 'tbl_saledetails.SaleMaster_IDNo = tbl_salesmaster.SaleMaster_SlNo', 'left');
 		$this->db->join('tbl_customer', 'tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo', 'left');
-		$this->db->where('tbl_salesmaster.SaleMaster_branchid', $this->BRANCHid);
+		$this->db->where('tbl_salesmaster.branch_id', $this->BRANCHid);
 		$this->db->where('tbl_saledetails.Product_IDNo',$productId);
 		$this->db->where('tbl_salesmaster.SaleMaster_SaleDate BETWEEN "'. date('Y-m-d', strtotime($start_date)). '" and "'. date('Y-m-d', strtotime($end_date)).'"');
 		$res =  $this->db->group_by('tbl_salesmaster.SaleMaster_InvoiceNo')->order_by('tbl_salesmaster.SaleMaster_SlNo','desc')->get()->result();
@@ -146,7 +146,7 @@ class Sale_model extends CI_Model
 		$this->db->select('tbl_salesmaster.*, tbl_saledetails.*, tbl_customer.*')->from('tbl_salesmaster');
 		$this->db->join('tbl_saledetails', 'tbl_saledetails.SaleMaster_IDNo = tbl_salesmaster.SaleMaster_SlNo', 'left');
 		$this->db->join('tbl_customer', 'tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo', 'left');
-		$this->db->where('tbl_salesmaster.SaleMaster_branchid', $this->BRANCHid);
+		$this->db->where('tbl_salesmaster.branch_id', $this->BRANCHid);
 		$this->db->where('tbl_salesmaster.SaleMaster_SaleDate BETWEEN "'. date('Y-m-d', strtotime($start_date)). '" and "'. date('Y-m-d', strtotime($end_date)).'"');
 		$res =  $this->db->group_by('tbl_salesmaster.SaleMaster_InvoiceNo')->order_by('tbl_salesmaster.SaleMaster_SlNo','desc')->get()->result();
 
@@ -162,7 +162,7 @@ class Sale_model extends CI_Model
 		$this->db->select('tbl_salesmaster.*, tbl_saledetails.*, tbl_customer.*')->from('tbl_salesmaster');
 		$this->db->join('tbl_saledetails', 'tbl_saledetails.SaleMaster_IDNo = tbl_salesmaster.SaleMaster_SlNo', 'left');
 		$this->db->join('tbl_customer', 'tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo', 'left');
-		$this->db->where('tbl_salesmaster.SaleMaster_branchid', $this->BRANCHid);
+		$this->db->where('tbl_salesmaster.branch_id', $this->BRANCHid);
 		$this->db->where('tbl_salesmaster.SalseCustomer_IDNo',$customerID);
 		$this->db->where('tbl_salesmaster.SaleMaster_SaleDate BETWEEN "'. date('Y-m-d', strtotime($start_date)). '" and "'. date('Y-m-d', strtotime($end_date)).'"');
 		$res =  $this->db->group_by('tbl_salesmaster.SaleMaster_InvoiceNo')->order_by('tbl_salesmaster.SaleMaster_SlNo','desc')->get()->result();
@@ -179,7 +179,7 @@ class Sale_model extends CI_Model
 		$this->db->select('tbl_salesmaster.*, tbl_saledetails.*, tbl_customer.*')->from('tbl_salesmaster');
 		$this->db->join('tbl_saledetails', 'tbl_saledetails.SaleMaster_IDNo = tbl_salesmaster.SaleMaster_SlNo', 'left');
 		$this->db->join('tbl_customer', 'tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo', 'left');
-		$this->db->where('tbl_salesmaster.SaleMaster_branchid', $this->BRANCHid);
+		$this->db->where('tbl_salesmaster.branch_id', $this->BRANCHid);
 		$this->db->where('tbl_saledetails.Product_IDNo',$productID);
 		$this->db->where('tbl_salesmaster.SalseCustomer_IDNo',$customerID);
 		$this->db->where('tbl_salesmaster.SaleMaster_SaleDate BETWEEN "'. date('Y-m-d', strtotime($start_date)). '" and "'. date('Y-m-d', strtotime($end_date)).'"');
@@ -197,7 +197,7 @@ class Sale_model extends CI_Model
 		$this->db->select('tbl_salesmaster.*, tbl_saledetails.*, tbl_customer.*')->from('tbl_salesmaster');
 		$this->db->join('tbl_saledetails', 'tbl_saledetails.SaleMaster_IDNo = tbl_salesmaster.SaleMaster_SlNo', 'left');
 		$this->db->join('tbl_customer', 'tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo', 'left');
-		$this->db->where('tbl_salesmaster.SaleMaster_branchid', $this->BRANCHid);
+		$this->db->where('tbl_salesmaster.branch_id', $this->BRANCHid);
 		$this->db->where('tbl_salesmaster.AddBy', $userName);
 		$this->db->where('tbl_salesmaster.SaleMaster_SaleDate BETWEEN "'. date('Y-m-d', strtotime($start_date)). '" and "'. date('Y-m-d', strtotime($end_date)).'"');
 		$res =  $this->db->group_by('tbl_salesmaster.SaleMaster_InvoiceNo')->order_by('tbl_salesmaster.SaleMaster_SlNo','desc')->get()->result();

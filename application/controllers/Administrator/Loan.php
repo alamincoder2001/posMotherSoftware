@@ -72,10 +72,10 @@ class Loan extends CI_Controller {
                 ac.account_number,
                 ac.bank_name,
                 ac.branch_name,
-                u.FullName as saved_by
+                u.FullName as AddBy
             from tbl_loan_transactions lt
             join tbl_loan_accounts ac on ac.account_id = lt.account_id
-            join tbl_user u on u.User_SlNo = lt.saved_by
+            join tbl_user u on u.User_SlNo = lt.AddBy
             where lt.status = 1
             and lt.branch_id = ?
             $clauses
@@ -90,8 +90,8 @@ class Loan extends CI_Controller {
         try{
             $data = json_decode($this->input->raw_input_stream);
             $transaction = (array)$data;
-            $transaction['saved_by'] = $this->session->userdata('userId');
-            $transaction['saved_datetime'] = date('Y-m-d H:i:s');
+            $transaction['AddBy'] = $this->session->userdata('userId');
+            $transaction['AddTime'] = date('Y-m-d H:i:s');
             $transaction['branch_id'] = $this->session->userdata('BRANCHid');
 
             $this->db->insert('tbl_loan_transactions', $transaction);
@@ -178,9 +178,9 @@ class Loan extends CI_Controller {
             }
 
             $account = (array)$data;
-            $account['saved_by'] = $this->session->userdata('userId');
+            $account['AddBy'] = $this->session->userdata('userId');
             $account['save_date'] = date('Y-m-d');
-            $account['saved_datetime'] = date('Y-m-d H:i:s');
+            $account['AddTime'] = date('Y-m-d H:i:s');
             $account['branch_id'] = $this->session->userdata('BRANCHid');
 
             $this->db->insert('tbl_loan_accounts', $account);
@@ -212,8 +212,8 @@ class Loan extends CI_Controller {
             }
 
             $account = (array)$data;
-            $account['updated_by'] = $this->session->userdata('userId');
-            $account['updated_datetime'] = date('Y-m-d H:i:s');
+            $account['UpdateBy'] = $this->session->userdata('userId');
+            $account['UpdateTime'] = date('Y-m-d H:i:s');
 
             $this->db->where('account_id', $data->account_id);
             $this->db->update('tbl_loan_accounts', $account);
@@ -239,14 +239,14 @@ class Loan extends CI_Controller {
         echo json_encode($accounts);
     }
 
-    public function changeLoanAccountStatus(){
+    public function changeLoanAccountstatus(){
         $res = ['success'=>false, 'message'=>''];
         try{
             $data = json_decode($this->input->raw_input_stream);
             $status = $data->account->status == 1 ? 0 : 1;
             $this->db->query("update tbl_loan_accounts set status = ? where account_id = ?", [$status, $data->account->account_id]);
             
-            $res = ['success'=>true, 'message'=>'Status Changed'];
+            $res = ['success'=>true, 'message'=>'status Changed'];
         } catch (Exception $ex){
             $res = ['success'=>false, 'message'=>$ex->getMessage()];
         }

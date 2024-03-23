@@ -139,7 +139,7 @@
 			resetForm() {
 				this.unit = {
 					Unit_SlNo: 0,
-					District_Name: '',
+					Unit_Name: '',
 				}
 			}
 		}

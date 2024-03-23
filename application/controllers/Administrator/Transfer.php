@@ -130,8 +130,8 @@ class Transfer extends CI_Controller
                 'transfer_from'    => $this->session->userdata('BRANCHid'),
                 'transfer_to'      => $data->transfer->transfer_to,
                 'note'             => $data->transfer->note,
-                'updated_by'       => $this->session->userdata("FullName"),
-                'updated_datetime' => date('Y-m-d H:i:s')
+                'UpdateBy'       => $this->session->userdata("FullName"),
+                'UpdateTime' => date('Y-m-d H:i:s')
             );
 
             $this->db->where('transfer_id', $transferId)->update('tbl_transfermaster', $transfer);
@@ -377,7 +377,7 @@ class Transfer extends CI_Controller
             }
 
             $this->db->where("transfer_id", $transferId);
-            $this->db->update("tbl_transfermaster", ['status' => 'd', 'updated_by' => $this->session->userdata("FullName"), 'updated_datetime' => date('Y-m-d H:i:s')]);
+            $this->db->update("tbl_transfermaster", ['status' => 'd', 'UpdateBy' => $this->session->userdata("FullName"), 'UpdateTime' => date('Y-m-d H:i:s')]);
 
             $res = ['success' => true, 'message' => 'Transfer deleted'];
         } catch (Exception $ex) {

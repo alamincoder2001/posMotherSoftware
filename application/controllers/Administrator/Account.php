@@ -155,7 +155,7 @@ class Account extends CI_Controller
             from tbl_cashtransaction ct
             join tbl_account a on a.Acc_SlNo = ct.Acc_SlID
             where ct.status = 'a'
-            and ct.Tr_branchid = ?
+            and ct.branch_id = ?
             $dateClause $transactionTypeClause $accountClause
             order by ct.Tr_SlNo desc
         ", $this->session->userdata('BRANCHid'))->result();
@@ -178,7 +178,7 @@ class Account extends CI_Controller
             $transaction['status'] = 'a';
             $transaction['AddBy'] = $this->session->userdata("FullName");
             $transaction['AddTime'] = date('Y-m-d H:i:s');
-            $transaction['Tr_branchid'] = $this->session->userdata('BRANCHid');
+            $transaction['branch_id'] = $this->session->userdata('BRANCHid');
 
             $this->db->insert('tbl_cashtransaction', $transaction);
 
@@ -310,7 +310,7 @@ class Account extends CI_Controller
             (
                 select ifnull(sum(ct.In_Amount), 0)
                 from tbl_cashtransaction ct
-                where ct.Tr_branchid = '" . $this->session->userdata('BRANCHid') . "'
+                where ct.branch_id = '" . $this->session->userdata('BRANCHid') . "'
                 and ct.status = 'a'
                 $transactionDateClause
             ) as income,
@@ -318,7 +318,7 @@ class Account extends CI_Controller
             (
                 select ifnull(sum(ct.Out_Amount), 0)
                 from tbl_cashtransaction ct
-                where ct.Tr_branchid = '" . $this->session->userdata('BRANCHid') . "'
+                where ct.branch_id = '" . $this->session->userdata('BRANCHid') . "'
                 and ct.status = 'a'
                 $transactionDateClause
             ) as expense,
@@ -361,7 +361,7 @@ class Account extends CI_Controller
             (
                 select ifnull(sum(pm.PurchaseMaster_DiscountAmount), 0) 
                 from tbl_purchasemaster pm
-                where pm.PurchaseMaster_BranchID = '" . $this->session->userdata('BRANCHid') . "'
+                where pm.branch_id = '" . $this->session->userdata('BRANCHid') . "'
                 and pm.status = 'a'
                 $purchaseClause
             ) as purchase_discount,
@@ -369,7 +369,7 @@ class Account extends CI_Controller
             (
                 select ifnull(sum(pm.PurchaseMaster_Tax), 0) 
                 from tbl_purchasemaster pm
-                where pm.PurchaseMaster_BranchID = '" . $this->session->userdata('BRANCHid') . "'
+                where pm.branch_id = '" . $this->session->userdata('BRANCHid') . "'
                 and pm.status = 'a'
                 $purchaseClause
             ) as purchase_vat,
@@ -377,7 +377,7 @@ class Account extends CI_Controller
             (
                 select ifnull(sum(pm.PurchaseMaster_Freight), 0) 
                 from tbl_purchasemaster pm
-                where pm.PurchaseMaster_BranchID = '" . $this->session->userdata('BRANCHid') . "'
+                where pm.branch_id = '" . $this->session->userdata('BRANCHid') . "'
                 and pm.status = 'a'
                 $purchaseClause
             ) as purchase_transport_cost,
@@ -386,7 +386,7 @@ class Account extends CI_Controller
                 select ifnull(sum(dd.damage_amount), 0) 
                 from tbl_damagedetails dd
                 join tbl_damage d on d.Damage_SlNo = dd.Damage_SlNo
-                where d.Damage_brunchid = '" . $this->session->userdata('BRANCHid') . "'
+                where d.branch_id = '" . $this->session->userdata('BRANCHid') . "'
                 and dd.status = 'a'
                 $damageClause
             ) as damaged_amount,
@@ -397,8 +397,8 @@ class Account extends CI_Controller
                 join tbl_salereturn r on r.SaleReturn_SlNo = rd.SaleReturn_IdNo
                 join tbl_salesmaster sm on sm.SaleMaster_InvoiceNo = r.SaleMaster_InvoiceNo
                 join tbl_saledetails sd on sd.Product_IDNo = rd.SaleReturnDetailsProduct_SlNo and sd.SaleMaster_IDNo = sm.SaleMaster_SlNo
-                where r.Status = 'a'
-                and r.SaleReturn_brunchId = '" . $this->session->userdata('BRANCHid') . "'
+                where r.status = 'a'
+                and r.branch_id= '" . $this->session->userdata('BRANCHid') . "'
                 $returnClause
             ) as returned_amount
         ")->row();
@@ -451,8 +451,8 @@ class Account extends CI_Controller
             }
 
             $account = (array)$data;
-            $account['saved_by'] = $this->session->userdata('userId');
-            $account['saved_datetime'] = date('Y-m-d H:i:s');
+            $account['AddBy'] = $this->session->userdata('userId');
+            $account['AddTime'] = date('Y-m-d H:i:s');
             $account['branch_id'] = $this->session->userdata('BRANCHid');
 
             $this->db->insert('tbl_bank_accounts', $account);
@@ -485,8 +485,8 @@ class Account extends CI_Controller
             }
 
             $account = (array)$data;
-            $account['updated_by'] = $this->session->userdata('userId');
-            $account['updated_datetime'] = date('Y-m-d H:i:s');
+            $account['UpdateBy'] = $this->session->userdata('userId');
+            $account['UpdateTime'] = date('Y-m-d H:i:s');
 
             $this->db->where('account_id', $data->account_id);
             $this->db->update('tbl_bank_accounts', $account);
@@ -513,7 +513,7 @@ class Account extends CI_Controller
         echo json_encode($accounts);
     }
 
-    public function changeAccountStatus()
+    public function changeAccountstatus()
     {
         $res = ['success' => false, 'message' => ''];
         try {
@@ -521,7 +521,7 @@ class Account extends CI_Controller
             $status = $data->account->status == 1 ? 0 : 1;
             $this->db->query("update tbl_bank_accounts set status = ? where account_id = ?", [$status, $data->account->account_id]);
 
-            $res = ['success' => true, 'message' => 'Status Changed'];
+            $res = ['success' => true, 'message' => 'status Changed'];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage()];
         }
@@ -546,8 +546,8 @@ class Account extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
             $transaction = (array)$data;
-            $transaction['saved_by'] = $this->session->userdata('userId');
-            $transaction['saved_datetime'] = date('Y-m-d H:i:s');
+            $transaction['AddBy'] = $this->session->userdata('userId');
+            $transaction['AddTime'] = date('Y-m-d H:i:s');
             $transaction['branch_id'] = $this->session->userdata('BRANCHid');
 
             $this->db->insert('tbl_bank_transactions', $transaction);
@@ -609,10 +609,10 @@ class Account extends CI_Controller
                 ac.account_number,
                 ac.bank_name,
                 ac.branch_name,
-                u.FullName as saved_by
+                u.FullName as AddBy
             from tbl_bank_transactions bt
             join tbl_bank_accounts ac on ac.account_id = bt.account_id
-            join tbl_user u on u.User_SlNo = bt.saved_by
+            join tbl_user u on u.User_SlNo = bt.AddBy
             where bt.status = 1
             and bt.branch_id = ?
             $accountClause $dateClause $typeClause
@@ -713,9 +713,9 @@ class Account extends CI_Controller
                 join tbl_bank_accounts ac on ac.account_id = cp.account_id
                 join tbl_customer c on c.Customer_SlNo = cp.CPayment_customerID
                 where cp.account_id is not null
-                and cp.CPayment_status = 'a'
+                and cp.status = 'a'
                 and cp.CPayment_TransactionType = 'CR'
-                and cp.CPayment_brunchid = " . $this->session->userdata('BRANCHid') . "
+                and cp.branch_id = " . $this->session->userdata('BRANCHid') . "
                 
                 UNION
                 select
@@ -737,9 +737,9 @@ class Account extends CI_Controller
                 join tbl_bank_accounts ac on ac.account_id = cp.account_id
                 join tbl_customer c on c.Customer_SlNo = cp.CPayment_customerID
                 where cp.account_id is not null
-                and cp.CPayment_status = 'a'
+                and cp.status = 'a'
                 and cp.CPayment_TransactionType = 'CP'
-                and cp.CPayment_brunchid = " . $this->session->userdata('BRANCHid') . "
+                and cp.branch_id = " . $this->session->userdata('BRANCHid') . "
                 
                 UNION
                 select 
@@ -761,9 +761,9 @@ class Account extends CI_Controller
                 join tbl_bank_accounts ac on ac.account_id = sp.account_id
                 join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
                 where sp.account_id is not null
-                and sp.SPayment_status = 'a'
+                and sp.status = 'a'
                 and sp.SPayment_TransactionType = 'CP'
-                and sp.SPayment_brunchid = " . $this->session->userdata('BRANCHid') . "
+                and sp.branch_id = " . $this->session->userdata('BRANCHid') . "
                 
                 UNION
                 select 
@@ -785,9 +785,9 @@ class Account extends CI_Controller
                 join tbl_bank_accounts ac on ac.account_id = sp.account_id
                 join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
                 where sp.account_id is not null
-                and sp.SPayment_status = 'a'
+                and sp.status = 'a'
                 and sp.SPayment_TransactionType = 'CR'
-                and sp.SPayment_brunchid = " . $this->session->userdata('BRANCHid') . "
+                and sp.branch_id = " . $this->session->userdata('BRANCHid') . "
             ) as tbl
             where 1 = 1 $clauses
             order by $order
@@ -917,8 +917,8 @@ class Account extends CI_Controller
                 0.00 as out_amount
             from tbl_salesmaster sm 
             join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
-            where sm.Status = 'a'
-            and sm.SaleMaster_branchid = '$this->brunch'
+            where sm.status = 'a'
+            and sm.branch_id = '$this->brunch'
             and sm.SaleMaster_SaleDate between '$data->fromDate' and '$data->toDate'
             
             UNION
@@ -931,8 +931,8 @@ class Account extends CI_Controller
                 0.00 as out_amount
             from tbl_customer_payment cp
             join tbl_customer c on c.Customer_SlNo = cp.CPayment_customerID
-            where cp.CPayment_status = 'a'
-            and cp.CPayment_brunchid = '$this->brunch'
+            where cp.status = 'a'
+            and cp.branch_id = '$this->brunch'
             and cp.CPayment_TransactionType = 'CR'
             and cp.CPayment_Paymentby != 'bank'
             and cp.CPayment_date between '$data->fromDate' and '$data->toDate'
@@ -948,9 +948,9 @@ class Account extends CI_Controller
             from tbl_supplier_payment sp
             join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
             where sp.SPayment_TransactionType = 'CR'
-            and sp.SPayment_status = 'a'
+            and sp.status = 'a'
             and sp.SPayment_Paymentby != 'bank'
-            and sp.SPayment_brunchid = '$this->brunch'
+            and sp.branch_id = '$this->brunch'
             and sp.SPayment_date between '$data->fromDate' and '$data->toDate'
             
             UNION
@@ -964,7 +964,7 @@ class Account extends CI_Controller
             from tbl_cashtransaction ct
             join tbl_account acc on acc.Acc_SlNo = ct.Acc_SlID
             where ct.status = 'a'
-            and ct.Tr_branchid = '$this->brunch'
+            and ct.branch_id = '$this->brunch'
             and ct.Tr_Type = 'In Cash'
             and ct.Tr_date between '$data->fromDate' and '$data->toDate'
             
@@ -1051,7 +1051,7 @@ class Account extends CI_Controller
             from tbl_purchasemaster pm 
             join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
             where pm.status = 'a'
-            and pm.PurchaseMaster_BranchID = '$this->brunch'
+            and pm.branch_id = '$this->brunch'
             and pm.PurchaseMaster_OrderDate between '$data->fromDate' and '$data->toDate'
             
             UNION
@@ -1065,9 +1065,9 @@ class Account extends CI_Controller
             from tbl_supplier_payment sp 
             join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
             where sp.SPayment_TransactionType = 'CP'
-            and sp.SPayment_status = 'a'
+            and sp.status = 'a'
             and sp.SPayment_Paymentby != 'bank'
-            and sp.SPayment_brunchid = '$this->brunch'
+            and sp.branch_id = '$this->brunch'
             and sp.SPayment_date between '$data->fromDate' and '$data->toDate'
             
             UNION
@@ -1081,9 +1081,9 @@ class Account extends CI_Controller
             from tbl_customer_payment cp
             join tbl_customer c on c.Customer_SlNo = cp.CPayment_customerID
             where cp.CPayment_TransactionType = 'CP'
-            and cp.CPayment_status = 'a'
+            and cp.status = 'a'
             and cp.CPayment_Paymentby != 'bank'
-            and cp.CPayment_brunchid = '$this->brunch'
+            and cp.branch_id = '$this->brunch'
             and cp.CPayment_date between '$data->fromDate' and '$data->toDate'
             
             UNION
@@ -1098,7 +1098,7 @@ class Account extends CI_Controller
             join tbl_account acc on acc.Acc_SlNo = ct.Acc_SlID
             where ct.Tr_Type = 'Out Cash'
             and ct.status = 'a'
-            and ct.Tr_branchid = '$this->brunch'
+            and ct.branch_id = '$this->brunch'
             and ct.Tr_date between '$data->fromDate' and '$data->toDate'
             
             UNION

@@ -440,7 +440,7 @@
 						})
 						.then(res => {
 							let r = res.data;
-							this.suppliers = r.filter(item => item.Status == 'a')
+							this.suppliers = r.filter(item => item.status == 'a')
 							loading(false)
 						})
 				} else {

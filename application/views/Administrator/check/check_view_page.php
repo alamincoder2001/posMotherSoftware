@@ -93,7 +93,7 @@
                         </div>
 
                         <div class="profile-info-row">
-                            <div class="profile-info-name"> Cheque Status: </div>
+                            <div class="profile-info-name"> Cheque status: </div>
 
                             <div class="profile-info-value">
                                 <span class="editable" id="about">

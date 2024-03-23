@@ -16,7 +16,7 @@ class Other_model extends CI_Model
 	}
 
 	public function get_current_branch_compnay_info(){
-		$res = $this->db->where('company_BrunchId',$this->BRANCHid)->get('tbl_company')->row();
+		$res = $this->db->where('branch_id',$this->BRANCHid)->get('tbl_company')->row();
 		if($res){
 			return $res;
 		}else{
@@ -43,7 +43,7 @@ class Other_model extends CI_Model
 	}
 
 	public function branch_wise_category(){
-		$res = $this->db->where('category_branchid', $this->BRANCHid)->where('status', 'a')->order_by('ProductCategory_SlNo', 'asc')->get('tbl_productcategory')->result();
+		$res = $this->db->where('branch_id', $this->BRANCHid)->where('status', 'a')->order_by('ProductCategory_SlNo', 'asc')->get('tbl_productcategory')->result();
 		if($res){
 			return $res;
 		}else{
@@ -52,7 +52,7 @@ class Other_model extends CI_Model
 	}
 
 	public function get_single_category_info($id){
-		$res = $this->db->where('ProductCategory_SlNo', $id)->where('category_branchid', $this->BRANCHid)->where('status', 'a')->get('tbl_productcategory')->row();
+		$res = $this->db->where('ProductCategory_SlNo', $id)->where('branch_id', $this->BRANCHid)->where('status', 'a')->get('tbl_productcategory')->row();
 		if($res){
 			return $res;
 		}else{
@@ -61,7 +61,7 @@ class Other_model extends CI_Model
 	}
 
 	public function branch_wise_brand(){
-		$res = $this->db->where('brand_branchid', $this->BRANCHid)->where('status', 'a')->order_by('brand_SiNo', 'desc')
+		$res = $this->db->where('branch_id', $this->BRANCHid)->where('status', 'a')->order_by('brand_SiNo', 'desc')
 			->get('tbl_brand')->result();
 		if($res){
 			return $res;
@@ -89,7 +89,7 @@ class Other_model extends CI_Model
 	}
 
 	public function branch_wise_supplier_info(){
-		$res = $this->db->where('Supplier_brinchid', $this->BRANCHid)->where('status', 'a')->order_by('Supplier_SlNo', 'desc')->get('tbl_supplier')->result();
+		$res = $this->db->where('branch_id', $this->BRANCHid)->where('status', 'a')->order_by('Supplier_SlNo', 'desc')->get('tbl_supplier')->result();
 		if($res){
 			return $res;
 		}else{
@@ -119,7 +119,7 @@ class Other_model extends CI_Model
 
 	public function supplier_payment_statment($startdate, $enddate)
 	{
-		$res = 	$this->db->where('SPayment_brunchid', $this->BRANCHid)
+		$res = 	$this->db->where('branch_id', $this->BRANCHid)
 				->where('SPayment_date BETWEEN "'. date('Y-m-d', strtotime($startdate)). '" AND "'. date('Y-m-d', strtotime($enddate)).'"')->get('tbl_supplier_payment')->result();
 		if($res){
 			return $res;
@@ -141,7 +141,7 @@ class Other_model extends CI_Model
 		$this->db->select('tbl_cashtransaction.*,tbl_account.*')->from('tbl_cashtransaction');
 		$this->db->join('tbl_account', 'tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID','left');
 		$this->db->where('tbl_cashtransaction.status', 'a');
-		$this->db->where('tbl_cashtransaction.Tr_branchid', $this->BRANCHid);
+		$this->db->where('tbl_cashtransaction.branch_id', $this->BRANCHid);
 		$this->db->where("DATE_FORMAT(tbl_cashtransaction.Tr_date,'%Y-%m-%d') >=",$startdate);
 		$this->db->where("DATE_FORMAT(tbl_cashtransaction.Tr_date,'%Y-%m-%d') <=",$enddate);
 		if($type != 'A'){
@@ -166,7 +166,7 @@ class Other_model extends CI_Model
 		$this->db->select('tbl_cashtransaction.*,tbl_account.*')->from('tbl_cashtransaction');
 		$this->db->join('tbl_account', 'tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID','left');
 		$this->db->where('tbl_cashtransaction.status', 'a');
-		$this->db->where('tbl_cashtransaction.Tr_branchid', $this->BRANCHid);
+		$this->db->where('tbl_cashtransaction.branch_id', $this->BRANCHid);
 		$this->db->where('tbl_cashtransaction.Acc_SlID', $account_id);
 		$this->db->where("DATE_FORMAT(tbl_cashtransaction.Tr_date,'%Y-%m-%d') >=",$startdate);
 		$this->db->where("DATE_FORMAT(tbl_cashtransaction.Tr_date,'%Y-%m-%d') <=",$enddate);

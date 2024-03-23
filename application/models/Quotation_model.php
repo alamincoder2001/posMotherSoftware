@@ -16,7 +16,7 @@ class Quotation_model extends CI_Model
 
 	public function get_branch_wise_quotation_invoice(){
 
-		$res = $this->db->select('SaleMaster_SlNo, SaleMaster_InvoiceNo')->where('SaleMaster_branchid',$this->branch_id)
+		$res = $this->db->select('SaleMaster_SlNo, SaleMaster_InvoiceNo')->where('branch_id',$this->branch_id)
 			->order_by('SaleMaster_SlNo', 'desc')->get(' tbl_quotation_master')->result();
 
 		if($res){

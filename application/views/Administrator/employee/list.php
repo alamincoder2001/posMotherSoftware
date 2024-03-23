@@ -10,7 +10,7 @@
                         <th>Employee Name</th>
                         <th class="hidden-480">Designation</th>
                         <th>Contact No</th>
-                        <th>Status</th>
+                        <th>status</th>
                         <th>Action</th>
                     </tr>
                 </thead>

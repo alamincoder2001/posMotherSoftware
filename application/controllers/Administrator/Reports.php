@@ -214,11 +214,11 @@ class Reports extends CI_Controller {
         $customerID = $this->session->userdata('customerID');
         if($searchtype == "All"){
             //$sql = "SELECT tbl_salesmaster.*, tbl_customer.* FROM tbl_salesmaster left join tbl_customer on tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo WHERE tbl_salesmaster.SaleMaster_SaleDate between  '$Sales_startdate' and '$Sales_enddate' group by tbl_salesmaster.SalseCustomer_IDNo";
-            $sql = "SELECT tbl_salesmaster.*, tbl_customer.* FROM tbl_customer left join  tbl_salesmaster  on tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo  WHERE tbl_salesmaster.SaleMaster_branchid = '$this->brunch' group by tbl_customer.Customer_SlNo";
+            $sql = "SELECT tbl_salesmaster.*, tbl_customer.* FROM tbl_customer left join  tbl_salesmaster  on tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo  WHERE tbl_salesmaster.branch_id = '$this->brunch' group by tbl_customer.Customer_SlNo";
         }
         if($searchtype == "Customer"){
             //$sql = "SELECT tbl_salesmaster.*, tbl_customer.* FROM tbl_salesmaster left join tbl_customer on tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo WHERE tbl_salesmaster.SalseCustomer_IDNo = '$customerID' and  tbl_salesmaster.SaleMaster_SaleDate between  '$Sales_startdate' and '$Sales_enddate' group by tbl_salesmaster.SalseCustomer_IDNo";
-            $sql = "SELECT tbl_salesmaster.*, tbl_customer.* FROM tbl_salesmaster left join tbl_customer on tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo WHERE tbl_salesmaster.SalseCustomer_IDNo = '$customerID' And tbl_salesmaster.SaleMaster_branchid = '$this->brunch'  group by tbl_salesmaster.SalseCustomer_IDNo";
+            $sql = "SELECT tbl_salesmaster.*, tbl_customer.* FROM tbl_salesmaster left join tbl_customer on tbl_customer.Customer_SlNo = tbl_salesmaster.SalseCustomer_IDNo WHERE tbl_salesmaster.SalseCustomer_IDNo = '$customerID' And tbl_salesmaster.branch_id = '$this->brunch'  group by tbl_salesmaster.SalseCustomer_IDNo";
         }
 		$result = $this->db->query($sql);
         $datas["record"] = $result->result();
@@ -232,7 +232,7 @@ class Reports extends CI_Controller {
 
         $datas["record"] = $this->db->join('tbl_customer','tbl_customer.Customer_SlNo=tbl_salesmaster.SalseCustomer_IDNo','left')
                                                           ->where('tbl_salesmaster.SalseCustomer_IDNo',$customerID)
-                                                          ->where('tbl_salesmaster.SaleMaster_branchid',$this->brunch)
+                                                          ->where('tbl_salesmaster.branch_id',$this->brunch)
                                                           ->group_by('tbl_salesmaster.SalseCustomer_IDNo')
                                                           ->get('tbl_salesmaster')->result();
 
@@ -265,7 +265,7 @@ class Reports extends CI_Controller {
         $customerID = $this->session->userdata('customerID');
         if($searchtype == "All"){
             
-            $sql = "SELECT  tbl_customer_payment.*, tbl_customer.* FROM tbl_customer_payment left join tbl_customer on tbl_customer.Customer_SlNo = tbl_customer_payment.CPayment_customerID WHERE tbl_customer.Customer_brunchid='$this->brunch' AND tbl_customer_payment.CPayment_date between  '$startdate' and '$enddate'";
+            $sql = "SELECT  tbl_customer_payment.*, tbl_customer.* FROM tbl_customer_payment left join tbl_customer on tbl_customer.Customer_SlNo = tbl_customer_payment.CPayment_customerID WHERE tbl_customer.branch_id='$this->brunch' AND tbl_customer_payment.CPayment_date between  '$startdate' and '$enddate'";
 			$result = $this->db->query($sql);
 
 		}
@@ -338,10 +338,10 @@ class Reports extends CI_Controller {
         $searchtype = $this->session->userdata('searchtype');
          $BRANCHid = $this->session->userdata('BRANCHid');
         if($searchtype=="All"){
-            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Tr_branchid='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Out Cash' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
+            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.branch_id='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Out Cash' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
         }
         elseif($searchtype=="Account"){
-            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.Tr_branchid='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Out Cash' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
+            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.branch_id='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Out Cash' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
         }
 		$result = $this->db->query($sql);
         $datas["record"] = $result->result();
@@ -389,11 +389,11 @@ class Reports extends CI_Controller {
         $searchtype = $this->session->userdata('searchtype');
          $BRANCHid = $this->session->userdata('BRANCHid');
         if($searchtype=="All"){
-            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Tr_branchid='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Deposit To Bank' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
+            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.branch_id='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Deposit To Bank' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
         }
         elseif($searchtype=="Account"){
-           // $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.Tr_branchid='$BRANCHid' AND tbl_cashtransaction.Tr_date between '$expence_startdate' and '$expence_enddate'";
-            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.Tr_branchid='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Deposit To Bank' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
+           // $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.branch_id='$BRANCHid' AND tbl_cashtransaction.Tr_date between '$expence_startdate' and '$expence_enddate'";
+            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.branch_id='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Deposit To Bank' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
         }
         $result = $this->db->query($sql);
         $datas["record"] = $result->result();
@@ -409,11 +409,11 @@ class Reports extends CI_Controller {
 		$BRANCHid = $this->session->userdata('BRANCHid');
        
         if($searchtype=="All"){
-            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Tr_branchid='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Withdraw Form Bank' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
+            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.branch_id='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Withdraw Form Bank' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
         }
         elseif($searchtype=="Account"){
-           // $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.Tr_branchid='$BRANCHid' AND tbl_cashtransaction.Tr_date between '$expence_startdate' and '$expence_enddate'";
-			$sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.Tr_branchid='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Withdraw Form Bank' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
+           // $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.branch_id='$BRANCHid' AND tbl_cashtransaction.Tr_date between '$expence_startdate' and '$expence_enddate'";
+			$sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.branch_id='$BRANCHid' AND tbl_cashtransaction.Tr_Type='Withdraw Form Bank' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
         }
 		$result = $this->db->query($sql);
         $datas["record"] = $result->result();
@@ -429,10 +429,10 @@ class Reports extends CI_Controller {
 		$BRANCHid = $this->session->userdata('BRANCHid');
        
         if($searchtype=="All"){
-            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Tr_branchid='$BRANCHid' AND tbl_cashtransaction.Tr_Type='In Cash' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
+            $sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.branch_id='$BRANCHid' AND tbl_cashtransaction.Tr_Type='In Cash' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
         }
         elseif($searchtype=="Account"){
-			$sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.Tr_branchid='$BRANCHid' AND tbl_cashtransaction.Tr_Type='In Cash' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
+			$sql = "SELECT tbl_cashtransaction.*,tbl_account.* FROM tbl_cashtransaction left join tbl_account on tbl_account.Acc_SlNo=tbl_cashtransaction.Acc_SlID where tbl_cashtransaction.Acc_SlID ='$accountid ' AND tbl_cashtransaction.branch_id='$BRANCHid' AND tbl_cashtransaction.Tr_Type='In Cash' AND tbl_cashtransaction.Tr_date between '$startdate' AND '$enddate'";
         }
 		$result = $this->db->query($sql);
         $datas["record"] = $result->result();
@@ -533,12 +533,12 @@ class Reports extends CI_Controller {
             $customerPayment = $this->db->query("SELECT * FROM tbl_customer_payment");
             $supplierPayment = $this->db->query("SELECT * FROM tbl_supplier_payment");
         else:
-            $sqlSales = $this->db->query("SELECT tbl_salesmaster.*, tbl_salereturn.SaleMaster_InvoiceNo as saleReturnInv, tbl_salereturn.SaleReturn_ReturnAmount FROM tbl_salesmaster left join tbl_salereturn on tbl_salereturn.SaleMaster_InvoiceNo = tbl_salesmaster.SaleMaster_InvoiceNo where tbl_salesmaster.SaleMaster_branchid = '$brunch'");
-            $sqlPurchase = $this->db->query("SELECT tbl_purchasemaster.*, tbl_purchasereturn.PurchaseMaster_InvoiceNo as purReturnInv, tbl_purchasereturn.PurchaseReturn_ReturnAmount FROM tbl_purchasemaster left join tbl_purchasereturn on tbl_purchasereturn.PurchaseMaster_InvoiceNo = tbl_purchasemaster.PurchaseMaster_InvoiceNo where tbl_purchasemaster.PurchaseMaster_BranchID = '$brunch'");
+            $sqlSales = $this->db->query("SELECT tbl_salesmaster.*, tbl_salereturn.SaleMaster_InvoiceNo as saleReturnInv, tbl_salereturn.SaleReturn_ReturnAmount FROM tbl_salesmaster left join tbl_salereturn on tbl_salereturn.SaleMaster_InvoiceNo = tbl_salesmaster.SaleMaster_InvoiceNo where tbl_salesmaster.branch_id = '$brunch'");
+            $sqlPurchase = $this->db->query("SELECT tbl_purchasemaster.*, tbl_purchasereturn.PurchaseMaster_InvoiceNo as purReturnInv, tbl_purchasereturn.PurchaseReturn_ReturnAmount FROM tbl_purchasemaster left join tbl_purchasereturn on tbl_purchasereturn.PurchaseMaster_InvoiceNo = tbl_purchasemaster.PurchaseMaster_InvoiceNo where tbl_purchasemaster.branch_id = '$brunch'");
 
-            $sqlExpense = $this->db->query("SELECT * FROM tbl_cashtransaction where Tr_branchid = '$brunch'");
-            $customerPayment = $this->db->query("SELECT * FROM tbl_customer_payment where CPayment_brunchid = '$brunch'");
-            $supplierPayment = $this->db->query("SELECT * FROM tbl_supplier_payment where SPayment_brunchid = '$brunch'");
+            $sqlExpense = $this->db->query("SELECT * FROM tbl_cashtransaction where branch_id = '$brunch'");
+            $customerPayment = $this->db->query("SELECT * FROM tbl_customer_payment where branch_id = '$brunch'");
+            $supplierPayment = $this->db->query("SELECT * FROM tbl_supplier_payment where branch_id = '$brunch'");
         endif;
         
         $datas["saleRecords"] = $sqlSales->result();
@@ -601,7 +601,7 @@ class Reports extends CI_Controller {
         $data['Branch_category'] = $category = $this->session->userdata('Branch_category');
         $this->session->set_userdata($data);
 		if($category != 'All'){
-			$this->db->SELECT("tbl_product.*, tbl_productcategory.*,tbl_unit.*,tbl_color.*,tbl_brand.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID left join tbl_unit on tbl_unit.Unit_SlNo=tbl_product.Unit_ID  LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color LEFT JOIN tbl_brand ON tbl_brand.brand_SiNo=tbl_product.brand LEFT JOIN tbl_country ON tbl_country.Country_SlNo=tbl_product.country where tbl_product.ProductCategory_ID = '$category' AND tbl_product.Product_branchid = '$BranchID'");
+			$this->db->SELECT("tbl_product.*, tbl_productcategory.*,tbl_unit.*,tbl_color.*,tbl_brand.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID left join tbl_unit on tbl_unit.Unit_SlNo=tbl_product.Unit_ID  LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color LEFT JOIN tbl_brand ON tbl_brand.brand_SiNo=tbl_product.brand LEFT JOIN tbl_country ON tbl_country.Country_SlNo=tbl_product.country where tbl_product.ProductCategory_ID = '$category' AND tbl_product.branch_id = '$BranchID'");
 			$query = $this->db->get();
 			$result = $query->result();
 			$data['product'] = $result;
@@ -609,14 +609,14 @@ class Reports extends CI_Controller {
 		}else{
 			$this->db->SELECT('*');
 			$this->db->from('tbl_productcategory');
-			$this->db->where('category_branchid',$BranchID);
+			$this->db->where('branch_id',$BranchID);
 			$query = $this->db->get();
 			$category = $query->result();
 			
 			foreach($category as $vcategory)
 			{
 				$categoryid = $vcategory->ProductCategory_SlNo;
-				$this->db->SELECT("tbl_product.*, tbl_productcategory.*,tbl_unit.*,tbl_color.*,tbl_brand.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID left join tbl_unit on tbl_unit.Unit_SlNo=tbl_product.Unit_ID  LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color LEFT JOIN tbl_brand ON tbl_brand.brand_SiNo=tbl_product.brand LEFT JOIN tbl_country ON tbl_country.Country_SlNo=tbl_product.country where tbl_product.ProductCategory_ID = '$categoryid' AND tbl_product.Product_branchid = '$BranchID'");
+				$this->db->SELECT("tbl_product.*, tbl_productcategory.*,tbl_unit.*,tbl_color.*,tbl_brand.* FROM tbl_product left join tbl_productcategory on tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID left join tbl_unit on tbl_unit.Unit_SlNo=tbl_product.Unit_ID  LEFT JOIN tbl_color ON tbl_color.color_SiNo=tbl_product.color LEFT JOIN tbl_brand ON tbl_brand.brand_SiNo=tbl_product.brand LEFT JOIN tbl_country ON tbl_country.Country_SlNo=tbl_product.country where tbl_product.ProductCategory_ID = '$categoryid' AND tbl_product.branch_id = '$BranchID'");
 				$query = $this->db->get();
 				$productCat[] = $query->result();
 			}
@@ -744,7 +744,7 @@ class Reports extends CI_Controller {
             $customer_prev_due = $this->db->query("
                 SELECT ifnull(sum(previous_due), 0) as amount
                 from tbl_customer
-                where Customer_brunchid = '$this->brunch'
+                where branch_id = '$this->brunch'
             ")->row()->amount;
 
             //customer dues
@@ -762,8 +762,8 @@ class Reports extends CI_Controller {
                         from tbl_purchasedetails pd 
                         join tbl_purchasemaster pm on pm.PurchaseMaster_SlNo = pd.PurchaseMaster_IDNo
                         where pd.Product_IDNo = p.Product_SlNo
-                        and pd.PurchaseDetails_branchID = '$branchId'
-                        and pd.Status = 'a'
+                        and pd.branch_id = '$branchId'
+                        and pd.status = 'a'
                         " . (isset($date) && $date != null ? " and pm.PurchaseMaster_OrderDate < '$date'" : "") . "
                     ) as purchased_quantity,
                             
@@ -771,7 +771,7 @@ class Reports extends CI_Controller {
                         from tbl_purchasereturndetails prd 
                         join tbl_purchasereturn pr on pr.PurchaseReturn_SlNo = prd.PurchaseReturn_SlNo
                         where prd.PurchaseReturnDetailsProduct_SlNo = p.Product_SlNo
-                        and prd.PurchaseReturnDetails_brachid = '$branchId'
+                        and prd.branch_id= '$branchId'
                         " . (isset($date) && $date != null ? " and pr.PurchaseReturn_ReturnDate < '$date'" : "") . "
                     ) as purchase_returned_quantity,
                             
@@ -779,8 +779,8 @@ class Reports extends CI_Controller {
                         from tbl_saledetails sd
                         join tbl_salesmaster sm on sm.SaleMaster_SlNo = sd.SaleMaster_IDNo
                         where sd.Product_IDNo = p.Product_SlNo
-                        and sd.SaleDetails_BranchId  = '$branchId'
-                        and sd.Status = 'a'
+                        and sd.branch_id  = '$branchId'
+                        and sd.status = 'a'
                         " . (isset($date) && $date != null ? " and sm.SaleMaster_SaleDate < '$date'" : "") . "
                     ) as sold_quantity,
                             
@@ -788,7 +788,7 @@ class Reports extends CI_Controller {
                         from tbl_salereturndetails srd 
                         join tbl_salereturn sr on sr.SaleReturn_SlNo = srd.SaleReturn_IdNo
                         where srd.SaleReturnDetailsProduct_SlNo = p.Product_SlNo
-                        and srd.SaleReturnDetails_brunchID = '$branchId'
+                        and srd.branch_id = '$branchId'
                         " . (isset($date) && $date != null ? " and sr.SaleReturn_ReturnDate < '$date'" : "") . "
                     ) as sales_returned_quantity,
                             
@@ -797,7 +797,7 @@ class Reports extends CI_Controller {
                         join tbl_damage dm on dm.Damage_SlNo = dmd.Damage_SlNo
                         where dmd.Product_SlNo = p.Product_SlNo
                         and dmd.status = 'a'
-                        and dm.Damage_brunchid = '$branchId'
+                        and dm.branch_id = '$branchId'
                         " . (isset($date) && $date != null ? " and dm.Damage_Date < '$date'" : "") . "
                     ) as damaged_quantity,
                 
@@ -833,7 +833,7 @@ class Reports extends CI_Controller {
             $supplier_prev_due = $this->db->query("
                 SELECT ifnull(sum(previous_due), 0) as amount
                 from tbl_supplier
-                where Supplier_brinchid = '$this->brunch'
+                where branch_id = '$this->brunch'
             ")->row()->amount;
 
             //supplier due
@@ -846,8 +846,8 @@ class Reports extends CI_Controller {
                 select 
                     sm.*
                 from tbl_salesmaster sm
-                where sm.SaleMaster_branchid = ? 
-                and sm.Status = 'a'
+                where sm.branch_id = ? 
+                and sm.status = 'a'
                 " . ($date == null ? "" : " and sm.SaleMaster_SaleDate < '$date'") . "
             ", $this->session->userdata('BRANCHid'))->result();
 
@@ -886,7 +886,7 @@ class Reports extends CI_Controller {
                 (
                     select ifnull(sum(ct.In_Amount), 0)
                     from tbl_cashtransaction ct
-                    where ct.Tr_branchid = '" . $this->session->userdata('BRANCHid') . "'
+                    where ct.branch_id = '" . $this->session->userdata('BRANCHid') . "'
                     and ct.status = 'a'
                     " . ($date == null ? "" : " and ct.Tr_date < '$date'") . "
                 ) as income,
@@ -894,7 +894,7 @@ class Reports extends CI_Controller {
                 (
                     select ifnull(sum(ct.Out_Amount), 0)
                     from tbl_cashtransaction ct
-                    where ct.Tr_branchid = '" . $this->session->userdata('BRANCHid') . "'
+                    where ct.branch_id = '" . $this->session->userdata('BRANCHid') . "'
                     and ct.status = 'a'
                     " . ($date == null ? "" : " and ct.Tr_date < '$date'") . "
                 ) as expense,
@@ -938,7 +938,7 @@ class Reports extends CI_Controller {
                     select ifnull(sum(dd.damage_amount), 0) 
                     from tbl_damagedetails dd
                     join tbl_damage d on d.Damage_SlNo = dd.Damage_SlNo
-                    where d.Damage_brunchid = '" . $this->session->userdata('BRANCHid') . "'
+                    where d.branch_id = '" . $this->session->userdata('BRANCHid') . "'
                     and dd.status = 'a'
                     " . ($date == null ? "" : " and d.Damage_Date  < '$date'") . "
                 ) as damaged_amount,
@@ -949,8 +949,8 @@ class Reports extends CI_Controller {
                     join tbl_salereturn r on r.SaleReturn_SlNo = rd.SaleReturn_IdNo
                     join tbl_salesmaster sm on sm.SaleMaster_InvoiceNo = r.SaleMaster_InvoiceNo
                     join tbl_saledetails sd on sd.Product_IDNo = rd.SaleReturnDetailsProduct_SlNo and sd.SaleMaster_IDNo = sm.SaleMaster_SlNo
-                    where r.Status = 'a'
-                    and r.SaleReturn_brunchId = '" . $this->session->userdata('BRANCHid') . "'
+                    where r.status = 'a'
+                    and r.branch_id= '" . $this->session->userdata('BRANCHid') . "'
                     " . ($date == null ? "" : " and r.SaleReturn_ReturnDate  < '$date'") . "
                 ) as returned_amount
             ")->row();

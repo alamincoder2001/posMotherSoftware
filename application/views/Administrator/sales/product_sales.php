@@ -770,7 +770,7 @@
 					let r = res.data;
 					let sales = r.sales[0];
 					this.sales.salesBy = sales.AddBy;
-					this.sales.salesFrom = sales.SaleMaster_branchid;
+					this.sales.salesFrom = sales.branch_id;
 					this.sales.salesDate = sales.SaleMaster_SaleDate;
 					this.sales.salesType = sales.SaleMaster_SaleType;
 					this.sales.customerId = sales.SalseCustomer_IDNo;

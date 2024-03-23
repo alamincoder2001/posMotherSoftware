@@ -71,7 +71,7 @@ class Purchase extends CI_Controller
             ifnull(s.Supplier_Address, pm.supplierAddress) as Supplier_Address
             from tbl_purchasemaster pm
             left join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
-            where pm.PurchaseMaster_BranchID = '$branchId' 
+            where pm.branch_id = '$branchId' 
             and pm.status = 'a'
             $purchaseIdClause $clauses
             order by pm.PurchaseMaster_SlNo desc
@@ -126,10 +126,11 @@ class Purchase extends CI_Controller
                 'PurchaseReturn_ReturnDate' => $data->purchaseReturn->returnDate,
                 'PurchaseReturn_ReturnAmount' => $data->purchaseReturn->total,
                 'PurchaseReturn_Description' => $data->purchaseReturn->note,
-                'Status' => 'a',
-                'AddBy' => $this->session->userdata("FullName"),
+                'status' => 'a',
+                'AddBy' => $this->session->userdata("userId"),
                 'AddTime' => date('Y-m-d H:i:s'),
-                'PurchaseReturn_brunchID' => $this->session->userdata('BRANCHid')
+                "last_update_ip" => $this->input->ip_address(),
+                'branch_id' => $this->session->userdata('BRANCHid')
             );
 
             $this->db->insert('tbl_purchasereturn', $purchaseReturn);
@@ -142,9 +143,10 @@ class Purchase extends CI_Controller
                     'PurchaseReturnDetailsProduct_SlNo' => $product->Product_IDNo,
                     'PurchaseReturnDetails_ReturnQuantity' => $product->return_quantity,
                     'PurchaseReturnDetails_ReturnAmount' => $product->return_amount,
-                    'Status' => 'a',
-                    'AddBy' => $this->session->userdata("FullName"),
+                    'status' => 'a',
+                    'AddBy' => $this->session->userdata("userId"),
                     'AddTime' => date('Y-m-d H:i:s'),
+                    "last_update_ip" => $this->input->ip_address(),
                     'PurchaseReturnDetails_brachid' => $this->session->userdata('BRANCHid')
                 );
 
@@ -169,10 +171,11 @@ class Purchase extends CI_Controller
                     'SPayment_TransactionType' => 'CR',
                     'SPayment_amount' => $totalReturnAmount,
                     'SPayment_Paymentby' => 'cash',
-                    'SPayment_brunchid' => $this->session->userdata("BRANCHid"),
-                    'SPayment_Addby' => $this->session->userdata("FullName"),
-                    'SPayment_AddDAte' => date('Y-m-d H:i:s'),
-                    'SPayment_status' => 'a'
+                    'branch_id' => $this->session->userdata("BRANCHid"),
+                    'Addby' => $this->session->userdata("userId"),
+                    'AddTime' => date('Y-m-d H:i:s'),
+                    'status' => 'a',
+                    "last_update_ip" => $this->input->ip_address(),
                 );
 
                 $this->db->insert('tbl_supplier_payment', $customerPayment);
@@ -200,10 +203,11 @@ class Purchase extends CI_Controller
                 'PurchaseReturn_ReturnDate' => $data->purchaseReturn->returnDate,
                 'PurchaseReturn_ReturnAmount' => $data->purchaseReturn->total,
                 'PurchaseReturn_Description' => $data->purchaseReturn->note,
-                'Status' => 'a',
-                'UpdateBy' => $this->session->userdata("FullName"),
+                'status' => 'a',
+                'UpdateBy' => $this->session->userdata("userId"),
                 'UpdateTime' => date('Y-m-d H:i:s'),
-                'PurchaseReturn_brunchID' => $this->session->userdata('BRANCHid')
+                "last_update_ip" => $this->input->ip_address(),
+                'branch_id' => $this->session->userdata('BRANCHid'),
             );
 
             $this->db->where('PurchaseReturn_SlNo', $purchaseReturnId)->update('tbl_purchasereturn', $purchaseReturn);
@@ -227,9 +231,10 @@ class Purchase extends CI_Controller
                     'PurchaseReturnDetailsProduct_SlNo' => $product->Product_IDNo,
                     'PurchaseReturnDetails_ReturnQuantity' => $product->return_quantity,
                     'PurchaseReturnDetails_ReturnAmount' => $product->return_amount,
-                    'Status' => 'a',
-                    'UpdateBy' => $this->session->userdata("FullName"),
+                    'status' => 'a',
+                    'UpdateBy' => $this->session->userdata("userId"),
                     'UpdateTime' => date('Y-m-d H:i:s'),
+                    "last_update_ip" => $this->input->ip_address(),
                     'PurchaseReturnDetails_brachid' => $this->session->userdata('BRANCHid')
                 );
 
@@ -267,10 +272,10 @@ class Purchase extends CI_Controller
                     'SPayment_TransactionType' => 'CR',
                     'SPayment_amount' => $totalReturnAmount,
                     'SPayment_Paymentby' => 'cash',
-                    'SPayment_brunchid' => $this->session->userdata("BRANCHid"),
-                    'SPayment_Addby' => $this->session->userdata("FullName"),
-                    'SPayment_AddDAte' => date('Y-m-d H:i:s'),
-                    'SPayment_status' => 'a'
+                    'branch_id' => $this->session->userdata("BRANCHid"),
+                    'Addby' => $this->session->userdata("userId"),
+                    'AddTime' => date('Y-m-d H:i:s'),
+                    'status' => 'a'
                 );
 
                 $this->db->insert('tbl_supplier_payment', $customerPayment);
@@ -316,7 +321,7 @@ class Purchase extends CI_Controller
             join tbl_product p on p.Product_SlNo = prd.PurchaseReturnDetailsProduct_SlNo
             join tbl_purchasereturn pr on pr.PurchaseReturn_SlNo = prd.PurchaseReturn_SlNo
             left join tbl_supplier s on s.Supplier_SlNo = pr.Supplier_IDdNo
-            where pr.PurchaseReturn_brunchID = ?
+            where pr.branch_id = ?
             $clauses
         ", $this->session->userdata('BRANCHid'))->result();
 
@@ -472,7 +477,7 @@ class Purchase extends CI_Controller
                 unset($supplier['Supplier_SlNo']);
                 unset($supplier['display_name']);
 
-                $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and Supplier_brinchid = ?", [$data->supplier->Supplier_Mobile, $this->session->userdata("BRANCHid")]);
+                $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and branch_id = ?", [$data->supplier->Supplier_Mobile, $this->session->userdata("BRANCHid")]);
                 if (
                     $data->supplier->Supplier_Mobile != '' &&
                     $data->supplier->Supplier_Mobile != null &&
@@ -482,9 +487,9 @@ class Purchase extends CI_Controller
                     $duplicateSupplier = $mobile_count->row();
                     unset($supplier['Supplier_Code']);
                     unset($supplier['Supplier_Type']);
-                    $supplier["UpdateBy"]   = $this->session->userdata("FullName");
+                    $supplier["UpdateBy"]   = $this->session->userdata("userId");
                     $supplier["UpdateTime"] = date("Y-m-d H:i:s");
-                    $supplier["Status"]     = 'a';
+                    $supplier["status"]     = 'a';
 
                     if ($duplicateSupplier->Supplier_Type == 'G') {
                         $supplier["Supplier_Type"] = '';
@@ -494,10 +499,11 @@ class Purchase extends CI_Controller
                 } else {
                     if ($data->supplier->Supplier_Type == 'N') {
                         $supplier['Supplier_Code']     = $this->mt->generateSupplierCode();
-                        $supplier['Status']            = 'a';
-                        $supplier['AddBy']             = $this->session->userdata("FullName");
+                        $supplier['status']            = 'a';
+                        $supplier['AddBy']             = $this->session->userdata("userId");
                         $supplier['AddTime']           = date('Y-m-d H:i:s');
-                        $supplier['Supplier_brinchid'] = $this->session->userdata('BRANCHid');
+                        $supplier['last_update_ip'] = $this->input->ip_address();
+                        $supplier['branch_id'] = $this->session->userdata('BRANCHid');
 
                         $this->db->insert('tbl_supplier', $supplier);
                         $supplierId = $this->db->insert_id();
@@ -519,9 +525,10 @@ class Purchase extends CI_Controller
                 'previous_due'                  => $data->purchase->previousDue,
                 'PurchaseMaster_Description'    => $data->purchase->note,
                 'status'                        => 'a',
-                'AddBy'                         => $this->session->userdata("FullName"),
+                'AddBy'                         => $this->session->userdata("userId"),
                 'AddTime'                       => date('Y-m-d H:i:s'),
-                'PurchaseMaster_BranchID'       => $this->session->userdata('BRANCHid')
+                'last_update_ip' => $this->input->ip_address(),
+                'branch_id'       => $this->session->userdata('BRANCHid')
             );
 
             if ($data->supplier->Supplier_Type == 'G') {
@@ -545,10 +552,11 @@ class Purchase extends CI_Controller
                     'PurchaseDetails_TotalQuantity' => $product->quantity,
                     'PurchaseDetails_Rate' => $product->purchaseRate,
                     'PurchaseDetails_TotalAmount' => $product->total,
-                    'Status' => 'a',
-                    'AddBy' => $this->session->userdata("FullName"),
+                    'status' => 'a',
+                    'AddBy' => $this->session->userdata("userId"),
                     'AddTime' => date('Y-m-d H:i:s'),
-                    'PurchaseDetails_branchID' => $this->session->userdata('BRANCHid')
+                    'last_update_ip' => $this->input->ip_address(),
+                    'branch_id' => $this->session->userdata('BRANCHid')
                 );
 
                 $this->db->insert('tbl_purchasedetails', $purchaseDetails);
@@ -610,7 +618,7 @@ class Purchase extends CI_Controller
                 unset($supplier['Supplier_SlNo']);
                 unset($supplier['display_name']);
 
-                $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and Supplier_brinchid = ?", [$data->supplier->Supplier_Mobile, $this->session->userdata("BRANCHid")]);
+                $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and branch_id = ?", [$data->supplier->Supplier_Mobile, $this->session->userdata("BRANCHid")]);
                 if (
                     $data->supplier->Supplier_Mobile != '' &&
                     $data->supplier->Supplier_Mobile != null &&
@@ -620,9 +628,9 @@ class Purchase extends CI_Controller
                     $duplicateSupplier = $mobile_count->row();
                     unset($supplier['Supplier_Code']);
                     unset($supplier['Supplier_Type']);
-                    $supplier["UpdateBy"]   = $this->session->userdata("FullName");
+                    $supplier["UpdateBy"]   = $this->session->userdata("userId");
                     $supplier["UpdateTime"] = date("Y-m-d H:i:s");
-                    $supplier["Status"]     = 'a';
+                    $supplier["status"]     = 'a';
 
                     if ($duplicateSupplier->Supplier_Type == 'G') {
                         $supplier["Supplier_Type"] = '';
@@ -632,10 +640,10 @@ class Purchase extends CI_Controller
                 } else {
                     if ($data->supplier->Supplier_Type == 'N') {
                         $supplier['Supplier_Code']     = $this->mt->generateSupplierCode();
-                        $supplier['Status']            = 'a';
-                        $supplier['AddBy']             = $this->session->userdata("FullName");
+                        $supplier['status']            = 'a';
+                        $supplier['AddBy']             = $this->session->userdata("userId");
                         $supplier['AddTime']           = date('Y-m-d H:i:s');
-                        $supplier['Supplier_brinchid'] = $this->session->userdata('BRANCHid');
+                        $supplier['branch_id'] = $this->session->userdata('BRANCHid');
 
                         $this->db->insert('tbl_supplier', $supplier);
                         $supplierId = $this->db->insert_id();
@@ -657,9 +665,9 @@ class Purchase extends CI_Controller
                 'previous_due' => $data->purchase->previousDue,
                 'PurchaseMaster_Description' => $data->purchase->note,
                 'status' => 'a',
-                'UpdateBy' => $this->session->userdata("FullName"),
+                'UpdateBy' => $this->session->userdata("userId"),
                 'UpdateTime' => date('Y-m-d H:i:s'),
-                'PurchaseMaster_BranchID' => $this->session->userdata('BRANCHid')
+                'branch_id' => $this->session->userdata('BRANCHid')
             );
 
             if ($data->supplier->Supplier_Type == 'G') {
@@ -711,10 +719,10 @@ class Purchase extends CI_Controller
                     'PurchaseDetails_TotalQuantity' => $product->quantity,
                     'PurchaseDetails_Rate' => $product->purchaseRate,
                     'PurchaseDetails_TotalAmount' => $product->total,
-                    'Status' => 'a',
-                    'UpdateBy' => $this->session->userdata("FullName"),
+                    'status' => 'a',
+                    'UpdateBy' => $this->session->userdata("userId"),
                     'UpdateTime' => date('Y-m-d H:i:s'),
-                    'PurchaseDetails_branchID' => $this->session->userdata('BRANCHid')
+                    'branch_id' => $this->session->userdata('BRANCHid')
                 );
 
                 $this->db->insert('tbl_purchasedetails', $purchaseDetails);
@@ -841,8 +849,8 @@ class Purchase extends CI_Controller
                 "PurchaseReturn_Description" => $this->input->post('Notes'),
                 "Supplier_IDdNo" => $this->input->post('Supplier_No'),
 
-                "AddBy" => $this->session->userdata("FullName"),
-                "PurchaseReturn_brunchID" => $this->session->userdata("BRANCHid"),
+                "AddBy" => $this->session->userdata("userId"),
+                "branch_id" => $this->session->userdata("BRANCHid"),
                 "AddTime" => date("Y-m-d H:i:s")
             );
             $return_id = $this->mt->update_data('tbl_purchasereturn', $return, $iid, $fld);
@@ -873,7 +881,7 @@ class Purchase extends CI_Controller
                             "PurchaseReturnDetails_pacQty" => $returnqtyss[$i],
                             "PurchaseReturnDetails_ReturnAmount" => $returnamounts[$i],
 
-                            "AddBy" => $this->session->userdata("FullName"),
+                            "AddBy" => $this->session->userdata("userId"),
                             "PurchaseReturnDetails_brachid" => $this->session->userdata("BRANCHid"),
                             "AddTime" => date("Y-m-d H:i:s")
                         );
@@ -888,7 +896,7 @@ class Purchase extends CI_Controller
                             "PurchaseReturnDetails_ReturnQuantity" => $returnqtyss[$i],
                             "PurchaseReturnDetails_ReturnAmount" => $returnamounts[$i],
 
-                            "AddBy" => $this->session->userdata("FullName"),
+                            "AddBy" => $this->session->userdata("userId"),
                             "PurchaseReturnDetails_brachid" => $this->session->userdata("BRANCHid"),
                             "AddTime" => date("Y-m-d H:i:s")
                         );
@@ -905,8 +913,8 @@ class Purchase extends CI_Controller
                 "PurchaseReturn_Description" => $this->input->post('Notes'),
                 "Supplier_IDdNo" => $this->input->post('Supplier_No'),
 
-                "AddBy" => $this->session->userdata("FullName"),
-                "PurchaseReturn_brunchID" => $this->session->userdata("BRANCHid"),
+                "AddBy" => $this->session->userdata("userId"),
+                "branch_id" => $this->session->userdata("BRANCHid"),
                 "AddTime" => date("Y-m-d H:i:s")
             );
             $return_id = $this->Billing_model->SalesReturn('tbl_purchasereturn', $return);
@@ -938,7 +946,7 @@ class Purchase extends CI_Controller
                                 "PurchaseReturnDetails_pacQty" => $returnqtyss[$i],
                                 "PurchaseReturnDetails_ReturnAmount" => $returnamounts[$i],
 
-                                "AddBy" => $this->session->userdata("FullName"),
+                                "AddBy" => $this->session->userdata("userId"),
                                 "PurchaseReturnDetails_brachid" => $this->session->userdata("BRANCHid"),
                                 "AddTime" => date("Y-m-d H:i:s")
                             );
@@ -954,7 +962,7 @@ class Purchase extends CI_Controller
                             "PurchaseReturnDetails_ReturnQuantity" => $returnqtyss[$i],
                             "PurchaseReturnDetails_ReturnAmount" => $returnamounts[$i],
 
-                            "AddBy" => $this->session->userdata("FullName"),
+                            "AddBy" => $this->session->userdata("userId"),
                             "PurchaseReturnDetails_brachid" => $this->session->userdata("BRANCHid"),
                             "AddTime" => date("Y-m-d H:i:s")
                         );
@@ -966,8 +974,8 @@ class Purchase extends CI_Controller
                             "SPayment_TransactionType" => 'RP',
                             "SPayment_notes" => 'Purchase Returns',
                             "SPayment_amount" => $returnamounts[$i],
-                            "SPayment_Addby" => $this->session->userdata("FullName"),
-                            "SPayment_brunchid" => $this->session->userdata('BRANCHid')
+                            "Addby" => $this->session->userdata("userId"),
+                            "branch_id" => $this->session->userdata('BRANCHid')
                         );
                         $this->mt->save_data("tbl_supplier_payment", $purchase_return_payment);
                     }
@@ -1082,8 +1090,8 @@ class Purchase extends CI_Controller
                 br.Branch_name
             from tbl_purchasemaster pm
             left join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
-            left join tbl_branch br on br.branch_id = pm.PurchaseMaster_BranchID
-            where pm.PurchaseMaster_BranchID = '$branchId'
+            left join tbl_branch br on br.branch_id = pm.branch_id
+            where pm.branch_id = '$branchId'
             and pm.status = 'a'
             $clauses
         ")->result();
@@ -1098,7 +1106,7 @@ class Purchase extends CI_Controller
                 join tbl_product p on p.Product_SlNo = pd.Product_IDNo
                 join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
                 where pd.PurchaseMaster_IDNo = ?
-                and pd.Status != 'd'
+                and pd.status != 'd'
             ", $purchase->PurchaseMaster_SlNo)->result();
         }
 
@@ -1140,8 +1148,8 @@ class Purchase extends CI_Controller
             join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
             join tbl_purchasemaster pm on pm.PurchaseMaster_SlNo = pd.PurchaseMaster_IDNo
             join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
-            where pd.Status != 'd'
-            and pd.PurchaseDetails_branchID = '$this->brunch'
+            where pd.status != 'd'
+            and pd.branch_id = '$this->brunch'
             $clauses
         ")->result();
 
@@ -1161,7 +1169,7 @@ class Purchase extends CI_Controller
                 exit;
             }
 
-            $returnCount = $this->db->query("select * from tbl_purchasereturn pr where pr.PurchaseMaster_InvoiceNo = ? and pr.Status = 'a'", $purchase->PurchaseMaster_InvoiceNo)->num_rows();
+            $returnCount = $this->db->query("select * from tbl_purchasereturn pr where pr.PurchaseMaster_InvoiceNo = ? and pr.status = 'a'", $purchase->PurchaseMaster_InvoiceNo)->num_rows();
             if ($returnCount != 0) {
                 $res = ['success' => false, 'message' => 'Unable to delete. Purchase return found'];
                 echo json_encode($res);
@@ -1203,7 +1211,7 @@ class Purchase extends CI_Controller
             }
 
             /*Delete Purchase Details*/
-            $this->db->set('Status', 'd')->where('PurchaseMaster_IDNo', $data->purchaseId)->update('tbl_purchasedetails');
+            $this->db->set('status', 'd')->where('PurchaseMaster_IDNo', $data->purchaseId)->update('tbl_purchasedetails');
 
             /*Delete Purchase Master Data*/
             $this->db->set('status', 'd')->where('PurchaseMaster_SlNo', $data->purchaseId)->update('tbl_purchasemaster');
@@ -1240,7 +1248,7 @@ class Purchase extends CI_Controller
         $BranchID = $this->session->userdata('BRANCHid');
 
         if ($searchtype == "All") {
-            $sql = "SELECT tbl_purchasemaster.*, tbl_supplier.* FROM tbl_purchasemaster left join tbl_supplier on tbl_supplier.Supplier_SlNo = tbl_purchasemaster.Supplier_SlNo WHERE tbl_purchasemaster.PurchaseMaster_BranchID='$BranchID' and tbl_purchasemaster.status = 'a' AND tbl_purchasemaster.PurchaseMaster_OrderDate between '$Purchase_startdate' AND '$Purchase_enddate'";
+            $sql = "SELECT tbl_purchasemaster.*, tbl_supplier.* FROM tbl_purchasemaster left join tbl_supplier on tbl_supplier.Supplier_SlNo = tbl_purchasemaster.Supplier_SlNo WHERE tbl_purchasemaster.branch_id='$BranchID' and tbl_purchasemaster.status = 'a' AND tbl_purchasemaster.PurchaseMaster_OrderDate between '$Purchase_startdate' AND '$Purchase_enddate'";
         } elseif ($searchtype == "Supplier") {
             $sql = "SELECT tbl_purchasemaster.*, tbl_supplier.* FROM tbl_purchasemaster left join tbl_supplier on tbl_supplier.Supplier_SlNo = tbl_purchasemaster.Supplier_SlNo WHERE tbl_purchasemaster.Supplier_SlNo = '$Supplierid' and tbl_purchasemaster.status = 'a' and  tbl_purchasemaster.PurchaseMaster_OrderDate between  '$Purchase_startdate' and '$Purchase_enddate'";
         }
@@ -1264,6 +1272,7 @@ class Purchase extends CI_Controller
     {
         $res = ['success' => false, 'message' => ''];
         try {
+            $this->db->trans_begin();
             $data = json_decode($this->input->raw_input_stream);
 
             if ($data->damage->damageFor != $this->session->userdata("BRANCHid")) {
@@ -1278,9 +1287,10 @@ class Purchase extends CI_Controller
                 'damage_amount'      => $data->damage->damage_amount,
                 'Damage_Description' => $data->damage->Damage_Description,
                 'status'             => 'a',
-                'AddBy'              => $this->session->userdata("FullName"),
+                'AddBy'              => $this->session->userdata("userId"),
                 'AddTime'            => date('Y-m-d H:i:s'),
-                'Damage_brunchid'    => $this->session->userdata('BRANCHid')
+                'last_update_ip'     => $this->input->ip_address(),
+                'branch_id'          => $this->session->userdata('BRANCHid')
             );
 
             $this->db->insert('tbl_damage', $damage);
@@ -1294,9 +1304,10 @@ class Purchase extends CI_Controller
                     'damage_rate'                  => $product->rate,
                     'damage_amount'                => $product->total,
                     'status'                       => 'a',
-                    'AddBy'                        => $this->session->userdata("FullName"),
+                    'AddBy'                        => $this->session->userdata("userId"),
                     'AddTime'                      => date('Y-m-d H:i:s'),
-                    'Damage_brunchid'              => $this->session->userdata('BRANCHid'),
+                    'last_update_ip'     => $this->input->ip_address(),
+                    'branch_id'              => $this->session->userdata('BRANCHid'),
                 );
 
                 $this->db->insert('tbl_damagedetails', $damageDetails);
@@ -1308,9 +1319,11 @@ class Purchase extends CI_Controller
                     and ci.branch_id = ?
                 ", [$product->quantity, $product->product_id, $this->session->userdata('BRANCHid')]);
             }
+            $this->db->trans_commit();
 
             $res = ['success' => true, 'message' => 'Damage entry success', 'damageCode' => $this->mt->generateDamageCode()];
         } catch (Exception $ex) {
+            $this->db->trans_rollback();
             $res = ['success' => false, 'message' => $ex->getMessage()];
         }
 
@@ -1321,6 +1334,7 @@ class Purchase extends CI_Controller
     {
         $res = ['success' => false, 'message' => ''];
         try {
+            $this->db->trans_begin();
             $data = json_decode($this->input->raw_input_stream);
             $damageId = $data->damage->Damage_SlNo;
 
@@ -1329,8 +1343,9 @@ class Purchase extends CI_Controller
                 'Damage_Date'        => $data->damage->Damage_Date,
                 'damage_amount'      => $data->damage->damage_amount,
                 'Damage_Description' => $data->damage->Damage_Description,
-                'UpdateBy'           => $this->session->userdata("FullName"),
-                'UpdateTime'         => date('Y-m-d H:i:s')
+                'UpdateBy'           => $this->session->userdata("userId"),
+                'UpdateTime'         => date('Y-m-d H:i:s'),
+                'last_update_ip'     => $this->input->ip_address(),
             );
             $this->db->where('Damage_SlNo', $damageId)->update('tbl_damage', $damage);
 
@@ -1353,11 +1368,12 @@ class Purchase extends CI_Controller
                     'damage_rate'                  => $product->rate,
                     'damage_amount'                => $product->total,
                     'status'                       => 'a',
-                    'AddBy'                        => $this->session->userdata("FullName"),
+                    'AddBy'                        => $this->session->userdata("userId"),
                     'AddTime'                      => date('Y-m-d H:i:s'),
-                    'UpdateBy'                     => $this->session->userdata("FullName"),
+                    'UpdateBy'                     => $this->session->userdata("userId"),
                     'UpdateTime'                   => date('Y-m-d H:i:s'),
-                    'Damage_brunchid'              => $this->session->userdata('BRANCHid')
+                    'last_update_ip'               => $this->input->ip_address(),
+                    'branch_id'                    => $this->session->userdata('BRANCHid')
                 );
 
                 $this->db->insert('tbl_damagedetails', $damageDetails);
@@ -1369,9 +1385,10 @@ class Purchase extends CI_Controller
                     and ci.branch_id = ?
                 ", [$product->quantity, $product->product_id, $this->session->userdata('BRANCHid')]);
             }
-
+            $this->db->trans_commit();
             $res = ['success' => true, 'message' => 'Damage updated successfully', 'damageCode' => $this->mt->generateDamageCode()];
         } catch (Exception $ex) {
+            $this->db->trans_rollback();
             $res = ['success' => false, 'message' => $ex->getMessage()];
         }
 
@@ -1390,7 +1407,7 @@ class Purchase extends CI_Controller
         $damages = $this->db->query("select d.*
                         from tbl_damage d
                         where d.status = 'a'
-                        and d.Damage_brunchid = ?
+                        and d.branch_id = ?
                         $clauses
                         order by d.Damage_SlNo desc
                     ", $this->session->userdata('BRANCHid'))->result();
@@ -1404,7 +1421,7 @@ class Purchase extends CI_Controller
                 from tbl_damagedetails dd
                 join tbl_product p on p.Product_SlNo = dd.Product_SlNo
                 where dd.status = 'a'
-                and dd.Damage_brunchid = ?
+                and dd.branch_id = ?
                 and dd.Damage_SlNo = ?
             ", [$this->session->userdata('BRANCHid'), $item->Damage_SlNo])->result();
         }
@@ -1452,17 +1469,6 @@ class Purchase extends CI_Controller
         $this->load->view('Administrator/index', $data);
     }
 
-    function damage_select_product()
-    {
-        $prod_id = $this->input->post('prod_id');
-        if ($prod_id == 'All') {
-            $data['records'] = $this->Product_model->all_damage_product_list();
-        } else {
-            $data['records'] = $this->Product_model->demage_poduct_list_by_product_id($prod_id);
-        }
-        $this->load->view('Administrator/purchase/damage_list_search', $data);
-    }
-
     public function purchaseInvoicePrint($purchaseId)
     {
         $data['title'] = "Purchase Invoice";
@@ -1482,250 +1488,6 @@ class Purchase extends CI_Controller
         $this->load->view('Administrator/index', $data);
     }
 
-    function purchase_return_record()
-    {
-        $datas['searchtype'] = $searchtype = $this->input->post('searchtype');
-        $datas['productID'] = $productID = $this->input->post('productID');
-        $datas['startdate'] = $startdate = $this->input->post('startdate');
-        $datas['enddate'] = $enddate = $this->input->post('enddate');
-        $this->session->set_userdata($datas);
-        //echo "<pre>";print_r($datas);exit;
-        $this->load->view('Administrator/purchase/return_list', $datas);
-    }
-
-    public function purchase_update_form($PurchaseMaster_SlNo)
-    {
-        $this->cart->destroy();
-        $data['title'] = "Product Purchase Update";
-        $data['pm_sup'] = $pm_sup = $this->Billing_model->select_supplier_purhase_master($PurchaseMaster_SlNo);
-        $data['product_purchase_det'] = $cartData =  $this->Billing_model->select_product_parchase_details($PurchaseMaster_SlNo);
-        $this->_purchase_update_add_cart($cartData, $pm_sup);
-        $data['products'] = $this->Product_model->products_by_brunch();
-
-        $data['content'] = $this->load->view('Administrator/purchase/purchase_order_update', $data, TRUE);
-        $this->load->view('Administrator/index', $data);
-    }
-
-    /*Used to add product details to cart for update product purchase.... called in purchase_update_form()*/
-    private function _purchase_update_add_cart($cartData, $pm_sup)
-    {
-
-        foreach ($cartData as $data) :
-            $insert_data = array(
-                'id' => $data->Product_SlNo,
-                'ProCat' => $data->ProductCategory_ID,
-                'name' => $data->Product_Name,
-                'category' => $data->ProductCategory_Name,
-                'proCode' => $data->Product_Code,
-                'price' => $data->Product_Purchase_Rate,
-                'cost' => $data->purchase_cost,
-                'qty' => $data->PurchaseDetails_TotalQuantity,
-                'PurchaseMaster_SlNo' => $pm_sup->PurchaseMaster_SlNo,
-                'PurchaseDetails_SlNo' => $data->PurchaseDetails_SlNo,
-                'PurchaseMaster_InvoiceNo' => $pm_sup->PurchaseMaster_InvoiceNo,
-                'PurchaseMaster_PaidAmount' => $pm_sup->PurchaseMaster_PaidAmount,
-            );
-            $this->cart->insert($insert_data);
-        endforeach;
-    }
-
-    public function product_delete()
-    {
-        // $id = $this->input->post('deleted');
-        $PurchaseMaster_SlNo = $this->input->post('PurchaseMaster_SlNo');
-        $PurchaseMaster_InvoiceNo = $this->input->post('PurchaseMaster_InvoiceNo');
-        $PurchaseMaster_TotalAmount = $this->input->post('PurchaseMaster_TotalAmount');
-        $PurchaseMaster_DiscountAmount = $this->input->post('PurchaseMaster_DiscountAmount');
-        $PurchaseMaster_Tax = $this->input->post('PurchaseMaster_Tax');
-        $PurchaseMaster_Freight = $this->input->post('PurchaseMaster_Freight');
-        $PurchaseMaster_SubTotalAmount = $this->input->post('PurchaseMaster_SubTotalAmount');
-        $PurchaseMaster_PaidAmount = $this->input->post('PurchaseMaster_PaidAmount');
-        $PurchaseMaster_DueAmount = $this->input->post('PurchaseMaster_DueAmount');
-
-        $id = $this->input->post('PurchaseDetails_SlNo');
-        $Product_IDNo = $this->input->post('Product_IDNo');
-        $PurchaseDetails_TotalQuantity = $this->input->post('PurchaseDetails_TotalQuantity');
-        $PurchaseDetails_TotalAmount = $this->input->post('PurchaseDetails_TotalAmount');
-        //exit;
-        $fld = 'PurchaseDetails_SlNo';
-        $delete = $this->mt->delete_data("tbl_purchasedetails", $id, $fld);
-        if (isset($delete)) {
-            $SSI = mysql_query("SELECT * FROM tbl_purchaseinventory WHERE purchProduct_IDNo='$Product_IDNo'");
-            $sirow = mysql_fetch_array($SSI);
-            $data1['PurchaseInventory_TotalQuantity'] = $sirow['PurchaseInventory_TotalQuantity'] - $PurchaseDetails_TotalQuantity;
-            $this->Billing_model->update_purchaseinventory("tbl_purchaseinventory", $data1, $Product_IDNo);
-
-            $count = $this->db->from("tbl_purchasedetails")->where('PurchaseMaster_IDNo', $PurchaseMaster_SlNo)->count_all_results();
-            if ($count == 0) {
-                $data2['PurchaseMaster_TotalAmount'] = 0;
-                $data2['PurchaseMaster_DiscountAmount'] = 0;
-                $data2['PurchaseMaster_Tax'] = 0;
-                $data2['PurchaseMaster_Freight'] = 0;
-                $data2['PurchaseMaster_DueAmount'] = 0;
-                $data2['PurchaseMaster_SubTotalAmount'] = 0;
-                $this->Billing_model->update_purchasemaster("tbl_purchasemaster", $data2, $PurchaseMaster_SlNo);
-            } else {
-                $totalAmount = $PurchaseMaster_TotalAmount - $PurchaseDetails_TotalAmount;
-                $data2['PurchaseMaster_TotalAmount'] = $totalAmount;
-                $data2['PurchaseMaster_SubTotalAmount'] = $PurchaseMaster_SubTotalAmount - ($PurchaseDetails_TotalAmount / 100 * $PurchaseMaster_Tax + $PurchaseDetails_TotalAmount);
-                $this->Billing_model->update_purchasemaster("tbl_purchasemaster", $data2, $PurchaseMaster_SlNo);
-            }
-            /* $SP = mysql_query("SELECT * FROM tbl_supplier_payment WHERE `SPayment_invoice`='$PurchaseMaster_InvoiceNo'");
-            $cprow = mysql_fetch_array($SP);		
-            $data['SPayment_amount']= $total;
-            $this->Billing_model->update_supplier_payment("tbl_supplier_payment",$data,$PurchaseMaster_InvoiceNo); */
-        }
-        redirect('Administrator/Purchase/purchase_update_form/' . $PurchaseMaster_SlNo, 'refresh');
-        //$this->load->view('Administrator/sales/product_sales_update');
-    }
-
-    /*Purchase Record Update*/
-    public function Purchase_order_update()
-    {
-        $purchInvoice = $this->input->post('purchInvoice');
-        $purch_id = $this->input->post('PurchaseMaster_SlNo');
-        /*Purchase Master Update*/
-        $Purchase = array(
-            "Supplier_SlNo" => $this->input->post('SupplierID'),
-            "PurchaseMaster_InvoiceNo" => $purchInvoice,
-            "PurchaseMaster_OrderDate" => $this->input->post('Purchase_date'),
-            "PurchaseMaster_PurchaseFor" => $this->input->post('PurchaseFor'),
-            "PurchaseMaster_Description" => $this->input->post('Notes'),
-            "PurchaseMaster_TotalAmount" => $this->input->post('subTotal'),
-            "PurchaseMaster_DiscountAmount" => $this->input->post('purchDiscount'),
-            "PurchaseMaster_Tax" => $this->input->post('vatPersent'),
-            "PurchaseMaster_Freight" => $this->input->post('purchFreight'),
-            "PurchaseMaster_SubTotalAmount" => $this->input->post('purchTotal'),
-            "PurchaseMaster_PaidAmount" => $this->input->post('PurchPaid'),
-            "PurchaseMaster_DueAmount" => $this->input->post('purchaseDue'),
-            "UpdateBy" => $this->session->userdata("FullName"),
-            "PurchaseMaster_BranchID" => $this->session->userdata("BRANCHid"),
-            "UpdateTime" => date("Y-m-d H:i:s")
-        );
-        $this->Billing_model->purchaseOrderUpdate($Purchase, $purchInvoice);
-
-        /*Supplier Payment Update*/
-        $data = array(
-            "SPayment_date" => $this->input->post('Purchase_date', TRUE),
-            "SPayment_invoice" => $purchInvoice,
-            "SPayment_customerID" => $this->input->post('SupplierID', TRUE),
-            "SPayment_amount" => $this->input->post('PurchPaid', TRUE),
-            "SPayment_notes" => $this->input->post('Notes', TRUE),
-            "SPayment_Addby" => $this->session->userdata("FullName"),
-            "SPayment_brunchid" => $this->session->userdata("BRANCHid")
-        );
-        $this->Billing_model->update_supplier_payment_data("tbl_supplier_payment", $data, $purchInvoice);
-
-        /*CartData Insert Or Update to purchase details */
-        if ($cart = $this->cart->contents()) {
-            foreach ($cart as $item) {
-                $order_detail = array(
-                    'PurchaseMaster_IDNo' => $purch_id,
-                    'Product_IDNo' => $item['id'],
-                    'PurchaseDetails_TotalQuantity' => $item['qty'],
-                    'PurchaseDetails_Rate' => $item['price'],
-                    'UpdateBy' => $this->session->userdata("FullName"),
-                    'UpdateTime' => date('Y-m-d H:i:s')
-                );
-
-                $oldPurchaseDetail =  $this->db->where('PurchaseMaster_IDNo', $purch_id)->where('Product_IDNo', $item['id'])->get('tbl_purchasedetails')->row();
-                if (count($oldPurchaseDetail) > 0) :
-
-                    /*update old details*/
-                    $this->db->where('PurchaseMaster_IDNo', $purch_id)->where('Product_IDNo', $item['id'])->update('tbl_purchasedetails', $order_detail);
-                    $newQty  = $item['qty'] - $oldPurchaseDetail->PurchaseDetails_TotalQuantity;
-                    $item['qty'] = $newQty;
-                    $this->_addStock($item);
-
-                else :
-
-                    /*insert new details*/
-                    $this->Billing_model->update_purchase_detail($order_detail);
-                    $this->_addStock($item);
-
-                endif;
-
-
-                /*Update Product Purchase Rate*/
-                $Pid = $item['id'];
-                $Pfld = 'Product_SlNo';
-                $ProductPrice = array('Product_Purchase_Rate' => $item['price'],);
-                $this->mt->update_data("tbl_product", $ProductPrice, $Pid, $Pfld);
-            } // end foreach
-        } // end if
-
-        $this->cart->destroy();
-        $xx['purchaseforprint'] = $purch_id;
-        $this->session->set_userdata($xx);
-        echo json_encode(true);
-    }
-
-    /*Used in Purchase Update*/
-    private function _addStock($item)
-    {
-        // Stock add
-        $rox = $this->db->where('product_id', $item['id'])->get('tbl_currentinventory')->row();
-        $id = $rox->inventory_id;
-        $oldStock = $rox->purchase_quantity;
-
-        if ($rox->product_id == $item['id']) {
-            $addStock = array(
-                'product_id'           => $item['id'],
-                'purchase_quantity' => $oldStock + $item['qty']
-            );
-            $this->mt->update_data("tbl_currentinventory", $addStock, $id, 'inventory_id');
-        } else {
-            $addStock = array(
-                'product_id'                     => $item['id'],
-                'purchase_quantity' => $item['qty']
-            );
-            $this->mt->save_data("tbl_currentinventory", $addStock);
-        }
-    }
-
-    function select_supplier()
-    {
-?>
-        <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right" for="Supplierid"> Select Supplier </label>
-            <div class="col-sm-3">
-                <select name="Supplierid" id="Supplierid" data-placeholder="Choose a Supplier..." class="chosen-select">
-                    <option value=""></option>
-                    <?php
-                    $sql = $this->db->query("SELECT * FROM tbl_supplier where Supplier_brinchid='" . $this->brunch . "' order by Supplier_Name desc");
-                    $row = $sql->result();
-                    foreach ($row as $row) { ?>
-                        <option value="<?php echo $row->Supplier_SlNo; ?>"><?php echo $row->Supplier_Name; ?>
-                            (<?php echo $row->Supplier_Code; ?>)
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-        </div>
-    <?php
-    }
-
-    function select_product()
-    {
-    ?>
-        <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right" for="Productid"> Select Product </label>
-            <div class="col-sm-3">
-                <select name="Productid" id="Productid" data-placeholder="Choose a Product..." class="chosen-select">
-                    <option value=""></option>
-                    <?php
-                    $sql = $this->db->query("SELECT * FROM tbl_product order by Product_Name desc");
-                    $row = $sql->result();
-                    foreach ($row as $row) { ?>
-                        <option value="<?php echo $row->Product_SlNo; ?>"><?php echo $row->Product_Name; ?>
-                            (<?php echo $row->Product_Code; ?>)
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-        </div>
-<?php
-    }
 
     public function getPurchaseReturns()
     {
@@ -1751,7 +1513,7 @@ class Purchase extends CI_Controller
                 from tbl_purchasereturndetails prd
                 join tbl_product p on p.Product_SlNo = prd.PurchaseReturnDetailsProduct_SlNo
                 where prd.PurchaseReturn_SlNo = ?
-                and prd.Status = 'a'
+                and prd.status = 'a'
             ", $data->id)->result();
         }
 
@@ -1766,8 +1528,8 @@ class Purchase extends CI_Controller
             from tbl_purchasereturn pr 
             join tbl_purchasemaster pm on pm.PurchaseMaster_InvoiceNo = pr.PurchaseMaster_InvoiceNo
             join tbl_supplier s on s.Supplier_SlNo = pr.Supplier_IDdNo
-            where pr.Status = 'a'
-            and pr.PurchaseReturn_brunchID = ?
+            where pr.status = 'a'
+            and pr.branch_id = ?
             $clauses
             order by pr.PurchaseReturn_SlNo desc
         ", $this->brunch)->result();
@@ -1842,7 +1604,7 @@ class Purchase extends CI_Controller
     {
         $res = ['found' => false];
 
-        $returnCount = $this->db->query("select * from tbl_purchasereturn where PurchaseMaster_InvoiceNo = ? and Status = 'a'", $invoice)->num_rows();
+        $returnCount = $this->db->query("select * from tbl_purchasereturn where PurchaseMaster_InvoiceNo = ? and status = 'a'", $invoice)->num_rows();
 
         if ($returnCount != 0) {
             $res = ['found' => true];

@@ -52,7 +52,7 @@ class Product_model extends CI_Model
 
 		$res = $this->db
                             ->join('tbl_brand','tbl_brand.brand_SiNo=tbl_product.brand','left')
-                            ->where('tbl_product.Product_branchid',$this->BRANCHid)
+                            ->where('tbl_product.branch_id',$this->BRANCHid)
                             ->where('tbl_product.status', 'a')
                             ->order_by('tbl_product.Product_Name', 'asc')
                             ->get('tbl_product')
@@ -69,7 +69,7 @@ class Product_model extends CI_Model
 	public function get_all_product_price_list(){
 		$this->db->select('tbl_product.*, tbl_brand.*')->from('tbl_product');
 		$this->db->join('tbl_brand', 'tbl_brand.brand_SiNo=tbl_product.brand');
-		$this->db->where('tbl_product.Product_branchid', $this->BRANCHid)->where('tbl_product.status', 'a');
+		$this->db->where('tbl_product.branch_id', $this->BRANCHid)->where('tbl_product.status', 'a');
 		$res = $this->db->order_by('tbl_product.Product_Name', 'asc')->get()->result();
 		if($res){
 			return $res;
@@ -82,7 +82,7 @@ class Product_model extends CI_Model
 		$this->db->select(' tbl_product.*, tbl_productcategory.*,tbl_brand.*')->from('tbl_product');
 		$this->db->join('tbl_productcategory', 'tbl_productcategory.ProductCategory_SlNo= tbl_product.ProductCategory_ID','left');
 		$this->db->join('tbl_brand', 'tbl_brand.brand_SiNo=tbl_product.brand ','left');
-		$this->db->where('tbl_product.Product_branchid', $this->BRANCHid)->where('tbl_product.ProductCategory_ID',$cat_id);
+		$this->db->where('tbl_product.branch_id', $this->BRANCHid)->where('tbl_product.ProductCategory_ID',$cat_id);
 		$res = $this->db->order_by('tbl_product.Product_Name', 'asc')->get()->row();
 		if($res){
 			return $res;
@@ -95,7 +95,7 @@ class Product_model extends CI_Model
 
 		$this->db->select('tbl_product.*, tbl_brand.*')->from('tbl_product');
 		$this->db->join('tbl_brand', 'tbl_brand.brand_SiNo=tbl_product.brand');
-		$this->db->where('tbl_product.Product_branchid', $this->BRANCHid)->where('tbl_product.Product_SlNo',$pro_id)->where('tbl_product.status', 'a');
+		$this->db->where('tbl_product.branch_id', $this->BRANCHid)->where('tbl_product.Product_SlNo',$pro_id)->where('tbl_product.status', 'a');
 		$res = $this->db->order_by('tbl_product.Product_Name', 'asc')->get()->result();
 		if($res){
 			return $res;
@@ -111,7 +111,7 @@ class Product_model extends CI_Model
 		$this->db->join('tbl_damagedetails', 'tbl_damagedetails.Damage_SlNo = tbl_damage.Damage_SlNo', 'left');
 		$this->db->join('tbl_product', 'tbl_product.Product_SlNo= tbl_damagedetails.Product_SlNo', 'left');
 		$this->db->join('tbl_unit', 'tbl_unit.Unit_SlNo = tbl_product.Unit_ID', 'left');
-		$this->db->where('tbl_damage.Damage_brunchid',$this->BRANCHid);
+		$this->db->where('tbl_damage.branch_id',$this->BRANCHid);
 		$this->db->where('tbl_damage.status','a');
 		$res = $this->db->order_by('tbl_damage.Damage_InvoiceNo', 'desc')->get()->result();
 		
@@ -130,7 +130,7 @@ class Product_model extends CI_Model
 		$this->db->join('tbl_product', 'tbl_product.Product_SlNo= tbl_damagedetails.Product_SlNo', 'left');
 		$this->db->join('tbl_unit', 'tbl_unit.Unit_SlNo = tbl_product.Unit_ID', 'left');
 		$this->db->where('tbl_damagedetails.Product_SlNo',$pro_id);
-		$this->db->where('tbl_damage.Damage_brunchid',$this->BRANCHid);
+		$this->db->where('tbl_damage.branch_id',$this->BRANCHid);
 		$this->db->where('tbl_damage.status','a');
 		$res = $this->db->order_by('tbl_damage.Damage_InvoiceNo', 'desc')->get()->result();
 

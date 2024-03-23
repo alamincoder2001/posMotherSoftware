@@ -177,7 +177,7 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 			($pdo = parent::db_connect($persistent)) !== FALSE
 			&& ! empty($ssl)
 			&& version_compare($pdo->getAttribute(PDO::ATTR_CLIENT_VERSION), '5.7.3', '<=')
-			&& empty($pdo->query("SHOW STATUS LIKE 'ssl_cipher'")->fetchObject()->Value)
+			&& empty($pdo->query("SHOW status LIKE 'ssl_cipher'")->fetchObject()->Value)
 		)
 		{
 			$message = 'PDO_MYSQL was configured for an SSL connection, but got an unencrypted connection instead!';

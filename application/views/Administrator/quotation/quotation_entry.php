@@ -533,7 +533,7 @@
 					let quotation = r.quotations[0];
 					this.quotation.quotationBy = quotation.AddBy;
 					this.quotation.invoiceNo = quotation.SaleMaster_InvoiceNo;
-					this.quotation.salesFrom = quotation.SaleMaster_branchid;
+					this.quotation.salesFrom = quotation.branch_id;
 					this.quotation.salesDate = quotation.SaleMaster_SaleDate;
 					this.quotation.subTotal = quotation.SaleMaster_SubTotalAmount;
 					this.quotation.discount = quotation.SaleMaster_TotalDiscountAmount;

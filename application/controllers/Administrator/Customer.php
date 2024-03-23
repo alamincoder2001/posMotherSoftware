@@ -65,7 +65,7 @@ class Customer extends CI_Controller
             where c.status = 'a'
             and c.Customer_Type != 'G'
             $customerTypeClause
-            and (c.Customer_brunchid = ? or c.Customer_brunchid = 0)
+            and (c.branch_id = ? or c.branch_id = 0)
             order by c.Customer_SlNo desc
             $limit
         ", $this->session->userdata('BRANCHid'))->result();
@@ -130,8 +130,8 @@ class Customer extends CI_Controller
             from tbl_customer_payment cp
             join tbl_customer c on c.Customer_SlNo = cp.CPayment_customerID
             left join tbl_bank_accounts ba on ba.account_id = cp.account_id
-            where cp.CPayment_status = 'a'
-            and cp.CPayment_brunchid = ? $clauses
+            where cp.status = 'a'
+            and cp.branch_id = ? $clauses
             order by cp.CPayment_id desc
         ", $this->session->userdata('BRANCHid'))->result();
 
@@ -146,10 +146,10 @@ class Customer extends CI_Controller
 
             $payment = (array)$paymentObj;
             $payment['CPayment_invoice'] = $this->mt->generateCustomerPaymentCode();
-            $payment['CPayment_status'] = 'a';
-            $payment['CPayment_Addby'] = $this->session->userdata("FullName");
-            $payment['CPayment_AddDAte'] = date('Y-m-d H:i:s');
-            $payment['CPayment_brunchid'] = $this->session->userdata("BRANCHid");
+            $payment['status'] = 'a';
+            $payment['AddBy'] = $this->session->userdata("userId");
+            $payment['AddTime'] = date('Y-m-d H:i:s');
+            $payment['branch_id'] = $this->session->userdata("BRANCHid");
 
             $this->db->insert('tbl_customer_payment', $payment);
             $paymentId = $this->db->insert_id();
@@ -183,8 +183,8 @@ class Customer extends CI_Controller
 
             $payment = (array)$paymentObj;
             unset($payment['CPayment_id']);
-            $payment['update_by'] = $this->session->userdata("FullName");
-            $payment['CPayment_UpdateDAte'] = date('Y-m-d H:i:s');
+            $payment['UpdateBy'] = $this->session->userdata("userId");
+            $payment['UpdateTime'] = date('Y-m-d H:i:s');
 
             $this->db->where('CPayment_id', $paymentObj->CPayment_id)->update('tbl_customer_payment', $payment);
 
@@ -202,7 +202,7 @@ class Customer extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
 
-            $this->db->set(['CPayment_status' => 'd'])->where('CPayment_id', $data->paymentId)->update('tbl_customer_payment');
+            $this->db->set(['status' => 'd'])->where('CPayment_id', $data->paymentId)->update('tbl_customer_payment');
 
             $res = ['success' => true, 'message' => 'Payment deleted successfully'];
         } catch (Exception $ex) {
@@ -225,28 +225,31 @@ class Customer extends CI_Controller
 
             $customer = (array)$customerObj;
             unset($customer['Customer_SlNo']);
-            $customer["Customer_brunchid"] = $this->session->userdata("BRANCHid");
+            $customer["branch_id"] = $this->session->userdata("BRANCHid");
 
             $customerId = null;
             $res_message = "";
 
-            $duplicateMobileQuery = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and Customer_brunchid = ?", [$customerObj->Customer_Mobile, $this->session->userdata("BRANCHid")]);
+            $duplicateMobileQuery = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and branch_id = ?", [$customerObj->Customer_Mobile, $this->session->userdata("BRANCHid")]);
 
             if ($duplicateMobileQuery->num_rows() > 0) {
                 $duplicateCustomer = $duplicateMobileQuery->row();
 
                 unset($customer['Customer_Code']);
-                $customer["UpdateBy"]   = $this->session->userdata("FullName");
-                $customer["UpdateTime"] = date("Y-m-d H:i:s");
                 $customer["status"]     = 'a';
+                $customer["UpdateBy"]   = $this->session->userdata("userId");
+                $customer["UpdateTime"] = date("Y-m-d H:i:s");
+                $customer["last_update_ip"] = $this->input->ip_address();
                 $this->db->where('Customer_SlNo', $duplicateCustomer->Customer_SlNo)->update('tbl_customer', $customer);
 
                 $customerId = $duplicateCustomer->Customer_SlNo;
                 $customerObj->Customer_Code = $duplicateCustomer->Customer_Code;
                 $res_message = 'Customer updated successfully';
             } else {
-                $customer["AddBy"] = $this->session->userdata("FullName");
+                $customer["status"]     = 'a';
+                $customer["AddBy"] = $this->session->userdata("userId");
                 $customer["AddTime"] = date("Y-m-d H:i:s");
+                $customer["last_update_ip"] = $this->input->ip_address();
 
                 $this->db->insert('tbl_customer', $customer);
                 $customerId = $this->db->insert_id();
@@ -254,30 +257,9 @@ class Customer extends CI_Controller
                 $res_message = 'Customer added successfully';
             }
 
-
             if (!empty($_FILES)) {
-                $config['upload_path'] = './uploads/customers/';
-                $config['allowed_types'] = 'gif|jpg|png';
-
-                $imageName = $customerObj->Customer_Code;
-                $config['file_name'] = $imageName;
-                $this->load->library('upload', $config);
-                $this->upload->do_upload('image');
-                //$imageName = $this->upload->data('file_ext'); /*for geting uploaded image name*/
-
-                $config['image_library'] = 'gd2';
-                $config['source_image'] = './uploads/customers/' . $imageName;
-                $config['new_image'] = './uploads/customers/';
-                $config['maintain_ratio'] = TRUE;
-                $config['width']    = 640;
-                $config['height']   = 480;
-
-                $this->load->library('image_lib', $config);
-                $this->image_lib->resize();
-
-                $imageName = $customerObj->Customer_Code . $this->upload->data('file_ext');
-
-                $this->db->query("update tbl_customer set image_name = ? where Customer_SlNo = ?", [$imageName, $customerId]);
+                $imagePath = $this->mt->uploadImage($_FILES, 'image', 'uploads/customers', $customerObj->Customer_Code);
+                $this->db->query("update tbl_customer set image_name = ? where Customer_SlNo = ?", [$imagePath, $customerId]);
             }
 
             $res = ['success' => true, 'message' => $res_message, 'customerCode' => $this->mt->generateCustomerCode()];
@@ -294,9 +276,9 @@ class Customer extends CI_Controller
         try {
             $customerObj = json_decode($this->input->post('data'));
 
-            $customerMobileCount = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and Customer_SlNo != ? and Customer_brunchid = ?", [$customerObj->Customer_Mobile, $customerObj->Customer_SlNo, $this->session->userdata("BRANCHid")])->num_rows();
+            $customerMobileCount = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and Customer_SlNo != ? and branch_id = ?", [$customerObj->Customer_Mobile, $customerObj->Customer_SlNo, $this->session->userdata("BRANCHid")]);
 
-            if ($customerMobileCount > 0) {
+            if ($customerMobileCount->num_rows() > 0) {
                 $res = ['success' => false, 'message' => 'Mobile number already exists'];
                 echo Json_encode($res);
                 exit;
@@ -305,35 +287,19 @@ class Customer extends CI_Controller
             $customerId = $customerObj->Customer_SlNo;
 
             unset($customer["Customer_SlNo"]);
-            $customer["Customer_brunchid"] = $this->session->userdata("BRANCHid");
-            $customer["UpdateBy"] = $this->session->userdata("FullName");
+            $customer["branch_id"] = $this->session->userdata("BRANCHid");
+            $customer["UpdateBy"] = $this->session->userdata("userId");
             $customer["UpdateTime"] = date("Y-m-d H:i:s");
+            $customer["last_update_ip"] = $this->input->ip_address();
 
             $this->db->where('Customer_SlNo', $customerId)->update('tbl_customer', $customer);
-
             if (!empty($_FILES)) {
-                $config['upload_path'] = './uploads/customers/';
-                $config['allowed_types'] = 'gif|jpg|png';
-
-                $imageName = $customerObj->Customer_Code;
-                $config['file_name'] = $imageName;
-                $this->load->library('upload', $config);
-                $this->upload->do_upload('image');
-                //$imageName = $this->upload->data('file_ext'); /*for geting uploaded image name*/
-
-                $config['image_library'] = 'gd2';
-                $config['source_image'] = './uploads/customers/' . $imageName;
-                $config['new_image'] = './uploads/customers/';
-                $config['maintain_ratio'] = TRUE;
-                $config['width']    = 640;
-                $config['height']   = 480;
-
-                $this->load->library('image_lib', $config);
-                $this->image_lib->resize();
-
-                $imageName = $customerObj->Customer_Code . $this->upload->data('file_ext');
-
-                $this->db->query("update tbl_customer set image_name = ? where Customer_SlNo = ?", [$imageName, $customerId]);
+                $oldImgFile = $customerMobileCount->row()->image_name;
+                if (file_exists($oldImgFile)) {
+                    unlink($oldImgFile);
+                }
+                $imagePath = $this->mt->uploadImage($_FILES, 'image', 'uploads/customers', $customerObj->Customer_Code);
+                $this->db->query("update tbl_customer set image_name = ? where Customer_SlNo = ?", [$imagePath, $customerId]);
             }
 
             $res = ['success' => true, 'message' => 'Customer updated successfully', 'customerCode' => $this->mt->generateCustomerCode()];
@@ -350,7 +316,14 @@ class Customer extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
 
-            $this->db->query("update tbl_customer set status = 'd' where Customer_SlNo = ?", $data->customerId);
+            $rules = array(
+                'status'         => 'd',
+                "DeletedBy"      => $this->session->userdata("userId"),
+                "DeletedTime"    => date("Y-m-d H:i:s"),
+                "last_update_ip" => $this->input->ip_address()
+            );
+            $this->db->where("Customer_SlNo", $data->customerId);
+            $this->db->update("tbl_customer", $rules);
 
             $res = ['success' => true, 'message' => 'Customer deleted'];
         } catch (Exception $ex) {
@@ -433,7 +406,7 @@ class Customer extends CI_Controller
                 0.00 as balance
             from tbl_salesmaster sm
             where sm.SalseCustomer_IDNo = '$data->customerId'
-            and sm.Status = 'a'
+            and sm.status = 'a'
             
             UNION
             select
@@ -457,7 +430,7 @@ class Customer extends CI_Controller
             left join tbl_bank_accounts ba on ba.account_id = cp.account_id
             where cp.CPayment_TransactionType = 'CR'
             and cp.CPayment_customerID = '$data->customerId'
-            and cp.CPayment_status = 'a'
+            and cp.status = 'a'
 
             UNION
             select
@@ -480,7 +453,7 @@ class Customer extends CI_Controller
             left join tbl_bank_accounts ba on ba.account_id = cp.account_id
             where cp.CPayment_TransactionType = 'CP'
             and cp.CPayment_customerID = '$data->customerId'
-            and cp.CPayment_status = 'a'
+            and cp.status = 'a'
             
             UNION
             select

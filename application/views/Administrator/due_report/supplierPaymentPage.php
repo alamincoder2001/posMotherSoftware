@@ -175,7 +175,7 @@
 							<td>{{ row.payment_by }}</td>
 							<td>{{ row.SPayment_amount }}</td>
 							<td>{{ row.SPayment_notes }}</td>
-							<td>{{ row.SPayment_Addby }}</td>
+							<td>{{ row.Addby }}</td>
 							<td>
 								<?php if ($this->session->userdata('accountType') != 'u') { ?>
 										<i class="btnEdit fa fa-pencil" @click="editPayment(row)"></i>
@@ -261,7 +261,7 @@
 					},
 					{
 						label: 'Saved By',
-						field: 'SPayment_Addby',
+						field: 'Addby',
 						align: 'center'
 					},
 					{

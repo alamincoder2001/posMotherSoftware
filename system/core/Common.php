@@ -475,7 +475,7 @@ if ( ! function_exists('log_message'))
 if ( ! function_exists('set_status_header'))
 {
 	/**
-	 * Set HTTP Status Header
+	 * Set HTTP status Header
 	 *
 	 * @param	int	the status code
 	 * @param	string
@@ -490,7 +490,7 @@ if ( ! function_exists('set_status_header'))
 
 		if (empty($code) OR ! is_numeric($code))
 		{
-			show_error('Status codes must be numeric', 500);
+			show_error('status codes must be numeric', 500);
 		}
 
 		if (empty($text))
@@ -561,7 +561,7 @@ if ( ! function_exists('set_status_header'))
 
 		if (strpos(PHP_SAPI, 'cgi') === 0)
 		{
-			header('Status: '.$code.' '.$text, TRUE);
+			header('status: '.$code.' '.$text, TRUE);
 			return;
 		}
 

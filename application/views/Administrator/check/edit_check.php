@@ -47,7 +47,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-5 control-label no-padding-left" for="check_status">Cheque Status:<span class="text-bold text-danger">*</span></label>
+                <label class="col-sm-5 control-label no-padding-left" for="check_status">Cheque status:<span class="text-bold text-danger">*</span></label>
                 <div class="col-sm-7">
                   <select class="chosen-select form-control" id="check_status" required name="check_status" style="height: 30px; border-radius: 5px;">
                     <option value="Pe" <?= ($check->check_status == 'Pe') ? 'selected' : '' ?>>Pending</option>

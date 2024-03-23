@@ -145,7 +145,7 @@
                             <td>{{ row.transaction_type }}</td>
                             <td>{{ row.note }}</td>
                             <td>{{ row.amount }}</td>
-                            <td>{{ row.saved_by }}</td>
+                            <td>{{ row.AddBy }}</td>
                             <td>
                                 <?php if ($this->session->userdata('accountType') != 'u') { ?>
                                         <i class="btnEdit fa fa-pencil" @click="editTransaction(row)"></i>
@@ -214,7 +214,7 @@
                     },
                     {
                         label: 'Saved By',
-                        field: 'saved_by',
+                        field: 'AddBy',
                         align: 'center'
                     },
                     {

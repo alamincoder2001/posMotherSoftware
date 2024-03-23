@@ -538,7 +538,7 @@ class PHPExcel_DocumentProperties
                 return ($propertyValue == 'true') ? true : false;
                 break;
             case 'cy':       //    Currency
-            case 'error':    //    Error Status Code
+            case 'error':    //    Error status Code
             case 'vector':   //    Vector
             case 'array':    //    Array
             case 'blob':     //    Binary Blob
@@ -591,7 +591,7 @@ class PHPExcel_DocumentProperties
                 return self::PROPERTY_TYPE_BOOLEAN;
                 break;
             case 'cy':       //    Currency
-            case 'error':    //    Error Status Code
+            case 'error':    //    Error status Code
             case 'vector':   //    Vector
             case 'array':    //    Array
             case 'blob':     //    Binary Blob

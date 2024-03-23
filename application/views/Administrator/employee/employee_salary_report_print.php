@@ -71,7 +71,7 @@ window.onload = async () => {
                     <th style="width:15%;text-align:center;">Already Taken</th>
                     <th style="width:15%;text-align:center;">Deduction Amount</th>
                     <th style="width:10%;text-align:center;">Due Amount</th>
-                    <th style="width:15%;text-align:center;">Status</th>
+                    <th style="width:15%;text-align:center;">status</th>
                 </tr>
                 </thead>
 

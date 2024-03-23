@@ -151,10 +151,10 @@ class Invest extends CI_Controller {
                 lt.*,
                 ac.Acc_Code,
                 ac.Acc_Name,
-                u.FullName as saved_by
+                u.FullName as AddBy
             from tbl_investment_transactions lt
             join tbl_investment_account ac on ac.Acc_SlNo = lt.account_id
-            join tbl_user u on u.User_SlNo = lt.saved_by
+            join tbl_user u on u.User_SlNo = lt.AddBy
             where lt.status = 1
             and lt.branch_id = ?
             $clauses
@@ -169,8 +169,8 @@ class Invest extends CI_Controller {
         try{
             $data = json_decode($this->input->raw_input_stream);
             $transaction = (array)$data;
-            $transaction['saved_by'] = $this->session->userdata('userId');
-            $transaction['saved_datetime'] = date('Y-m-d H:i:s');
+            $transaction['AddBy'] = $this->session->userdata('userId');
+            $transaction['AddTime'] = date('Y-m-d H:i:s');
             $transaction['branch_id'] = $this->session->userdata('BRANCHid');
 
             $this->db->insert('tbl_investment_transactions', $transaction);

@@ -250,7 +250,7 @@
                             var numChars = 1;
 
                             if (this.pause.status === true) {
-                                this.setPauseStatus(curString, curStrPos, true);
+                                this.setPausestatus(curString, curStrPos, true);
                                 return;
                             }
 
@@ -378,7 +378,7 @@
                             var _this4 = this;
 
                             if (this.pause.status === true) {
-                                this.setPauseStatus(curString, curStrPos, true);
+                                this.setPausestatus(curString, curStrPos, true);
                                 return;
                             }
                             if (this.fadeOut) return this.initFadeOut();
@@ -451,8 +451,8 @@
                          * @private
                          */
                     }, {
-                        key: 'setPauseStatus',
-                        value: function setPauseStatus(curString, curStrPos, isTyping) {
+                        key: 'setPausestatus',
+                        value: function setPausestatus(curString, curStrPos, isTyping) {
                             this.pause.typewrite = isTyping;
                             this.pause.curString = curString;
                             this.pause.curStrPos = curStrPos;

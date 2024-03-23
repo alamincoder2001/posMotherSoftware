@@ -256,7 +256,7 @@ $route['get_all_users'] = 'Administrator/User_management/getAllUsers';
 $route['add_user'] = 'Administrator/User_management/user_Insert';
 $route['update_user'] = 'Administrator/User_management/userupdate';
 $route['delete_user'] = 'Administrator/User_management/userDelete';
-$route['change_user_status'] = 'Administrator/User_management/userStatusChange';
+$route['change_user_status'] = 'Administrator/User_management/userstatusChange';
 $route['check_username'] = 'Administrator/User_management/check_user_name';
 $route['access/(:any)'] = 'Administrator/User_management/user_access/$1';
 $route['get_user_access'] = 'Administrator/User_management/getUserAccess';
@@ -276,7 +276,7 @@ $route['brunchUpdate'] = 'Administrator/Page/brunch_update';
 $route['brunchDelete'] = 'Administrator/Page/brunch_delete';
 $route['get_branches'] = 'Administrator/Page/getBranches';
 $route['get_current_branch'] = 'Administrator/Page/getCurrentBranch';
-$route['change_branch_status'] = 'Administrator/Page/changeBranchStatus';
+$route['change_branch_status'] = 'Administrator/Page/changeBranchstatus';
 
 $route['companyProfile'] = 'Administrator/Page/company_profile';
 $route['company_profile_Update'] = 'Administrator/Page/company_profile_Update';
@@ -423,7 +423,7 @@ $route['bank_accounts'] = 'Administrator/Account/bankAccounts';
 $route['add_bank_account'] = 'Administrator/Account/addBankAccount';
 $route['update_bank_account'] = 'Administrator/Account/updateBankAccount';
 $route['get_bank_accounts'] = 'Administrator/Account/getBankAccounts';
-$route['change_account_status'] = 'Administrator/Account/changeAccountStatus';
+$route['change_account_status'] = 'Administrator/Account/changeAccountstatus';
 
 // Bank Transactions
 $route['bank_transactions'] = 'Administrator/Account/bankTransactions';
@@ -472,7 +472,7 @@ $route['loan_accounts'] = 'Administrator/Loan/loanAccounts';
 $route['add_loan_account'] = 'Administrator/Loan/addLoanAccount';
 $route['update_loan_account'] = 'Administrator/Loan/updateLoanAccount';
 $route['get_loan_accounts'] = 'Administrator/Loan/getLoanAccounts';
-$route['change_loan_account_status'] = 'Administrator/Loan/changeLoanAccountStatus';
+$route['change_loan_account_status'] = 'Administrator/Loan/changeLoanAccountstatus';
 
 
 //investment
