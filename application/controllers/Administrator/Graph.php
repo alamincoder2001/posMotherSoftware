@@ -291,7 +291,7 @@
                 (
                     select ifnull(sum(a.valuation - a.as_amount), 0)
                     from tbl_assets a
-                    where a.branchid = '$this->branchId'
+                    where a.branch_id = '$this->branchId'
                     and a.buy_or_sale = 'sale'
                     and a.status = 'a'
                     and month(a.as_date) = '$month'
