@@ -52,7 +52,7 @@
 
 	#customerPayment .add-button {
 		padding: 2.5px;
-		width: 28px;
+		width: 30px;
 		background-color: #298db4;
 		display: block;
 		text-align: center;
@@ -104,11 +104,10 @@
 								<div class="form-group">
 									<label class="col-md-4 control-label">Customer</label>
 									<label class="col-md-1">:</label>
-									<div class="col-md-6 col-xs-11">
-										<select class="form-control" v-if="customers.length == 0"></select>
-										<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name" @input="getCustomerDue" v-if="customers.length > 0"></v-select>
+									<div class="col-md-6 col-xs-11">										
+										<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name" @input="getCustomerDue"></v-select>
 									</div>
-									<div class="col-md-1 col-xs-1" style="padding-left:0;margin-left: -3px;">
+									<div class="col-md-1 col-xs-1" style="padding:0;margin-left: -10px;">
 										<a href="/customer" target="_blank" class="add-button"><i class="fa fa-plus"></i></a>
 									</div>
 								</div>
@@ -177,9 +176,7 @@
 							<td>{{ row.CPayment_notes }}</td>
 							<td>{{ row.AddBy }}</td>
 							<td>
-								<button type="button" class="button edit" @click="window.location = `/paymentAndReport/${row.CPayment_id}`">
-									<i class="fa fa-file-o"></i>
-								</button>
+								<i class="fa fa-file" style="margin-right: 5px;font-size: 14px;cursor: pointer;" @click="window.location = `/paymentAndReport/${row.CPayment_id}`"></i>
 								<?php if ($this->session->userdata('accountType') != 'u') { ?>
 									<i class="btnEdit fa fa-pencil" @click="editPayment(row)"></i>
 									<i class="btnDelete fa fa-trash" @click="deletePayment(row.CPayment_id)"></i>
@@ -308,9 +305,6 @@
 				})
 			},
 			getCustomerDue() {
-				if (event.type == "click") {
-					return;
-				}
 				if (this.selectedCustomer == null || this.selectedCustomer.Customer_SlNo == undefined) {
 					return;
 				}

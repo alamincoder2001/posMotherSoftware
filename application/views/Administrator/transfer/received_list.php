@@ -75,7 +75,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table table-bordered">
+                <table class="table table-bordered table-hover" style="display:none;" v-bind:style="{display: transfers.length > 0 ? '' : 'none'}">
                     <thead>
                         <tr>
                             <th>Sl</th>
@@ -86,14 +86,17 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody style="display:none;" v-bind:style="{display: transfers.length > 0 ? '' : 'none'}">
+                    <tbody>
                         <tr v-for="(transfer, sl) in transfers">
                             <td>{{ sl + 1 }}</td>
                             <td>{{ transfer.transfer_date }}</td>
                             <td>{{ transfer.transfer_by_name }}</td>
                             <td>{{ transfer.transfer_from_name }}</td>
                             <td>{{ transfer.note }}</td>
-                            <td><a href="" v-bind:href="`/transfer_invoice/${transfer.transfer_id}`" target="_blank" title="View invoice"><i class="fa fa-file"></i></a></td>
+                            <td>
+                                <i class="btnEdit fa fa-file" style="font-size: 14px;" @click="window.open(`/transfer_invoice/${transfer.transfer_id}`, '_blank')" title="View invoice"></i>
+                                <i class="fa fa-check" style="color: green;font-size:15px;cursor:pointer;" v-if="transfer.status == 'p'" @click="receivedTransfer(transfer)"></i>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -146,7 +149,17 @@
                 axios.post('/get_receives', this.filter).then(res => {
                     this.transfers = res.data;
                 })
-            }
+            },
+
+            receivedTransfer(transfer) {
+                if (confirm("Are you sure?")) {
+                    axios.post('/receivedTransfer', {transferId: transfer.transfer_id})
+                        .then(res => {
+                            alert(res.data.message);
+                            this.getTransfers();
+                        })
+                }
+            },
         }
     })
 </script>

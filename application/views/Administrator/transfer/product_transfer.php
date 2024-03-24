@@ -59,15 +59,13 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4">Transfer by</label>
                                 <div class="col-md-8">
-                                    <select class="form-control" v-bind:style="{display: employees.length > 0 ? 'none' : ''}"></select>
-                                    <v-select v-bind:options="employees" v-model="selectedEmployee" label="Employee_Name" v-bind:style="{display: employees.length > 0 ? '' : 'none'}"></v-select>
+                                    <v-select v-bind:options="employees" v-model="selectedEmployee" label="Employee_Name"></v-select>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-md-4">Transfer to</label>
                                 <div class="col-md-8">
-                                    <select class="form-control" v-bind:style="{display: branches.length > 0 ? 'none' : ''}"></select>
-                                    <v-select v-bind:options="branches" v-model="selectedBranch" label="Branch_name" v-bind:style="{display: branches.length > 0 ? '' : 'none'}"></v-select>
+                                    <v-select v-bind:options="branches" v-model="selectedBranch" label="Branch_name"></v-select>
                                 </div>
                             </div>
                         </div>
@@ -91,8 +89,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4">Product</label>
                                 <div class="col-md-8">
-                                    <select class="form-control" v-bind:style="{display: products.length > 0 ? 'none' : ''}"></select>
-                                    <v-select id="product" v-bind:options="products" v-model="selectedProduct" label="display_text" v-on:input="onChangeProduct" v-bind:style="{display: products.length > 0 ? '' : 'none'}"></v-select>
+                                    <v-select id="product" v-bind:options="products" v-model="selectedProduct" label="display_text" v-on:input="onChangeProduct"></v-select>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -179,7 +176,7 @@
                     transfer_id: parseInt('<?php echo $transferId; ?>'),
                     transfer_date: moment().format('YYYY-MM-DD'),
                     transfer_by: '',
-                    transfer_from: '',
+                    transfer_from: "<?php echo $this->session->userdata('BRANCHid') ?>",
                     transfer_to: '',
                     note: '',
                     total_amount: 0.00,
@@ -233,7 +230,6 @@
                 if (this.selectedProduct == null) {
                     return;
                 }
-
                 this.productStock = await this.getProductStock(this.selectedProduct.Product_SlNo);
                 this.$refs.quantity.focus();
             },
@@ -277,8 +273,6 @@
                 this.selectedProduct = null;
                 this.quantity = '';
                 this.total = '';
-                let productSearchBox = document.querySelector('#product input[role="combobox"]');
-                productSearchBox.focus();
             },
 
             async onChangeCartQuantity(product) {
@@ -297,21 +291,6 @@
             },
 
             async removeFromCart(product) {
-                if (this.transfer.transfer_id != 0) {
-                    let filter = {
-                        productId: product.product_id,
-                        branchId: this.transfer.transfer_to
-                    }
-                    let transferProductStock = await axios.post("/get_transter_product_stock", filter)
-                        .then(res => {
-                            return res.data;
-                        })
-
-                    if (product.quantity > transferProductStock) {
-                        alert(product.name + " - " + product.product_code + " stock not available");
-                        return;
-                    }
-                }
                 let cartInd = this.cart.findIndex(item => item.product_id == product.product_id);
                 if (cartInd > -1) {
                     this.cart.splice(cartInd, 1);
@@ -350,11 +329,22 @@
                 if (this.transfer.transfer_id != 0) {
                     url = '/update_product_transfer';
                 }
-                axios.post(url, data).then(res => {
+                axios.post(url, data).then(async res => {
                     let r = res.data;
                     alert(r.message);
                     if (r.success) {
-                        location.reload();
+                        let conf = confirm('Do you want to view invoice?');
+                        if (conf) {
+                            window.open(`/transfer_invoice/${r.transferId}`, '_blank');
+                            await new Promise(r => setTimeout(r, 1000));
+                            window.location = '/product_transfer';
+                        } else {
+                            window.location = '/product_transfer';
+                        }
+                    } else {
+                        if (r.branch_status == false) {
+                            location.reload();
+                        }
                     }
                 })
             },

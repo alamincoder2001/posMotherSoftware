@@ -83,7 +83,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover">
+                <table class="table table-bordered table-hover" style="display:none;" v-bind:style="{display: transfers.length > 0 ? '' : 'none'}">
                     <thead>
                         <tr>
                             <th>Sl</th>
@@ -95,7 +95,7 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody style="display:none;" v-bind:style="{display: transfers.length > 0 ? '' : 'none'}">
+                    <tbody>
                         <tr v-for="(transfer, sl) in transfers">
                             <td>{{ sl + 1 }}</td>
                             <td>{{ transfer.transfer_date }}</td>
@@ -105,8 +105,8 @@
                             <td>{{ transfer.note }}</td>
                             <td>
                                 <a href="" v-bind:href="`/transfer_invoice/${transfer.transfer_id}`" target="_blank" title="View invoice"><i class="fa fa-file"></i></a>
-                                <a href="" v-bind:href="`/product_transfer/${transfer.transfer_id}`" target="_blank" title="Edit"><i class="fa fa-edit"></i></a>
-                                <a href="" @click.prevent="deleteTransfer(transfer)" title="Delete"><i class="fa fa-trash"></i></a>
+                                <a href="" v-if="transfer.status != 'a'" v-bind:href="`/product_transfer/${transfer.transfer_id}`" target="_blank" title="Edit"><i class="fa fa-edit"></i></a>
+                                <a href="" v-if="transfer.status != 'a'" @click.prevent="deleteTransfer(transfer)" title="Delete"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>
                     </tbody>

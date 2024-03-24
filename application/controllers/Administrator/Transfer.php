@@ -42,6 +42,11 @@ class Transfer extends CI_Controller
         $res = ['success' => false, 'message' => ''];
         try {
             $data = json_decode($this->input->raw_input_stream);
+            if ($data->transfer->transfer_from != $this->session->userdata("BRANCHid")) {
+                $res = ['success' => false, 'message' => 'You have already changed your branch.', 'branch_status' => false];
+                echo json_encode($res);
+                exit;
+            }
             $transfer = array(
                 'transfer_date'  => $data->transfer->transfer_date,
                 'transfer_by'    => $data->transfer->transfer_by,
@@ -49,9 +54,10 @@ class Transfer extends CI_Controller
                 'transfer_to'    => $data->transfer->transfer_to,
                 'note'           => $data->transfer->note,
                 'total_amount'   => $data->transfer->total_amount,
-                'status'         => 'a',
-                'added_by'       => $this->session->userdata("FullName"),
-                'added_datetime' => date('Y-m-d H:i:s')
+                'status'         => 'p',
+                'AddBy'          => $this->session->userdata("userId"),
+                'AddTime'        => date('Y-m-d H:i:s'),
+                'last_update_ip' => $this->input->ip_address()
             );
 
             $this->db->insert('tbl_transfermaster', $transfer);
@@ -59,14 +65,15 @@ class Transfer extends CI_Controller
 
             foreach ($data->cart as $cartProduct) {
                 $transferDetails = array(
-                    'transfer_id'   => $transferId,
-                    'product_id'    => $cartProduct->product_id,
-                    'quantity'      => $cartProduct->quantity,
-                    'purchase_rate' => $cartProduct->purchase_rate,
-                    'total'         => $cartProduct->total,
-                    'status'        => 'a',
-                    'AddBy'         => $this->session->userdata("FullName"),
-                    'AddTime'       => date('Y-m-d H:i:s'),
+                    'transfer_id'    => $transferId,
+                    'product_id'     => $cartProduct->product_id,
+                    'quantity'       => $cartProduct->quantity,
+                    'purchase_rate'  => $cartProduct->purchase_rate,
+                    'total'          => $cartProduct->total,
+                    'status'         => 'p',
+                    'AddBy'          => $this->session->userdata("userId"),
+                    'AddTime'        => date('Y-m-d H:i:s'),
+                    'last_update_ip' => $this->input->ip_address(),
                 );
 
                 $this->db->insert('tbl_transferdetails', $transferDetails);
@@ -74,11 +81,10 @@ class Transfer extends CI_Controller
                 $currentBranchInventoryCount = $this->db->query("select * from tbl_currentinventory where product_id = ? and branch_id = ?", [$cartProduct->product_id, $this->session->userdata('BRANCHid')])->num_rows();
                 if ($currentBranchInventoryCount == 0) {
                     $currentBranchInventory = array(
-                        'product_id' => $cartProduct->product_id,
+                        'product_id'             => $cartProduct->product_id,
                         'transfer_from_quantity' => $cartProduct->quantity,
-                        'branch_id' => $this->session->userdata('BRANCHid')
+                        'branch_id'              => $this->session->userdata('BRANCHid')
                     );
-
                     $this->db->insert('tbl_currentinventory', $currentBranchInventory);
                 } else {
                     $this->db->query("
@@ -88,28 +94,10 @@ class Transfer extends CI_Controller
                             and branch_id = ?
                         ", [$cartProduct->quantity, $cartProduct->product_id, $this->session->userdata('BRANCHid')]);
                 }
-
-                $transferToBranchInventoryCount = $this->db->query("select * from tbl_currentinventory where product_id = ? and branch_id = ?", [$cartProduct->product_id, $data->transfer->transfer_to])->num_rows();
-                if ($transferToBranchInventoryCount == 0) {
-                    $transferToBranchInventory = array(
-                        'product_id' => $cartProduct->product_id,
-                        'transfer_to_quantity' => $cartProduct->quantity,
-                        'branch_id' => $data->transfer->transfer_to,
-                    );
-
-                    $this->db->insert('tbl_currentinventory', $transferToBranchInventory);
-                } else {
-                    $this->db->query("
-                            update tbl_currentinventory
-                            set transfer_to_quantity = transfer_to_quantity + ?
-                            where product_id = ?
-                            and branch_id = ?
-                        ", [$cartProduct->quantity, $cartProduct->product_id, $data->transfer->transfer_to]);
-                }
             }
-            $res = ['success' => true, 'message' => 'Transfer success'];
+            $res = ['success' => true, 'message' => 'Transfer success', 'transferId' => $transferId];
         } catch (Exception $ex) {
-            $res = ['success' => false, 'message' => $ex->getMessage];
+            $res = ['success' => false, 'message' => $ex->getMessage()];
         }
 
         echo json_encode($res);
@@ -124,14 +112,21 @@ class Transfer extends CI_Controller
 
             $oldTransfer    =   $this->db->query("select * from tbl_transfermaster where transfer_id = ?", $transferId)->row();
 
+            if ($oldTransfer->status == 'a') {
+                $res = ['success' => false, 'message' => 'Already Transfer received.. You can not edit.'];
+                echo json_encode($res);
+                exit;
+            }
+
             $transfer = array(
-                'transfer_date'    => $data->transfer->transfer_date,
-                'transfer_by'      => $data->transfer->transfer_by,
-                'transfer_from'    => $this->session->userdata('BRANCHid'),
-                'transfer_to'      => $data->transfer->transfer_to,
-                'note'             => $data->transfer->note,
-                'UpdateBy'       => $this->session->userdata("FullName"),
-                'UpdateTime' => date('Y-m-d H:i:s')
+                'transfer_date'  => $data->transfer->transfer_date,
+                'transfer_by'    => $data->transfer->transfer_by,
+                'transfer_from'  => $this->session->userdata('BRANCHid'),
+                'transfer_to'    => $data->transfer->transfer_to,
+                'note'           => $data->transfer->note,
+                'UpdateBy'       => $this->session->userdata("userId"),
+                'UpdateTime'     => date('Y-m-d H:i:s'),
+                'last_update_ip' => $this->input->ip_address(),
             );
 
             $this->db->where('transfer_id', $transferId)->update('tbl_transfermaster', $transfer);
@@ -144,24 +139,18 @@ class Transfer extends CI_Controller
                         where product_id = ?
                         and branch_id = ?
                     ", [$oldDetails->quantity, $oldDetails->product_id, $this->session->userdata('BRANCHid')]);
-
-                $this->db->query("
-                        update tbl_currentinventory 
-                        set transfer_to_quantity = transfer_to_quantity - ? 
-                        where product_id = ?
-                        and branch_id = ?
-                    ", [$oldDetails->quantity, $oldDetails->product_id, $oldTransfer->transfer_to]);
             }
             $this->db->query("delete from tbl_transferdetails where transfer_id = ?", $transferId);
 
             foreach ($data->cart as $cartProduct) {
                 $transferDetails = array(
-                    'transfer_id' => $transferId,
-                    'product_id'  => $cartProduct->product_id,
-                    'quantity'    => $cartProduct->quantity,
-                    'status'      => 'a',
-                    'UpdateBy'    => $this->session->userdata("FullName"),
-                    'UpdateTime'  => date('Y-m-d H:i:s')
+                    'transfer_id'    => $transferId,
+                    'product_id'     => $cartProduct->product_id,
+                    'quantity'       => $cartProduct->quantity,
+                    'status'         => 'p',
+                    'UpdateBy'       => $this->session->userdata("userId"),
+                    'UpdateTime'     => date('Y-m-d H:i:s'),
+                    'last_update_ip' => $this->input->ip_address(),
                 );
 
                 $this->db->insert('tbl_transferdetails', $transferDetails);
@@ -182,24 +171,6 @@ class Transfer extends CI_Controller
                             where product_id = ? 
                             and branch_id = ?
                         ", [$cartProduct->quantity, $cartProduct->product_id, $this->session->userdata('BRANCHid')]);
-                }
-
-                $transferToBranchInventoryCount = $this->db->query("select * from tbl_currentinventory where product_id = ? and branch_id = ?", [$cartProduct->product_id, $data->transfer->transfer_to])->num_rows();
-                if ($transferToBranchInventoryCount == 0) {
-                    $transferToBranchInventory = array(
-                        'product_id' => $cartProduct->product_id,
-                        'transfer_to_quantity' => $cartProduct->quantity,
-                        'branch_id' => $data->transfer->transfer_to
-                    );
-
-                    $this->db->insert('tbl_currentinventory', $transferToBranchInventory);
-                } else {
-                    $this->db->query("
-                            update tbl_currentinventory
-                            set transfer_to_quantity = transfer_to_quantity + ?
-                            where product_id = ?
-                            and branch_id = ?
-                        ", [$cartProduct->quantity, $cartProduct->product_id, $data->transfer->transfer_to]);
                 }
             }
             $res = ['success' => true, 'message' => 'Transfer updated'];
@@ -365,23 +336,60 @@ class Transfer extends CI_Controller
                         and branch_id = ?
                     ", [$oldDetails->quantity, $oldDetails->product_id, $this->session->userdata('BRANCHid')]);
 
-                $this->db->query("
-                        update tbl_currentinventory 
-                        set transfer_to_quantity = transfer_to_quantity - ? 
-                        where product_id = ?
-                        and branch_id = ?
-                    ", [$oldDetails->quantity, $oldDetails->product_id, $oldTransfer->transfer_to]);
-
                 $this->db->where("transferdetails_id", $oldDetails->transferdetails_id);
-                $this->db->update("tbl_transferdetails", ['status' => 'd', 'UpdateBy' => $this->session->userdata("FullName"), 'UpdateTime' => date('Y-m-d H:i:s')]);
+                $this->db->update("tbl_transferdetails", ['status' => 'd', 'DeletedBy' => $this->session->userdata("userId"), 'DeletedTime' => date('Y-m-d H:i:s'), 'last_update_ip' => $this->input->ip_address()]);
             }
 
             $this->db->where("transfer_id", $transferId);
-            $this->db->update("tbl_transfermaster", ['status' => 'd', 'UpdateBy' => $this->session->userdata("FullName"), 'UpdateTime' => date('Y-m-d H:i:s')]);
+            $this->db->update("tbl_transfermaster", ['status' => 'd', 'DeletedBy' => $this->session->userdata("userId"), 'DeletedTime' => date('Y-m-d H:i:s'), 'last_update_ip' => $this->input->ip_address()]);
 
             $res = ['success' => true, 'message' => 'Transfer deleted'];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage];
+        }
+
+        echo json_encode($res);
+    }
+
+    public function receivedTransfer()
+    {
+        $res = ['status' => false, 'message' => ''];
+        try {
+            $data = json_decode($this->input->raw_input_stream);
+
+            $transfer = $this->db->query("select * from tbl_transfermaster where transfer_id = ?", $data->transferId)->row();
+            $transferDetails = $this->db->query("select * from tbl_transferdetails where transfer_id = ?", $data->transferId)->result();
+            foreach ($transferDetails as $key => $cartProduct) {
+                $transferToBranchInventoryCount = $this->db->query("select * from tbl_currentinventory where product_id = ? and branch_id = ?", [$cartProduct->product_id, $transfer->transfer_to])->num_rows();
+                if ($transferToBranchInventoryCount == 0) {
+                    $transferToBranchInventory = array(
+                        'product_id' => $cartProduct->product_id,
+                        'transfer_to_quantity' => $cartProduct->quantity,
+                        'branch_id' => $transfer->transfer_to,
+                    );
+                    $this->db->insert('tbl_currentinventory', $transferToBranchInventory);
+                } else {
+                    $this->db->query("
+                                update tbl_currentinventory
+                                set transfer_to_quantity = transfer_to_quantity + ?
+                                where product_id = ?
+                                and branch_id = ?
+                            ", [$cartProduct->quantity, $cartProduct->product_id, $transfer->transfer_to]);
+                }
+            }
+
+            $rules = array(
+                'status'         => 'a',
+                "UpdateBy"       => $this->session->userdata("userId"),
+                "UpdateTime"     => date("Y-m-d H:i:s"),
+                "last_update_ip" => $this->input->ip_address()
+            );
+
+            $this->db->where("transfer_id", $data->transferId)->update('tbl_transfermaster', $rules);
+            $this->db->where("transfer_id", $data->transferId)->update('tbl_transferdetails', $rules);
+            $res = ['status' => false, 'message' => "Transfer received successfully"];
+        } catch (\Throwable $th) {
+            $res = ['status' => false, 'message' => $th->getMessage()];
         }
 
         echo json_encode($res);

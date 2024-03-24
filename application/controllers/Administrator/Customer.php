@@ -149,6 +149,7 @@ class Customer extends CI_Controller
             $payment['status'] = 'a';
             $payment['AddBy'] = $this->session->userdata("userId");
             $payment['AddTime'] = date('Y-m-d H:i:s');
+            $payment['last_update_ip'] = $this->input->ip_address();
             $payment['branch_id'] = $this->session->userdata("BRANCHid");
 
             $this->db->insert('tbl_customer_payment', $payment);
@@ -185,6 +186,7 @@ class Customer extends CI_Controller
             unset($payment['CPayment_id']);
             $payment['UpdateBy'] = $this->session->userdata("userId");
             $payment['UpdateTime'] = date('Y-m-d H:i:s');
+            $payment['last_update_ip'] = $this->input->ip_address();
 
             $this->db->where('CPayment_id', $paymentObj->CPayment_id)->update('tbl_customer_payment', $payment);
 
@@ -202,7 +204,13 @@ class Customer extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
 
-            $this->db->set(['status' => 'd'])->where('CPayment_id', $data->paymentId)->update('tbl_customer_payment');
+            $payment = array(
+                'status' => 'd',
+                'DeletedBy' => $this->session->userdata('userId'),
+                'DeletedTime' => date('Y-m-d H:i:s'),
+                'last_update_ip' => $this->input->ip_address(),
+            );
+            $this->db->set($payment)->where('CPayment_id', $data->paymentId)->update('tbl_customer_payment');
 
             $res = ['success' => true, 'message' => 'Payment deleted successfully'];
         } catch (Exception $ex) {
@@ -371,6 +379,17 @@ class Customer extends CI_Controller
         $data['purchInvoice'] = $purchInvoice;
         $data['customers'] = $this->Customer_model->get_customer_name_code_brunch_wise();
         $data['content'] = $this->load->view('Administrator/due_report/customerPaymentPage', $data, TRUE);
+        $this->load->view('Administrator/index', $data);
+    }
+
+    function paymentAndReport($id = Null)
+    {
+        $data['title'] = "Customer Payment Reports";
+        if ($id != 'pr') {
+            $pid["PamentID"] = $id;
+            $this->session->set_userdata($pid);
+        }
+        $data['content'] = $this->load->view('Administrator/due_report/paymentAndReport', $data, TRUE);
         $this->load->view('Administrator/index', $data);
     }
 

@@ -149,12 +149,8 @@
                             <td>{{ row.AddBy }}</td>
                             <td>
                                 <?php if ($this->session->userdata('accountType') != 'u') { ?>
-                                    <button class="button btn-info" @click="editTransaction(row)">
-                                        <i class="fa fa-pencil"></i>
-                                    </button>
-                                    <button class="button active-button" @click="removeTransaction(row)">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
+                                        <i class="btnEdit fa fa-pencil" @click="editTransaction(row)"></i>
+                                        <i class="btnDelete fa fa-trash" @click="removeTransaction(row)"></i>
                                 <?php } ?>
                             </td>
                         </tr>

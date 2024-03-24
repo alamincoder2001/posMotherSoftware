@@ -52,7 +52,7 @@
 
 	#supplierPayment .add-button {
 		padding: 2.5px;
-		width: 28px;
+		width: 30px;
 		background-color: #298db4;
 		display: block;
 		text-align: center;
@@ -104,11 +104,10 @@
 								<div class="form-group">
 									<label class="col-md-4 control-label">Supplier</label>
 									<label class="col-md-1">:</label>
-									<div class="col-md-6 col-xs-11">
-										<select class="form-control" v-if="suppliers.length == 0"></select>
-										<v-select v-bind:options="suppliers" v-model="selectedSupplier" label="display_name" @input="getSupplierDue" v-if="suppliers.length > 0"></v-select>
+									<div class="col-md-6 col-xs-11">										
+										<v-select v-bind:options="suppliers" v-model="selectedSupplier" label="display_name" @input="getSupplierDue"></v-select>
 									</div>
-									<div class="col-md-1 col-xs-1" style="padding-left:0;margin-left: -3px;">
+									<div class="col-md-1 col-xs-1" style="padding:0;margin-left: -9px;">
 										<a href="/supplier" target="_blank" class="add-button"><i class="fa fa-plus"></i></a>
 									</div>
 								</div>

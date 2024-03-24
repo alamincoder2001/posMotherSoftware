@@ -136,7 +136,7 @@
             <div class="table-responsive">
                 <datatable :columns="columns" :data="accounts" :filter-by="filter">
                     <template scope="{ row }">
-                        <tr>
+                        <tr v-bind:style="{background: row.status == 1 ? '' : '#ffd486'}">
                             <td>{{ row.account_name }}</td>
                             <td>{{ row.account_number }}</td>
                             <td>{{ row.account_type }}</td>
@@ -147,7 +147,7 @@
                             <td>
                                 <?php if ($this->session->userdata('accountType') != 'u') { ?>
                                     <i class="btnEdit fa fa-pencil" @click="editAccount(row)"></i>
-                                    <i class="btnDelete fa fa-trash" v-bind:class="{active: row.status == 1}" @click="changestatus(row)"></i>
+                                    <i :class="row.status == 1 ? 'btnDelete fa fa-trash' : 'btnEdit fa fa-check'" :style="{color: row.status == 1 ? '' : 'green'}" @click="changestatus(row)"></i>
                                 <?php } ?>
                             </td>
                         </tr>

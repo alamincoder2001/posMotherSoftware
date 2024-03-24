@@ -413,11 +413,12 @@ class Account extends CI_Controller
                 exit;
             }
 
-            $account = (array)$data;
-            $account['AddBy'] = $this->session->userdata('userId');
-            $account['AddTime'] = date('Y-m-d H:i:s');
+            $account                   = (array)$data;
+            $account['AddBy']          = $this->session->userdata('userId');
+            $account['AddTime']        = date('Y-m-d H:i:s');
+            $account['status']         = 1;
             $account['last_update_ip'] = $this->input->ip_address();
-            $account['branch_id'] = $this->session->userdata('BRANCHid');
+            $account['branch_id']      = $this->session->userdata('BRANCHid');
 
             $this->db->insert('tbl_bank_accounts', $account);
             $res = ['success' => true, 'message' => 'Account created successfully'];
@@ -484,9 +485,9 @@ class Account extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
             $rules = array(
-                'status' => $data->account->status == 1 ? 0 : 1,
-                'DeletedBy' => $this->session->userdata('userId'),
-                'DeletedTime' => date('H-m-d H:i:s'),
+                'status'         => $data->account->status == 1 ? 0 : 1,
+                'UpdateBy'       => $this->session->userdata('userId'),
+                'UpdateTime'     => date('H-m-d H:i:s'),
                 'last_update_ip' => $this->input->ip_address()
             );
             $this->db->set($rules)->where('account_id', $data->account->account_id)->update('tbl_bank_accounts');
@@ -518,6 +519,7 @@ class Account extends CI_Controller
             $transaction = (array)$data;
             $transaction['AddBy'] = $this->session->userdata('userId');
             $transaction['AddTime'] = date('Y-m-d H:i:s');
+            $transaction['last_update_ip'] = $this->input->ip_address();
             $transaction['branch_id'] = $this->session->userdata('BRANCHid');
 
             $this->db->insert('tbl_bank_transactions', $transaction);
@@ -786,7 +788,13 @@ class Account extends CI_Controller
         $res = ['success' => false, 'message' => ''];
         try {
             $data = json_decode($this->input->raw_input_stream);
-            $this->db->query("update tbl_bank_transactions set status = 0 where transaction_id = ?", $data->transaction_id);
+            $transaction = array(
+                'status' => 0,
+                'DeletedBy' => $this->session->userdata('userId'),
+                'DeletedTime' => date('Y-m-d H:i:s'),
+                'last_update_ip' => $this->input->ip_address(),
+            );
+            $this->db->set($transaction)->where('transaction_id', $data->transaction_id)->update('tbl_bank_transactions');
 
             $res = ['success' => true, 'message' => 'Transaction removed'];
         } catch (Exception $ex) {

@@ -9,12 +9,12 @@
 </style>
 <div class="row">
 	<div class="col-xs-12">
-		<div class="col-sm-4 col-sm-offset-1">
+		<div class="col-md-4 col-md-offset-1">
 		<?php if($selected){ ?>
 		<form class="form-vertical" method="post" enctype="multipart/form-data" action="<?php echo base_url(); ?>company_profile_Update">
 			<div class="form-group">
 				<label class="control-label" for="">Company Logo</label>
-				<div class="col-sm-12">
+				<div class="col-md-12">
 					<div class="left"> 
 						<?php if($selected->Company_Logo_thum != "") {?>
 						<img id="hideid" src="<?php echo base_url().'uploads/company_profile_thum/'.$selected->Company_Logo_thum; ?>" alt="" style="width:100px">
@@ -49,7 +49,7 @@
 			</div>
 
 			<div class="control-group" style="margin-top:15px;">
-				<label class="col-sm-12 control-label bolder blue">Invoice Print Type</label>
+				<label class="col-md-12 control-label bolder blue">Invoice Print Type</label>
 				<div class="radio inline-radio">
 					<label>
 						<input name="inpt" id="a4"  type="radio" value="1" <?php if($selected->print_type==1){ echo "checked"; } ?>  class="ace" />
@@ -73,10 +73,10 @@
 			</div>
 
 			<div class="form-group" style="margin-top:15px;">
-				<label class="col-sm-4 control-label" for=""> </label>
-				<label class="col-sm-1 control-label"></label>
-				<div class="col-sm-6">
-					<button type="submit" name="btnSubmit" title="Update" class="btn btn-sm btn-info pull-left">
+				<label class="col-md-4 control-label" for=""> </label>
+				<label class="col-md-1 control-label"></label>
+				<div class="col-md-6">
+					<button type="submit" name="btnSubmit" title="Update" class="btn btn-md btn-info pull-left">
 							Update
 							<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
 					</button>
@@ -90,23 +90,23 @@
 		
 		<form method="post" enctype="multipart/form-data" action="<?php echo base_url(); ?>company_profile_insert">
 			<div class="form-group">
-				<label class="col-sm-12 control-label" for="pro_Name">Company Logo</label>
-				<div class="col-sm-12">
+				<label class="col-md-12 control-label" for="pro_Name">Company Logo</label>
+				<div class="col-md-12">
 					<img id="hideid" src="<?php echo base_url();?>images/No-Image-.jpg" alt="" style="width:100px">
 					<img id="preview" src="#" style="width:100px;height:100px" hidden>
 				</div>
 			</div>
 
 			<!-- <div class="form-group"> -->
-				<label class="col-sm-12 control-label" for="pro_Name">Change Logo</label>
-				<!-- <div class="col-sm-12"> -->
+				<label class="col-md-12 control-label" for="pro_Name">Change Logo</label>
+				<!-- <div class="col-md-12"> -->
 					<input name="companyLogo" required id="companyLogo" type="file" class="form-control" style="height:35px;" />
 				<!-- </div> -->
 			<!-- </div> -->
 		
 			<div class="form-group">
-				<label class="col-sm-12 control-label" for="form-field-1" style="margin-top:15px;"> Company Name </label>
-				<div class="col-sm-12">
+				<label class="col-md-12 control-label" for="form-field-1" style="margin-top:15px;"> Company Name </label>
+				<div class="col-md-12">
 					<input name="Company_name" type="text" id="Company_name" value="" class="form-control" />
 					<input name="iidd" type="hidden" id="iidd" value="" class="txt" />
 				</div>
@@ -120,7 +120,7 @@
 			</div>
 
 			<div class="control-group" style="margin-top:15px;">
-				<label class="col-sm-12 control-label bolder blue">Invoice Print Type</label>
+				<label class="col-md-12 control-label bolder blue">Invoice Print Type</label>
 				<div class="radio inline-radio">
 					<label>
 						<input name="inpt" id="a4"  type="radio" value="1" class="ace" />
@@ -144,10 +144,10 @@
 			</div>
 
 			<div class="form-group">
-				<label class="col-sm-4 control-label" for=""> </label>
-				<label class="col-sm-1 control-label"></label>
-				<div class="col-sm-6">
-					<button type="submit" name="btnSubmit" title="Update" class="btn btn-sm btn-success pull-left">
+				<label class="col-md-4 control-label" for=""> </label>
+				<label class="col-md-1 control-label"></label>
+				<div class="col-md-6">
+					<button type="submit" name="btnSubmit" title="Update" class="btn btn-md btn-success pull-left">
 							Save
 							<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
 					</button>
@@ -159,39 +159,39 @@
 		}
 		?>
 		</div>
-		<div class="col-sm-6 col-sm-offset-1">
+		<div class="col-md-6 col-md-offset-1">
 			<div id="branch">
 				<div class="row" style="margin-top: 15px;">
 					<div class="col-md-12">
 						<form class="form-horizontal" @submit.prevent="saveBranch">
 							<div class="form-group">
-								<label class="col-sm-3 control-label no-padding-right"> Branch Name </label>
-								<label class="col-sm-1 control-label no-padding-right">:</label>
-								<div class="col-sm-8">
+								<label class="col-md-3 control-label no-padding-right"> Branch Name </label>
+								<label class="col-md-1 control-label no-padding-right">:</label>
+								<div class="col-md-8">
 									<input type="text" placeholder="Branch Name" class="form-control" v-model="branch.name" required/>
 								</div>
 							</div>
 
 							<div class="form-group">
-								<label class="col-sm-3 control-label no-padding-right"> Branch Title </label>
-								<label class="col-sm-1 control-label no-padding-right">:</label>
-								<div class="col-sm-8">
+								<label class="col-md-3 control-label no-padding-right"> Branch Title </label>
+								<label class="col-md-1 control-label no-padding-right">:</label>
+								<div class="col-md-8">
 									<input type="text" placeholder="Branch Title" class="form-control" v-model="branch.title" required/>
 								</div>
 							</div>
 
 							<div class="form-group">
-								<label class="col-sm-3 control-label no-padding-right"> Branch Address </label>
-								<label class="col-sm-1 control-label no-padding-right">:</label>
-								<div class="col-sm-8">
+								<label class="col-md-3 control-label no-padding-right"> Branch Address </label>
+								<label class="col-md-1 control-label no-padding-right">:</label>
+								<div class="col-md-8">
 									<textarea class="form-control" placeholder="Branch Address" v-model="branch.address" required></textarea>
 								</div>
 							</div>
 
 							<div class="form-group">
-								<label class="col-sm-8 control-label no-padding-right"></label>
-								<div class="col-sm-4">
-									<button type="submit" class="btn btn-sm btn-success">
+								<label class="col-md-8 control-label no-padding-right"></label>
+								<div class="col-md-4">
+									<button type="submit" class="btn btn-md btn-success">
 										Submit
 										<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
 									</button>

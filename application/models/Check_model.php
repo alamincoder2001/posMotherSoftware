@@ -102,7 +102,7 @@ class Check_model extends CI_Model
 			'note' =>$this->input->post('note'),
 			'check_status' =>$this->input->post('check_status'),
 			'status'=>'a',
-			'AddBy' =>$this->session->userdata('FullName'),
+			'AddBy' =>$this->session->userdata("userId"),
 			'AddTime' =>date('Y-m-d'),
 		);
 
@@ -129,8 +129,9 @@ class Check_model extends CI_Model
 			'note' =>$cheque['note'],
 			'check_status' =>'Pe',
 			'status'=>'a',
-			'AddBy' =>$this->session->userdata('FullName'),
+			'AddBy' =>$this->session->userdata("userId"),
 			'AddTime' =>date('Y-m-d H:i:s'),
+			'last_update_ip' => $this->input->ip_address(),
 		);
 
 		$result = $this->db->insert('tbl_cheque', $attr);
@@ -157,17 +158,20 @@ class Check_model extends CI_Model
 	public function update_check_data($id= null)
 	{
 		$attr = array(
-			'cus_id' =>$this->input->post('cus_id'),
-			'bank_name' =>$this->input->post('bank_name'),
-			'branch_name' =>$this->input->post('branch_name'),
-			'check_no' =>$this->input->post('check_no'),
-			'check_amount' =>$this->input->post('check_amount'),
-			'date' =>$this->input->post('date'),
-			'check_date' =>$this->input->post('check_date'),
-			'remid_date' =>$this->input->post('remid_date'),
-			'sub_date' =>$this->input->post('sub_date'),
-			'note' =>$this->input->post('note'),
-			'check_status' =>$this->input->post('check_status'),
+			'cus_id'         => $this->input->post('cus_id'),
+			'bank_name'      => $this->input->post('bank_name'),
+			'branch_name'    => $this->input->post('branch_name'),
+			'check_no'       => $this->input->post('check_no'),
+			'check_amount'   => $this->input->post('check_amount'),
+			'date'           => $this->input->post('date'),
+			'check_date'     => $this->input->post('check_date'),
+			'remid_date'     => $this->input->post('remid_date'),
+			'sub_date'       => $this->input->post('sub_date'),
+			'note'           => $this->input->post('note'),
+			'check_status'   => $this->input->post('check_status'),
+			'UpdateBy'       => $this->session->userdata('userId'),
+			'UpdateTime'     => date('Y-m-d H:i:s'),
+			'last_update_ip' => $this->input->ip_address(),
 		);
 
 		$this->db->where('id', $id);
@@ -184,7 +188,10 @@ class Check_model extends CI_Model
 	public function delete_check_data($id= null)
 	{
 		$attr = array(
-			'status' => 'd'
+			'status'         => 'd',
+			"DeletedBy"      => $this->session->userdata("userId"),
+			"DeletedTime"    => date("Y-m-d H:i:s"),
+			"last_update_ip" => $this->input->ip_address()
 		);
 
 		$this->db->where('id', $id);

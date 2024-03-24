@@ -83,9 +83,9 @@
 </div>
 
 <script>
-    async function printTransfer(event){
+    async function printTransfer(event) {
         event.preventDefault();
-    
+
         let invoiceContent = document.querySelector('#invoiceContent').innerHTML;
         let printWindow = window.open('', 'PRINT', `height=${screen.height}, width=${screen.width}`);
         printWindow.document.write(`
@@ -100,7 +100,14 @@
                     </style>
                 </head>
                 <body>
-                    ${invoiceContent}
+                    <?php $this->load->view('Administrator/reports/reportHeader.php'); ?>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                ${invoiceContent}
+                            </div>
+                        </div>
+                    </div>
                 </body>
             </html>
         `);

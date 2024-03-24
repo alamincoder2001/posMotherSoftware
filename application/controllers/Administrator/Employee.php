@@ -98,7 +98,7 @@ class Employee extends CI_Controller
             join tbl_designation ds on ds.Designation_SlNo = e.Designation_ID
             join tbl_month m on m.month_id = ep.month_id
 
-            where ep.paymentBranch_id = ?
+            where ep.branch_id = ?
             and ep.status = 'a'
             $clauses
             order by ep.employee_payment_id desc
@@ -124,7 +124,7 @@ class Employee extends CI_Controller
                     where ep.Employee_SlNo = e.Employee_SlNo
                     and ep.status = 'a'
                     and ep.month_id = " . $data->monthId . "
-                    and ep.paymentBranch_id = " . $this->session->userdata('BRANCHid') . "
+                    and ep.branch_id = " . $this->session->userdata('BRANCHid') . "
                 ) as paid_amount,
                 
                 (
@@ -132,7 +132,7 @@ class Employee extends CI_Controller
                     where ep.Employee_SlNo = e.Employee_SlNo
                     and ep.status = 'a'
                     and ep.month_id = " . $data->monthId . "
-                    and ep.paymentBranch_id = " . $this->session->userdata('BRANCHid') . "
+                    and ep.branch_id = " . $this->session->userdata('BRANCHid') . "
                 ) as deducted_amount,
                 
                 (
@@ -162,7 +162,7 @@ class Employee extends CI_Controller
             where ep.status = 'a'
             and ep.month_id = ?
             and ep.Employee_SlNo = ?
-            and ep.paymentBranch_id = ?        
+            and ep.branch_id = ?        
         ", [$data->monthId, $data->employeeId, $this->brunch])->row()->payable_amount;
 
         echo $payableAmount;
@@ -195,8 +195,9 @@ class Employee extends CI_Controller
             $designation = array(
                 "Designation_Name" => $data->Designation_Name,
                 "status"          => 'a',
-                "AddBy"           => $this->session->userdata("FullName"),
+                "AddBy"           => $this->session->userdata("userId"),
                 "AddTime"         => date("Y-m-d H:i:s"),
+                "last_update_ip"         => $this->input->ip_address(),
 
             );
             $this->db->insert('tbl_designation', $designation);
@@ -216,8 +217,9 @@ class Employee extends CI_Controller
 
             $designation = array(
                 "Designation_Name" => $data->Designation_Name,
-                "UpdateBy"         => $this->session->userdata("FullName"),
-                "UpdateTime"       => date("Y-m-d H:i:s")
+                "UpdateBy"         => $this->session->userdata("userId"),
+                "UpdateTime"       => date("Y-m-d H:i:s"),
+                "last_update_ip"         => $this->input->ip_address(),
             );
             $this->db->where('Designation_SlNo', $data->Designation_SlNo);
             $this->db->update('tbl_designation', $designation);
@@ -232,9 +234,10 @@ class Employee extends CI_Controller
     {
         $data = json_decode($this->input->raw_input_stream);
         $designation = array(
-            'status'     => 'd',
-            "UpdateBy"   => $this->session->userdata("FullName"),
-            "UpdateTime" => date("Y-m-d H:i:s")
+            'status'         => 'd',
+            "DeletedBy"      => $this->session->userdata("userId"),
+            "DeletedTime"    => date("Y-m-d H:i:s"),
+            "last_update_ip" => $this->input->ip_address(),
         );
         $this->db->where('Designation_SlNo', $data->designationId);
         $this->db->update('tbl_designation', $designation);
@@ -268,8 +271,9 @@ class Employee extends CI_Controller
             $department = array(
                 "Department_Name" => $data->Department_Name,
                 "status"          => 'a',
-                "AddBy"           => $this->session->userdata("FullName"),
+                "AddBy"           => $this->session->userdata("userId"),
                 "AddTime"         => date("Y-m-d H:i:s"),
+                "last_update_ip"         => $this->input->ip_address(),
 
             );
             $this->db->insert('tbl_department', $department);
@@ -288,8 +292,9 @@ class Employee extends CI_Controller
 
             $department = array(
                 "Department_Name" => $data->Department_Name,
-                "UpdateBy"                    => $this->session->userdata("FullName"),
-                "UpdateTime"                  => date("Y-m-d H:i:s")
+                "UpdateBy"                    => $this->session->userdata("userId"),
+                "UpdateTime"                  => date("Y-m-d H:i:s"),
+                "last_update_ip"         => $this->input->ip_address(),
             );
             $this->db->where('Department_SlNo', $data->Department_SlNo);
             $this->db->update('tbl_department', $department);
@@ -304,9 +309,10 @@ class Employee extends CI_Controller
     {
         $data = json_decode($this->input->raw_input_stream);
         $department = array(
-            'status'     => 'd',
-            "UpdateBy"   => $this->session->userdata("FullName"),
-            "UpdateTime" => date("Y-m-d H:i:s")
+            'status'         => 'd',
+            "DeletedBy"      => $this->session->userdata("userId"),
+            "DeletedTime"    => date("Y-m-d H:i:s"),
+            "last_update_ip" => $this->input->ip_address(),
         );
         $this->db->where('Department_SlNo', $data->departmentId);
         $this->db->update('tbl_department', $department);
@@ -377,11 +383,11 @@ class Employee extends CI_Controller
     // Employee Insert
     public function employee_insert()
     {
-        $employee_code = $this->input->post('Employeer_id', true);
+        $employee_code  = $this->input->post('Employeer_id', true);
         $designation_id = $this->input->post('em_Designation', true);
-        $department_id = $this->input->post('em_Depertment', true);
-        $employee_name = $this->input->post('em_name', true);
-        $bio_id = $this->input->post('bio_id', true);
+        $department_id  = $this->input->post('em_Depertment', true);
+        $employee_name  = $this->input->post('em_name', true);
+        $bio_id         = $this->input->post('bio_id', true);
 
         if ($bio_id) {
             $bio_id_count = $this->db->query("SELECT * from tbl_employee where bio_id = '$bio_id' and branch_id = '$this->brunch'")->num_rows();
@@ -435,9 +441,10 @@ class Employee extends CI_Controller
         $data['salary_range'] = $this->input->post('salary_range', true);
         $data['status'] = $this->input->post('status', true);
 
-        $data['AddBy'] = $this->session->userdata("FullName");
-        $data['branch_id'] = $this->session->userdata("BRANCHid");
+        $data['AddBy'] = $this->session->userdata("userId");
         $data['AddTime'] = date("Y-m-d H:i:s");
+        $data['last_update_ip'] = $this->input->ip_address();
+        $data['branch_id'] = $this->session->userdata("BRANCHid");
 
         $this->upload->do_upload('em_photo');
         $images = $this->upload->data();
@@ -536,8 +543,9 @@ class Employee extends CI_Controller
         $data['salary_range'] = $this->input->post('salary_range', true);
         $data['status'] = $this->input->post('status', true);
 
-        $data['UpdateBy'] = $this->session->userdata("FullName");
+        $data['UpdateBy'] = $this->session->userdata("userId");
         $data['UpdateTime'] = date("Y-m-d H:i:s");
+        $data['last_update_ip'] = $this->input->ip_address();;
 
         $xx = $this->mt->select_by_id("tbl_employee", $id, $fld);
 
@@ -575,7 +583,13 @@ class Employee extends CI_Controller
     public function employee_Delete()
     {
         $id = $this->input->post('deleted');
-        $this->db->set(['status' => 'd'])->where('Employee_SlNo', $id)->update('tbl_employee');
+        $rules = array(
+            'status'         => 'd',
+            "DeletedBy"      => $this->session->userdata("userId"),
+            "DeletedTime"    => date("Y-m-d H:i:s"),
+            "last_update_ip" => $this->input->ip_address()
+        );
+        $this->db->set($rules)->where('Employee_SlNo', $id)->update('tbl_employee');
     }
 
     public function active()
@@ -613,10 +627,11 @@ class Employee extends CI_Controller
             $paymentObj = json_decode($this->input->raw_input_stream);
             $payment = (array)$paymentObj;
             unset($payment['employee_payment_id']);
-            $payment['status'] = 'a';
-            $payment['save_by'] = $this->session->userdata('userId');
-            $payment['save_date'] = Date('Y-m-d H:i:s');
-            $payment['paymentBranch_id'] = $this->brunch;
+            $payment['status']         = 'a';
+            $payment['AddBy']          = $this->session->userdata('userId');
+            $payment['AddTime']        = date('Y-m-d H:i:s');
+            $payment['last_update_ip'] = $this->input->ip_address();
+            $payment['branch_id']      = $this->brunch;
 
             $this->db->insert('tbl_employee_payment', $payment);
             $res = ['success' => true, 'message' => 'Employee payment added'];
@@ -701,7 +716,7 @@ class Employee extends CI_Controller
     {
         $data['title'] = "Edit Employee Salary";
         $BRANCHid = $this->session->userdata("BRANCHid");
-        $query = $this->db->query("SELECT tbl_employee.*,tbl_employee_payment.*,tbl_month.*,tbl_designation.* FROM tbl_employee left join tbl_employee_payment on tbl_employee_payment.Employee_SlNo=tbl_employee.Employee_SlNo left join tbl_month on tbl_employee_payment.month_id=tbl_month.month_id left join tbl_designation on tbl_designation.Designation_SlNo=tbl_employee.Designation_ID where tbl_employee_payment.employee_payment_id='$id' AND tbl_employee_payment.paymentBranch_id='$BRANCHid'");
+        $query = $this->db->query("SELECT tbl_employee.*,tbl_employee_payment.*,tbl_month.*,tbl_designation.* FROM tbl_employee left join tbl_employee_payment on tbl_employee_payment.Employee_SlNo=tbl_employee.Employee_SlNo left join tbl_month on tbl_employee_payment.month_id=tbl_month.month_id left join tbl_designation on tbl_designation.Designation_SlNo=tbl_employee.Designation_ID where tbl_employee_payment.employee_payment_id='$id' AND tbl_employee_payment.branch_id='$BRANCHid'");
         $data['selected'] = $query->row();
         //echo "<pre>";print_r($data['selected']);exit;
         $data['content'] = $this->load->view('Administrator/employee/edit_employee_salary', $data, TRUE);
@@ -716,7 +731,8 @@ class Employee extends CI_Controller
             $payment = (array)$paymentObj;
             unset($payment['employee_payment_id']);
             $payment['UpdateBy'] = $this->session->userdata('userId');
-            $payment['update_date'] = Date('Y-m-d H:i:s');
+            $payment['UpdateTime'] = Date('Y-m-d H:i:s');
+            $payment['last_update_ip'] = $this->input->ip_address();
 
             $this->db->where('employee_payment_id', $paymentObj->employee_payment_id)->update('tbl_employee_payment', $payment);
             $res = ['success' => true, 'message' => 'Employee payment updated'];
@@ -732,8 +748,13 @@ class Employee extends CI_Controller
         $res = ['success' => false, 'message' => 'Nothing happened'];
         try {
             $data = json_decode($this->input->raw_input_stream);
-
-            $this->db->set(['status' => 'd'])->where('employee_payment_id', $data->paymentId)->update('tbl_employee_payment');
+            $rules = array(
+                'status'         => 'd',
+                "DeletedBy"      => $this->session->userdata("userId"),
+                "DeletedTime"    => date("Y-m-d H:i:s"),
+                "last_update_ip" => $this->input->ip_address()
+            );
+            $this->db->set($rules)->where('employee_payment_id', $data->paymentId)->update('tbl_employee_payment');
             $res = ['success' => true, 'message' => 'Employee payment deleted'];
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
@@ -890,18 +911,19 @@ class Employee extends CI_Controller
 
             foreach ($employees as $emp) {
                 $employee = [
-                    'payment_id'      => $payment_id,
-                    'employee_id'     => $emp->Employee_SlNo,
-                    'salary'          => $emp->salary,
-                    'benefit'         => $emp->benefit,
-                    'deduction'       => $emp->deduction,
-                    'net_payable'     => $emp->net_payable,
-                    'payment'         => $emp->payment,
-                    'comment'         => $emp->comment,
-                    'AddBy'        => $this->session->userdata("userId"),
+                    'payment_id'     => $payment_id,
+                    'employee_id'    => $emp->Employee_SlNo,
+                    'salary'         => $emp->salary,
+                    'benefit'        => $emp->benefit,
+                    'deduction'      => $emp->deduction,
+                    'net_payable'    => $emp->net_payable,
+                    'payment'        => $emp->payment,
+                    'comment'        => $emp->comment,
+                    'AddBy'          => $this->session->userdata("userId"),
                     'AddTime'        => date("Y-m-d H:i:s"),
-                    'branch_id'       => $this->session->userdata("BRANCHid"),
-                    'status'          => 'a',
+                    'last_update_ip' => $this->input->ip_address(),
+                    'branch_id'      => $this->session->userdata("BRANCHid"),
+                    'status'         => 'a',
                 ];
 
                 $this->db->insert('tbl_employee_payment_details', $employee);
@@ -932,7 +954,7 @@ class Employee extends CI_Controller
             $payment = (array)$paymentObj;
             unset($payment['id']);
             $payment['UpdateBy'] = $this->session->userdata("userId");
-            $payment['updated_at'] = date("Y-m-d H:i:s");
+            $payment['UpdateTime'] = date("Y-m-d H:i:s");
 
             $this->db->where('id', $payment_id);
             $this->db->update('tbl_employee_payment', $payment);
@@ -941,16 +963,16 @@ class Employee extends CI_Controller
 
             foreach ($employees as $emp) {
                 $employee = [
-                    'payment_id'      => $payment_id,
-                    'employee_id'     => $emp->employee_id,
-                    'salary'          => $emp->salary,
-                    'benefit'         => $emp->benefit,
-                    'deduction'       => $emp->deduction,
-                    'net_payable'     => $emp->net_payable,
-                    'payment'         => $emp->payment,
-                    'comment'         => $emp->comment,
-                    'UpdateBy'      => $this->session->userdata("userId"),
-                    'updated_at'      => date("Y-m-d H:i:s"),
+                    'payment_id'  => $payment_id,
+                    'employee_id' => $emp->employee_id,
+                    'salary'      => $emp->salary,
+                    'benefit'     => $emp->benefit,
+                    'deduction'   => $emp->deduction,
+                    'net_payable' => $emp->net_payable,
+                    'payment'     => $emp->payment,
+                    'comment'     => $emp->comment,
+                    'UpdateBy'    => $this->session->userdata("userId"),
+                    'UpdateTime'  => date("Y-m-d H:i:s"),
                 ];
 
                 $this->db->where('id', $emp->id);
@@ -992,11 +1014,17 @@ class Employee extends CI_Controller
                 "
             )->result();
 
+            $rules = array(
+                'status'         => 'd',
+                "DeletedBy"      => $this->session->userdata("userId"),
+                "DeletedTime"    => date("Y-m-d H:i:s"),
+                "last_update_ip" => $this->input->ip_address()
+            );
             foreach ($details as $detail) {
-                $this->db->set(['status' => 'd'])->where('id', $detail->id)->update('tbl_employee_payment_details');
+                $this->db->set($rules)->where('id', $detail->id)->update('tbl_employee_payment_details');
             }
 
-            $this->db->set(['status' => 'd'])->where('id', $data->paymentId)->update('tbl_employee_payment');
+            $this->db->set($rules)->where('id', $data->paymentId)->update('tbl_employee_payment');
             $res = ['success' => true, 'message' => 'Salary Payment deleted'];
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());

@@ -181,23 +181,6 @@ class Supplier extends CI_Controller
         echo json_encode($data);
     }
 
-    function suppliertDelete($Suppid = null)
-    {
-
-        $attr = array(
-            'status'     =>   'd'
-        );
-
-        $this->db->where('SPayment_id', $Suppid);
-        $qu = $this->db->update('tbl_supplier_payment', $attr);
-
-        if ($this->db->affected_rows()) {
-            echo json_encode(TRUE);
-        } else {
-            echo json_encode(FALSE);
-        }
-    }
-
 
     function supplierPaymentUpdate($Suppid = null)
     {
@@ -500,6 +483,7 @@ class Supplier extends CI_Controller
             $payment['status'] = 'a';
             $payment['Addby'] = $this->session->userdata("userId");
             $payment['AddTime'] = date('Y-m-d H:i:s');
+            $payment['last_update_ip'] = $this->input->ip_address();
             $payment['branch_id'] = $this->session->userdata("BRANCHid");
 
             $this->db->insert('tbl_supplier_payment', $payment);
@@ -524,6 +508,7 @@ class Supplier extends CI_Controller
             unset($payment['SPayment_id']);
             $payment['UpdateBy'] = $this->session->userdata("userId");
             $payment['UpdateTime'] = date('Y-m-d H:i:s');
+            $payment['last_update_ip'] = $this->input->ip_address();
 
             $this->db->where('SPayment_id', $paymentObj->SPayment_id)->update('tbl_supplier_payment', $payment);
 
@@ -541,7 +526,13 @@ class Supplier extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
 
-            $this->db->set(['status' => 'd'])->where('SPayment_id', $data->paymentId)->update('tbl_supplier_payment');
+            $payment = array(
+                'status'         => 'd',
+                "DeletedBy"      => $this->session->userdata("userId"),
+                "DeletedTime"    => date("Y-m-d H:i:s"),
+                "last_update_ip" => $this->input->ip_address()
+            );
+            $this->db->set($payment)->where('SPayment_id', $data->paymentId)->update('tbl_supplier_payment');
 
             $res = ['success' => true, 'message' => 'Payment deleted successfully'];
         } catch (Exception $ex) {

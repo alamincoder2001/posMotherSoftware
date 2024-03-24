@@ -141,7 +141,7 @@
                             <td>
                                 <?php if ($this->session->userdata('accountType') != 'u') { ?>
                                         <i class="btnEdit fa fa-pencil" @click="editAccount(row)"></i>
-                                        <i v-bind:class="row.status == 1 ? 'btnDelete fa fa-ban' : 'fa fa-check '" @click="changestatus(row)"></i>
+                                        <i v-bind:class="row.status == 1 ? 'btnDelete fa fa-ban' : 'fa fa-check'" style="cursor: pointer;" :style="{color: row.status == 0 ? 'green' : ''}" @click="changestatus(row)"></i>
                                 <?php } ?>
                             </td>
                         </tr>

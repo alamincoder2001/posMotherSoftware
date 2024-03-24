@@ -42,16 +42,17 @@ class Quotation extends CI_Controller
             }
 
             $quotation = array(
-                'SaleMaster_InvoiceNo' => $invoice,
-                'SaleMaster_SaleDate' => $data->quotation->quotationDate,
-                'SaleMaster_TotalSaleAmount' => $data->quotation->total,
+                'SaleMaster_InvoiceNo'           => $invoice,
+                'SaleMaster_SaleDate'            => $data->quotation->quotationDate,
+                'SaleMaster_TotalSaleAmount'     => $data->quotation->total,
                 'SaleMaster_TotalDiscountAmount' => $data->quotation->discount,
-                'SaleMaster_TaxAmount' => $data->quotation->vat,
-                'SaleMaster_SubTotalAmount' => $data->quotation->subTotal,
-                'status' => 'a',
-                "AddBy" => $this->session->userdata("FullName"),
-                'AddTime' => date("Y-m-d H:i:s"),
-                'branch_id' => $this->session->userdata("BRANCHid")
+                'SaleMaster_TaxAmount'           => $data->quotation->vat,
+                'SaleMaster_SubTotalAmount'      => $data->quotation->subTotal,
+                'status'                         => 'a',
+                "AddBy"                          => $this->session->userdata("userId"),
+                'AddTime'                        => date("Y-m-d H:i:s"),
+                'last_update_ip'                 => $this->input->ip_address(),
+                'branch_id'                      => $this->session->userdata("BRANCHid")
             );
 
             if ($data->customer->Customer_Type == 'G') {
@@ -71,15 +72,16 @@ class Quotation extends CI_Controller
 
             foreach ($data->cart as $cartProduct) {
                 $quotationDetails = array(
-                    'SaleMaster_IDNo' => $quotationId,
-                    'Product_IDNo' => $cartProduct->productId,
+                    'SaleMaster_IDNo'           => $quotationId,
+                    'Product_IDNo'              => $cartProduct->productId,
                     'SaleDetails_TotalQuantity' => $cartProduct->quantity,
-                    'SaleDetails_Rate' => $cartProduct->salesRate,
-                    'SaleDetails_TotalAmount' => $cartProduct->total,
-                    'status' => 'a',
-                    'AddBy' => $this->session->userdata("FullName"),
-                    'AddTime' => date('Y-m-d H:i:s'),
-                    'branch_id' => $this->session->userdata('BRANCHid')
+                    'SaleDetails_Rate'          => $cartProduct->salesRate,
+                    'SaleDetails_TotalAmount'   => $cartProduct->total,
+                    'status'                    => 'a',
+                    'AddBy'                     => $this->session->userdata("userId"),
+                    'AddTime'                   => date('Y-m-d H:i:s'),
+                    'last_update_ip'            => $this->input->ip_address(),
+                    'branch_id'                 => $this->session->userdata('BRANCHid')
                 );
 
                 $this->db->insert('tbl_quotation_details', $quotationDetails);
@@ -112,8 +114,9 @@ class Quotation extends CI_Controller
                 'SaleMaster_TaxAmount' => $data->quotation->vat,
                 'SaleMaster_SubTotalAmount' => $data->quotation->subTotal,
                 'status' => 'a',
-                "AddBy" => $this->session->userdata("FullName"),
+                "AddBy" => $this->session->userdata("userId"),
                 'AddTime' => date("Y-m-d H:i:s"),
+                'last_update_ip' => $this->input->ip_address(),
                 'branch_id' => $this->session->userdata("BRANCHid")
             );
 
@@ -129,8 +132,9 @@ class Quotation extends CI_Controller
                     'SaleDetails_Rate' => $cartProduct->salesRate,
                     'SaleDetails_TotalAmount' => $cartProduct->total,
                     'status' => 'a',
-                    'AddBy' => $this->session->userdata("FullName"),
+                    'AddBy' => $this->session->userdata("userId"),
                     'AddTime' => date('Y-m-d H:i:s'),
+                    'AddTime' => $this->input->ip_address(),
                     'branch_id' => $this->session->userdata('BRANCHid')
                 );
 

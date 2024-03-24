@@ -511,7 +511,7 @@ class Page extends CI_Controller
         echo json_encode($res);
     }
 
-    public function brunch()
+    public function branch()
     {
         $access = $this->mt->userAccess();
         if (!$access) {
@@ -582,20 +582,20 @@ class Page extends CI_Controller
         echo json_encode($res);
     }
 
-    public function brunch_edit()
+    public function branch_edit()
     {
         $id = $this->input->post('edit');
         $query = $this->db->query("SELECT * from tbl_branch where branch_id = '$id'");
         $data['selected'] = $query->row();
-        $this->load->view('Administrator/edit/brunch_edit', $data);
+        $this->load->view('Administrator/edit/branch_edit', $data);
     }
-    public function brunch_update()
+    public function branch_update()
     {
         $id = $this->input->post('id');
         $fld = 'branch_id';
-        $string = $this->input->post('brunchaddress');
+        $string = $this->input->post('branchaddress');
         $data = array(
-            "Branch_name"        => $this->input->post('Brunchname', TRUE),
+            "Branch_name"        => $this->input->post('Branchname', TRUE),
             "Branch_title"       => $this->input->post('brunchtitle', TRUE),
             "Branch_address"     => htmlentities($string),
             "Branch_sales"       => $this->input->post('Access', TRUE),

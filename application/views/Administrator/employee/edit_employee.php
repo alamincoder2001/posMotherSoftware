@@ -232,8 +232,8 @@ if ($serial[1] >= 9) {
 						<div class="col-md-6">
 							<select class="chosen-select form-control" name="Marital" id="Marital" data-placeholder="Choose a Marital status...">
 								<option value=""> </option>
-								<option value="married" <?= $employee->Employee_Maritalstatus == 'married' ?'selected' : '' ?>>Married</option>
-								<option value="unmarried" <?= $employee->Employee_Maritalstatus == 'unmarried' ?'selected' : '' ?>>Unmarried</option>
+								<option value="married" <?= $employee->Employee_MaritalStatus == 'married' ?'selected' : '' ?>>Married</option>
+								<option value="unmarried" <?= $employee->Employee_MaritalStatus == 'unmarried' ?'selected' : '' ?>>Unmarried</option>
 							</select>
 						</div>
 					</div>

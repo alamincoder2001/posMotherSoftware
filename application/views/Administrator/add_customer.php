@@ -51,7 +51,7 @@
 
 	#customers .add-button {
 		padding: 2.5px;
-		width: 28px;
+		width: 30px;
 		background-color: #298db4;
 		display: block;
 		text-align: center;
@@ -123,11 +123,10 @@
 
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Area:</label>
-							<div class="col-md-7">
-								<select class="form-control" v-if="districts.length == 0"></select>
-								<v-select v-bind:options="districts" v-model="selectedDistrict" label="District_Name" v-if="districts.length > 0"></v-select>
+							<div class="col-md-6">								
+								<v-select v-bind:options="districts" v-model="selectedDistrict" label="District_Name"></v-select>
 							</div>
-							<div class="col-md-1" style="padding:0;margin-left: -15px;"><a href="/area" target="_blank" class="add-button"><i class="fa fa-plus"></i></a></div>
+							<div class="col-md-1" style="padding:0;margin-left: -10px;"><a href="/area" target="_blank" class="add-button"><i class="fa fa-plus"></i></a></div>
 						</div>
 					</div>
 
