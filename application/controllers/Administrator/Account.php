@@ -315,7 +315,7 @@ class Account extends CI_Controller
             (
                 select ifnull(sum(a.valuation - a.as_amount), 0)
                 from tbl_assets a
-                where a.branchid = '" . $this->session->userdata('BRANCHid') . "'
+                where a.branch_id = '" . $this->session->userdata('BRANCHid') . "'
                 and a.buy_or_sale = 'sale'
                 and a.status = 'a'
                 $assetsSalesDateClause
@@ -820,7 +820,6 @@ class Account extends CI_Controller
         $data['title'] = "Cash View";
 
         $data['transaction_summary'] = $this->mt->getTransactionSummary();
-
         $data['bank_account_summary'] = $this->mt->getBankTransactionSummary();
 
         $data['content'] = $this->load->view('Administrator/account/cash_view', $data, true);
@@ -894,7 +893,7 @@ class Account extends CI_Controller
                 sm.SaleMaster_PaidAmount as in_amount,
                 0.00 as out_amount
             from tbl_salesmaster sm 
-            join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+            left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             where sm.status = 'a'
             and sm.branch_id = '$this->brunch'
             and sm.SaleMaster_SaleDate between '$data->fromDate' and '$data->toDate'
@@ -908,7 +907,7 @@ class Account extends CI_Controller
                 cp.CPayment_amount as in_amount,
                 0.00 as out_amount
             from tbl_customer_payment cp
-            join tbl_customer c on c.Customer_SlNo = cp.CPayment_customerID
+            left join tbl_customer c on c.Customer_SlNo = cp.CPayment_customerID
             where cp.status = 'a'
             and cp.branch_id = '$this->brunch'
             and cp.CPayment_TransactionType = 'CR'
@@ -924,7 +923,7 @@ class Account extends CI_Controller
                 sp.SPayment_amount as in_amount,
                 0.00 as out_amount
             from tbl_supplier_payment sp
-            join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
+            left join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
             where sp.SPayment_TransactionType = 'CR'
             and sp.status = 'a'
             and sp.SPayment_Paymentby != 'bank'
@@ -1011,7 +1010,7 @@ class Account extends CI_Controller
                 ass.as_amount as in_amount,
                 0.00 as out_amount
             from tbl_assets ass
-            where ass.branchid = '$this->brunch'
+            where ass.branch_id = '$this->brunch'
             and ass.status = 'a'
             and ass.buy_or_sale = 'sale'
             and ass.as_date between '$data->fromDate' and '$data->toDate'
@@ -1027,7 +1026,7 @@ class Account extends CI_Controller
                 0.00 as in_amount,
                 pm.PurchaseMaster_PaidAmount as out_amount
             from tbl_purchasemaster pm 
-            join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
+            left join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
             where pm.status = 'a'
             and pm.branch_id = '$this->brunch'
             and pm.PurchaseMaster_OrderDate between '$data->fromDate' and '$data->toDate'
@@ -1041,7 +1040,7 @@ class Account extends CI_Controller
                 0.00 as in_amount,
                 sp.SPayment_amount as out_amount
             from tbl_supplier_payment sp 
-            join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
+            left join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
             where sp.SPayment_TransactionType = 'CP'
             and sp.status = 'a'
             and sp.SPayment_Paymentby != 'bank'
@@ -1147,7 +1146,7 @@ class Account extends CI_Controller
                 0.00 as in_amount,
                 ass.as_amount as out_amount
             from tbl_assets ass
-            where ass.branchid = '$this->brunch'
+            where ass.branch_id = '$this->brunch'
             and ass.status = 'a'
             and ass.buy_or_sale = 'buy'
             and ass.as_date between '$data->fromDate' and '$data->toDate'
@@ -1164,5 +1163,15 @@ class Account extends CI_Controller
         $res['ledger'] = $ledger;
 
         echo json_encode($res);
+    }
+
+    function all_transaction_report()  {
+        $access = $this->mt->userAccess();
+        if(!$access){
+            redirect(base_url());
+        }
+        $data['title'] = "Cash Transaction Report";
+		$data['content'] = $this->load->view('Administrator/account/all_transaction_report', $data, TRUE);
+        $this->load->view('Administrator/index', $data);
     }
 }

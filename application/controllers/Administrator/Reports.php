@@ -318,7 +318,7 @@ class Reports extends CI_Controller {
                 (
                     select ifnull(sum(a.valuation - a.as_amount), 0)
                     from tbl_assets a
-                    where a.branchid = '" . $this->session->userdata('BRANCHid') . "'
+                    where a.branch_id = '" . $this->session->userdata('BRANCHid') . "'
                     and a.buy_or_sale = 'sale'
                     and a.status = 'a'
                     " . ($date == null ? "" : " and a.as_date < '$date'") . "

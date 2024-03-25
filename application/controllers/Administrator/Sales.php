@@ -1115,7 +1115,7 @@ class Sales extends CI_Controller
                 c.Customer_Name,
                 c.Customer_Mobile
             from tbl_salesmaster sm
-            join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+            left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             where sm.branch_id = ? 
             and sm.status = 'a'
             $customerClause $dateClause

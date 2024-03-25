@@ -83,7 +83,7 @@
                         ', Due: ', sm.SaleMaster_DueAmount
                     ) as sale_text
                 from tbl_salesmaster sm 
-                join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+                left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
                 where sm.status = 'a'
                 and sm.branch_id = ?
                 order by sm.SaleMaster_SlNo desc limit 20
@@ -146,7 +146,7 @@
                 c.Customer_Name as customer_name,
                 ifnull(sum(sm.SaleMaster_TotalSaleAmount), 0) as amount
                 from tbl_salesmaster sm 
-                join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+                left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
                 where sm.branch_id = ?
                 group by sm.SalseCustomer_IDNo
                 order by amount desc 
@@ -214,8 +214,8 @@
                 from tbl_salesmaster sm
                 where sm.branch_id = ? 
                 and sm.status = 'a'
-                and month(sm.SaleMaster_SaleDate) = ?
-                and year(sm.SaleMaster_SaleDate) = ?
+                and DATE_FORMAT(sm.SaleMaster_SaleDate, '%m') = ?
+                and DATE_FORMAT(sm.SaleMaster_SaleDate, '%Y') = ?
             ", [$this->branchId, $month, $year])->result();
 
             foreach($sales as $sale){
@@ -255,8 +255,8 @@
                     from tbl_cashtransaction ct
                     where ct.branch_id = '$this->branchId'
                     and ct.status = 'a'
-                    and month(ct.Tr_date) = '$month'
-                    and year(ct.Tr_date) = '$year'
+                    and DATE_FORMAT(ct.Tr_date, '%m') = '$month'
+                    and DATE_FORMAT(ct.Tr_date, '%Y') = '$year'
                 ) as income,
             
                 (
@@ -264,8 +264,8 @@
                     from tbl_cashtransaction ct
                     where ct.branch_id = '$this->branchId'
                     and ct.status = 'a'
-                    and month(ct.Tr_date) = '$month'
-                    and year(ct.Tr_date) = '$year'
+                    and DATE_FORMAT(ct.Tr_date, '%m') = '$month'
+                    and DATE_FORMAT(ct.Tr_date, '%Y') = '$year'
                 ) as expense,
 
                 (
@@ -274,8 +274,8 @@
                     where it.branch_id = '$this->branchId'
                     and it.transaction_type = 'Profit'
                     and it.status = 1
-                    and month(it.transaction_date) = '$month'
-                    and year(it.transaction_date) = '$year'
+                    and DATE_FORMAT(it.transaction_date, '%m') = '$month'
+                    and DATE_FORMAT(it.transaction_date, '%Y') = '$year'
                 ) as profit_distribute,
 
                 (
@@ -284,8 +284,8 @@
                     where lt.branch_id = '$this->branchId'
                     and lt.transaction_type = 'Interest'
                     and lt.status = 1
-                    and month(lt.transaction_date) = '$month'
-                    and year(lt.transaction_date) = '$year'
+                    and DATE_FORMAT(lt.transaction_date, '%m') = '$month'
+                    and DATE_FORMAT(lt.transaction_date, '%Y') = '$year'
                 ) as loan_interest,
 
                 (
@@ -294,8 +294,8 @@
                     where a.branch_id = '$this->branchId'
                     and a.buy_or_sale = 'sale'
                     and a.status = 'a'
-                    and month(a.as_date) = '$month'
-                    and year(a.as_date) = '$year'
+                    and DATE_FORMAT(a.as_date, '%m') = '$month'
+                    and DATE_FORMAT(a.as_date, '%Y') = '$year'
                 ) as assets_sales_profit_loss,
             
                 (
@@ -303,8 +303,8 @@
                     from tbl_employee_payment ep
                     where ep.branch_id = '$this->branchId'
                     and ep.status = 'a'
-                    and month(ep.payment_date) = '$month'
-                    and year(ep.payment_date) = '$year'
+                    and DATE_FORMAT(ep.payment_date, '%m') = '$month'
+                    and DATE_FORMAT(ep.payment_date, '%Y') = '$year'
                 ) as employee_payment,
 
                 (
@@ -313,8 +313,8 @@
                     join tbl_damage d on d.Damage_SlNo = dd.Damage_SlNo
                     where d.branch_id = '$this->branchId'
                     and dd.status = 'a'
-                    and month(d.Damage_Date) = '$month'
-                    and year(d.Damage_Date) = '$year'
+                    and DATE_FORMAT(d.Damage_Date, '%m') = '$month'
+                    and DATE_FORMAT(d.Damage_Date, '%Y') = '$year'
                 ) as damaged_amount,
 
                 (
@@ -325,8 +325,8 @@
                     join tbl_saledetails sd on sd.Product_IDNo = rd.SaleReturnDetailsProduct_SlNo and sd.SaleMaster_IDNo = sm.SaleMaster_SlNo
                     where r.status = 'a'
                     and r.branch_id= '$this->branchId'
-                    and month(r.SaleReturn_ReturnDate) = '$month'
-                    and year(r.SaleReturn_ReturnDate) = '$year'
+                    and DATE_FORMAT(r.SaleReturn_ReturnDate, '%m') = '$month'
+                    and DATE_FORMAT(r.SaleReturn_ReturnDate, '%Y') = '$year'
                 ) as returned_amount
             ")->row();
 

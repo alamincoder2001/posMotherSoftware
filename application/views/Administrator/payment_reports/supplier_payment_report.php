@@ -65,18 +65,20 @@
 
 						<div class="form-group">
 							<div class="col-md-1">
-								<input type="button" value="Show">
+								<input type="submit" value="Show">
 							</div>
 						</div>
 					</form>
 				</div>
 		</fieldset>
 	</div>
-	<div class="row">
-		<div class="col-md-12" style="display:none;" v-bind:style="{display: showTable ? '' : 'none'}">
-			<a href="" style="margin: 7px 0;display:block;width:50px;" v-on:click.prevent="print">
+	<div class="row" style="display:none;" v-bind:style="{display: showTable ? '' : 'none'}">
+		<div class="col-md-12 text-right">
+			<a href="" v-on:click.prevent="print">
 				<i class="fa fa-print"></i> Print
 			</a>
+		</div>
+		<div class="col-md-12">
 			<div class="table-responsive" id="reportTable">
 				<table class="table table-bordered">
 					<thead>

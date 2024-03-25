@@ -174,7 +174,7 @@
 							<td>{{ row.payment_by }}</td>
 							<td>{{ row.SPayment_amount }}</td>
 							<td>{{ row.SPayment_notes }}</td>
-							<td>{{ row.Addby }}</td>
+							<td>{{ row.FullName }}</td>
 							<td>
 								<?php if ($this->session->userdata('accountType') != 'u') { ?>
 										<i class="btnEdit fa fa-pencil" @click="editPayment(row)"></i>

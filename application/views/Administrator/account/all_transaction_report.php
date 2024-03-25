@@ -1,14 +1,17 @@
 <style>
     .v-select {
-        margin-top: -2.5px;
         float: right;
-        min-width: 180px;
+        min-width: 200px;
+        background: #fff;
         margin-left: 5px;
+        border-radius: 4px !important;
+        margin-top: -2px;
     }
 
     .v-select .dropdown-toggle {
         padding: 0px;
         height: 25px;
+        border: none;
     }
 
     .v-select input[type=search],
@@ -51,45 +54,50 @@
     }
 </style>
 <div id="cashTransactionReport">
-    <div class="row" style="border-bottom: 1px solid #ccc;padding: 3px 0;">
-        <div class="col-md-12">
-            <form class="form-inline" id="searchForm" @submit.prevent="getTransactions">
-                <div class="form-group">
-                    <label>Transaction Type</label>
-                    <select class="form-control" v-model="filter.transactionType">
-                        <option value="">All</option>
-                        <option value="received">Received</option>
-                        <option value="paid">Payment</option>
-                    </select>
-                </div>
+    <div class="row" style="margin:0;">
+        <fieldset class="scheduler-border scheduler-search">
+            <legend class="scheduler-border">Search CashTransaction Report</legend>
+            <div class="control-group">
+                <div class="col-md-12">
+                    <form class="form-inline" id="searchForm" @submit.prevent="getTransactions">
+                        <div class="form-group">
+                            <label>Transaction Type</label>
+                            <select class="form-control" v-model="filter.transactionType">
+                                <option value="">All</option>
+                                <option value="received">Received</option>
+                                <option value="paid">Payment</option>
+                            </select>
+                        </div>
 
-                <div class="form-group" style="display:none;" v-bind:style="{display: accounts.length > 0 ? '' : 'none'}">
-                    <label>Accounts</label>
-                    <v-select v-bind:options="accounts" v-model="selectedAccount" label="Acc_Name" @input="onChangeAccount"></v-select>
-                </div>
+                        <div class="form-group" style="display:none;" v-bind:style="{display: accounts.length > 0 ? '' : 'none'}">
+                            <label>Accounts</label>
+                            <v-select v-bind:options="accounts" v-model="selectedAccount" label="Acc_Name" @input="onChangeAccount"></v-select>
+                        </div>
 
-                <div class="form-group">
-                    <input type="date" class="form-control" v-model="filter.dateFrom">
-                </div>
+                        <div class="form-group">
+                            <input type="date" class="form-control" v-model="filter.dateFrom">
+                        </div>
 
-                <div class="form-group">
-                    <input type="date" class="form-control" v-model="filter.dateTo">
-                </div>
+                        <div class="form-group">
+                            <input type="date" class="form-control" v-model="filter.dateTo">
+                        </div>
 
-                <div class="form-group" style="margin-top: -5px;">
-                    <input type="submit" value="Search">
+                        <div class="form-group" style="margin-top: -5px;">
+                            <input type="submit" value="Search">
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
+            </div>
+        </fieldset>
     </div>
 
     <div class="row" style="display:none;" v-bind:style="{display: transactions.length > 0 ? '' : 'none'}">
-        <div class="col-md-12" style="margin-top:15px;margin-bottom:15px;">
+        <div class="col-md-12 text-right">
             <a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
         </div>
         <div class="col-md-12">
             <div class="table-responsive" id="printContent">
-                <table class="table table-bordered table-condensed">
+                <table class="table table-bordered table-condensed table-hover">
                     <thead>
                         <tr>
                             <th>Tr. Id</th>
@@ -178,9 +186,9 @@
                     this.transactions = res.data;
                 })
             },
-            async print(){
+            async print() {
                 let dateText = "";
-                if(this.filter.dateFrom != null && this.filter.dateTo != null){
+                if (this.filter.dateFrom != null && this.filter.dateTo != null) {
                     dateText = `Statement from <strong>${this.filter.dateFrom}</strong>  to <strong>${this.filter.dateTo}</strong>`;
                 }
                 let printContent = `

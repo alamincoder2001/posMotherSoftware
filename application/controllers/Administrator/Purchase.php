@@ -16,6 +16,56 @@ class Purchase extends CI_Controller
         $this->load->helper('form');
     }
 
+    public function getPurchaseRecord()
+    {
+        $data = json_decode($this->input->raw_input_stream);
+        $branchId = $this->session->userdata("BRANCHid");
+        $clauses = "";
+        if (isset($data->dateFrom) && $data->dateFrom != '' && isset($data->dateTo) && $data->dateTo != '') {
+            $clauses .= " and pm.PurchaseMaster_OrderDate between '$data->dateFrom' and '$data->dateTo'";
+        }
+
+        if (isset($data->userFullName) && $data->userFullName != '') {
+            $clauses .= " and pm.AddBy = '$data->userFullName'";
+        }
+
+        if (isset($data->supplierId) && $data->supplierId != '') {
+            $clauses .= " and pm.Supplier_SlNo = '$data->supplierId'";
+        }
+
+        $purchases = $this->db->query("
+            select 
+                pm.*,
+                s.Supplier_Code,
+                s.Supplier_Name,
+                s.Supplier_Mobile,
+                s.Supplier_Address,
+                br.Branch_name
+            from tbl_purchasemaster pm
+            left join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
+            left join tbl_branch br on br.branch_id = pm.branch_id
+            where pm.branch_id = '$branchId'
+            and pm.status = 'a'
+            $clauses
+        ")->result();
+
+        foreach ($purchases as $purchase) {
+            $purchase->purchaseDetails = $this->db->query("
+                select 
+                    pd.*,
+                    p.Product_Name,
+                    pc.ProductCategory_Name
+                from tbl_purchasedetails pd
+                join tbl_product p on p.Product_SlNo = pd.Product_IDNo
+                join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
+                where pd.PurchaseMaster_IDNo = ?
+                and pd.status != 'd'
+            ", $purchase->PurchaseMaster_SlNo)->result();
+        }
+
+        echo json_encode($purchases);
+    }
+
     public function getPurchases()
     {
         $data = json_decode($this->input->raw_input_stream);

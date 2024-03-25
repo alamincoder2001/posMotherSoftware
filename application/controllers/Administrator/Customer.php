@@ -128,7 +128,7 @@ class Customer extends CI_Controller
                     else 'Cash'
                 end as payment_by
             from tbl_customer_payment cp
-            join tbl_customer c on c.Customer_SlNo = cp.CPayment_customerID
+            left join tbl_customer c on c.Customer_SlNo = cp.CPayment_customerID
             left join tbl_bank_accounts ba on ba.account_id = cp.account_id
             where cp.status = 'a'
             and cp.branch_id = ? $clauses

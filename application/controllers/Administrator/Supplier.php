@@ -460,10 +460,12 @@ class Supplier extends CI_Controller
                 case sp.SPayment_Paymentby
                     when 'bank' then concat('Bank - ', ba.account_name, ' - ', ba.account_number, ' - ', ba.bank_name)
                     else 'Cash'
-                end as payment_by
+                end as payment_by,
+                u.FullName
             from tbl_supplier_payment sp
             left join tbl_bank_accounts ba on ba.account_id = sp.account_id
-            join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
+            left join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
+            left join tbl_user u on u.User_SlNo = sp.AddBy
             where sp.status = 'a'
             and sp.branch_id = ? $paymentTypeClause $dateClause
             order by sp.SPayment_id desc

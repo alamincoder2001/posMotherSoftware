@@ -408,7 +408,7 @@ class Products extends CI_Controller
                 0 as out_quantity
             from tbl_purchasedetails pd
             join tbl_purchasemaster pm on pm.PurchaseMaster_SlNo = pd.PurchaseMaster_IDNo
-            join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
+            left join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
             where pd.status = 'a'
             and pd.Product_IDNo = " . $data->productId . "
             and pd.branch_id = " . $this->brunch . "
@@ -424,7 +424,7 @@ class Products extends CI_Controller
                 sd.SaleDetails_TotalQuantity as out_quantity
             from tbl_saledetails sd
             join tbl_salesmaster sm on sm.SaleMaster_SlNo = sd.SaleMaster_IDNo
-            join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+            left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             where sd.status = 'a'
             and sd.Product_IDNo = " . $data->productId . "
             and sd.branch_id = " . $this->brunch . "
@@ -440,7 +440,7 @@ class Products extends CI_Controller
                 prd.PurchaseReturnDetails_ReturnQuantity as out_quantity
             from tbl_purchasereturndetails prd
             join tbl_purchasereturn pr on pr.PurchaseReturn_SlNo = prd.PurchaseReturn_SlNo
-            join tbl_supplier s on s.Supplier_SlNo = pr.Supplier_IDdNo
+            left join tbl_supplier s on s.Supplier_SlNo = pr.Supplier_IDdNo
             where prd.status = 'a'
             and prd.PurchaseReturnDetailsProduct_SlNo = " . $data->productId . "
             and prd.branch_id= " . $this->brunch . "
@@ -457,7 +457,7 @@ class Products extends CI_Controller
             from tbl_salereturndetails srd
             join tbl_salereturn sr on sr.SaleReturn_SlNo = srd.SaleReturn_IdNo
             join tbl_salesmaster sm on sm.SaleMaster_InvoiceNo = sr.SaleMaster_InvoiceNo
-            join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+            left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             where srd.status = 'a'
             and srd.SaleReturnDetailsProduct_SlNo = " . $data->productId . "
             and srd.branch_id = " . $this->brunch . "
