@@ -798,6 +798,10 @@ class Sales extends CI_Controller
             $clauses .= " and sr.SaleReturn_ReturnDate between '$data->fromDate' and '$data->toDate'";
         }
 
+        if (isset($data->customerId) && $data->customerId != '') {
+            $clauses .= " and sm.SalseCustomer_IDNo = '$data->customerId'";
+        }
+
         if (isset($data->id) && $data->id != '') {
             $clauses .= " and sr.SaleReturn_SlNo = '$data->id'";
 
