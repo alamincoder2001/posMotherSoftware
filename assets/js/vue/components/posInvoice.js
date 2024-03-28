@@ -355,6 +355,7 @@ const posInvoice = Vue.component("pos-invoice", {
                             <tr>
                                 <td>
                                     <div class="row" style="margin-top:15px;">
+                                        <div class="col-xs-12 text-center">${this.currentBranch.Company_Name}, Contact no: ${this.currentBranch.Branch_phone}</div>
                                         <div class="col-xs-12 text-center" style="padding:0;font-size:10px;border-top:1px solid gray;">Software by: Big Technology, Contact no: 01946-700300</div>
                                     </div>
                                 </td>

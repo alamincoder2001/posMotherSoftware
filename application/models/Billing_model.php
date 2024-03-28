@@ -497,10 +497,11 @@ class Billing_model extends CI_Model {
 
 		return (object)[
 			'Company_Logo_thum' => $company->Company_Logo_thum,
-			'Company_Logo_org' => $company->Company_Logo_org,
-			'Company_Name' => $branch->Branch_title,
-			'Repot_Heading' => $branch->Branch_address,
-			'print_type' => $company->print_type
+			'Company_Logo_org'  => $company->Company_Logo_org,
+			'Company_Name'      => $branch->Branch_title,
+			'Branch_phone'      => $branch->Branch_phone,
+			'Repot_Heading'     => $branch->Branch_address,
+			'print_type'        => $company->print_type
 		];
 	}
 

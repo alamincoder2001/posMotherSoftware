@@ -212,7 +212,7 @@
 					</div>
 				</fieldset>
 			</div>
-			<div class="col-xs-12 col-md-1 no-padding" style="height: 169px;background: #93d2f5;border: 1px solid gray;margin-top: 14px;border-radius: 5px;">
+			<div class="col-xs-12 col-md-1 no-padding" style="height: 164px;background: #93d2f5;border: 1px solid gray;margin-top: 10px;border-radius: 5px;">
 				<div style="display:none;" v-bind:style="{display:selectedProduct.is_service == 'true' ? 'none' : ''}">
 					<div style="height: 169px;display:flex;flex-direction:column;justify-content:center;">
 						<div class="text-center" style="display:none;font-size: 10px;line-height: 1;margin-bottom: 3px;" v-bind:style="{color: productStock > 0 ? 'green' : 'red', display: selectedProduct.Product_SlNo == '' ? 'none' : ''}">{{ productStockText }}</div class="text-center">

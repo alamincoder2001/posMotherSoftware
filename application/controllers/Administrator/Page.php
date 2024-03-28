@@ -537,6 +537,7 @@ class Page extends CI_Controller
             $newBranch = array(
                 'Branch_name' => $branch->name,
                 'Branch_title' => $branch->title,
+                'Branch_phone' => $branch->phone,
                 'Branch_address' => $branch->address,
                 'Branch_sales' => '2',
                 'add_by' => $this->session->userdata("userId"),
@@ -567,10 +568,13 @@ class Page extends CI_Controller
             }
 
             $newBranch = array(
-                'Branch_name' => $branch->name,
-                'Branch_title' => $branch->title,
+                'Branch_name'    => $branch->name,
+                'Branch_title'   => $branch->title,
+                'Branch_phone' => $branch->phone,
                 'Branch_address' => $branch->address,
-                'UpdateBy' => $this->session->userdata("userId")
+                'UpdateBy'       => $this->session->userdata("userId"),
+                'UpdateTime'     => date('Y-m-d H:i:s'),
+                'last_update_ip' => get_client_ip(),
             );
 
             $this->db->set($newBranch)->where('branch_id', $branch->branchId)->update('tbl_branch');
@@ -589,31 +593,7 @@ class Page extends CI_Controller
         $data['selected'] = $query->row();
         $this->load->view('Administrator/edit/branch_edit', $data);
     }
-    public function branch_update()
-    {
-        $id = $this->input->post('id');
-        $fld = 'branch_id';
-        $string = $this->input->post('branchaddress');
-        $data = array(
-            "Branch_name"        => $this->input->post('Branchname', TRUE),
-            "Branch_title"       => $this->input->post('brunchtitle', TRUE),
-            "Branch_address"     => htmlentities($string),
-            "Branch_sales"       => $this->input->post('Access', TRUE),
-            "status"            => 'a'
-        );
-        if ($this->mt->update_data("tbl_branch", $data, $id, $fld)) {
-            $t = true;
-            echo json_encode($t);
-        }
-    }
-    public function brunch_delete()
-    {
-        $id = $this->input->post('deleted');
-        if ($this->mt->delete_data("tbl_branch", $id, 'branch_id')) {
-            $t = true;
-            echo json_encode($t);
-        }
-    }
+
     //^^^^^^^^^^^^^^^^^^^^^^^^
     public function add_color()
     {

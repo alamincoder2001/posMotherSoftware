@@ -1,163 +1,165 @@
 <style>
-	.inline-radio{
+	.inline-radio {
 		display: inline;
 	}
 
-	#branch .Inactive{
-        color: red;
-    }
+	#branch .Inactive {
+		color: red;
+	}
 </style>
 <div class="row">
 	<div class="col-xs-12">
 		<div class="col-md-4 col-md-offset-1">
-		<?php if($selected){ ?>
-		<form class="form-vertical" method="post" enctype="multipart/form-data" action="<?php echo base_url(); ?>company_profile_Update">
-			<div class="form-group">
-				<label class="control-label" for="">Company Logo</label>
-				<div class="col-md-12">
-					<div class="left"> 
-						<?php if($selected->Company_Logo_thum != "") {?>
-						<img id="hideid" src="<?php echo base_url().'uploads/company_profile_thum/'.$selected->Company_Logo_thum; ?>" alt="" style="width:100px">
-						<?php } else{ ?>
-						<img id="hideid" src="<?php echo base_url();?>images/No-Image-.jpg" alt="" style="width:200px">
-						<?php } ?>
-							<img id="preview" src="#" style="width:100px;height:100px" hidden>
+			<?php if ($selected) { ?>
+				<form class="form-vertical" method="post" enctype="multipart/form-data" action="<?php echo base_url(); ?>company_profile_Update">
+					<div class="form-group">
+						<label class="control-label" for="">Company Logo</label>
+						<div class="col-md-12">
+							<div class="left">
+								<?php if ($selected->Company_Logo_thum != "") { ?>
+									<img id="hideid" src="<?php echo base_url() . 'uploads/company_profile_thum/' . $selected->Company_Logo_thum; ?>" alt="" style="width:100px">
+								<?php } else { ?>
+									<img id="hideid" src="<?php echo base_url(); ?>images/No-Image-.jpg" alt="" style="width:200px">
+								<?php } ?>
+								<img id="preview" src="#" style="width:100px;height:100px" hidden>
+							</div>
+						</div>
 					</div>
-				</div>
-			</div>
 
-			<div class="form-group">
-				<label class="control-label" for="companyLogo">Change Logo</label>
-				<div >
-					<input name="companyLogo" id="companyLogo" type="file"  onchange="readURL(this)" class="form-control" style="height:35px;" />
-				</div>
-			</div>
+					<div class="form-group">
+						<label class="control-label" for="companyLogo">Change Logo</label>
+						<div>
+							<input name="companyLogo" id="companyLogo" type="file" onchange="readURL(this)" class="form-control" style="height:35px;" />
+						</div>
+					</div>
 
-			<div class="form-group" style="margin-top:15px">
-				<label class="control-label" for="form-field-1"> Company Name </label>
-				<div>
-					<input name="Company_name" type="text" id="Company_name" value="<?php echo $selected->Company_Name; ?>" class="form-control" />
-					<input name="iidd" type="hidden" id="iidd" value="<?php echo $selected->Company_SlNo; ?>" class="txt" />
-				</div>
-			</div>
-			
-			<div class="form-group" style="margin-top:15px">
-				<label class="control-label" for="form-field-1"> Description  </label>
-				<div>
-					<textarea id="Description" name="Description" class="form-control"><?php echo $selected->Repot_Heading; ?></textarea>
-				</div>
-			</div>
+					<div class="form-group" style="margin-top:15px">
+						<label class="control-label" for="form-field-1"> Company Name </label>
+						<div>
+							<input name="Company_name" type="text" id="Company_name" value="<?php echo $selected->Company_Name; ?>" class="form-control" />
+							<input name="iidd" type="hidden" id="iidd" value="<?php echo $selected->Company_SlNo; ?>" class="txt" />
+						</div>
+					</div>
 
-			<div class="control-group" style="margin-top:15px;">
-				<label class="col-md-12 control-label bolder blue">Invoice Print Type</label>
-				<div class="radio inline-radio">
-					<label>
-						<input name="inpt" id="a4"  type="radio" value="1" <?php if($selected->print_type==1){ echo "checked"; } ?>  class="ace" />
-						<span class="lbl"> A4 Size</span>
-					</label>
-				</div>
-				
-				<div class="radio inline-radio">
-					<label>
-						<input name="inpt" id="a42" type="radio" value="2" <?php if($selected->print_type==2){ echo "checked"; } ?>  class="ace" />
-						<span class="lbl"> 1/2 of A4 Size</span>
-					</label>
-				</div>
-				
-				<div class="radio inline-radio">
-					<label>
-						<input name="inpt" id="pos" type="radio" value="3" <?php if($selected->print_type==3){ echo "checked"; } ?>  class="ace" />
-						<span class="lbl"> POS </span>
-					</label>
-				</div>
-			</div>
+					<div class="form-group" style="margin-top:15px">
+						<label class="control-label" for="form-field-1"> Description </label>
+						<div>
+							<textarea id="Description" name="Description" class="form-control"><?php echo $selected->Repot_Heading; ?></textarea>
+						</div>
+					</div>
 
-			<div class="form-group" style="margin-top:15px;">
-				<label class="col-md-4 control-label" for=""> </label>
-				<label class="col-md-1 control-label"></label>
-				<div class="col-md-6">
-					<button type="submit" name="btnSubmit" title="Update" class="btn btn-md btn-info pull-left">
-							Update
-							<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
-					</button>
-					
-				</div>
-			</div>
-		</form>
-		<?php 
-		}else{
-		?>
-		
-		<form method="post" enctype="multipart/form-data" action="<?php echo base_url(); ?>company_profile_insert">
-			<div class="form-group">
-				<label class="col-md-12 control-label" for="pro_Name">Company Logo</label>
-				<div class="col-md-12">
-					<img id="hideid" src="<?php echo base_url();?>images/No-Image-.jpg" alt="" style="width:100px">
-					<img id="preview" src="#" style="width:100px;height:100px" hidden>
-				</div>
-			</div>
+					<div class="control-group" style="margin-top:15px;">
+						<label class="col-md-12 control-label bolder blue">Invoice Print Type</label>
+						<div class="radio inline-radio">
+							<label>
+								<input name="inpt" id="a4" type="radio" value="1" <?php if ($selected->print_type == 1) {
+																						echo "checked";
+																					} ?> class="ace" />
+								<span class="lbl"> A4 Size</span>
+							</label>
+						</div>
 
-			<!-- <div class="form-group"> -->
-				<label class="col-md-12 control-label" for="pro_Name">Change Logo</label>
-				<!-- <div class="col-md-12"> -->
+						<div class="radio inline-radio">
+							<label>
+								<input name="inpt" id="a42" type="radio" value="2" <?php if ($selected->print_type == 2) {
+																						echo "checked";
+																					} ?> class="ace" />
+								<span class="lbl"> 1/2 of A4 Size</span>
+							</label>
+						</div>
+
+						<div class="radio inline-radio">
+							<label>
+								<input name="inpt" id="pos" type="radio" value="3" <?php if ($selected->print_type == 3) {
+																						echo "checked";
+																					} ?> class="ace" />
+								<span class="lbl"> POS </span>
+							</label>
+						</div>
+					</div>
+
+					<div class="form-group" style="margin-top:15px;">
+						<div class="col-md-12 text-right">
+							<button type="submit" name="btnSubmit" title="Update" class="btnSave">
+								Update
+								<i class="ace-icon fa fa-arrow-right"></i>
+							</button>
+
+						</div>
+					</div>
+				</form>
+			<?php
+			} else {
+			?>
+
+				<form method="post" enctype="multipart/form-data" action="<?php echo base_url(); ?>company_profile_insert">
+					<div class="form-group">
+						<label class="col-md-12 control-label" for="pro_Name">Company Logo</label>
+						<div class="col-md-12">
+							<img id="hideid" src="<?php echo base_url(); ?>images/No-Image-.jpg" alt="" style="width:100px">
+							<img id="preview" src="#" style="width:100px;height:100px" hidden>
+						</div>
+					</div>
+
+					<!-- <div class="form-group"> -->
+					<label class="col-md-12 control-label" for="pro_Name">Change Logo</label>
+					<!-- <div class="col-md-12"> -->
 					<input name="companyLogo" required id="companyLogo" type="file" class="form-control" style="height:35px;" />
-				<!-- </div> -->
-			<!-- </div> -->
-		
-			<div class="form-group">
-				<label class="col-md-12 control-label" for="form-field-1" style="margin-top:15px;"> Company Name </label>
-				<div class="col-md-12">
-					<input name="Company_name" type="text" id="Company_name" value="" class="form-control" />
-					<input name="iidd" type="hidden" id="iidd" value="" class="txt" />
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label class="control-label" for="form-field-1" style="margin-top:15px;"> Description  </label>
-				<div>
-					<textarea id="Description" name="Description" class="form-control"></textarea>
-				</div>
-			</div>
+					<!-- </div> -->
+					<!-- </div> -->
 
-			<div class="control-group" style="margin-top:15px;">
-				<label class="col-md-12 control-label bolder blue">Invoice Print Type</label>
-				<div class="radio inline-radio">
-					<label>
-						<input name="inpt" id="a4"  type="radio" value="1" class="ace" />
-						<span class="lbl"> A4 Size</span>
-					</label>
-				</div>
-				
-				<div class="radio inline-radio">
-					<label>
-						<input name="inpt" id="a42" type="radio" value="2" class="ace" />
-						<span class="lbl"> 1/2 of A4 Size</span>
-					</label>
-				</div>
-				
-				<div class="radio inline-radio">
-					<label>
-						<input name="inpt" id="pos" type="radio" value="3" class="ace" />
-						<span class="lbl"> POS </span>
-					</label>
-				</div>
-			</div>
+					<div class="form-group">
+						<label class="col-md-12 control-label" for="form-field-1" style="margin-top:15px;"> Company Name </label>
+						<div class="col-md-12">
+							<input name="Company_name" type="text" id="Company_name" value="" class="form-control" />
+							<input name="iidd" type="hidden" id="iidd" value="" class="txt" />
+						</div>
+					</div>
 
-			<div class="form-group">
-				<label class="col-md-4 control-label" for=""> </label>
-				<label class="col-md-1 control-label"></label>
-				<div class="col-md-6">
-					<button type="submit" name="btnSubmit" title="Update" class="btn btn-md btn-success pull-left">
-							Save
-							<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
-					</button>
-					
-				</div>
-			</div>
-		</form>
-		<?php
-		}
-		?>
+					<div class="form-group">
+						<label class="control-label" for="form-field-1" style="margin-top:15px;"> Description </label>
+						<div>
+							<textarea id="Description" name="Description" class="form-control"></textarea>
+						</div>
+					</div>
+
+					<div class="control-group" style="margin-top:15px;">
+						<label class="col-md-12 control-label bolder blue">Invoice Print Type</label>
+						<div class="radio inline-radio">
+							<label>
+								<input name="inpt" id="a4" type="radio" value="1" class="ace" />
+								<span class="lbl"> A4 Size</span>
+							</label>
+						</div>
+
+						<div class="radio inline-radio">
+							<label>
+								<input name="inpt" id="a42" type="radio" value="2" class="ace" />
+								<span class="lbl"> 1/2 of A4 Size</span>
+							</label>
+						</div>
+
+						<div class="radio inline-radio">
+							<label>
+								<input name="inpt" id="pos" type="radio" value="3" class="ace" />
+								<span class="lbl"> POS </span>
+							</label>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-md-12 text-right">
+							<button type="submit" name="btnSubmit" title="Update" class="btnSave">
+								Save
+								<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
+							</button>
+
+						</div>
+					</div>
+				</form>
+			<?php
+			}
+			?>
 		</div>
 		<div class="col-md-6 col-md-offset-1">
 			<div id="branch">
@@ -168,15 +170,23 @@
 								<label class="col-md-3 control-label no-padding-right"> Branch Name </label>
 								<label class="col-md-1 control-label no-padding-right">:</label>
 								<div class="col-md-8">
-									<input type="text" placeholder="Branch Name" class="form-control" v-model="branch.name" required/>
+									<input type="text" placeholder="Branch Name" class="form-control" v-model="branch.name" required />
 								</div>
-							</div>
+							</div>							
 
 							<div class="form-group">
 								<label class="col-md-3 control-label no-padding-right"> Branch Title </label>
 								<label class="col-md-1 control-label no-padding-right">:</label>
 								<div class="col-md-8">
-									<input type="text" placeholder="Branch Title" class="form-control" v-model="branch.title" required/>
+									<input type="text" placeholder="Branch Title" class="form-control" v-model="branch.title" required />
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-md-3 control-label no-padding-right"> Branch Phone </label>
+								<label class="col-md-1 control-label no-padding-right">:</label>
+								<div class="col-md-8">
+									<input type="text" placeholder="Branch Phone" class="form-control" v-model="branch.phone" required />
 								</div>
 							</div>
 
@@ -189,11 +199,11 @@
 							</div>
 
 							<div class="form-group">
-								<label class="col-md-8 control-label no-padding-right"></label>
-								<div class="col-md-4">
-									<button type="submit" class="btn btn-md btn-success">
-										Submit
-										<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
+								<label class="col-md-4 control-label no-padding-right"></label>
+								<div class="col-md-8 text-right" style="margin: 5px 0;">
+									<input type="button" class="btnReset" value="Reset" />
+									<button type="submit" class="btnSave">
+										Submit <i class="ace-icon fa fa-arrow-right"></i>
 									</button>
 								</div>
 							</div>
@@ -208,10 +218,11 @@
 								<tr>
 									<th>Sl</th>
 									<th>Branch Name</th>
+									<th>Branch Phone</th>
 									<th>Branch Title</th>
 									<th>Branch Address</th>
 									<th>status</th>
-									<th>Action</th>
+									<th style="width: 10%;">Action</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -219,14 +230,15 @@
 									<td>{{ sl + 1 }}</td>
 									<td>{{ branch.Branch_name }}</td>
 									<td>{{ branch.Branch_title }}</td>
+									<td>{{ branch.Branch_phone }}</td>
 									<td>{{ branch.Branch_address }}</td>
 									<td><span v-bind:class="branch.active_status">{{ branch.active_status }}</span></td>
 									<td>
-										<?php if($this->session->userdata('accountType') != 'u'){?>
-										<a href="" title="Edit Branch" @click.prevent="editBranch(branch)"><i class="fa fa-pencil"></i></a>&nbsp;
-										<a href="" title="Deactive Branch" v-if="branch.status == 'a'" @click.prevent="changestatus(branch.branch_id)"><i class="fa fa-trash"></i></a>
-										<a href="" title="Active Branch" v-else><i class="fa fa-check" @click.prevent="changestatus(branch.branch_id)"></i></a>
-										<?php }?>
+										<?php if ($this->session->userdata('accountType') != 'u') { ?>
+											<i title="Edit Branch" @click.prevent="editBranch(branch)" class="btnEdit fa fa-pencil"></i>&nbsp;
+											<i title="Deactive Branch" v-if="branch.status == 'a'" @click.prevent="changestatus(branch.branch_id)" class="btnDelete fa fa-trash"></i></a>
+											<i v-else title="Active Branch" @click.prevent="changestatus(branch.branch_id)" class="btnEdit fa fa-check"></i>
+										<?php } ?>
 									</td>
 								</tr>
 							</tbody>
@@ -238,92 +250,96 @@
 	</div>
 </div>
 
-<script src="<?php echo base_url();?>assets/js/vue/vue.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/axios.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/axios.min.js"></script>
 
 <script>
-    new Vue({
-        el: '#branch',
-        data(){
-            return {
-                branch: {
-                    branchId: 0,
-                    name: '',
-                    title: '',
-                    address: ''
-                },
-                branches: []
-            }
-        },
-        created(){
-            this.getBranches();
-        },
-        methods: {
-            getBranches(){
-                axios.get('/get_branches').then(res => {
-                    this.branches = res.data;
-                })
-            },
+	new Vue({
+		el: '#branch',
+		data() {
+			return {
+				branch: {
+					branchId: 0,
+					name: '',
+					title: '',
+					phone: '',
+					address: ''
+				},
+				branches: []
+			}
+		},
+		created() {
+			this.getBranches();
+		},
+		methods: {
+			getBranches() {
+				axios.get('/get_branches').then(res => {
+					this.branches = res.data;
+				})
+			},
 
-            saveBranch(){
-                let url = "/add_branch";
-                if(this.branch.branchId != 0){
-                    url = "/update_branch";
-                }
+			saveBranch() {
+				let url = "/add_branch";
+				if (this.branch.branchId != 0) {
+					url = "/update_branch";
+				}
 
-                axios.post(url, this.branch).then(res => {
-                    let r = res.data;
-                    alert(r.message);
-                    if(r.success){
-                        this.getBranches();
-                        this.clearForm();
-                    }
-                })
-            },
+				axios.post(url, this.branch).then(res => {
+					let r = res.data;
+					alert(r.message);
+					if (r.success) {
+						this.getBranches();
+						this.clearForm();
+					}
+				})
+			},
 
-            editBranch(branch){
-                this.branch.branchId = branch.branch_id;
-                this.branch.name = branch.Branch_name;
-                this.branch.title = branch.Branch_title;
-                this.branch.address = branch.Branch_address;
-            },
+			editBranch(branch) {
+				this.branch.branchId = branch.branch_id;
+				this.branch.name = branch.Branch_name;
+				this.branch.title = branch.Branch_title;
+				this.branch.phone = branch.Branch_phone;
+				this.branch.address = branch.Branch_address;
+			},
 
-            changestatus(branchId){
-                let changeConfirm = confirm('Are you sure?');
-                if(changeConfirm == false){
-                    return;
-                }
-                axios.post('/change_branch_status', {branchId: branchId}).then(res => {
-                    let r = res.data;
-                    alert(r.message);
-                    if(r.success){
-                        this.getBranches();
-                    }
-                })
-            },
+			changestatus(branchId) {
+				let changeConfirm = confirm('Are you sure?');
+				if (changeConfirm == false) {
+					return;
+				}
+				axios.post('/change_branch_status', {
+					branchId: branchId
+				}).then(res => {
+					let r = res.data;
+					alert(r.message);
+					if (r.success) {
+						this.getBranches();
+					}
+				})
+			},
 
-            clearForm(){
-                this.branch = {
-                    branchId: 0,
-                    name: '',
-                    title: '',
-                    address: ''
-                }
-            }
-        }
-    })
+			clearForm() {
+				this.branch = {
+					branchId: 0,
+					name: '',
+					title: '',
+					address: ''
+				}
+			}
+		}
+	})
 </script>
 
 <script type="text/javascript">
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById('preview').src=e.target.result;
-            }
-            reader.readAsDataURL(input.files[0]);
-            $("#hideid").hide();
-            $("#preview").show();
-        }
-    }
+	function readURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				document.getElementById('preview').src = e.target.result;
+			}
+			reader.readAsDataURL(input.files[0]);
+			$("#hideid").hide();
+			$("#preview").show();
+		}
+	}
 </script>
