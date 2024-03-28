@@ -19,6 +19,7 @@
 						</div>
 						<div class="form-group clearfix">
 							<div class="col-xs-12 col-md-12 text-right">
+								<input type="button" class="btnReset" value="Reset" @click="resetForm">
 								<input type="submit" class="btnSave" value="Save">
 							</div>
 						</div>

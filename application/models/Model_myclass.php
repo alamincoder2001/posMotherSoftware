@@ -93,7 +93,7 @@ class Model_Myclass extends CI_Model {
         
         $value = array(
             'time'         => $captcha['time'],
-            'ip_address'   => $this->input->ip_address(),
+            'ip_address'   => get_client_ip(),
             'word'         => $captcha['word']
         );
         

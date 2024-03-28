@@ -146,6 +146,7 @@
 
 						<div class="form-group clearfix">
 							<div class="col-md-7 col-md-offset-4 text-right">
+								<input type="button" class="btnReset" value="Reset" @click="resetForm">
 								<input type="submit" class="btnSave" value="Save">
 							</div>
 						</div>
@@ -335,6 +336,7 @@
 				})
 				this.imageUrl = '';
 				this.selectedFile = null;
+				this.supplier.Supplier_Code = "<?php echo $this->mt->generateSupplierCode();?>"
 			},
 			previewImage(event) {
 				const WIDTH = 150;

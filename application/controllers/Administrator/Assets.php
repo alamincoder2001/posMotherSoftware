@@ -44,7 +44,7 @@ class Assets extends CI_Controller
             "status"         => 'a',
             "AddBy"          => $this->session->userdata("userId"),
             "AddTime"        => date("Y-m-d H:i:s"),
-            "last_update_ip" => $this->input->ip_address(),
+            "last_update_ip" => get_client_ip(),
             "branch_id"      => $this->session->userdata('BRANCHid'),
         );
         $this->mt->save_data('tbl_assets', $data);
@@ -72,7 +72,7 @@ class Assets extends CI_Controller
             "as_note"        => $this->input->post('note'),
             "UpdateBy"       => $this->session->userdata("userId"),
             "UpdateTime"     => date("Y-m-d H:i:s"),
-            "last_update_ip" => $this->input->ip_address(),
+            "last_update_ip" => get_client_ip(),
         );
         $up = $this->db->where('as_id', $id)->update('tbl_assets', $data);
         if ($up) :

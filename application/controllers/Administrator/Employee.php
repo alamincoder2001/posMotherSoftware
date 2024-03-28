@@ -197,7 +197,7 @@ class Employee extends CI_Controller
                 "status"          => 'a',
                 "AddBy"           => $this->session->userdata("userId"),
                 "AddTime"         => date("Y-m-d H:i:s"),
-                "last_update_ip"         => $this->input->ip_address(),
+                "last_update_ip"         => get_client_ip(),
 
             );
             $this->db->insert('tbl_designation', $designation);
@@ -219,7 +219,7 @@ class Employee extends CI_Controller
                 "Designation_Name" => $data->Designation_Name,
                 "UpdateBy"         => $this->session->userdata("userId"),
                 "UpdateTime"       => date("Y-m-d H:i:s"),
-                "last_update_ip"         => $this->input->ip_address(),
+                "last_update_ip"         => get_client_ip(),
             );
             $this->db->where('Designation_SlNo', $data->Designation_SlNo);
             $this->db->update('tbl_designation', $designation);
@@ -237,7 +237,7 @@ class Employee extends CI_Controller
             'status'         => 'd',
             "DeletedBy"      => $this->session->userdata("userId"),
             "DeletedTime"    => date("Y-m-d H:i:s"),
-            "last_update_ip" => $this->input->ip_address(),
+            "last_update_ip" => get_client_ip(),
         );
         $this->db->where('Designation_SlNo', $data->designationId);
         $this->db->update('tbl_designation', $designation);
@@ -273,7 +273,7 @@ class Employee extends CI_Controller
                 "status"          => 'a',
                 "AddBy"           => $this->session->userdata("userId"),
                 "AddTime"         => date("Y-m-d H:i:s"),
-                "last_update_ip"         => $this->input->ip_address(),
+                "last_update_ip"         => get_client_ip(),
 
             );
             $this->db->insert('tbl_department', $department);
@@ -294,7 +294,7 @@ class Employee extends CI_Controller
                 "Department_Name" => $data->Department_Name,
                 "UpdateBy"                    => $this->session->userdata("userId"),
                 "UpdateTime"                  => date("Y-m-d H:i:s"),
-                "last_update_ip"         => $this->input->ip_address(),
+                "last_update_ip"         => get_client_ip(),
             );
             $this->db->where('Department_SlNo', $data->Department_SlNo);
             $this->db->update('tbl_department', $department);
@@ -312,7 +312,7 @@ class Employee extends CI_Controller
             'status'         => 'd',
             "DeletedBy"      => $this->session->userdata("userId"),
             "DeletedTime"    => date("Y-m-d H:i:s"),
-            "last_update_ip" => $this->input->ip_address(),
+            "last_update_ip" => get_client_ip(),
         );
         $this->db->where('Department_SlNo', $data->departmentId);
         $this->db->update('tbl_department', $department);
@@ -443,7 +443,7 @@ class Employee extends CI_Controller
 
         $data['AddBy'] = $this->session->userdata("userId");
         $data['AddTime'] = date("Y-m-d H:i:s");
-        $data['last_update_ip'] = $this->input->ip_address();
+        $data['last_update_ip'] = get_client_ip();
         $data['branch_id'] = $this->session->userdata("BRANCHid");
 
         $this->upload->do_upload('em_photo');
@@ -545,7 +545,7 @@ class Employee extends CI_Controller
 
         $data['UpdateBy'] = $this->session->userdata("userId");
         $data['UpdateTime'] = date("Y-m-d H:i:s");
-        $data['last_update_ip'] = $this->input->ip_address();;
+        $data['last_update_ip'] = get_client_ip();;
 
         $xx = $this->mt->select_by_id("tbl_employee", $id, $fld);
 
@@ -587,7 +587,7 @@ class Employee extends CI_Controller
             'status'         => 'd',
             "DeletedBy"      => $this->session->userdata("userId"),
             "DeletedTime"    => date("Y-m-d H:i:s"),
-            "last_update_ip" => $this->input->ip_address()
+            "last_update_ip" => get_client_ip()
         );
         $this->db->set($rules)->where('Employee_SlNo', $id)->update('tbl_employee');
     }
@@ -630,7 +630,7 @@ class Employee extends CI_Controller
             $payment['status']         = 'a';
             $payment['AddBy']          = $this->session->userdata('userId');
             $payment['AddTime']        = date('Y-m-d H:i:s');
-            $payment['last_update_ip'] = $this->input->ip_address();
+            $payment['last_update_ip'] = get_client_ip();
             $payment['branch_id']      = $this->brunch;
 
             $this->db->insert('tbl_employee_payment', $payment);
@@ -732,7 +732,7 @@ class Employee extends CI_Controller
             unset($payment['employee_payment_id']);
             $payment['UpdateBy'] = $this->session->userdata('userId');
             $payment['UpdateTime'] = Date('Y-m-d H:i:s');
-            $payment['last_update_ip'] = $this->input->ip_address();
+            $payment['last_update_ip'] = get_client_ip();
 
             $this->db->where('employee_payment_id', $paymentObj->employee_payment_id)->update('tbl_employee_payment', $payment);
             $res = ['success' => true, 'message' => 'Employee payment updated'];
@@ -752,7 +752,7 @@ class Employee extends CI_Controller
                 'status'         => 'd',
                 "DeletedBy"      => $this->session->userdata("userId"),
                 "DeletedTime"    => date("Y-m-d H:i:s"),
-                "last_update_ip" => $this->input->ip_address()
+                "last_update_ip" => get_client_ip()
             );
             $this->db->set($rules)->where('employee_payment_id', $data->paymentId)->update('tbl_employee_payment');
             $res = ['success' => true, 'message' => 'Employee payment deleted'];
@@ -921,7 +921,7 @@ class Employee extends CI_Controller
                     'comment'        => $emp->comment,
                     'AddBy'          => $this->session->userdata("userId"),
                     'AddTime'        => date("Y-m-d H:i:s"),
-                    'last_update_ip' => $this->input->ip_address(),
+                    'last_update_ip' => get_client_ip(),
                     'branch_id'      => $this->session->userdata("BRANCHid"),
                     'status'         => 'a',
                 ];
@@ -1018,7 +1018,7 @@ class Employee extends CI_Controller
                 'status'         => 'd',
                 "DeletedBy"      => $this->session->userdata("userId"),
                 "DeletedTime"    => date("Y-m-d H:i:s"),
-                "last_update_ip" => $this->input->ip_address()
+                "last_update_ip" => get_client_ip()
             );
             foreach ($details as $detail) {
                 $this->db->set($rules)->where('id', $detail->id)->update('tbl_employee_payment_details');

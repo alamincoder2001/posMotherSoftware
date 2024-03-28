@@ -49,7 +49,7 @@ class Invest extends CI_Controller
             $account['status'] = 'a';
             $account['AddBy'] = $this->session->userdata("userId");
             $account['AddTime'] = date('Y-m-d H:i:s');
-            $account['last_update_ip'] = $this->input->ip_address();
+            $account['last_update_ip'] = get_client_ip();
             $account['branch_id'] = $this->brunch;
 
             $this->db->insert('tbl_investment_account', $account);
@@ -81,7 +81,7 @@ class Invest extends CI_Controller
             unset($account['Acc_SlNo']);
             $account['UpdateBy'] = $this->session->userdata("userId");
             $account['UpdateTime'] = date('Y-m-d H:i:s');
-            $account['last_update_ip'] = $this->input->ip_address();
+            $account['last_update_ip'] = get_client_ip();
 
             $this->db->where('Acc_SlNo', $accountObj->Acc_SlNo)->update('tbl_investment_account', $account);
 
@@ -111,7 +111,7 @@ class Invest extends CI_Controller
                 'status'         => 'd',
                 "DeletedBy"      => $this->session->userdata("userId"),
                 "DeletedTime"    => date("Y-m-d H:i:s"),
-                "last_update_ip" => $this->input->ip_address()
+                "last_update_ip" => get_client_ip()
             );
             $this->db->where("Acc_SlNo", $data->accountId)->update('tbl_investment_account', $account);
 
@@ -187,7 +187,7 @@ class Invest extends CI_Controller
             $transaction = (array)$data;
             $transaction['AddBy'] = $this->session->userdata('userId');
             $transaction['AddTime'] = date('Y-m-d H:i:s');
-            $transaction['last_update_ip'] = $this->input->ip_address();
+            $transaction['last_update_ip'] = get_client_ip();
             $transaction['branch_id'] = $this->session->userdata('BRANCHid');
 
             $this->db->insert('tbl_investment_transactions', $transaction);
@@ -210,7 +210,7 @@ class Invest extends CI_Controller
             unset($transaction['transaction_id']);
             $transaction['UpdateBy'] = $this->session->userdata('userId');
             $transaction['UpdateTime'] = date('Y-m-d H:i:s');
-            $transaction['last_update_ip'] = $this->input->ip_address();
+            $transaction['last_update_ip'] = get_client_ip();
 
             $this->db->where('transaction_id', $transactionId)->update('tbl_investment_transactions', $transaction);
 
@@ -231,7 +231,7 @@ class Invest extends CI_Controller
                 'status'         => 0,
                 "DeletedBy"      => $this->session->userdata("userId"),
                 "DeletedTime"    => date("Y-m-d H:i:s"),
-                "last_update_ip" => $this->input->ip_address()
+                "last_update_ip" => get_client_ip()
             );
             $this->db->where("transaction_id", $data->transaction_id)->update('tbl_investment_transactions', $transaction);
 

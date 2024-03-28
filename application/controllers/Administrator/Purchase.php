@@ -235,7 +235,7 @@ class Purchase extends CI_Controller
                 'status' => 'd',
                 'DeletedBy' => $this->session->userdata('userId'),
                 'DeletedTime' => date("Y-m-d H:i:s"),
-                'last_update_ip' => $this->input->ip_address(),
+                'last_update_ip' => get_client_ip(),
             );
             /*Delete Purchase Details*/
             $this->db->set($purchase)->where('PurchaseMaster_IDNo', $data->purchaseId)->update('tbl_purchasedetails');
@@ -300,7 +300,7 @@ class Purchase extends CI_Controller
                 'status'                      => 'a',
                 'AddBy'                       => $this->session->userdata("userId"),
                 'AddTime'                     => date('Y-m-d H:i:s'),
-                "last_update_ip"              => $this->input->ip_address(),
+                "last_update_ip"              => get_client_ip(),
                 'branch_id'                   => $this->session->userdata('BRANCHid')
             );
 
@@ -317,7 +317,7 @@ class Purchase extends CI_Controller
                     'status' => 'a',
                     'AddBy' => $this->session->userdata("userId"),
                     'AddTime' => date('Y-m-d H:i:s'),
-                    "last_update_ip" => $this->input->ip_address(),
+                    "last_update_ip" => get_client_ip(),
                     'branch_id' => $this->session->userdata('BRANCHid')
                 );
 
@@ -345,7 +345,7 @@ class Purchase extends CI_Controller
                     'status' => 'a',
                     'Addby' => $this->session->userdata("userId"),
                     'AddTime' => date('Y-m-d H:i:s'),
-                    "last_update_ip" => $this->input->ip_address(),
+                    "last_update_ip" => get_client_ip(),
                     'branch_id' => $this->session->userdata("BRANCHid"),
                 );
 
@@ -379,7 +379,7 @@ class Purchase extends CI_Controller
                 'status' => 'a',
                 'UpdateBy' => $this->session->userdata("userId"),
                 'UpdateTime' => date('Y-m-d H:i:s'),
-                "last_update_ip" => $this->input->ip_address(),
+                "last_update_ip" => get_client_ip(),
                 'branch_id' => $this->session->userdata('BRANCHid'),
             );
 
@@ -407,7 +407,7 @@ class Purchase extends CI_Controller
                     'status' => 'a',
                     'UpdateBy' => $this->session->userdata("userId"),
                     'UpdateTime' => date('Y-m-d H:i:s'),
-                    "last_update_ip" => $this->input->ip_address(),
+                    "last_update_ip" => get_client_ip(),
                     'branch_id' => $this->session->userdata('BRANCHid')
                 );
 
@@ -448,7 +448,7 @@ class Purchase extends CI_Controller
                     'status'                   => 'a',
                     'Addby'                    => $this->session->userdata("userId"),
                     'AddTime'                  => date('Y-m-d H:i:s'),
-                    'last_update_ip'           => $this->input->ip_address(),
+                    'last_update_ip'           => get_client_ip(),
                     'branch_id'                => $this->session->userdata("BRANCHid"),
                 );
 
@@ -678,7 +678,7 @@ class Purchase extends CI_Controller
                         $supplier['status']            = 'a';
                         $supplier['AddBy']             = $this->session->userdata("userId");
                         $supplier['AddTime']           = date('Y-m-d H:i:s');
-                        $supplier['last_update_ip'] = $this->input->ip_address();
+                        $supplier['last_update_ip'] = get_client_ip();
                         $supplier['branch_id'] = $this->session->userdata('BRANCHid');
 
                         $this->db->insert('tbl_supplier', $supplier);
@@ -703,7 +703,7 @@ class Purchase extends CI_Controller
                 'status'                        => 'a',
                 'AddBy'                         => $this->session->userdata("userId"),
                 'AddTime'                       => date('Y-m-d H:i:s'),
-                'last_update_ip' => $this->input->ip_address(),
+                'last_update_ip' => get_client_ip(),
                 'branch_id'       => $this->session->userdata('BRANCHid')
             );
 
@@ -731,7 +731,7 @@ class Purchase extends CI_Controller
                     'status' => 'a',
                     'AddBy' => $this->session->userdata("userId"),
                     'AddTime' => date('Y-m-d H:i:s'),
-                    'last_update_ip' => $this->input->ip_address(),
+                    'last_update_ip' => get_client_ip(),
                     'branch_id' => $this->session->userdata('BRANCHid')
                 );
 
@@ -819,7 +819,7 @@ class Purchase extends CI_Controller
                         $supplier['status']         = 'a';
                         $supplier['AddBy']          = $this->session->userdata("userId");
                         $supplier['AddTime']        = date('Y-m-d H:i:s');
-                        $supplier['last_update_ip'] = $this->input->ip_address();
+                        $supplier['last_update_ip'] = get_client_ip();
                         $supplier['branch_id']      = $this->session->userdata('BRANCHid');
 
                         $this->db->insert('tbl_supplier', $supplier);
@@ -844,7 +844,7 @@ class Purchase extends CI_Controller
                 'status' => 'a',
                 'UpdateBy' => $this->session->userdata("userId"),
                 'UpdateTime' => date('Y-m-d H:i:s'),
-                'last_update_ip' => $this->input->ip_address(),
+                'last_update_ip' => get_client_ip(),
                 'branch_id' => $this->session->userdata('BRANCHid')
             );
 
@@ -900,7 +900,7 @@ class Purchase extends CI_Controller
                     'status' => 'a',
                     'UpdateBy' => $this->session->userdata("userId"),
                     'UpdateTime' => date('Y-m-d H:i:s'),
-                    'last_update_ip' => $this->input->ip_address(),
+                    'last_update_ip' => get_client_ip(),
                     'branch_id' => $this->session->userdata('BRANCHid')
                 );
 
@@ -985,6 +985,16 @@ class Purchase extends CI_Controller
                 exit;
             }
 
+            // check stock
+            foreach ($data->carts as $cartProduct) {
+                $checkStock = $this->mt->productStock($cartProduct->product_id);
+                if (($cartProduct->quantity > $checkStock)) {
+                    $res = ['success' => false, 'message' => "({$cartProduct->productName} - {$cartProduct->productCode}) stock unavailable"];
+                    echo json_encode($res);
+                    exit;
+                }
+            }
+
             $damage = array(
                 'Damage_InvoiceNo'   => $data->damage->Damage_InvoiceNo,
                 'Damage_Date'        => $data->damage->Damage_Date,
@@ -993,7 +1003,7 @@ class Purchase extends CI_Controller
                 'status'             => 'a',
                 'AddBy'              => $this->session->userdata("userId"),
                 'AddTime'            => date('Y-m-d H:i:s'),
-                'last_update_ip'     => $this->input->ip_address(),
+                'last_update_ip'     => get_client_ip(),
                 'branch_id'          => $this->session->userdata('BRANCHid')
             );
 
@@ -1010,7 +1020,7 @@ class Purchase extends CI_Controller
                     'status'                       => 'a',
                     'AddBy'                        => $this->session->userdata("userId"),
                     'AddTime'                      => date('Y-m-d H:i:s'),
-                    'last_update_ip'     => $this->input->ip_address(),
+                    'last_update_ip'     => get_client_ip(),
                     'branch_id'              => $this->session->userdata('BRANCHid'),
                 );
 
@@ -1049,7 +1059,7 @@ class Purchase extends CI_Controller
                 'Damage_Description' => $data->damage->Damage_Description,
                 'UpdateBy'           => $this->session->userdata("userId"),
                 'UpdateTime'         => date('Y-m-d H:i:s'),
-                'last_update_ip'     => $this->input->ip_address(),
+                'last_update_ip'     => get_client_ip(),
             );
             $this->db->where('Damage_SlNo', $damageId)->update('tbl_damage', $damage);
 
@@ -1064,6 +1074,16 @@ class Purchase extends CI_Controller
             }
             $this->db->query("DELETE FROM `tbl_damagedetails` WHERE  Damage_SlNo = ?", $damageId);
 
+            // check stock
+            foreach ($data->carts as $cartProduct) {
+                $checkStock = $this->mt->productStock($cartProduct->product_id);
+                if (($cartProduct->quantity > $checkStock)) {
+                    $res = ['success' => false, 'message' => "({$cartProduct->productName} - {$cartProduct->productCode}) stock unavailable"];
+                    echo json_encode($res);
+                    exit;
+                }
+            }
+
             foreach ($data->carts as $key => $product) {
                 $damageDetails = array(
                     'Damage_SlNo'                  => $damageId,
@@ -1076,7 +1096,7 @@ class Purchase extends CI_Controller
                     'AddTime'                      => date('Y-m-d H:i:s'),
                     'UpdateBy'                     => $this->session->userdata("userId"),
                     'UpdateTime'                   => date('Y-m-d H:i:s'),
-                    'last_update_ip'               => $this->input->ip_address(),
+                    'last_update_ip'               => get_client_ip(),
                     'branch_id'                    => $this->session->userdata('BRANCHid')
                 );
 
@@ -1293,7 +1313,7 @@ class Purchase extends CI_Controller
                 'status' => 'd',
                 'DeletedBy' => $this->session->userdata('userId'),
                 'DeletedTime' => date("Y-m-d H:i:s"),
-                'last_update_ip' => $this->input->ip_address(),
+                'last_update_ip' => get_client_ip(),
             );
 
             $this->db->set($returnPurchase)->where('PurchaseReturn_SlNo', $data->id)->update('tbl_purchasereturndetails');

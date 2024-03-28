@@ -50,7 +50,7 @@ class Supplier extends CI_Controller
                 $supplier["status"]         = 'a';
                 $supplier["UpdateBy"]       = $this->session->userdata("userId");
                 $supplier["UpdateTime"]     = date("Y-m-d H:i:s");
-                $supplier["last_update_ip"] = $this->input->ip_address();
+                $supplier["last_update_ip"] = get_client_ip();
                 $this->db->where('Supplier_SlNo', $duplicateSupplier->Supplier_SlNo)->update('tbl_supplier', $supplier);
 
                 $supplierId = $duplicateSupplier->Supplier_SlNo;
@@ -61,7 +61,7 @@ class Supplier extends CI_Controller
                 $supplier["status"]         = 'a';
                 $supplier["AddBy"] = $this->session->userdata("userId");
                 $supplier["AddTime"] = date("Y-m-d H:i:s");
-                $supplier["last_update_ip"] = $this->input->ip_address();
+                $supplier["last_update_ip"] = get_client_ip();
                 $this->db->insert('tbl_supplier', $supplier);
 
                 $supplierId = $this->db->insert_id();
@@ -99,7 +99,7 @@ class Supplier extends CI_Controller
             $supplier["branch_id"] = $this->session->userdata("BRANCHid");
             $supplier["UpdateBy"] = $this->session->userdata("userId");
             $supplier["UpdateTime"] = date("Y-m-d H:i:s");
-            $supplier["last_update_ip"] = $this->input->ip_address();
+            $supplier["last_update_ip"] = get_client_ip();
 
             $this->db->where('Supplier_SlNo', $supplierId)->update('tbl_supplier', $supplier);
 
@@ -130,7 +130,7 @@ class Supplier extends CI_Controller
                 'status'         => 'd',
                 "DeletedBy"      => $this->session->userdata("userId"),
                 "DeletedTime"    => date("Y-m-d H:i:s"),
-                "last_update_ip" => $this->input->ip_address()
+                "last_update_ip" => get_client_ip()
             );
 
             $this->db->where("Supplier_SlNo", $data->supplierId);
@@ -485,7 +485,7 @@ class Supplier extends CI_Controller
             $payment['status'] = 'a';
             $payment['Addby'] = $this->session->userdata("userId");
             $payment['AddTime'] = date('Y-m-d H:i:s');
-            $payment['last_update_ip'] = $this->input->ip_address();
+            $payment['last_update_ip'] = get_client_ip();
             $payment['branch_id'] = $this->session->userdata("BRANCHid");
 
             $this->db->insert('tbl_supplier_payment', $payment);
@@ -510,7 +510,7 @@ class Supplier extends CI_Controller
             unset($payment['SPayment_id']);
             $payment['UpdateBy'] = $this->session->userdata("userId");
             $payment['UpdateTime'] = date('Y-m-d H:i:s');
-            $payment['last_update_ip'] = $this->input->ip_address();
+            $payment['last_update_ip'] = get_client_ip();
 
             $this->db->where('SPayment_id', $paymentObj->SPayment_id)->update('tbl_supplier_payment', $payment);
 
@@ -532,7 +532,7 @@ class Supplier extends CI_Controller
                 'status'         => 'd',
                 "DeletedBy"      => $this->session->userdata("userId"),
                 "DeletedTime"    => date("Y-m-d H:i:s"),
-                "last_update_ip" => $this->input->ip_address()
+                "last_update_ip" => get_client_ip()
             );
             $this->db->set($payment)->where('SPayment_id', $data->paymentId)->update('tbl_supplier_payment');
 

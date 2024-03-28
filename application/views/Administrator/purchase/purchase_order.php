@@ -44,6 +44,17 @@
 		height: 15px;
 		margin-top: 7px;
 	}
+
+	.add-button {
+		padding: 2.8px;
+		width: 100%;
+		background-color: #d15b47;
+		display: block;
+		text-align: center;
+		color: white;
+		cursor: pointer;
+		border-radius: 3px;
+	}
 </style>
 
 <div class="row" id="purchase">
@@ -52,22 +63,22 @@
 			<div class="control-group">
 				<div class="row">
 					<div class="form-group">
-						<label class="col-md-1 control-label no-padding-right"> Invoice no </label>
-						<div class="col-md-2">
+						<label class="col-xs-4 col-md-1 control-label no-padding-right"> Invoice no </label>
+						<div class="col-xs-8 col-md-2">
 							<input type="text" id="invoice" style="margin: 0;" class="form-control" name="invoice" v-model="purchase.invoice" readonly />
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label class="col-md-2 control-label no-padding-right"> Purchase For </label>
-						<div class="col-md-3">
+						<label class="col-xs-4 col-md-2 control-label no-padding-right"> Purchase For </label>
+						<div class="col-xs-8 col-md-3">
 							<v-select id="branchDropdown" style="margin: 0;" v-bind:options="branches" v-model="selectedBranch" label="Branch_name" disabled></v-select>
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label class="col-md-1 control-label no-padding-right"> Date </label>
-						<div class="col-md-3">
+						<label class="col-xs-4 col-md-1 control-label no-padding-right"> Date </label>
+						<div class="col-xs-8 col-md-3">
 							<input class="form-control" style="margin: 0;" id="purchaseDate" name="purchaseDate" type="date" v-model="purchase.purchaseDate" v-bind:disabled="userType == 'u' ? true : false" />
 						</div>
 					</div>
@@ -77,25 +88,27 @@
 	</div>
 
 	<div class="col-xs-12 col-md-9">
-		<fieldset class="scheduler-border" style="margin-bottom: 5px;padding-bottom: 5px">
-			<legend class="scheduler-border">Supplier & Product Information</legend>
-			<div class="control-group">
-				<div class="row">
-					<div class="col-md-6">
+		<div class="row">
+			<div class="col-xs-12 col-md-6">
+				<fieldset class="scheduler-border">
+					<legend class="scheduler-border">Supplier Information</legend>
+					<div class="control-group">
 						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Supplier </label>
-							<div class="col-xs-7">
-								<v-select v-bind:options="suppliers" v-model="selectedSupplier" v-on:input="onChangeSupplier" @search="onSearchSupplier" label="display_name"></v-select>
-							</div>
-							<div class="col-xs-1" style="padding: 0;">
-								<a href="<?= base_url('supplier') ?>" title="Add New Supplier" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
+							<div class="col-xs-8" style="display: flex;align-items:center;margin-bottom:5px;">
+								<div style="width: 86%;">
+									<v-select v-bind:options="suppliers" style="margin: 0;" v-model="selectedSupplier" v-on:input="onChangeSupplier" @search="onSearchSupplier" label="display_name"></v-select>
+								</div>
+								<div style="width: 13%;margin-left:2px;">
+									<a href="<?= base_url('supplier') ?>" class="add-button" target="_blank" title="Add New Supplier"><i class="fa fa-plus" aria-hidden="true"></i></a>
+								</div>
 							</div>
 						</div>
 
-						<div class="form-group" style="display:none;" v-bind:style="{display: selectedSupplier.Supplier_Type == 'G' || selectedSupplier.Supplier_Type == 'N' ? '' : 'none'}">
+						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Name </label>
 							<div class="col-xs-8">
-								<input type="text" placeholder="Supplier Name" class="form-control" v-model="selectedSupplier.Supplier_Name" />
+								<input type="text" placeholder="Supplier Name" class="form-control" v-model="selectedSupplier.Supplier_Name" v-bind:disabled="selectedSupplier.Supplier_Type == 'G' || selectedSupplier.Supplier_Type == 'N' ? false : true" />
 							</div>
 						</div>
 
@@ -113,16 +126,23 @@
 							</div>
 						</div>
 					</div>
+				</fieldset>
+			</div>
 
-					<div class="col-md-6">
+			<div class="col-xs-12 col-md-6 no-padding-left">
+				<fieldset class="scheduler-border">
+					<legend class="scheduler-border">Product Information</legend>
+					<div class="control-group">
 						<form v-on:submit.prevent="addToCart">
 							<div class="form-group">
 								<label class="col-xs-4 control-label no-padding-right"> Product </label>
-								<div class="col-xs-7">
-									<v-select v-bind:options="products" v-model="selectedProduct" label="display_text" v-on:input="onChangeProduct" @search="onSearchProduct"></v-select>
-								</div>
-								<div class="col-xs-1" style="padding: 0;">
-									<a href="<?= base_url('product') ?>" title="Add New Product" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
+								<div class="col-xs-8" style="display: flex;align-items:center;margin-bottom:5px;">
+									<div style="width: 86%;">
+										<v-select v-bind:options="products" style="margin: 0;" v-model="selectedProduct" label="display_text" v-on:input="onChangeProduct" @search="onSearchProduct"></v-select>
+									</div>
+									<div style="width: 13%;margin-left:2px;">
+										<a href="<?= base_url('product') ?>" class="add-button" target="_blank" title="Add New Product"><i class="fa fa-plus" aria-hidden="true"></i></a>
+									</div>
 								</div>
 							</div>
 
@@ -160,9 +180,9 @@
 							</div>
 						</form>
 					</div>
-				</div>
+				</fieldset>
 			</div>
-		</fieldset>
+		</div>
 		<div class="col-xs-12 col-md-12" style="padding-left: 0px;padding-right: 0px;">
 			<div class="table-responsive">
 				<table class="table table-bordered table-hover" style="color:#000;margin-bottom: 5px;">
@@ -309,12 +329,12 @@
 
 								<tr>
 									<td>
-										<div class="form-group">
-											<div class="col-xs-6">
-												<input type="button" class="btn btn-success" value="Purchase" v-on:click="savePurchase" v-bind:disabled="purchaseOnProgress == true ? true : false" style="background:#000;color:#fff;padding:3px;width:100%;">
+										<div class="form-group text-right">
+											<div class="col-xs-6" style="display: block;width: 50%;">
+												<input type="button" class="btn" value="Purchase" v-on:click="savePurchase" v-bind:disabled="purchaseOnProgress == true ? true : false" style="width:100%;background: green !important;border: 0;border-radius: 5px;">
 											</div>
-											<div class="col-xs-6">
-												<input type="button" class="btn btn-info" onclick="window.location = '<?php echo base_url(); ?>purchase'" value="New Purch.." style="background:#000;color:#fff;padding:3px;width:100%;">
+											<div class="col-xs-6" style="display: block;width: 50%;">
+												<input type="button" class="btn" onclick="window.location = '<?php echo base_url(); ?>purchase'" value="New Purch.." style="width:100%;background: #2d1c5a !important;border: 0;border-radius: 5px;">
 											</div>
 										</div>
 									</td>
@@ -581,7 +601,7 @@
 				}, 0).toFixed(2);
 				this.purchase.vat = ((this.purchase.subTotal * parseFloat(this.vatPercent)) / 100).toFixed(2);
 				this.purchase.total = ((parseFloat(this.purchase.subTotal) + parseFloat(this.purchase.vat) + parseFloat(this.purchase.freight)) - parseFloat(this.purchase.discount)).toFixed(2);
-				
+
 				if (event.target.id == 'paid') {
 					this.purchase.due = (parseFloat(this.purchase.total) - parseFloat(this.purchase.paid)).toFixed(2);
 				} else {

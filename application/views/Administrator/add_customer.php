@@ -51,11 +51,13 @@
 
 	#customers .add-button {
 		padding: 2.5px;
-		width: 30px;
+		width: 100%;
 		background-color: #298db4;
 		display: block;
 		text-align: center;
 		color: white;
+		cursor: pointer;
+		border-radius: 3px;
 	}
 
 	#customers .add-button:hover {
@@ -92,7 +94,7 @@
 			<fieldset class="scheduler-border">
 				<legend class="scheduler-border">Customer Entry Form</legend>
 				<div class="control-group">
-					<div class="col-md-5">
+					<div class="col-md-5 no-padding-right">
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Customer Id:</label>
 							<div class="col-md-7">
@@ -123,14 +125,18 @@
 
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Area:</label>
-							<div class="col-md-6">								
-								<v-select v-bind:options="districts" v-model="selectedDistrict" label="District_Name"></v-select>
+							<div class="col-md-7" style="display: flex;align-items:center;margin-bottom:5px;">
+								<div style="width: 86%;">
+									<v-select v-bind:options="districts" style="margin:0;" v-model="selectedDistrict" label="District_Name"></v-select>
+								</div>
+								<div style="width:13%;margin-left:2px;">
+									<span class="add-button" @click.prevent="modalOpen('/add_area', 'Add Area', 'District_Name')"><i class="fa fa-plus"></i></span>
+								</div>
 							</div>
-							<div class="col-md-1" style="padding:0;margin-left: -10px;"><a href="/area" target="_blank" class="add-button"><i class="fa fa-plus"></i></a></div>
 						</div>
 					</div>
 
-					<div class="col-md-5">
+					<div class="col-md-5 no-padding-right">
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Mobile:</label>
 							<div class="col-md-7">
@@ -169,6 +175,7 @@
 
 						<div class="form-group clearfix">
 							<div class="col-md-7 col-md-offset-4 text-right">
+								<input type="button" @click="resetForm" class="btnReset" value="Reset">
 								<input type="submit" class="btnSave" value="Save">
 							</div>
 						</div>
@@ -223,6 +230,32 @@
 				</datatable>
 				<datatable-pager v-model="page" type="abbreviated" :per-page="per_page" style="margin-bottom: 50px;"></datatable-pager>
 			</div>
+		</div>
+	</div>
+
+	<!-- modal form -->
+	<div class="modal formModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-sm" role="document">
+			<form @submit.prevent="saveModalData($event)">
+				<div class="modal-content">
+					<div class="modal-header" style="display: flex;align-items: center;justify-content: space-between;">
+						<h5 class="modal-title" v-html="modalTitle"></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" style="padding-top: 0;">
+						<div class="form-group">
+							<label for="">Name</label>
+							<input type="text" :name="formInput" v-model="fieldValue" class="form-control" autocomplete="off" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btnReset" data-dismiss="modal">Close</button>
+						<button type="submit" class="btnSave">Save</button>
+					</div>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
@@ -310,7 +343,12 @@
 				],
 				page: 1,
 				per_page: 100,
-				filter: ''
+				filter: '',
+
+				formInput: '',
+				url: '',
+				modalTitle: '',
+				fieldValue: ''
 			}
 		},
 		filters: {
@@ -332,7 +370,7 @@
 				axios.get('/get_customers').then(res => {
 					this.customers = res.data;
 				})
-			},			
+			},
 			saveCustomer() {
 				if (this.selectedDistrict == null) {
 					alert('Select area');
@@ -411,32 +449,59 @@
 				this.selectedFile = null;
 			},
 			previewImage(event) {
-                const WIDTH = 150;
-                const HEIGHT = 150;
-                if (event.target.files[0]) {
-                    let reader = new FileReader();
-                    reader.readAsDataURL(event.target.files[0]);
-                    reader.onload = (ev) => {
-                        let img = new Image();
-                        img.src = ev.target.result;
-                        img.onload = async e => {
-                            let canvas = document.createElement('canvas');
-                            canvas.width = WIDTH;
-                            canvas.height = HEIGHT;
-                            const context = canvas.getContext("2d");
-                            context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            let new_img_url = context.canvas.toDataURL(event.target.files[0].type);
-                            this.imageUrl = new_img_url;
-                            const resizedImage = await new Promise(rs => canvas.toBlob(rs, 'image/jpeg', 1))
-                            this.selectedFile = new File([resizedImage], event.target.files[0].name, {
-                                type: resizedImage.type
-                            });
-                        }
-                    }
-                } else {
-                    event.target.value = '';
-                }
-            },
+				const WIDTH = 150;
+				const HEIGHT = 150;
+				if (event.target.files[0]) {
+					let reader = new FileReader();
+					reader.readAsDataURL(event.target.files[0]);
+					reader.onload = (ev) => {
+						let img = new Image();
+						img.src = ev.target.result;
+						img.onload = async e => {
+							let canvas = document.createElement('canvas');
+							canvas.width = WIDTH;
+							canvas.height = HEIGHT;
+							const context = canvas.getContext("2d");
+							context.drawImage(img, 0, 0, canvas.width, canvas.height);
+							let new_img_url = context.canvas.toDataURL(event.target.files[0].type);
+							this.imageUrl = new_img_url;
+							const resizedImage = await new Promise(rs => canvas.toBlob(rs, 'image/jpeg', 1))
+							this.selectedFile = new File([resizedImage], event.target.files[0].name, {
+								type: resizedImage.type
+							});
+						}
+					}
+				} else {
+					event.target.value = '';
+				}
+			},
+
+			// modal data store
+			modalOpen(url, title, txt) {
+				$(".formModal").modal("show");
+				this.formInput = txt;
+				this.url = url;
+				this.modalTitle = title;
+			},
+
+			saveModalData(event) {
+				let filter = {}
+				if (this.formInput == "District_Name") {
+					filter.District_Name = this.fieldValue;
+				}
+
+				axios.post(this.url, filter)
+					.then(res => {
+						if (this.formInput == "District_Name") {
+							this.getDistricts();
+						}
+
+						$(".formModal").modal('hide');
+						this.formInput = '';
+						this.url = "";
+						this.modalTitle = '';
+					})
+			},
 		}
 	})
 </script>

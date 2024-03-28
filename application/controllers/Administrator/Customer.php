@@ -149,7 +149,7 @@ class Customer extends CI_Controller
             $payment['status'] = 'a';
             $payment['AddBy'] = $this->session->userdata("userId");
             $payment['AddTime'] = date('Y-m-d H:i:s');
-            $payment['last_update_ip'] = $this->input->ip_address();
+            $payment['last_update_ip'] = get_client_ip();
             $payment['branch_id'] = $this->session->userdata("BRANCHid");
 
             $this->db->insert('tbl_customer_payment', $payment);
@@ -186,7 +186,7 @@ class Customer extends CI_Controller
             unset($payment['CPayment_id']);
             $payment['UpdateBy'] = $this->session->userdata("userId");
             $payment['UpdateTime'] = date('Y-m-d H:i:s');
-            $payment['last_update_ip'] = $this->input->ip_address();
+            $payment['last_update_ip'] = get_client_ip();
 
             $this->db->where('CPayment_id', $paymentObj->CPayment_id)->update('tbl_customer_payment', $payment);
 
@@ -208,7 +208,7 @@ class Customer extends CI_Controller
                 'status' => 'd',
                 'DeletedBy' => $this->session->userdata('userId'),
                 'DeletedTime' => date('Y-m-d H:i:s'),
-                'last_update_ip' => $this->input->ip_address(),
+                'last_update_ip' => get_client_ip(),
             );
             $this->db->set($payment)->where('CPayment_id', $data->paymentId)->update('tbl_customer_payment');
 
@@ -247,7 +247,7 @@ class Customer extends CI_Controller
                 $customer["status"]     = 'a';
                 $customer["UpdateBy"]   = $this->session->userdata("userId");
                 $customer["UpdateTime"] = date("Y-m-d H:i:s");
-                $customer["last_update_ip"] = $this->input->ip_address();
+                $customer["last_update_ip"] = get_client_ip();
                 $this->db->where('Customer_SlNo', $duplicateCustomer->Customer_SlNo)->update('tbl_customer', $customer);
 
                 $customerId = $duplicateCustomer->Customer_SlNo;
@@ -257,7 +257,7 @@ class Customer extends CI_Controller
                 $customer["status"]     = 'a';
                 $customer["AddBy"] = $this->session->userdata("userId");
                 $customer["AddTime"] = date("Y-m-d H:i:s");
-                $customer["last_update_ip"] = $this->input->ip_address();
+                $customer["last_update_ip"] = get_client_ip();
 
                 $this->db->insert('tbl_customer', $customer);
                 $customerId = $this->db->insert_id();
@@ -298,7 +298,7 @@ class Customer extends CI_Controller
             $customer["branch_id"] = $this->session->userdata("BRANCHid");
             $customer["UpdateBy"] = $this->session->userdata("userId");
             $customer["UpdateTime"] = date("Y-m-d H:i:s");
-            $customer["last_update_ip"] = $this->input->ip_address();
+            $customer["last_update_ip"] = get_client_ip();
 
             $this->db->where('Customer_SlNo', $customerId)->update('tbl_customer', $customer);
             if (!empty($_FILES)) {
@@ -328,7 +328,7 @@ class Customer extends CI_Controller
                 'status'         => 'd',
                 "DeletedBy"      => $this->session->userdata("userId"),
                 "DeletedTime"    => date("Y-m-d H:i:s"),
-                "last_update_ip" => $this->input->ip_address()
+                "last_update_ip" => get_client_ip()
             );
             $this->db->where("Customer_SlNo", $data->customerId);
             $this->db->update("tbl_customer", $rules);

@@ -51,7 +51,7 @@ class Quotation extends CI_Controller
                 'status'                         => 'a',
                 "AddBy"                          => $this->session->userdata("userId"),
                 'AddTime'                        => date("Y-m-d H:i:s"),
-                'last_update_ip'                 => $this->input->ip_address(),
+                'last_update_ip'                 => get_client_ip(),
                 'branch_id'                      => $this->session->userdata("BRANCHid")
             );
 
@@ -80,7 +80,7 @@ class Quotation extends CI_Controller
                     'status'                    => 'a',
                     'AddBy'                     => $this->session->userdata("userId"),
                     'AddTime'                   => date('Y-m-d H:i:s'),
-                    'last_update_ip'            => $this->input->ip_address(),
+                    'last_update_ip'            => get_client_ip(),
                     'branch_id'                 => $this->session->userdata('BRANCHid')
                 );
 
@@ -116,7 +116,7 @@ class Quotation extends CI_Controller
                 'status' => 'a',
                 "AddBy" => $this->session->userdata("userId"),
                 'AddTime' => date("Y-m-d H:i:s"),
-                'last_update_ip' => $this->input->ip_address(),
+                'last_update_ip' => get_client_ip(),
                 'branch_id' => $this->session->userdata("BRANCHid")
             );
 
@@ -134,7 +134,7 @@ class Quotation extends CI_Controller
                     'status' => 'a',
                     'AddBy' => $this->session->userdata("userId"),
                     'AddTime' => date('Y-m-d H:i:s'),
-                    'AddTime' => $this->input->ip_address(),
+                    'AddTime' => get_client_ip(),
                     'branch_id' => $this->session->userdata('BRANCHid')
                 );
 

@@ -88,7 +88,7 @@ class User_management extends CI_Controller
                 "UserType"       => $data->UserType,
                 "AddBy"          => $this->session->userdata("userId"),
                 "AddTime"        => date('Y-m-d H:i:s'),
-                "last_update_ip" => $this->input->ip_address(),
+                "last_update_ip" => get_client_ip(),
             );
 
             $this->db->insert("tbl_user", $user);
@@ -121,7 +121,7 @@ class User_management extends CI_Controller
                 "UserType"      => $data->UserType,
                 "UpdateBy"      => $this->session->userdata("userId"),
                 "UpdateTime"    => date('Y-m-d H:i:s'),
-                "last_update_ip" => $this->input->ip_address(),
+                "last_update_ip" => get_client_ip(),
             );
             if (!empty($data->Password)) {
                 $user['User_Password'] = md5($data->Password);
@@ -145,7 +145,7 @@ class User_management extends CI_Controller
                 "status"     => $data->status,
                 "UpdateBy"   => $this->session->userdata("userId"),
                 "UpdateTime" => date('Y-m-d H:i:s'),
-                "last_update_ip" => $this->input->ip_address(),
+                "last_update_ip" => get_client_ip(),
             );
 
             $this->db->where('User_SlNo', $data->userId);
@@ -167,7 +167,7 @@ class User_management extends CI_Controller
                 "status"     => "d",
                 "DeletedBy"   => $this->session->userdata("userId"),
                 "DeletedTime" => date('Y-m-d H:i:s'),
-                "last_update_ip" => $this->input->ip_address(),
+                "last_update_ip" => get_client_ip(),
             );
 
             $this->db->where('User_SlNo', $data->userId);

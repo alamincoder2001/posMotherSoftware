@@ -47,6 +47,15 @@ class Transfer extends CI_Controller
                 echo json_encode($res);
                 exit;
             }
+            // check stock
+            foreach ($data->cart as $cartProduct) {
+                $checkStock = $this->mt->productStock($cartProduct->product_id);
+                if (($cartProduct->quantity > $checkStock)) {
+                    $res = ['success' => false, 'message' => "({$cartProduct->name} - {$cartProduct->product_code}) stock unavailable"];
+                    echo json_encode($res);
+                    exit;
+                }
+            }
             $transfer = array(
                 'transfer_date'  => $data->transfer->transfer_date,
                 'transfer_by'    => $data->transfer->transfer_by,
@@ -57,7 +66,7 @@ class Transfer extends CI_Controller
                 'status'         => 'p',
                 'AddBy'          => $this->session->userdata("userId"),
                 'AddTime'        => date('Y-m-d H:i:s'),
-                'last_update_ip' => $this->input->ip_address()
+                'last_update_ip' => get_client_ip()
             );
 
             $this->db->insert('tbl_transfermaster', $transfer);
@@ -73,7 +82,7 @@ class Transfer extends CI_Controller
                     'status'         => 'p',
                     'AddBy'          => $this->session->userdata("userId"),
                     'AddTime'        => date('Y-m-d H:i:s'),
-                    'last_update_ip' => $this->input->ip_address(),
+                    'last_update_ip' => get_client_ip(),
                 );
 
                 $this->db->insert('tbl_transferdetails', $transferDetails);
@@ -126,7 +135,7 @@ class Transfer extends CI_Controller
                 'note'           => $data->transfer->note,
                 'UpdateBy'       => $this->session->userdata("userId"),
                 'UpdateTime'     => date('Y-m-d H:i:s'),
-                'last_update_ip' => $this->input->ip_address(),
+                'last_update_ip' => get_client_ip(),
             );
 
             $this->db->where('transfer_id', $transferId)->update('tbl_transfermaster', $transfer);
@@ -142,6 +151,16 @@ class Transfer extends CI_Controller
             }
             $this->db->query("delete from tbl_transferdetails where transfer_id = ?", $transferId);
 
+            // check stock
+            foreach ($data->cart as $cartProduct) {
+                $checkStock = $this->mt->productStock($cartProduct->product_id);
+                if (($cartProduct->quantity > $checkStock)) {
+                    $res = ['success' => false, 'message' => "({$cartProduct->name} - {$cartProduct->product_code}) stock unavailable"];
+                    echo json_encode($res);
+                    exit;
+                }
+            }
+
             foreach ($data->cart as $cartProduct) {
                 $transferDetails = array(
                     'transfer_id'    => $transferId,
@@ -150,7 +169,7 @@ class Transfer extends CI_Controller
                     'status'         => 'p',
                     'UpdateBy'       => $this->session->userdata("userId"),
                     'UpdateTime'     => date('Y-m-d H:i:s'),
-                    'last_update_ip' => $this->input->ip_address(),
+                    'last_update_ip' => get_client_ip(),
                 );
 
                 $this->db->insert('tbl_transferdetails', $transferDetails);
@@ -228,7 +247,9 @@ class Transfer extends CI_Controller
                 from tbl_transfermaster tm
                 join tbl_branch b on b.branch_id = tm.transfer_to
                 join tbl_employee e on e.Employee_SlNo = tm.transfer_by
-                where tm.transfer_from = ? $clauses
+                where tm.transfer_from = ? 
+                and tm.status != 'd'
+                $clauses
             ", $this->session->userdata('BRANCHid'))->result();
 
         echo json_encode($transfers);
@@ -247,6 +268,7 @@ class Transfer extends CI_Controller
                 join tbl_product p on p.Product_SlNo = td.product_id
                 left join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
                 where td.transfer_id = ?
+                and td.status != 'd'
             ", $data->transferId)->result();
 
         echo json_encode($transferDetails);
@@ -337,11 +359,11 @@ class Transfer extends CI_Controller
                     ", [$oldDetails->quantity, $oldDetails->product_id, $this->session->userdata('BRANCHid')]);
 
                 $this->db->where("transferdetails_id", $oldDetails->transferdetails_id);
-                $this->db->update("tbl_transferdetails", ['status' => 'd', 'DeletedBy' => $this->session->userdata("userId"), 'DeletedTime' => date('Y-m-d H:i:s'), 'last_update_ip' => $this->input->ip_address()]);
+                $this->db->update("tbl_transferdetails", ['status' => 'd', 'DeletedBy' => $this->session->userdata("userId"), 'DeletedTime' => date('Y-m-d H:i:s'), 'last_update_ip' => get_client_ip()]);
             }
 
             $this->db->where("transfer_id", $transferId);
-            $this->db->update("tbl_transfermaster", ['status' => 'd', 'DeletedBy' => $this->session->userdata("userId"), 'DeletedTime' => date('Y-m-d H:i:s'), 'last_update_ip' => $this->input->ip_address()]);
+            $this->db->update("tbl_transfermaster", ['status' => 'd', 'DeletedBy' => $this->session->userdata("userId"), 'DeletedTime' => date('Y-m-d H:i:s'), 'last_update_ip' => get_client_ip()]);
 
             $res = ['success' => true, 'message' => 'Transfer deleted'];
         } catch (Exception $ex) {
@@ -382,7 +404,7 @@ class Transfer extends CI_Controller
                 'status'         => 'a',
                 "UpdateBy"       => $this->session->userdata("userId"),
                 "UpdateTime"     => date("Y-m-d H:i:s"),
-                "last_update_ip" => $this->input->ip_address()
+                "last_update_ip" => get_client_ip()
             );
 
             $this->db->where("transfer_id", $data->transferId)->update('tbl_transfermaster', $rules);

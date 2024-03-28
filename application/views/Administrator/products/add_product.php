@@ -51,11 +51,13 @@
 
 	#products .add-button {
 		padding: 2.5px;
-		width: 28px;
+		width: 100%;
 		background-color: #298db4;
 		display: block;
 		text-align: center;
 		color: white;
+		cursor: pointer;
+		border-radius: 3px;
 	}
 
 	#products .add-button:hover {
@@ -79,18 +81,26 @@
 
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Category:</label>
-							<div class="col-md-7">
-								<v-select v-bind:options="categories" v-model="selectedCategory" label="ProductCategory_Name"></v-select>
+							<div class="col-md-7" style="display: flex;align-items:center;margin-bottom:5px;">
+								<div style="width: 88%;">
+									<v-select v-bind:options="categories" style="margin:0;" v-model="selectedCategory" label="ProductCategory_Name"></v-select>
+								</div>
+								<div style="width:11%;margin-left:2px;">
+									<span class="add-button" @click.prevent="modalOpen('/add_category', 'Add Category', 'ProductCategory_Name')"><i class="fa fa-plus"></i></span>
+								</div>
 							</div>
-							<div class="col-md-1" style="padding:0;"><a href="/category" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank" class="add-button"><i class="fa fa-plus"></i></a></div>
 						</div>
 
-						<div class="form-group clearfix" style="display:none;">
+						<div class="form-group clearfix" style="display: none;">
 							<label class="control-label col-md-4">Brand:</label>
-							<div class="col-md-7">
-								<v-select v-bind:options="brands" v-model="selectedBrand" label="brand_name"></v-select>
+							<div class="col-md-7" style="display: flex;align-items:center;margin-bottom:5px;">
+								<div style="width: 88%;">
+									<v-select v-bind:options="brands" style="margin:0;" v-model="selectedBrand" label="brand_name"></v-select>
+								</div>
+								<div style="width:11%;margin-left:2px;">
+									<span class="add-button" @click.prevent="modalOpen('/add_brand', 'Add Brand', 'brand_name')"><i class="fa fa-plus"></i></span>
+								</div>
 							</div>
-							<div class="col-md-1" style="padding:0;"><a href="" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" class="add-button"><i class="fa fa-plus"></i></a></div>
 						</div>
 
 						<div class="form-group clearfix">
@@ -102,11 +112,16 @@
 
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Unit:</label>
-							<div class="col-md-7">
-								<v-select v-bind:options="units" v-model="selectedUnit" label="Unit_Name"></v-select>
+							<div class="col-md-7" style="display: flex;align-items:center;margin-bottom:5px;">
+								<div style="width: 88%;">
+									<v-select v-bind:options="units" style="margin:0;" v-model="selectedUnit" label="Unit_Name"></v-select>
+								</div>
+								<div style="width:11%;margin-left:2px;">
+									<span class="add-button" @click.prevent="modalOpen('/add_unit', 'Add Unit', 'Unit_Name')"><i class="fa fa-plus"></i></span>
+								</div>
 							</div>
-							<div class="col-md-1" style="padding:0;"><a href="/unit" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank" class="add-button"><i class="fa fa-plus"></i></a></div>
 						</div>
+
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">VAT:</label>
 							<div class="col-md-7">
@@ -145,13 +160,10 @@
 						</div>
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Is Service:</label>
-							<div class="col-md-7">
+							<div class="col-md-1">
 								<input type="checkbox" v-model="product.is_service" @change="changeIsService">
 							</div>
-						</div>
-
-						<div class="form-group clearfix">
-							<div class="col-md-7 col-md-offset-4 text-right">
+							<div class="col-md-6 text-right">
 								<input type="button" @click="clearForm" class="btnReset" value="Reset">
 								<input type="submit" class="btnSave" value="Save">
 							</div>
@@ -201,7 +213,31 @@
 		</div>
 	</div>
 
-
+	<!-- modal form -->
+	<div class="modal formModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-sm" role="document">
+			<form @submit.prevent="saveModalData($event)">
+				<div class="modal-content">
+					<div class="modal-header" style="display: flex;align-items: center;justify-content: space-between;">
+						<h5 class="modal-title" v-html="modalTitle"></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" style="padding-top: 0;">
+						<div class="form-group">
+							<label for="">Name</label>
+							<input type="text" :name="formInput" v-model="fieldValue" class="form-control" autocomplete="off" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btnReset" data-dismiss="modal">Close</button>
+						<button type="submit" class="btnSave">Save</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 <script src="<?php echo base_url(); ?>assets/js/vue/vue.min.js"></script>
@@ -222,9 +258,9 @@
 					Product_Name: '',
 					ProductCategory_ID: '',
 					brand: '',
-					Product_ReOrederLevel: '',
-					Product_Purchase_Rate: '',
-					Product_SellingPrice: '',
+					Product_ReOrederLevel: 0,
+					Product_Purchase_Rate: 0,
+					Product_SellingPrice: 0,
 					Product_WholesaleRate: 0,
 					Unit_ID: '',
 					vat: 0,
@@ -292,7 +328,12 @@
 				],
 				page: 1,
 				per_page: 100,
-				filter: ''
+				filter: '',
+
+				formInput: '',
+				url: '',
+				modalTitle: '',
+				fieldValue: ''
 			}
 		},
 		created() {
@@ -401,8 +442,49 @@
 						this.product[key] = 0;
 					}
 				})
-				this.product.Product_Code = "<?php echo $this->mt->generateProductCode();?>";
-			}
+				this.product.Product_Code = "<?php echo $this->mt->generateProductCode(); ?>";
+			},
+
+
+			// modal data store
+			modalOpen(url, title, txt) {
+				$(".formModal").modal("show");
+				this.formInput = txt;
+				this.url = url;
+				this.modalTitle = title;
+			},
+
+			saveModalData(event) {
+				let filter = {}
+				if (this.formInput == "ProductCategory_Name") {
+					filter.ProductCategory_Name = this.fieldValue;
+					filter.ProductCategory_Description = "";
+				}
+				if (this.formInput == "brand_name") {
+					filter.brand_name = this.fieldValue;
+				}
+				if (this.formInput == "Unit_Name") {
+					filter.Unit_Name = this.fieldValue;
+				}
+
+				axios.post(this.url, filter)
+					.then(res => {
+						if (this.formInput == "ProductCategory_Name") {
+							this.getCategories();
+						}
+						if (this.formInput == "brand_name") {
+							this.getBrands();
+						}
+						if (this.formInput == "Unit_Name") {
+							this.getUnits();
+						}
+
+						$(".formModal").modal('hide');
+						this.formInput = '';
+						this.url = "";
+						this.modalTitle = '';
+					})
+			},
 		}
 	})
 </script>

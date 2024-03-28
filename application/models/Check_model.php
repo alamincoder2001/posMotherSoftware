@@ -131,7 +131,7 @@ class Check_model extends CI_Model
 			'status'=>'a',
 			'AddBy' =>$this->session->userdata("userId"),
 			'AddTime' =>date('Y-m-d H:i:s'),
-			'last_update_ip' => $this->input->ip_address(),
+			'last_update_ip' => get_client_ip(),
 		);
 
 		$result = $this->db->insert('tbl_cheque', $attr);
@@ -171,7 +171,7 @@ class Check_model extends CI_Model
 			'check_status'   => $this->input->post('check_status'),
 			'UpdateBy'       => $this->session->userdata('userId'),
 			'UpdateTime'     => date('Y-m-d H:i:s'),
-			'last_update_ip' => $this->input->ip_address(),
+			'last_update_ip' => get_client_ip(),
 		);
 
 		$this->db->where('id', $id);
@@ -191,7 +191,7 @@ class Check_model extends CI_Model
 			'status'         => 'd',
 			"DeletedBy"      => $this->session->userdata("userId"),
 			"DeletedTime"    => date("Y-m-d H:i:s"),
-			"last_update_ip" => $this->input->ip_address()
+			"last_update_ip" => get_client_ip()
 		);
 
 		$this->db->where('id', $id);

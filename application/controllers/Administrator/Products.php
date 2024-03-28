@@ -51,7 +51,7 @@ class Products extends CI_Controller
             $product['status']         = 'a';
             $product['AddBy']          = $this->session->userdata("userId");
             $product['AddTime']        = date('Y-m-d H:i:s');
-            $product['last_update_ip'] = $this->input->ip_address();
+            $product['last_update_ip'] = get_client_ip();
             $product['branch_id']      = $this->brunch;
 
             $this->db->insert('tbl_product', $product);
@@ -89,7 +89,7 @@ class Products extends CI_Controller
             $product['is_service']     = $productObj->is_service == true ? 'true' : 'false';
             $product['UpdateBy']       = $this->session->userdata("userId");
             $product['UpdateTime']     = date('Y-m-d H:i:s');
-            $product['last_update_ip'] = $this->input->ip_address();
+            $product['last_update_ip'] = get_client_ip();
 
             $this->db->where('Product_SlNo', $productObj->Product_SlNo)->update('tbl_product', $product);
 
@@ -110,7 +110,7 @@ class Products extends CI_Controller
                 'status'         => 'd',
                 'DeletedBy'      => $this->session->userdata("userId"),
                 'DeletedTime'    => date('Y-m-d H:i:s'),
-                'last_update_ip' => $this->input->ip_address()
+                'last_update_ip' => get_client_ip()
             );
             $this->db->set($rules)->where('Product_SlNo', $data->productId)->update('tbl_product');
 

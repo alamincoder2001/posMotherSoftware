@@ -67,7 +67,7 @@ class Page extends CI_Controller
                     'status'     => 'a',
                     "UpdateBy"   => $this->session->userdata("userId"),
                     "UpdateTime" => date("Y-m-d H:i:s"),
-                    "last_update_ip" => $this->input->ip_address()
+                    "last_update_ip" => get_client_ip()
                 );
                 $this->db->where('ProductCategory_SlNo', $query->ProductCategory_SlNo);
                 $this->db->update('tbl_productcategory', $category);
@@ -78,7 +78,7 @@ class Page extends CI_Controller
                     "status"                      => 'a',
                     "AddBy"                       => $this->session->userdata("userId"),
                     "AddTime"                     => date("Y-m-d H:i:s"),
-                    "last_update_ip"              => $this->input->ip_address(),
+                    "last_update_ip"              => get_client_ip(),
                     "branch_id"                   => $this->brunch
                 );
                 $this->db->insert('tbl_productcategory', $category);
@@ -101,7 +101,7 @@ class Page extends CI_Controller
                 "ProductCategory_Description" => $data->ProductCategory_Description,
                 "UpdateBy"                    => $this->session->userdata("userId"),
                 "UpdateTime"                  => date("Y-m-d H:i:s"),
-                "last_update_ip" => $this->input->ip_address()
+                "last_update_ip" => get_client_ip()
             );
             $this->db->where('ProductCategory_SlNo', $data->ProductCategory_SlNo);
             $this->db->update('tbl_productcategory', $category);
@@ -119,7 +119,7 @@ class Page extends CI_Controller
             'status'         => 'd',
             "DeletedBy"      => $this->session->userdata("userId"),
             "DeletedTime"    => date("Y-m-d H:i:s"),
-            "last_update_ip" => $this->input->ip_address()
+            "last_update_ip" => get_client_ip()
         );
         $this->db->where('ProductCategory_SlNo', $data->categoryId);
         $this->db->update('tbl_productcategory', $category);
@@ -148,7 +148,7 @@ class Page extends CI_Controller
                     'status'     => 'a',
                     "UpdateBy"   => $this->session->userdata("userId"),
                     "UpdateTime" => date("Y-m-d H:i:s"),
-                    "last_update_ip" => $this->input->ip_address()
+                    "last_update_ip" => get_client_ip()
                 );
                 $this->db->where('Unit_SlNo', $query->Unit_SlNo);
                 $this->db->update('tbl_unit', $unit);
@@ -158,7 +158,7 @@ class Page extends CI_Controller
                     "status"              => 'a',
                     "AddBy"                  => $this->session->userdata("userId"),
                     "AddTime"                => date("Y-m-d H:i:s"),
-                    "last_update_ip" => $this->input->ip_address()
+                    "last_update_ip" => get_client_ip()
                 );
                 $this->db->insert('tbl_unit', $unit);
             }
@@ -179,7 +179,7 @@ class Page extends CI_Controller
                 "Unit_Name"                     => $data->Unit_Name,
                 "UpdateBy"                          => $this->session->userdata("userId"),
                 "UpdateTime"                        => date("Y-m-d H:i:s"),
-                "last_update_ip" => $this->input->ip_address()
+                "last_update_ip" => get_client_ip()
             );
             $this->db->where('Unit_SlNo', $data->Unit_SlNo);
             $this->db->update('tbl_unit', $unit);
@@ -197,7 +197,7 @@ class Page extends CI_Controller
             'status'         => 'd',
             "DeletedBy"      => $this->session->userdata("userId"),
             "DeletedTime"    => date("Y-m-d H:i:s"),
-            "last_update_ip" => $this->input->ip_address()
+            "last_update_ip" => get_client_ip()
         );
         $this->db->where('Unit_SlNo', $data->unitId);
         $this->db->update('tbl_unit', $unit);
@@ -206,7 +206,7 @@ class Page extends CI_Controller
 
     public function getUnits()
     {
-        $units = $this->db->query("select * from tbl_unit where status = 'a'")->result();
+        $units = $this->db->query("select * from tbl_unit where status = 'a' order by Unit_SlNo desc")->result();
         echo json_encode($units);
     }
     //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -232,7 +232,7 @@ class Page extends CI_Controller
                     'status'     => 'a',
                     "UpdateBy"   => $this->session->userdata("userId"),
                     "UpdateTime" => date("Y-m-d H:i:s"),
-                    "last_update_ip" => $this->input->ip_address()
+                    "last_update_ip" => get_client_ip()
                 );
                 $this->db->where('District_SlNo', $query->District_SlNo);
                 $this->db->update('tbl_district', $area);
@@ -241,7 +241,7 @@ class Page extends CI_Controller
                     "District_Name"          => $data->District_Name,
                     "AddBy"                  => $this->session->userdata("userId"),
                     "AddTime"                => date("Y-m-d H:i:s"),
-                    "last_update_ip" => $this->input->ip_address()
+                    "last_update_ip" => get_client_ip()
                 );
                 $this->db->insert('tbl_district', $area);
             }
@@ -263,7 +263,7 @@ class Page extends CI_Controller
                 "District_Name"                     => $data->District_Name,
                 "UpdateBy"                          => $this->session->userdata("userId"),
                 "UpdateTime"                        => date("Y-m-d H:i:s"),
-                "last_update_ip" => $this->input->ip_address()
+                "last_update_ip" => get_client_ip()
             );
             $this->db->where('District_SlNo', $data->District_SlNo);
             $this->db->update('tbl_district', $area);
@@ -281,7 +281,7 @@ class Page extends CI_Controller
             'status'         => 'd',
             "DeletedBy"      => $this->session->userdata("userId"),
             "DeletedTime"    => date("Y-m-d H:i:s"),
-            "last_update_ip" => $this->input->ip_address()
+            "last_update_ip" => get_client_ip()
         );
         $this->db->where('District_SlNo', $data->areaId);
         $this->db->update('tbl_district', $area);
@@ -290,7 +290,7 @@ class Page extends CI_Controller
 
     public function getDistricts()
     {
-        $districts = $this->db->query("select * from tbl_district d where d.status = 'a'")->result();
+        $districts = $this->db->query("select * from tbl_district d where d.status = 'a' order by District_SlNo desc")->result();
         echo json_encode($districts);
     }
 

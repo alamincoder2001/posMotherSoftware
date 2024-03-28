@@ -298,29 +298,7 @@ const salesInvoice = Vue.component('sales-invoice', {
         async print(){
             let invoiceContent = document.querySelector('#invoiceContent').innerHTML;
             let printWindow = window.open('', 'PRINT', `width=${screen.width}, height=${screen.height}, left=0, top=0`);
-            if (this.currentBranch.print_type == '3') {
-                printWindow.document.write(`
-                    <html>
-                        <head>
-                            <title>Invoice</title>
-                            <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-                            <style>
-                                body, table{
-                                    font-size:11px;
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <div style="text-align:center;">
-                                <img src="/uploads/company_profile_thum/${this.currentBranch.Company_Logo_org}" alt="Logo" style="height:80px;margin:0px;" /><br>
-                                <strong style="font-size:18px;">${this.currentBranch.Company_Name}</strong><br>
-                                <p style="white-space:pre-line;">${this.currentBranch.Repot_Heading}</p>
-                            </div>
-                            ${invoiceContent}
-                        </body>
-                    </html>
-                `);
-            } else if (this.currentBranch.print_type == '2') {
+            if (this.currentBranch.print_type == '2') {
                 printWindow.document.write(`
                     <!DOCTYPE html>
                     <html lang="en">

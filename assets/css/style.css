@@ -194,7 +194,7 @@ textarea {
 legend {
   margin: 0;
   margin-bottom: 5px;
-  font-size: 20px !important;
+  font-size: 15px !important;
   font-style: italic;
 }
 
@@ -225,7 +225,7 @@ fieldset.scheduler-border {
 }
 
 legend.scheduler-border {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: bold !important;
   text-align: left !important;
   width: auto;

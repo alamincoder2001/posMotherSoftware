@@ -44,6 +44,25 @@
 		height: 15px;
 		margin-top: 7px;
 	}
+
+	.add-button {
+		padding: 2.8px;
+		width: 100%;
+		background-color: #d15b47;
+		display: block;
+		text-align: center;
+		color: white;
+		cursor: pointer;
+		border-radius: 3px;
+	}
+
+	.add-button:hover {
+		color: white;
+	}
+
+	input[disabled=disabled] {
+		color: #ffff !important;
+	}
 </style>
 
 <div id="sales" class="row">
@@ -52,28 +71,28 @@
 			<div class="control-group">
 				<div class="row">
 					<div class="form-group">
-						<label class="col-sm-1 control-label no-padding-right"> Invoice no </label>
-						<div class="col-sm-2">
+						<label class="col-xs-4 col-md-1 control-label no-padding-right"> Invoice no </label>
+						<div class="col-xs-8 col-md-2">
 							<input type="text" id="invoiceNo" class="form-control" v-model="sales.invoiceNo" readonly />
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label class="col-sm-1 control-label no-padding-right"> Sales By </label>
-						<div class="col-sm-2">
+						<label class="col-xs-4 col-md-1 control-label no-padding-right"> Sales By </label>
+						<div class="col-xs-8 col-md-2">
 							<v-select v-bind:options="employees" v-model="selectedEmployee" label="Employee_Name" placeholder="Select Employee"></v-select>
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label class="col-sm-1 control-label no-padding-right"> Sales From </label>
-						<div class="col-sm-2">
+						<label class="col-xs-4 col-md-1 control-label no-padding-right"> Sales From </label>
+						<div class="col-xs-8 col-md-2">
 							<v-select id="branchDropdown" v-bind:options="branches" label="Branch_name" v-model="selectedBranch" disabled></v-select>
 						</div>
 					</div>
 
 					<div class="form-group">
-						<div class="col-sm-3">
+						<div class="col-xs-12 col-md-3">
 							<input class="form-control" id="salesDate" type="date" v-model="sales.salesDate" v-bind:disabled="userType == 'u' ? true : false" />
 						</div>
 					</div>
@@ -83,12 +102,12 @@
 	</div>
 
 
-	<div class="col-xs-12 col-md-9 col-lg-9">
-		<fieldset class="scheduler-border" style="margin-bottom: 5px;padding: 0 4px 3px 0;">
-			<legend class="scheduler-border">Customer & Product Information</legend>
-			<div class="control-group">
-				<div class="row">
-					<div class="col-xs-12 col-md-6">
+	<div class="col-xs-12 col-md-9">
+		<div class="row">
+			<div class="col-xs-12 col-md-6">
+				<fieldset class="scheduler-border" style="margin-bottom: 5px;padding: 0 4px 3px 0;">
+					<legend class="scheduler-border">Customer Information</legend>
+					<div class="control-group">
 						<div class="form-group clearfix" style="margin-bottom: 3px;">
 							<label class="col-xs-4 control-label no-padding-right" style="margin: 0;"> Sales Type </label>
 							<div class="col-xs-8">
@@ -98,11 +117,13 @@
 						</div>
 						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Customer </label>
-							<div class="col-xs-7">
-								<v-select v-bind:options="customers" label="display_name" v-model="selectedCustomer" v-on:input="customerOnChange" @search="onSearchCustomer"></v-select>
-							</div>
-							<div class="col-xs-1" style="padding: 0;">
-								<a href="<?= base_url('customer') ?>" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank" title="Add New Customer"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
+							<div class="col-xs-8" style="display: flex;align-items:center;margin-bottom:5px;">
+								<div style="width: 86%;">
+									<v-select v-bind:options="customers" style="margin: 0;" label="display_name" v-model="selectedCustomer" v-on:input="customerOnChange" @search="onSearchCustomer"></v-select>
+								</div>
+								<div style="width: 13%;margin-left:2px;">
+									<a href="<?= base_url('customer') ?>" class="add-button" target="_blank" title="Add New Customer"><i class="fa fa-plus" aria-hidden="true"></i></a>
+								</div>
 							</div>
 						</div>
 
@@ -123,20 +144,27 @@
 						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Address </label>
 							<div class="col-xs-8">
-								<input type="text" id="address" placeholder="Address" class="form-control" v-model="selectedCustomer.Customer_Address" v-bind:disabled="selectedCustomer.Customer_Type == 'G' ? false : true" />
+								<input type="text" id="address" placeholder="Address" class="form-control" v-model="selectedCustomer.Customer_Address" v-bind:disabled="selectedCustomer.Customer_Type == 'G' || selectedCustomer.Customer_Type == 'N' ? false : true" />
 							</div>
 						</div>
 					</div>
+				</fieldset>
+			</div>
 
-					<div class="col-xs-12 col-md-5">
+			<div class="col-xs-12 col-md-5 no-padding-left">
+				<fieldset class="scheduler-border" style="margin-bottom: 5px;padding: 0 4px 3px 0;" :style="{background: selectedProduct.is_service == 'true' ? '#ffecc0 !important' : ''}">
+					<legend class="scheduler-border"><span v-html="selectedProduct.is_service == 'true' ? 'Service' : 'Product'"></span> Information</legend>
+					<div class="control-group">
 						<form v-on:submit.prevent="addToCart">
 							<div class="form-group">
-								<label class="col-xs-3 control-label no-padding-right"> {{selectedProduct.is_service == 'true' ? 'Service' : 'Product'}} </label>
-								<div class="col-xs-8">
-									<v-select v-bind:options="products" v-model="selectedProduct" label="display_text" @input="productOnChange" @search="onSearchProduct"></v-select>
-								</div>
-								<div class="col-xs-1" style="padding: 0;">
-									<a href="<?= base_url('product') ?>" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank" title="Add New Product"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
+								<label class="col-xs-3 control-label no-padding-right"> <span v-html="selectedProduct.is_service == 'true' ? 'Service' : 'Product'"></span> </label>
+								<div class="col-xs-9" style="display: flex;align-items:center;margin-bottom:5px;">
+									<div style="width: 86%;">
+										<v-select v-bind:options="products" style="margin: 0;" v-model="selectedProduct" label="display_text" @input="productOnChange" @search="onSearchProduct"></v-select>
+									</div>
+									<div style="width: 13%;margin-left:2px;">
+										<a href="<?= base_url('product') ?>" class="add-button" target="_blank" title="Add New Product"><i class="fa fa-plus" aria-hidden="true"></i></a>
+									</div>
 								</div>
 							</div>
 
@@ -181,67 +209,70 @@
 								</div>
 							</div>
 						</form>
-
 					</div>
-					<div class="col-xs-12 col-md-1" style="padding-left: 0px !important;">
-						<div style="display:none;" v-bind:style="{display:selectedProduct.is_service == 'true' ? 'none' : ''}">
-							<div class="text-center" style="display:none;font-size: 10px;line-height: 1;margin-bottom: 3px;" v-bind:style="{color: productStock > 0 ? 'green' : 'red', display: selectedProduct.Product_SlNo == '' ? 'none' : ''}">{{ productStockText }}</div class="text-center">
+				</fieldset>
+			</div>
+			<div class="col-xs-12 col-md-1 no-padding" style="height: 169px;background: #93d2f5;border: 1px solid gray;margin-top: 14px;border-radius: 5px;">
+				<div style="display:none;" v-bind:style="{display:selectedProduct.is_service == 'true' ? 'none' : ''}">
+					<div style="height: 169px;display:flex;flex-direction:column;justify-content:center;">
+						<div class="text-center" style="display:none;font-size: 10px;line-height: 1;margin-bottom: 3px;" v-bind:style="{color: productStock > 0 ? 'green' : 'red', display: selectedProduct.Product_SlNo == '' ? 'none' : ''}">{{ productStockText }}</div class="text-center">
 
-							<input type="text" id="productStock" v-model="productStock" readonly style="border:none;font-size:13px;width:100%;text-align:center;color:green"><br>
-							<input type="text" id="stockUnit" v-model="selectedProduct.Unit_Name" readonly style="border:none;font-size:12px;width:100%;text-align: center;margin-bottom:2px;"><br>
-							<input type="password" ref="productPurchaseRate" v-model="selectedProduct.Product_Purchase_Rate" v-on:mousedown="toggleProductPurchaseRate" v-on:mouseup="toggleProductPurchaseRate" readonly title="Purchase rate (click & hold)" style="font-size:12px;width:100%;text-align: center;">
-						</div>
+						<input type="text" id="productStock" v-model="productStock" readonly style="border:none;font-size:13px;width:100%;text-align:center;color:green"><br>
+						<input type="text" id="stockUnit" v-model="selectedProduct.Unit_Name" readonly style="border:none;font-size:12px;width:100%;text-align: center;margin-bottom:2px;"><br>
+						<input type="password" ref="productPurchaseRate" v-model="selectedProduct.Product_Purchase_Rate" v-on:mousedown="toggleProductPurchaseRate" v-on:mouseup="toggleProductPurchaseRate" readonly title="Purchase rate (click & hold)" style="font-size:12px;width:100%;text-align: center;">
 					</div>
 				</div>
 			</div>
-		</fieldset>
-		<div class="col-xs-12 col-md-12 col-lg-12" style="padding: 0;">
-			<div class="table-responsive">
-				<table class="table table-bordered table-hover">
-					<thead>
-						<tr class="">
-							<th style="width:6%;color:#000;">Sl</th>
-							<th style="width:10%;color:#000;">Code</th>
-							<th style="width:30%;color:#000;">Product Name</th>
-							<th style="width:15%;color:#000;">Category</th>
-							<th style="width:7%;color:#000;">Qty</th>
-							<th style="width:8%;color:#000;">Rate</th>
-							<th style="width:15%;color:#000;">Total</th>
-							<th style="width:10%;color:#000;">Action</th>
-						</tr>
-					</thead>
-					<tbody style="display:none;" v-bind:style="{display: cart.length > 0 ? '' : 'none'}">
-						<tr v-for="(product, sl) in cart">
-							<td>{{ sl + 1 }}</td>
-							<td>{{ product.productCode }}</td>
-							<td style="text-align: left;padding-left:3px;">{{ product.name }}</td>
-							<td>{{ product.categoryName }}</td>
-							<td>{{ product.quantity }}</td>
-							<td>{{ product.salesRate }}</td>
-							<td>{{ product.total }}</td>
-							<td><a href="" v-on:click.prevent="removeFromCart(sl)"><i class="fa fa-trash"></i></a></td>
-						</tr>
 
-						<tr>
-							<td colspan="8"></td>
-						</tr>
+			<div class="col-xs-12 col-md-12 no-padding-right">
+				<div class="table-responsive">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr class="">
+								<th style="width:6%;color:#000;">Sl</th>
+								<th style="width:10%;color:#000;">Code</th>
+								<th style="width:30%;color:#000;">Product/Service Name</th>
+								<th style="width:15%;color:#000;">Category</th>
+								<th style="width:7%;color:#000;">Qty</th>
+								<th style="width:8%;color:#000;">Rate</th>
+								<th style="width:15%;color:#000;">Total</th>
+								<th style="width:10%;color:#000;">Action</th>
+							</tr>
+						</thead>
+						<tbody style="display:none;" v-bind:style="{display: cart.length > 0 ? '' : 'none'}">
+							<tr v-for="(product, sl) in cart" :style="{background: product.is_service == 'true' ? '#ffecc0' : ''}">
+								<td>{{ sl + 1 }}</td>
+								<td>{{ product.productCode }}</td>
+								<td style="text-align: left;padding-left:3px;">{{ product.name }}</td>
+								<td>{{ product.categoryName }}</td>
+								<td>{{ product.quantity }}</td>
+								<td>{{ product.salesRate }}</td>
+								<td>{{ product.total }}</td>
+								<td><a href="" v-on:click.prevent="removeFromCart(sl)"><i class="fa fa-trash"></i></a></td>
+							</tr>
 
-						<tr style="font-weight: bold;">
-							<td colspan="5">Note</td>
-							<td colspan="3">Total</td>
-						</tr>
+							<tr>
+								<td colspan="8"></td>
+							</tr>
 
-						<tr>
-							<td colspan="5"><textarea class="form-control" style="font-size:13px;margin-top:3px;" placeholder="Note" v-model="sales.note"></textarea></td>
-							<td colspan="3" style="padding-top: 15px;font-size:18px;">{{ sales.total }}</td>
-						</tr>
-					</tbody>
-				</table>
+							<tr style="font-weight: bold;">
+								<td colspan="5">Note</td>
+								<td colspan="3">Total</td>
+							</tr>
+
+							<tr>
+								<td colspan="5"><textarea class="form-control" style="font-size:13px;margin-top:3px;" placeholder="Note" v-model="sales.note"></textarea></td>
+								<td colspan="3" style="padding-top: 15px;font-size:18px;">{{ sales.total }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="col-xs-12 col-md-3 col-lg-3">
+
+	<div class="col-xs-12 col-md-3">
 		<fieldset class="scheduler-border" style="margin-bottom: 5px;padding-bottom: 5px">
 			<legend class="scheduler-border">Amount Details</legend>
 			<div class="control-group">
@@ -263,17 +294,6 @@
 								<tr>
 									<td>
 										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;"> Vat </label>
-											<div class="col-xs-12">
-												<input type="number" id="vat" readonly="" class="form-control" v-model="sales.vat" />
-											</div>
-										</div>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										<div class="form-group">
 											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount Persent</label>
 
 											<div class="col-xs-4">
@@ -286,6 +306,17 @@
 												<input type="number" id="discount" class="form-control" v-model="sales.discount" v-on:input="calculateTotal" />
 											</div>
 
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<div class="form-group">
+											<label class="col-xs-12 control-label no-padding-right" style="margin:0;"> Vat </label>
+											<div class="col-xs-12">
+												<input type="number" id="vat" readonly="" class="form-control" v-model="sales.vat" />
+											</div>
 										</div>
 									</td>
 								</tr>
@@ -351,11 +382,11 @@
 								<tr>
 									<td>
 										<div class="form-group">
-											<div class="col-xs-6">
-												<input type="button" class="btn btn-success btn-sm" value="Sale" v-on:click="saveSales" v-bind:disabled="saleOnProgress ? true : false" style="color: white!important;margin-top: 0px;width:100%;padding:5px;font-weight:bold;">
+											<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
+												<input type="button" class="btn btn-sm" value="Sale" v-on:click="saveSales" style="width:100%;background: green !important;border: 0;border-radius: 5px;" v-bind:disabled="saleOnProgress ? true : false" />
 											</div>
-											<div class="col-xs-6">
-												<a class="btn btn-info btn-sm" v-bind:href="`/sales/${sales.isService == 'true' ? 'service' : 'product'}`" style="color: white!important;margin-top: 0px;width:100%;padding:5px;font-weight:bold;">New Sale</a>
+											<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
+												<a class="btn btn-sm" v-bind:href="`/sales`" style="background: #2d1c5a !important;border: 0;width: 100%;display: flex; justify-content: center;border-radius: 5px;">New Sale</a>
 											</div>
 										</div>
 									</td>
@@ -507,7 +538,9 @@
 				}
 			},
 			getProducts() {
-				axios.post('/get_products', {forSearch: 'yes'}).then(res => {
+				axios.post('/get_products', {
+					forSearch: 'yes'
+				}).then(res => {
 					if (this.sales.salesType == 'wholesale') {
 						this.products = res.data.filter((product) => product.Product_WholesaleRate > 0);
 						this.products.map((product) => {
@@ -610,14 +643,16 @@
 					}
 					return
 				}
-				if ((this.selectedProduct.Product_SlNo != '' || this.selectedProduct.Product_SlNo != 0) && this.selectedProduct.is_service == 'false') {
-					this.productStock = await axios.post('/get_product_stock', {
-						productId: this.selectedProduct.Product_SlNo
-					}).then(res => {
-						return res.data;
-					})
+				if ((this.selectedProduct.Product_SlNo != '' || this.selectedProduct.Product_SlNo != 0)) {
+					if (this.selectedProduct.is_service == 'false') {
+						this.productStock = await axios.post('/get_product_stock', {
+							productId: this.selectedProduct.Product_SlNo
+						}).then(res => {
+							return res.data;
+						})
 
-					this.productStockText = this.productStock > 0 ? "Available Stock" : "Stock Unavailable";
+						this.productStockText = this.productStock > 0 ? "Available Stock" : "Stock Unavailable";
+					}
 					this.$refs.quantity.focus();
 				}
 
@@ -751,7 +786,7 @@
 							window.open('/sale_invoice_print/' + r.salesId, '_blank');
 							await new Promise(r => setTimeout(r, 1000));
 							window.location = '/sales';
-						}else{
+						} else {
 							window.location = '/sales';
 						}
 					} else {

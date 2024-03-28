@@ -40,6 +40,17 @@ class Sales extends CI_Controller
         try {
             $this->db->trans_begin();
             $data = json_decode($this->input->raw_input_stream);
+
+            // check stock
+            foreach ($data->cart as $cartProduct) {
+                $checkStock = $this->mt->productStock($cartProduct->productId);
+                if (($cartProduct->quantity > $checkStock) && $cartProduct->is_service == 'false') {
+                    $res = ['success' => false, 'message' => "({$cartProduct->name} - {$cartProduct->productCode}) stock unavailable"];
+                    echo json_encode($res);
+                    exit;
+                }
+            }
+
             if ($data->sales->salesFrom != $this->session->userdata("BRANCHid")) {
                 $res = ['success' => false, 'message' => 'You have already changed your branch.', 'branch_status' => false];
                 echo json_encode($res);
@@ -84,7 +95,7 @@ class Sales extends CI_Controller
                         $customer['status'] = 'a';
                         $customer['AddBy'] = $this->session->userdata("userId");
                         $customer['AddTime'] = date("Y-m-d H:i:s");
-                        $customer['last_update_ip'] = $this->input->ip_address();
+                        $customer['last_update_ip'] = get_client_ip();
                         $customer['branch_id'] = $this->session->userdata("BRANCHid");
 
                         $this->db->insert('tbl_customer', $customer);
@@ -110,7 +121,7 @@ class Sales extends CI_Controller
                 'status' => 'a',
                 "AddBy" => $this->session->userdata("userId"),
                 'AddTime' => date("Y-m-d H:i:s"),
-                'last_update_ip' => $this->input->ip_address(),
+                'last_update_ip' => get_client_ip(),
                 'branch_id' => $this->session->userdata("BRANCHid")
             );
             if ($data->customer->Customer_Type == 'G') {
@@ -140,7 +151,7 @@ class Sales extends CI_Controller
                     'status'                    => 'a',
                     'AddBy'                     => $this->session->userdata("userId"),
                     'AddTime'                   => date('Y-m-d H:i:s'),
-                    'last_update_ip'            => $this->input->ip_address(),
+                    'last_update_ip'            => get_client_ip(),
                     'branch_id'                 => $this->session->userdata('BRANCHid')
                 );
                 $this->db->insert('tbl_saledetails', $saleDetails);
@@ -327,7 +338,7 @@ class Sales extends CI_Controller
         }
 
         if (isset($data->salesId) && $data->salesId != 0 && $data->salesId != '') {
-            $clauses .= " and SaleMaster_SlNo = '$data->salesId'";
+            $clauses .= " and sm.SaleMaster_SlNo = '$data->salesId'";
             $saleDetails = $this->db->query("
                 select 
                     sd.*,
@@ -411,7 +422,7 @@ class Sales extends CI_Controller
                         $customer['status'] = 'a';
                         $customer['AddBy'] = $this->session->userdata("userId");
                         $customer['AddTime'] = date("Y-m-d H:i:s");
-                        $customer['last_update_ip'] = $this->input->ip_address();
+                        $customer['last_update_ip'] = get_client_ip();
                         $customer['branch_id'] = $this->session->userdata("BRANCHid");
 
                         $this->db->insert('tbl_customer', $customer);
@@ -435,7 +446,7 @@ class Sales extends CI_Controller
                 'SaleMaster_Description'         => $data->sales->note,
                 "UpdateBy"                       => $this->session->userdata("userId"),
                 'UpdateTime'                     => date("Y-m-d H:i:s"),
-                'last_update_ip'                 => $this->input->ip_address(),
+                'last_update_ip'                 => get_client_ip(),
                 "branch_id"                      => $this->session->userdata("BRANCHid")
             );
             if ($data->customer->Customer_Type == 'G') {
@@ -469,6 +480,16 @@ class Sales extends CI_Controller
                 }
             }
 
+            // check stock
+            foreach ($data->cart as $cartProduct) {
+                $checkStock = $this->mt->productStock($cartProduct->productId);
+                if (($cartProduct->quantity > $checkStock) && $cartProduct->is_service == 'false') {
+                    $res = ['success' => false, 'message' => "({$cartProduct->name} - {$cartProduct->productCode}) stock unavailable"];
+                    echo json_encode($res);
+                    exit;
+                }
+            }
+
             foreach ($data->cart as $cartProduct) {
                 $saleDetails = array(
                     'SaleMaster_IDNo'           => $salesId,
@@ -482,7 +503,7 @@ class Sales extends CI_Controller
                     'status'                    => 'a',
                     'UpdateBy'                  => $this->session->userdata("userId"),
                     'UpdateTime'                => date('Y-m-d H:i:s'),
-                    'last_update_ip'            => $this->input->ip_address(),
+                    'last_update_ip'            => get_client_ip(),
                     'branch_id'                 => $this->session->userdata("BRANCHid")
                 );
 
@@ -557,7 +578,7 @@ class Sales extends CI_Controller
                 'status'                  => 'a',
                 'AddBy'                   => $this->session->userdata("userId"),
                 'AddTime'                 => date('Y-m-d H:i:s'),
-                'last_update_ip'          => $this->input->ip_address(),
+                'last_update_ip'          => get_client_ip(),
                 'branch_id'               => $this->session->userdata("BRANCHid")
             );
 
@@ -574,7 +595,7 @@ class Sales extends CI_Controller
                     'status'                           => 'a',
                     'AddBy'                            => $this->session->userdata("userId"),
                     'AddTime'                          => date('Y-m-d H:i:s'),
-                    'last_update_ip'                   => $this->input->ip_address(),
+                    'last_update_ip'                   => get_client_ip(),
                     'branch_id'                        => $this->session->userdata("BRANCHid")
                 );
 
@@ -603,7 +624,7 @@ class Sales extends CI_Controller
                     'status'                   => 'a',
                     'AddBy'                    => $this->session->userdata("userId"),
                     'AddTime'                  => date('Y-m-d H:i:s'),
-                    'last_update_ip'           => $this->input->ip_address(),
+                    'last_update_ip'           => get_client_ip(),
                     'branch_id'                => $this->session->userdata("BRANCHid"),
                 );
 
@@ -640,7 +661,7 @@ class Sales extends CI_Controller
                 'status' => 'a',
                 'UpdateBy' => $this->session->userdata("userId"),
                 'UpdateTime' => date('Y-m-d H:i:s'),
-                'last_update_ip' => $this->input->ip_address(),
+                'last_update_ip' => get_client_ip(),
                 'branch_id' => $this->session->userdata("BRANCHid")
             );
 
@@ -667,7 +688,7 @@ class Sales extends CI_Controller
                     'status' => 'a',
                     'UpdateBy' => $this->session->userdata("userId"),
                     'UpdateTime' => date('Y-m-d H:i:s'),
-                    'last_update_ip' => $this->input->ip_address(),
+                    'last_update_ip' => get_client_ip(),
                     'branch_id' => $this->session->userdata("BRANCHid")
                 );
 
@@ -707,7 +728,7 @@ class Sales extends CI_Controller
                     'status' => 'a',
                     'AddBy' => $this->session->userdata("userId"),
                     'AddTime' => date('Y-m-d H:i:s'),
-                    'last_update_ip' => $this->input->ip_address(),
+                    'last_update_ip' => get_client_ip(),
                     'branch_id' => $this->session->userdata("BRANCHid")
                 );
 
@@ -775,7 +796,7 @@ class Sales extends CI_Controller
                 'status' => 'd',
                 'DeletedBy' => $this->session->userdata('userId'),
                 'DeletedTime' => date('Y-m-d H:i:s'),
-                'last_update_ip' => $this->input->ip_address(),
+                'last_update_ip' => get_client_ip(),
             );
 
             $this->db->set($saleReturn)->where('SaleReturn_IdNo', $data->id)->update('tbl_salereturndetails');
@@ -1029,7 +1050,7 @@ class Sales extends CI_Controller
         $this->load->view('Administrator/index', $data);
     }
 
-    
+
 
     /*Delete Sales Record*/
     public function  deleteSales()
@@ -1071,7 +1092,7 @@ class Sales extends CI_Controller
                 'status' => 'd',
                 'DeletedBy' => $this->session->userdata('userId'),
                 'DeletedTime' => date('Y-m-d H:i:s'),
-                'last_update_ip' => $this->input->ip_address(),
+                'last_update_ip' => get_client_ip(),
             );
             /*Delete Sale Details*/
             $this->db->set($sale)->where('SaleMaster_IDNo', $saleId)->update('tbl_saledetails');
