@@ -148,7 +148,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 		</div><!-- /.navbar-container -->
 	</div>
 
-	<div class="main-container ace-save-state" id="main-container">
+	<div class="main-container ace-save-state">
 		<script type="text/javascript">
 			try {
 				ace.settings.loadState('main-container')

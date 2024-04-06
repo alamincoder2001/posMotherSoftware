@@ -405,7 +405,9 @@ $route['bank_ledger'] = 'Administrator/Account/bankLedger';
 
 // Graph
 $route['graph'] = 'Administrator/Graph/graph';
+$route['get_overall_data'] = 'Administrator/Graph/getOverallData';
 $route['get_graph_data'] = 'Administrator/Graph/getGraphData';
+$route['get_top_data'] = 'Administrator/Graph/getTopData';
 
 // SMS
 $route['sms'] = 'Administrator/SMS';
