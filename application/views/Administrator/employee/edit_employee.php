@@ -16,6 +16,23 @@ if ($serial[1] >= 9) {
 	$generateCode = "E0" . $autoserial;
 }
 ?>
+<style>
+	.add-button {
+		padding: 2.5px;
+		width: 100%;
+		background-color: #298db4;
+		display: block;
+		text-align: center;
+		color: white;
+		cursor: pointer;
+		border-radius: 3px;
+	}
+
+	.add-button:hover {
+		background-color: #41add6;
+		color: white;
+	}
+</style>
 <div id="Edit_emloyee_form">
 	<div class="row">
 		<div class="col-md-6">
@@ -30,7 +47,7 @@ if ($serial[1] >= 9) {
 						</div>
 
 						<label class="col-md-2 control-label" for="bio_id"> Bio ID: </label>
-						<div class="col-md-2">
+						<div class="col-md-2 no-padding-left">
 							<input type="text" name="bio_id" id="bio_id" value="<?php echo $employee->bio_id; ?>" class="form-control" />
 						</div>
 					</div>
@@ -47,40 +64,44 @@ if ($serial[1] >= 9) {
 					<div class="form-group">
 						<label class="col-md-4 control-label" for="em_Designation"> Designation </label>
 						<label class="col-md-1 control-label">:</label>
-						<div class="col-md-5">
-							<select class="chosen-select form-control" name="em_Designation" id="em_Designation" data-placeholder="Choose a Designation...">
-								<option value=""> </option>
-								<?php
-								$query = $this->db->query("SELECT * FROM tbl_designation where status='a' order by Designation_Name asc");
-								$row = $query->result();
-								foreach ($row as $row) { ?>
-									<option value="<?php echo $row->Designation_SlNo; ?>" <?= $employee->Designation_ID == $row->Designation_SlNo ? 'selected' : ''; ?>><?php echo $row->Designation_Name; ?></option>
-								<?php } ?>
-							</select>
-							<div id="em_Designation_" class="col-md-12"></div>
-						</div>
-						<div class="col-md-1" style="padding: 0;">
-							<a href="<?= base_url('designation') ?>" title="Add New Designation" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
+						<div class="col-md-6" style="display: flex;align-items:center;">
+							<div style="width: 88%;">
+								<select class="chosen-select form-control" name="em_Designation" id="em_Designation" data-placeholder="Choose a Designation...">
+									<option value=""> </option>
+									<?php
+									$query = $this->db->query("SELECT * FROM tbl_designation where status='a' order by Designation_Name asc");
+									$row = $query->result();
+									foreach ($row as $row) { ?>
+										<option value="<?php echo $row->Designation_SlNo; ?>" <?= $employee->Designation_ID == $row->Designation_SlNo ? 'selected' : ''; ?>><?php echo $row->Designation_Name; ?></option>
+									<?php } ?>
+								</select>
+								<div id="em_Designation"></div>
+							</div>
+							<div style="width:12%;margin-left:2px;">
+								<a href="<?= base_url('designation') ?>" title="Add New Designation" style="margin-top:-3px;" class="add-button" target="_blank"><i class="fa fa-plus" aria-hidden="true"></i></a>
+							</div>
 						</div>
 					</div>
 
 					<div class="form-group">
 						<label class="col-md-4 control-label" for="em_Depertment"> Department </label>
 						<label class="col-md-1 control-label">:</label>
-						<div class="col-md-5">
-							<select class="chosen-select form-control" name="em_Depertment" id="em_Depertment" data-placeholder="Choose a Depertment...">
-								<option value=""> </option>
-								<?php
-								$dquery = $this->db->query("SELECT * FROM tbl_department order by Department_Name asc ");
-								$drow = $dquery->result();
-								foreach ($drow as $drow) { ?>
-									<option value="<?php echo $drow->Department_SlNo; ?>" <?= $employee->Department_ID == $drow->Department_SlNo ? 'selected' : ''; ?>><?php echo $drow->Department_Name; ?></option>
-								<?php } ?>
-							</select>
-							<div id="em_Depertment_" class="col-md-12"></div>
-						</div>
-						<div class="col-md-1" style="padding: 0;">
-							<a href="<?= base_url('depertment') ?>" title="Add New Department" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
+						<div class="col-md-6" style="display: flex;align-items:center;">
+							<div style="width: 88%;">
+								<select class="chosen-select form-control" name="em_Depertment" id="em_Depertment" data-placeholder="Choose a Depertment...">
+									<option value=""> </option>
+									<?php
+									$dquery = $this->db->query("SELECT * FROM tbl_department order by Department_Name asc ");
+									$drow = $dquery->result();
+									foreach ($drow as $drow) { ?>
+										<option value="<?php echo $drow->Department_SlNo; ?>" <?= $employee->Department_ID == $drow->Department_SlNo ? 'selected' : ''; ?>><?php echo $drow->Department_Name; ?></option>
+									<?php } ?>
+								</select>
+								<div id="em_Depertment"></div>
+							</div>
+							<div style="width:12%;margin-left:2px;">
+								<a href="<?= base_url('depertment') ?>" title="Add New Department" style="margin-top:-3px;" class="add-button" target="_blank"><i class="fa fa-plus" aria-hidden="true"></i></a>
+							</div>
 						</div>
 					</div>
 
@@ -160,7 +181,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="em_photo"> Employee Image </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="file" id="em_photo" name="em_photo" class="form-control" onchange="readURL(this)" style="height:35px" />
+							<input type="file" id="em_photo" name="em_photo" class="form-control" onchange="readURL(this)" style="height: 26px;padding: 1px 0;border-radius: 3px;" />
 						</div>
 					</div>
 
@@ -194,7 +215,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="form-field-1"> Father's Name </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="text" id="em_father" name="em_father" placeholder="Father's Name" class="form-control" value="<?= $employee->Employee_FatherName ?>"/>
+							<input type="text" id="em_father" name="em_father" placeholder="Father's Name" class="form-control" value="<?= $employee->Employee_FatherName ?>" />
 						</div>
 					</div>
 
@@ -202,7 +223,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="form-field-1"> Mother's Name </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="text" id="mother_name" name="mother_name" placeholder="Mother's Name" class="form-control" value="<?= $employee->Employee_MotherName ?>"/>
+							<input type="text" id="mother_name" name="mother_name" placeholder="Mother's Name" class="form-control" value="<?= $employee->Employee_MotherName ?>" />
 						</div>
 					</div>
 
@@ -212,8 +233,8 @@ if ($serial[1] >= 9) {
 						<div class="col-md-6">
 							<select class="chosen-select form-control" name="Gender" id="Gender" data-placeholder="Choose a Gender...">
 								<option value=""> </option>
-								<option value="Male" <?= $employee->Employee_Gender == 'Male' ?'selected' : '' ?>>Male</option>
-								<option value="Female" <?= $employee->Employee_Gender == 'Female' ?'selected' : '' ?>>Female</option>
+								<option value="Male" <?= $employee->Employee_Gender == 'Male' ? 'selected' : '' ?>>Male</option>
+								<option value="Female" <?= $employee->Employee_Gender == 'Female' ? 'selected' : '' ?>>Female</option>
 							</select>
 						</div>
 					</div>
@@ -222,7 +243,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="em_dob">Date of Birth</label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input class="form-control date-picker" name="em_dob" id="em_dob" type="text" data-date-format="yyyy-mm-dd" style="border-radius: 5px !important;" value="<?php echo $employee->Employee_BirthDate; ?>" />
+							<input class="form-control" name="em_dob" id="em_dob" type="date" style="border-radius: 5px !important;" value="<?php echo $employee->Employee_BirthDate; ?>" />
 						</div>
 					</div>
 
@@ -232,8 +253,8 @@ if ($serial[1] >= 9) {
 						<div class="col-md-6">
 							<select class="chosen-select form-control" name="Marital" id="Marital" data-placeholder="Choose a Marital status...">
 								<option value=""> </option>
-								<option value="married" <?= $employee->Employee_MaritalStatus == 'married' ?'selected' : '' ?>>Married</option>
-								<option value="unmarried" <?= $employee->Employee_MaritalStatus == 'unmarried' ?'selected' : '' ?>>Unmarried</option>
+								<option value="married" <?= $employee->Employee_MaritalStatus == 'married' ? 'selected' : '' ?>>Married</option>
+								<option value="unmarried" <?= $employee->Employee_MaritalStatus == 'unmarried' ? 'selected' : '' ?>>Unmarried</option>
 							</select>
 						</div>
 					</div>
@@ -321,7 +342,7 @@ if ($serial[1] >= 9) {
 
 		var fd = new FormData();
 		fd.append('em_photo', $('#em_photo')[0].files[0]);
-		fd.append('iidd', "<?php echo $employee->Employee_SlNo;?>");
+		fd.append('iidd', "<?php echo $employee->Employee_SlNo; ?>");
 		fd.append('Employeer_id', $('#Employeer_id').val());
 		fd.append('em_name', $('#em_name').val());
 		fd.append('em_Designation', $('#em_Designation').val());

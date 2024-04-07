@@ -8,7 +8,7 @@
 						<div class="form-group clearfix">
 							<label class="control-label col-xs-4 col-md-4">Month Name:</label>
 							<div class="col-xs-8 col-md-8">
-								<input type="text" class="form-control" v-model="month.month_name" required>
+								<input type="month" class="form-control" v-model="month.month_name">
 							</div>
 						</div>
 						<div class="form-group clearfix">
@@ -64,7 +64,7 @@
 			return {
 				month: {
 					month_id: 0,
-					month_name: '',
+					month_name: moment().format("YYYY-MM"),
 				},
 				months: [],
 
@@ -102,6 +102,11 @@
 				})
 			},
 			saveMonth() {
+				if (this.month.month_name == '') {
+					alert("Month name is empty");
+					return;
+				}
+				this.month.month_name = moment(this.month.month_name).format('MMMM-YYYY');
 				let url = '/add_month';
 				if (this.month.month_id != 0) {
 					url = '/update_month';
@@ -113,6 +118,8 @@
 					if (r.status) {
 						this.resetForm();
 						this.getMonths();
+					}else{
+						this.month.month_name = moment(this.month.month_name).format('YYYY-MM');
 					}
 				})
 			},
@@ -121,11 +128,12 @@
 				keys.forEach(key => {
 					this.month[key] = month[key];
 				})
+				this.month.month_name = moment(this.month.month_name).format('YYYY-MM');
 			},
 			resetForm() {
 				this.month = {
 					month_id: 0,
-					month_name: '',
+					month_name: moment().format("YYYY-MM"),
 				}
 			}
 		}

@@ -268,6 +268,10 @@
                     total: this.total
                 }
 
+                let cartInd = this.cart.findIndex(item => item.product_id == cartProduct.product_id);
+                if (cartInd > -1) {
+                    this.cart.splice(cartInd, 1);
+                }
                 this.cart.push(cartProduct);
 
                 this.selectedProduct = null;

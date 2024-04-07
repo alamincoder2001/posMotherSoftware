@@ -208,8 +208,8 @@
 					//{text: 'Brand Wise Stock', value: 'brand'}
 				],
 				selectedSearchType: {
-					text: 'select',
-					value: ''
+					text: 'Current Stock',
+					value: 'current'
 				},
 				searchType: null,
 				date: moment().format('YYYY-MM-DD'),

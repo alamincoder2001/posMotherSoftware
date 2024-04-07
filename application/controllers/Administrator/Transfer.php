@@ -192,7 +192,7 @@ class Transfer extends CI_Controller
                         ", [$cartProduct->quantity, $cartProduct->product_id, $this->session->userdata('BRANCHid')]);
                 }
             }
-            $res = ['success' => true, 'message' => 'Transfer updated'];
+            $res = ['success' => true, 'message' => 'Transfer updated', 'transferId' => $transferId];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage];
         }
@@ -243,9 +243,11 @@ class Transfer extends CI_Controller
                 select
                     tm.*,
                     b.Branch_name as transfer_to_name,
+                    f.Branch_name as transfer_from_name,
                     e.Employee_Name as transfer_by_name
                 from tbl_transfermaster tm
                 join tbl_branch b on b.branch_id = tm.transfer_to
+                join tbl_branch f on f.branch_id = tm.transfer_from
                 join tbl_employee e on e.Employee_SlNo = tm.transfer_by
                 where tm.transfer_from = ? 
                 and tm.status != 'd'
@@ -311,10 +313,14 @@ class Transfer extends CI_Controller
                 select
                     tm.*,
                     b.Branch_name as transfer_to_name,
-                    e.Employee_Name as transfer_by_name
+                    f.Branch_name as transfer_from_name,
+                    e.Employee_Name as transfer_by_name,
+                    ifnull(re.Employee_Name, 'Not yet receive') as receive_by_name
                 from tbl_transfermaster tm
                 join tbl_branch b on b.branch_id = tm.transfer_to
+                join tbl_branch f on f.branch_id = tm.transfer_from
                 join tbl_employee e on e.Employee_SlNo = tm.transfer_by
+                left join tbl_employee re on re.Employee_SlNo = tm.receivedBy
                 where tm.transfer_id = ?
             ", $transferId)->row();
 
@@ -407,8 +413,9 @@ class Transfer extends CI_Controller
                 "last_update_ip" => get_client_ip()
             );
 
-            $this->db->where("transfer_id", $data->transferId)->update('tbl_transfermaster', $rules);
             $this->db->where("transfer_id", $data->transferId)->update('tbl_transferdetails', $rules);
+            $rules['receivedBy'] = $this->session->userdata("userId");
+            $this->db->where("transfer_id", $data->transferId)->update('tbl_transfermaster', $rules);
             $res = ['status' => false, 'message' => "Transfer received successfully"];
         } catch (\Throwable $th) {
             $res = ['status' => false, 'message' => $th->getMessage()];

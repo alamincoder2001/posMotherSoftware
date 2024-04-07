@@ -11,7 +11,7 @@ const salesInvoice = Vue.component('sales-invoice', {
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         <div _h098asdh>
-                            Sales Invoice
+                            {{currentBranch.InvoiceHeder}}
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@ const salesInvoice = Vue.component('sales-invoice', {
                 <div class="row">
                     <div class="col-xs-6">
                         <br>
-                        <table class="pull-left">
+                        <table class="pull-left" style="display:none;" :style="{display: currentBranch.dueStatus == 'true' ? '' : 'none'}">
                             <tr>
                                 <td><strong>Previous Due:</strong></td>
                                 
@@ -120,7 +120,7 @@ const salesInvoice = Vue.component('sales-invoice', {
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <strong>In Word: </strong> {{ convertNumberToWords(sales.SaleMaster_TotalSaleAmount) }}<br><br>
+                        <strong>In Word: </strong> {{ withDecimal(sales.SaleMaster_TotalSaleAmount) }}<br><br>
                         <strong>Note: </strong>
                         <p style="white-space: pre-line">{{ sales.SaleMaster_Description }}</p>
                     </div>
@@ -151,8 +151,8 @@ const salesInvoice = Vue.component('sales-invoice', {
             },
             cart: [],
             style: null,
-            companyProfile: null,
-            currentBranch: null
+            companyProfile: {},
+            currentBranch: {}
         }
     },
     filters: {
@@ -161,9 +161,9 @@ const salesInvoice = Vue.component('sales-invoice', {
         }
     },
     created(){
+        this.getCurrentBranch();
         this.setStyle();
         this.getSales();
-        this.getCurrentBranch();
     },
     methods:{
         getSales(){
@@ -214,7 +214,19 @@ const salesInvoice = Vue.component('sales-invoice', {
             `;
             document.head.appendChild(this.style);
         },
-        convertNumberToWords(amountToWord) {
+        withDecimal(n) {
+            n = n == undefined ? 0 : parseFloat(n).toFixed(2);
+            var nums = n.toString().split('.')
+            var whole = this.convertNumberToWords(nums[0])
+            if (nums.length == 2 && nums[1] > 0) {
+                var fraction = this.convertNumberToWords(nums[1])
+                return whole + this.currentBranch.Currency_Name + ' ' + fraction + this.currentBranch.SubCurrency_Name +" only";
+
+            } else {
+                return whole + this.currentBranch.Currency_Name + " only";
+            }
+        },
+        convertNumberToWords(amount) {
             var words = new Array();
             words[0] = '';
             words[1] = 'One';
@@ -244,7 +256,7 @@ const salesInvoice = Vue.component('sales-invoice', {
             words[70] = 'Seventy';
             words[80] = 'Eighty';
             words[90] = 'Ninety';
-            amount = amountToWord == null ? '0.00' : amountToWord.toString();
+            amount = amount.toString();
             var atemp = amount.split(".");
             var number = atemp[0].split(",").join("");
             var n_length = number.length;
@@ -293,7 +305,7 @@ const salesInvoice = Vue.component('sales-invoice', {
                 }
                 words_string = words_string.split("  ").join(" ");
             }
-            return words_string + ' only';
+            return words_string;
         },
         async print(){
             let invoiceContent = document.querySelector('#invoiceContent').innerHTML;

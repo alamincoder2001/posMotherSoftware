@@ -120,7 +120,7 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <strong>In Word: </strong> {{ convertNumberToWords(purchase.PurchaseMaster_TotalAmount) }}<br><br>
+                        <strong>In Word: </strong> {{ withDecimal(purchase.PurchaseMaster_TotalAmount) }}<br><br>
                         <strong>Note: </strong>
                         <p style="white-space: pre-line">{{ purchase.PurchaseMaster_Description }}</p>
                     </div>
@@ -151,8 +151,8 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
             },
             cart: [],
             style: null,
-            companyProfile: null,
-            currentBranch: null
+            companyProfile: {},
+            currentBranch: {}
         }
     },
     created(){
@@ -209,7 +209,19 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
             `;
             document.head.appendChild(this.style);
         },
-        convertNumberToWords(amountToWord) {
+        withDecimal(n) {
+            n = n == undefined ? 0 : parseFloat(n).toFixed(2);
+            var nums = n.toString().split('.')
+            var whole = this.convertNumberToWords(nums[0])
+            if (nums.length == 2 && nums[1] > 0) {
+                var fraction = this.convertNumberToWords(nums[1])
+                return whole + this.currentBranch.Currency_Name + ' ' + fraction + this.currentBranch.SubCurrency_Name +" only";
+
+            } else {
+                return whole + this.currentBranch.Currency_Name + " only";
+            }
+        },
+        convertNumberToWords(amount) {
             var words = new Array();
             words[0] = '';
             words[1] = 'One';
@@ -239,7 +251,7 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
             words[70] = 'Seventy';
             words[80] = 'Eighty';
             words[90] = 'Ninety';
-            amount = amountToWord == null ? '0.00' : amountToWord.toString();
+            amount = amount.toString();
             var atemp = amount.split(".");
             var number = atemp[0].split(",").join("");
             var n_length = number.length;
@@ -288,7 +300,7 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
                 }
                 words_string = words_string.split("  ").join(" ");
             }
-            return words_string + ' only';
+            return words_string;
         },
         async print(){
             let invoiceContent = document.querySelector('#invoiceContent').innerHTML;

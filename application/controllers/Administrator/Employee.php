@@ -350,11 +350,16 @@ class Employee extends CI_Controller
         try {
             $data = json_decode($this->input->raw_input_stream);
 
-            $month = array(
-                "month_name" => $data->month_name,
-            );
-            $this->db->insert('tbl_month', $month);
-            $res = ['status' => true, 'message' => "Month added successfull"];
+            $check = $this->db->query("select * from tbl_month where month_name = ? ", $data->month_name)->row();
+            if (!empty($check)) {
+                $res = ['status' => false, 'message' => "Month already exists"];
+            } else {
+                $month = array(
+                    "month_name" => $data->month_name,
+                );
+                $this->db->insert('tbl_month', $month);
+                $res = ['status' => true, 'message' => "Month added successfull"];
+            }
         } catch (\Throwable $th) {
             $res = ['status' => false, 'message' => $th->getMessage()];
         }
@@ -367,13 +372,17 @@ class Employee extends CI_Controller
         $res = ['status' => false];
         try {
             $data = json_decode($this->input->raw_input_stream);
-
-            $month = array(
-                "month_name" => $data->month_name,
-            );
-            $this->db->where('month_id', $data->month_id);
-            $this->db->update('tbl_month', $month);
-            $res = ['status' => true, 'message' => "Month Update"];
+            $check = $this->db->query("select * from tbl_month where month_id != ? and month_name = ? ", [$data->month_id, $data->month_name])->row();
+            if (!empty($check)) {
+                $res = ['status' => false, 'message' => "Month already exists"];
+            } else {
+                $month = array(
+                    "month_name" => $data->month_name,
+                );
+                $this->db->where('month_id', $data->month_id);
+                $this->db->update('tbl_month', $month);
+                $res = ['status' => true, 'message' => "Month Update"];
+            }
         } catch (\Throwable $th) {
             $res = ['status' => false, 'message' => $th->getMessage()];
         }

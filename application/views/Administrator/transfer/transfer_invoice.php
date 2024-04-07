@@ -35,14 +35,15 @@
 
             <div class="row" style="padding: 15px 0;">
                 <div class="col-xs-7">
-                    <strong>Transfer Date: </strong> <?php echo $transfer->transfer_date; ?><br>
-                    <strong>Transferred by: </strong> <?php echo $transfer->transfer_by_name; ?><br>
-                    <strong>Transferred to: </strong> <?php echo $transfer->transfer_to_name; ?><br>
+                    <strong>Transfer by: </strong> <?php echo $transfer->transfer_by_name; ?><br>
+                    <strong>From Branch: </strong> <?php echo $transfer->transfer_from_name; ?><br>
+                    <strong>To Branch: </strong> <?php echo $transfer->transfer_to_name; ?><br>
                 </div>
-
-                <div class="col-xs-5">
-                    <strong>Note: </strong><br>
-                    <?php echo $transfer->note; ?>
+                
+                <div class="col-xs-5 text-right">
+                    <strong>Received by: </strong> <?php echo $transfer->receive_by_name; ?><br>
+                    <strong>Received Date: </strong> <?=  $transfer->UpdateTime == NULL ? "Not yet receive" : date("d-m-Y", strtotime($transfer->UpdateTime)); ?><br>
+                    <strong>Date: </strong> <?php echo date("d-m-Y", strtotime($transfer->transfer_date)); ?><br>
                 </div>
             </div>
 
@@ -76,6 +77,10 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="col-xs-12" style="margin-top: 25px;">
+                    <strong>Note: </strong><br>
+                    <?php echo $transfer->note; ?>
                 </div>
             </div>
         </div>

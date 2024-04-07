@@ -82,16 +82,20 @@
                             <th>Transfer Date</th>
                             <th>Transfer by</th>
                             <th>Transfer From</th>
+                            <th>Status</th>
                             <th>Note</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(transfer, sl) in transfers">
+                        <tr v-for="(transfer, sl) in transfers" :style="{background: transfer.status == 'p' ? '#ffd587' : ''}">
                             <td>{{ sl + 1 }}</td>
                             <td>{{ transfer.transfer_date }}</td>
                             <td>{{ transfer.transfer_by_name }}</td>
                             <td>{{ transfer.transfer_from_name }}</td>
+                            <td>
+                                {{transfer.status == 'p' ? 'Pending' : 'Received'}}
+                            </td>
                             <td>{{ transfer.note }}</td>
                             <td>
                                 <i class="btnEdit fa fa-file" style="font-size: 14px;" @click="window.open(`/transfer_invoice/${transfer.transfer_id}`, '_blank')" title="View invoice"></i>

@@ -1,114 +1,132 @@
 <style>
-    .v-select{
-		margin-top:-2.5px;
-        float: right;
-        min-width: 180px;
-        margin-left: 5px;
+	.v-select {
+		float: right;
+		min-width: 200px;
+		background: #fff;
+		margin-left: 5px;
+		border-radius: 4px !important;
+		margin-top: -2px;
 	}
-	.v-select .dropdown-toggle{
+
+	.v-select .dropdown-toggle {
 		padding: 0px;
-        height: 25px;
+		height: 25px;
+		border: none;
 	}
-	.v-select input[type=search], .v-select input[type=search]:focus{
+
+	.v-select input[type=search],
+	.v-select input[type=search]:focus {
 		margin: 0px;
 	}
-	.v-select .vs__selected-options{
+
+	.v-select .vs__selected-options {
 		overflow: hidden;
-		flex-wrap:nowrap;
+		flex-wrap: nowrap;
 	}
-	.v-select .selected-tag{
+
+	.v-select .selected-tag {
 		margin: 2px 0px;
 		white-space: nowrap;
-		position:absolute;
+		position: absolute;
 		left: 0px;
 	}
-	.v-select .vs__actions{
-		margin-top:-5px;
+
+	.v-select .vs__actions {
+		margin-top: -5px;
 	}
-	.v-select .dropdown-menu{
+
+	.v-select .dropdown-menu {
 		width: auto;
-		overflow-y:auto;
+		overflow-y: auto;
 	}
-	#searchForm select{
-		padding:0;
+
+	#searchForm select {
+		padding: 0;
 		border-radius: 4px;
 	}
-	#searchForm .form-group{
+
+	#searchForm .form-group {
 		margin-right: 5px;
 	}
-	#searchForm *{
+
+	#searchForm * {
 		font-size: 13px;
 	}
-	.record-table{
+
+	.record-table {
 		width: 100%;
 		border-collapse: collapse;
 	}
-	.record-table thead{
+
+	.record-table thead {
 		background-color: #0097df;
-		color:white;
+		color: white;
 	}
-	.record-table th, .record-table td{
+
+	.record-table th,
+	.record-table td {
 		padding: 3px;
 		border: 1px solid #454545;
 	}
-    .record-table th{
-        text-align: center;
-    }
 
-	.custom_table th{
+	.record-table th {
+		text-align: center;
+	}
+
+	.custom_table th {
 		padding: 5px;
 	}
 </style>
 <div id="paymentsRecord">
-	<div class="row" style="border-bottom: 1px solid #ccc;padding: 3px 0;">
-		<div class="col-md-12">
-			<form class="form-inline" id="searchForm" @submit.prevent="getSearchResult">
-				<div class="form-group">
-					<label>Search Type</label>
-					<select class="form-control" v-model="searchType" @change="onChangeSearchType">
-						<option value="">All</option>
-						<option value="month">By Month</option>
-						<option value="employee">By Employee</option>
-					</select>
-				</div>
+	<div class="row" style="margin:0;">
+		<fieldset class="scheduler-border scheduler-search">
+			<legend class="scheduler-border">Salary Payment Report</legend>
+			<div class="control-group">
+				<div class="col-md-12">
+					<form class="form-inline" id="searchForm" @submit.prevent="getSearchResult">
+						<div class="form-group">
+							<label>Search Type</label>
+							<select class="form-control" v-model="searchType" @change="onChangeSearchType">
+								<option value="">All</option>
+								<option value="month">By Month</option>
+								<option value="employee">By Employee</option>
+							</select>
+						</div>
 
-				<div class="form-group" style="display:none;" v-bind:style="{display: searchType == 'employee' && employees.length > 0 ? '' : 'none'}">
-					<label>Employee</label>
-					<v-select v-bind:options="employees" v-model="selectedEmployee" label="Employee_Name"></v-select>
-				</div>
+						<div class="form-group" style="display:none;" v-bind:style="{display: searchType == 'employee' && employees.length > 0 ? '' : 'none'}">
+							<label>Employee</label>
+							<v-select v-bind:options="employees" v-model="selectedEmployee" label="Employee_Name"></v-select>
+						</div>
 
-				<div class="form-group" style="display:none;" v-bind:style="{display: searchType == 'month' || searchType == 'employee' ? '' : 'none'}">
-					<label>Month</label>
-					<v-select v-bind:options="months" v-model="selectedMonth" label="month_name"></v-select>
-				</div>
+						<div class="form-group" style="display:none;" v-bind:style="{display: searchType == 'month' || searchType == 'employee' ? '' : 'none'}">
+							<label>Month</label>
+							<v-select v-bind:options="months" v-model="selectedMonth" label="month_name"></v-select>
+						</div>
 
-				<div class="form-group" v-bind:style="{display: searchTypesForRecord.includes(searchType) ? '' : 'none'}">
-					<label>Record Type</label>
-					<select class="form-control" v-model="recordType" @change="payments = []">
-						<option value="without_details">Without Details</option>
-						<option value="with_details">With Details</option>
-					</select>
-				</div>
+						<div class="form-group" v-bind:style="{display: searchTypesForRecord.includes(searchType) ? '' : 'none'}">
+							<label>Record Type</label>
+							<select class="form-control" v-model="recordType" @change="payments = []">
+								<option value="without_details">Without Details</option>
+								<option value="with_details">With Details</option>
+							</select>
+						</div>
 
-				<div class="form-group" style="margin-top: -5px;">
-					<input type="submit" value="Search">
+						<div class="form-group" style="margin-top: -5px;">
+							<input type="submit" value="Search">
+						</div>
+					</form>
 				</div>
-			</form>
-		</div>
+			</div>
+		</fieldset>
 	</div>
 
-	<div class="row" style="margin-top:15px;display:none;" v-bind:style="{display: payments.length > 0 ? '' : 'none'}">
-		<div class="col-md-12" style="margin-bottom: 10px;">
+	<div class="row" style="display:none;" v-bind:style="{display: payments.length > 0 ? '' : 'none'}">
+		<div class="col-md-12 text-right">
 			<a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
 		</div>
 		<div class="col-md-12">
 			<div class="table-responsive" id="reportContent">
-				<table 
-					class="record-table" 
-					v-if="(searchTypesForRecord.includes(searchType)) && recordType == 'with_details'" 
-					style="display:none" 
-					v-bind:style="{display: (searchTypesForRecord.includes(searchType)) && recordType == 'with_details' ? '' : 'none'}"
-					>
+				<table class="record-table table table-bordered table-hover" v-if="(searchTypesForRecord.includes(searchType)) && recordType == 'with_details'" style="display:none" v-bind:style="{display: (searchTypesForRecord.includes(searchType)) && recordType == 'with_details' ? '' : 'none'}">
 					<thead>
 						<tr>
 							<th>Employee ID</th>
@@ -130,7 +148,7 @@
 							<tr v-for="(employee, sl) in payment.details">
 								<td>{{ employee.Employee_ID }}</td>
 								<td>{{ employee.Employee_Name }}</td>
-                                <td style="text-align:right;">{{ employee.salary }}</td>
+								<td style="text-align:right;">{{ employee.salary }}</td>
 								<td style="text-align:center;">{{ employee.benefit }}</td>
 								<td style="text-align:right;">{{ employee.deduction }}</td>
 								<td style="text-align:right;">{{ employee.net_payable }}</td>
@@ -141,32 +159,27 @@
 					</tbody>
 				</table>
 
-				<table 
-					class="record-table" 
-					v-if="(searchTypesForRecord.includes(searchType)) && recordType == 'without_details'" 
-					style="display:none" 
-					v-bind:style="{display: (searchTypesForRecord.includes(searchType)) && recordType == 'without_details' ? '' : 'none'}"
-					>
+				<table class="record-table" v-if="(searchTypesForRecord.includes(searchType)) && recordType == 'without_details'" style="display:none" v-bind:style="{display: (searchTypesForRecord.includes(searchType)) && recordType == 'without_details' ? '' : 'none'}">
 					<thead>
 						<tr>
 							<th>Month</th>
 							<th>Payment Date</th>
 							<th>Payment By</th>
-                            <th>Total Amount</th>
+							<th>Total Amount</th>
 							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr v-for="payment in payments">
-                            <td>{{ payment.month_name }}</td>
-                            <td>{{ payment.payment_date }}</td>
-                            <td>{{ payment.User_Name }}</td>
-                            <td style="text-align:right;">{{ payment.total_payment_amount }}</td>
+							<td>{{ payment.month_name }}</td>
+							<td>{{ payment.payment_date }}</td>
+							<td>{{ payment.User_Name }}</td>
+							<td style="text-align:right;">{{ payment.total_payment_amount }}</td>
 							<td style="text-align:center;">
-                                <?php if($this->session->userdata('accountType') != 'u'){?>
-                                <a href="" title="Delete Payment" @click.prevent="deletePayment(payment.id)"><i class="fa fa-trash"></i></a>
-                                <?php }?>
-                            </td>
+								<?php if ($this->session->userdata('accountType') != 'u') { ?>
+									<a href="" title="Delete Payment" @click.prevent="deletePayment(payment.id)"><i class="fa fa-trash"></i></a>
+								<?php } ?>
+							</td>
 						</tr>
 					</tbody>
 					<tfoot>
@@ -178,12 +191,8 @@
 					</tfoot>
 				</table>
 
-				<template
-					v-if="searchTypesForDetails.includes(searchType)"  
-					style="display:none;" 
-					v-bind:style="{display: searchTypesForDetails.includes(searchType) ? '' : 'none'}"
-				>
-				    <div class="row" style="margin: unset;margin-bottom: 10px;">
+				<template v-if="searchTypesForDetails.includes(searchType)" style="display:none;" v-bind:style="{display: searchTypesForDetails.includes(searchType) ? '' : 'none'}">
+					<div class="row" style="margin: unset;margin-bottom: 10px;">
 						<div class="col-sm-6">
 							<table style="float: left" class="custom_table">
 								<tr>
@@ -213,7 +222,7 @@
 							</table>
 						</div>
 					</div>
-					
+
 					<table class="record-table">
 						<thead>
 							<tr>
@@ -227,7 +236,7 @@
 								<th>Note</th>
 							</tr>
 						</thead>
-						<tbody> 
+						<tbody>
 							<tr v-for="payment in payments">
 								<td>{{ payment.month_name }}</td>
 								<td>{{ payment.payment_date }}</td>
@@ -237,7 +246,7 @@
 								<td style="text-align:right;">{{ payment.net_payable }}</td>
 								<td style="text-align:right;">{{ payment.payment }}</td>
 								<td>{{ payment.comment }}</td>
-							</tr> 
+							</tr>
 						</tbody>
 						<tfoot>
 							<tr style="font-weight:bold;">
@@ -257,17 +266,17 @@
 	</div>
 </div>
 
-<script src="<?php echo base_url();?>assets/js/vue/vue.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/axios.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/vue/vue-select.min.js"></script>
-<script src="<?php echo base_url();?>assets/js/moment.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/axios.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/vue-select.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/moment.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lodash.min.js"></script>
 
 <script>
 	Vue.component('v-select', VueSelect.VueSelect);
 	new Vue({
 		el: '#paymentsRecord',
-		data(){
+		data() {
 			return {
 				searchType: '',
 				recordType: 'without_details',
@@ -281,16 +290,16 @@
 			}
 		},
 		filters: {
-            decimal(value) {
-                return value == null || value == '' ? '0.00' : parseFloat(value).toFixed(2);
-            }
-        },
+			decimal(value) {
+				return value == null || value == '' ? '0.00' : parseFloat(value).toFixed(2);
+			}
+		},
 		methods: {
-			onChangeSearchType(){
+			onChangeSearchType() {
 				this.payments = [];
-				if(this.searchType == 'month'){
+				if (this.searchType == 'month') {
 					this.getMonths();
-				}else if(this.searchType == 'employee'){
+				} else if (this.searchType == 'employee') {
 					this.getMonths();
 					this.getEmployees();
 				}
@@ -300,28 +309,28 @@
 					this.months = res.data;
 				})
 			},
-			getEmployees(){
+			getEmployees() {
 				axios.get('/get_employees').then(res => {
 					this.employees = res.data;
 				})
 			},
-			getSearchResult(){
-				if(this.searchType == ''){
+			getSearchResult() {
+				if (this.searchType == '') {
 					this.selectedMonth = null;
 				}
 
-				if(this.searchType != 'employee'){
+				if (this.searchType != 'employee') {
 					this.selectedEmployee = null;
 				}
 
-				if(this.searchTypesForRecord.includes(this.searchType)){
+				if (this.searchTypesForRecord.includes(this.searchType)) {
 					this.getPaymentsRecord();
 				} else {
 					this.getPaymentDetails();
 				}
 			},
-			getPaymentsRecord(){
-				if( this.searchType == 'month' && this.selectedMonth == null){
+			getPaymentsRecord() {
+				if (this.searchType == 'month' && this.selectedMonth == null) {
 					alert('Select Month');
 					return;
 				}
@@ -330,24 +339,24 @@
 					month_id: this.selectedMonth == null ? '' : this.selectedMonth.month_id
 				}
 
-				if(this.recordType == 'with_details'){
+				if (this.recordType == 'with_details') {
 					filter.details = true;
 				}
 
 				let url = '/get_payments';
 
 				axios.post(url, filter)
-				.then(res => {
-					this.payments = res.data;
-				})
-				.catch(error => {
-					if(error.response){
-						alert(`${error.response.status}, ${error.response.statusText}`);
-					}
-				})
+					.then(res => {
+						this.payments = res.data;
+					})
+					.catch(error => {
+						if (error.response) {
+							alert(`${error.response.status}, ${error.response.statusText}`);
+						}
+					})
 			},
-			getPaymentDetails(){
-				if(this.selectedEmployee == null){
+			getPaymentDetails() {
+				if (this.selectedEmployee == null) {
 					alert('Select Employee');
 					return;
 				}
@@ -357,35 +366,37 @@
 				}
 
 				axios.post('/get_salary_details', filter)
-				.then(res => {
-					this.payments = res.data;
-				})
-				.catch(error => {
-					if(error.response){
-						alert(`${error.response.status}, ${error.response.statusText}`);
-					}
-				})
+					.then(res => {
+						this.payments = res.data;
+					})
+					.catch(error => {
+						if (error.response) {
+							alert(`${error.response.status}, ${error.response.statusText}`);
+						}
+					})
 			},
-			deletePayment(paymentId){
+			deletePayment(paymentId) {
 				let deleteConf = confirm('Are you sure?');
-				if(deleteConf == false){
+				if (deleteConf == false) {
 					return;
 				}
-				axios.post('/delete_payment', {paymentId})
-				.then(res => {
-					let r = res.data;
-					alert(r.message);
-					if(r.success){
-						this.getPaymentsRecord();
-					}
-				})
-				.catch(error => {
-					if(error.response){
-						alert(`${error.response.status}, ${error.response.statusText}`);
-					}
-				})
+				axios.post('/delete_payment', {
+						paymentId
+					})
+					.then(res => {
+						let r = res.data;
+						alert(r.message);
+						if (r.success) {
+							this.getPaymentsRecord();
+						}
+					})
+					.catch(error => {
+						if (error.response) {
+							alert(`${error.response.status}, ${error.response.statusText}`);
+						}
+					})
 			},
-			async print(){
+			async print() {
 
 
 				let reportContent = `
@@ -406,7 +417,7 @@
 
 				var reportWindow = window.open('', 'PRINT', `height=${screen.height}, width=${screen.width}`);
 				reportWindow.document.write(`
-					<?php $this->load->view('Administrator/reports/reportHeader.php');?>
+					<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>
 				`);
 
 				reportWindow.document.head.innerHTML += `
@@ -433,7 +444,7 @@
 				`;
 				reportWindow.document.body.innerHTML += reportContent;
 
-				if(this.searchType == '' && this.searchType == 'month' && this.recordType == 'without_details'){
+				if (this.searchType == '' && this.searchType == 'month' && this.recordType == 'without_details') {
 					let rows = reportWindow.document.querySelectorAll('.record-table tr');
 					rows.forEach(row => {
 						row.lastChild.remove();
