@@ -1,48 +1,48 @@
 <style>
   .v-select {
-		float: right;
-		min-width: 100%;
-		background: #fff;
-		margin-left: 5px;
-		border-radius: 4px !important;
-		margin-top: -2px;
-	}
+    float: right;
+    min-width: 100%;
+    background: #fff;
+    margin-left: 5px;
+    border-radius: 4px !important;
+    margin-top: -2px;
+  }
 
-	.v-select .dropdown-toggle {
-		padding: 0px;
-		height: 25px;
-		border: none;
-	}
+  .v-select .dropdown-toggle {
+    padding: 0px;
+    height: 25px;
+    border: none;
+  }
 
-	.v-select input[type=search],
-	.v-select input[type=search]:focus {
-		margin: 0px;
-	}
+  .v-select input[type=search],
+  .v-select input[type=search]:focus {
+    margin: 0px;
+  }
 
-	.v-select .vs__selected-options {
-		overflow: hidden;
-		flex-wrap: nowrap;
-	}
+  .v-select .vs__selected-options {
+    overflow: hidden;
+    flex-wrap: nowrap;
+  }
 
-	.v-select .selected-tag {
-		margin: 2px 0px;
-		white-space: nowrap;
-		position: absolute;
-		left: 0px;
-	}
+  .v-select .selected-tag {
+    margin: 2px 0px;
+    white-space: nowrap;
+    position: absolute;
+    left: 0px;
+  }
 
-	.v-select .vs__actions {
-		margin-top: -5px;
-	}
+  .v-select .vs__actions {
+    margin-top: -5px;
+  }
 
   .v-select .dropdown-toggle .clear {
     margin-top: 5px;
   }
 
-	.v-select .dropdown-menu {
-		width: auto;
-		overflow-y: auto;
-	}
+  .v-select .dropdown-menu {
+    width: auto;
+    overflow-y: auto;
+  }
 </style>
 
 <div id="salesInvoiceReport" class="row" style="margin: 0;">
@@ -68,7 +68,8 @@
 
   <div class="col-md-8 col-md-offset-2">
     <br>
-    <sales-invoice v-bind:sales_id="selectedInvoice.SaleMaster_SlNo" v-if="showInvoice"></sales-invoice>
+    <sales-invoice v-if="company_profile.print_type != 3 && showInvoice" v-bind:sales_id="selectedInvoice.SaleMaster_SlNo"></sales-invoice>
+    <pos-invoice v-if="company_profile.print_type == 3 && showInvoice" v-bind:pos_id="selectedInvoice.SaleMaster_SlNo"></pos-invoice>
   </div>
 </div>
 
@@ -78,6 +79,7 @@
 <script src="<?php echo base_url(); ?>assets/js/vue/axios.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/vue/vue-select.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/vue/components/salesInvoice.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/vue/components/posInvoice.js"></script>
 
 <script>
   Vue.component('v-select', VueSelect.VueSelect);
@@ -87,13 +89,20 @@
       return {
         invoices: [],
         selectedInvoice: null,
-        showInvoice: false
+        showInvoice: false,
+        company_profile: {},
       }
     },
     created() {
       this.getSales();
+      this.getCompanyProfile();
     },
     methods: {
+      getCompanyProfile() {
+        axios.get('/get_company_profile').then(res => {
+          this.company_profile = res.data;
+        })
+      },
       getSales() {
         axios.get("/get_sales").then(res => {
           this.invoices = res.data.sales;
