@@ -1,22 +1,47 @@
 <style>
-	.v-select {
-		background: #fff;
-		border-radius: 4px !important;
-	}
+  .v-select {
+    float: right;
+    min-width: 100%;
+    background: #fff;
+    margin-left: 5px;
+    border-radius: 4px !important;
+    margin-top: -2px;
+  }
 
-	.v-select .dropdown-toggle {
-		padding: 0px;
-		height: 25px;
-		border: none;
-	}
+  .v-select .dropdown-toggle {
+    padding: 0px;
+    height: 25px;
+    border: none;
+  }
 
   .v-select input[type=search],
   .v-select input[type=search]:focus {
     margin: 0px;
   }
 
+  .v-select .vs__selected-options {
+    overflow: hidden;
+    flex-wrap: nowrap;
+  }
+
   .v-select .selected-tag {
-    margin: 0px;
+    margin: 2px 0px;
+    white-space: nowrap;
+    position: absolute;
+    left: 0px;
+  }
+
+  .v-select .vs__actions {
+    margin-top: -5px;
+  }
+
+  .v-select .dropdown-toggle .clear {
+    margin-top: 5px;
+  }
+
+  .v-select .dropdown-menu {
+    width: auto;
+    overflow-y: auto;
   }
 </style>
 
@@ -25,10 +50,9 @@
     <fieldset class="scheduler-border scheduler-search">
       <legend class="scheduler-border">Purchase Invoice</legend>
       <div class="control-group">
-        <div class="form-group">
-          <label class="col-md-1 col-md-offset-2 control-label no-padding-right"> Invoice no </label>
-          <label class="col-md-1 control-label no-padding-right"> : </label>
-          <div class="col-md-3">
+        <div class="form-group" style="display: flex;align-items:center;">
+          <label class="col-md-2 text-right col-md-offset-2 control-label no-padding-right"> Invoice no: </label>
+          <div class="col-md-4">
             <v-select v-bind:options="invoices" label="invoice_text" v-model="selectedInvoice" v-on:input="viewInvoice" placeholder="Select Invoice"></v-select>
           </div>
         </div>

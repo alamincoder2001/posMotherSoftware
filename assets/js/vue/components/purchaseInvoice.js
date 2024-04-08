@@ -43,13 +43,13 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
                                     <td>Qnty</td>
                                     <td>Unit</td>
                                     <td>Unit Price</td>
-                                    <td>Total</td>
+                                    <td style="text-align:right;">Total</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(product, sl) in cart">
                                     <td>{{ sl + 1 }}</td>
-                                    <td style="text-align:left;">{{ product.Product_Name }}</td>
+                                    <td style="text-align:left;">{{ product.Product_Name }} - {{ product.Product_Code }}</td>
                                     <td>{{ product.PurchaseDetails_TotalQuantity }}</td>
                                     <td>{{ product.Unit_Name }}</td>
                                     <td>{{ product.PurchaseDetails_Rate }}</td>
@@ -344,10 +344,9 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
                         </div>
                     </div>
                     <div class="container" style="position:fixed;bottom:15px;width:100%;">
-                        <div class="row" style="border-bottom:1px solid #ccc;margin-bottom:5px;padding-bottom:6px;">
+                        <div class="row" style="border-bottom:1px solid #ccc;margin-bottom:0;padding-bottom:20px;">
                             <div class="col-xs-6">
-                                <span style="text-decoration:overline;">Received by</span><br><br>
-                                ** THANK YOU FOR YOUR BUSINESS **
+                                <span style="text-decoration:overline;">Received By</span>
                             </div>
                             <div class="col-xs-6 text-right">
                                 <span style="text-decoration:overline;">Authorized Signature</span>
@@ -356,7 +355,7 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
 
                         <div class="row" style="font-size:12px;">
                             <div class="col-xs-6">
-                                Print Date: ${moment().format('DD-MM-YYYY h:mm a')}, Printed by: ${this.purchase.AddBy}
+                                Print Date: ${moment().format('DD-MM-YYYY h:mm a')}, Printed by: ${this.purchase.FullName}
                             </div>
                             <div class="col-xs-6 text-right">
                                 Developed by: Link-Up Technologoy, Contact no: 01911978897

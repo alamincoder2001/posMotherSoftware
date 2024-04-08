@@ -1,7 +1,7 @@
 <style>
   .v-select {
 		float: right;
-		min-width: 200px;
+		min-width: 100%;
 		background: #fff;
 		margin-left: 5px;
 		border-radius: 4px !important;
@@ -35,6 +35,10 @@
 		margin-top: -5px;
 	}
 
+  .v-select .dropdown-toggle .clear {
+    margin-top: 5px;
+  }
+
 	.v-select .dropdown-menu {
 		width: auto;
 		overflow-y: auto;
@@ -46,16 +50,15 @@
     <legend class="scheduler-border">Search Sales Invoice</legend>
     <div class="control-group">
       <div class="col-xs-12 col-md-12 col-lg-12">
-        <div class="form-group">
-          <label class="col-sm-1 col-sm-offset-2 control-label no-padding-right"> Invoice no </label>
-          <label class="col-sm-1 control-label no-padding-right"> : </label>
-          <div class="col-sm-3">
+        <div class="form-group" style="display: flex;align-items:center;">
+          <label class="col-md-2 text-right col-md-offset-2 control-label no-padding-right"> Invoice no: </label>
+          <div class="col-md-4">
             <v-select v-bind:options="invoices" label="invoice_text" v-model="selectedInvoice" v-on:input="viewInvoice" placeholder="Select Invoice"></v-select>
           </div>
         </div>
 
         <div class="form-group">
-          <div class="col-sm-2">
+          <div class="col-md-2">
             <input type="button" class="btn btn-primary" value="Show Report" v-on:click="viewInvoice" style="margin-top:0px;width:150px;display: none;">
           </div>
         </div>

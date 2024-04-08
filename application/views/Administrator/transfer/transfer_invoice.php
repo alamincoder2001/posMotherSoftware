@@ -41,9 +41,9 @@
                 </div>
                 
                 <div class="col-xs-5 text-right">
+                    <strong>Transfer Date: </strong> <?php echo date("d-m-Y", strtotime($transfer->transfer_date)); ?><br>
                     <strong>Received by: </strong> <?php echo $transfer->receive_by_name; ?><br>
                     <strong>Received Date: </strong> <?=  $transfer->UpdateTime == NULL ? "Not yet receive" : date("d-m-Y", strtotime($transfer->UpdateTime)); ?><br>
-                    <strong>Date: </strong> <?php echo date("d-m-Y", strtotime($transfer->transfer_date)); ?><br>
                 </div>
             </div>
 

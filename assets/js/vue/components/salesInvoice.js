@@ -26,6 +26,10 @@ const salesInvoice = Vue.component('sales-invoice', {
                         <strong>Sales by:</strong> {{ sales.FullName }}<br>
                         <strong>Invoice No.:</strong> {{ sales.SaleMaster_InvoiceNo }}<br>
                         <strong>Sales Date:</strong> {{ sales.SaleMaster_SaleDate }} {{ sales.AddTime | formatDateTime('h:mm a') }}
+                        <span v-if="sales.employee_id != null">
+                            <br>
+                            <strong>Employee:</strong> {{ sales.Employee_Name }}
+                        </span>
                     </div>
                 </div>
                 <div class="row">
@@ -43,13 +47,13 @@ const salesInvoice = Vue.component('sales-invoice', {
                                     <td>Qnty</td>
                                     <td>Unit</td>
                                     <td>Unit Price</td>
-                                    <td>Total</td>
+                                    <td style="text-align:right;">Total</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(product, sl) in cart">
                                     <td>{{ sl + 1 }}</td>
-                                    <td style="text-align:left;">{{ product.Product_Name }}</td>
+                                    <td style="text-align:left;">{{ product.Product_Name }} - {{ product.Product_Code }}</td>
                                     <td>{{ product.SaleDetails_TotalQuantity }}</td>
                                     <td>{{ product.Unit_Name }}</td>
                                     <td>{{ product.SaleDetails_Rate }}</td>
@@ -405,20 +409,19 @@ const salesInvoice = Vue.component('sales-invoice', {
                                         </td>
                                     </tr>
                                 </tfoot>
-                            </table>
-                            <div class="row" style="border-bottom:1px solid #ccc;margin-bottom:5px;padding-bottom:6px;">
-                                <div class="col-xs-6">
-                                    <span style="text-decoration:overline;">Received by</span><br><br>
-                                    ** THANK YOU FOR YOUR BUSINESS **
-                                </div>
-                                <div class="col-xs-6 text-right">
-                                    <span style="text-decoration:overline;">Authorized by</span>
-                                </div>
-                            </div>
+                            </table>                           
                             <div style="position:fixed;left:0;bottom:15px;width:100%;">
+                                <div class="row" style="border-bottom:1px solid #ccc;margin-bottom:0;padding-bottom:20px;">
+                                    <div class="col-xs-6">
+                                        <span style="text-decoration:overline;">Received by</span>
+                                    </div>
+                                    <div class="col-xs-6 text-right">
+                                        <span style="text-decoration:overline;">Authorized by</span>
+                                    </div>
+                                </div>
                                 <div class="row" style="font-size:12px;">
                                     <div class="col-xs-6">
-                                        Print Date: ${moment().format('DD-MM-YYYY h:mm a')}, Printed by: ${this.sales.AddBy}
+                                        Print Date: ${moment().format('DD-MM-YYYY h:mm a')}, Printed by: ${this.sales.FullName}
                                     </div>
                                     <div class="col-xs-6 text-right">
                                         Developed by: Link-Up Technologoy, Contact no: 01911978897
