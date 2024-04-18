@@ -7,12 +7,17 @@
                     <form v-on:submit.prevent="getData">
                         <div class="form-group">
                             <label for="customer">
-                                <input type="radio" id="customer" value="customer" @change="onChangeSearchType" v-model="searchType"> All Customer
+                                <input type="radio" id="customer" value="customer" @change="onChangeSearchType" v-model="searchType"> By Customer
                             </label>
                         </div>
                         <div class="form-group">
                             <label for="supplier">
-                                <input type="radio" id="supplier" value="supplier" @change="onChangeSearchType" v-model="searchType"> All Supplier
+                                <input type="radio" id="supplier" value="supplier" @change="onChangeSearchType" v-model="searchType"> By Supplier
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="employee">
+                                <input type="radio" id="employee" value="employee" @change="onChangeSearchType" v-model="searchType"> By Employee
                             </label>
                         </div>
                         <div class="form-group">
@@ -29,7 +34,7 @@
                     <form v-on:submit.prevent="sendSms">
                         <div class="form-group">
                             <label for="smsText">SMS Text</label>
-                            <textarea class="form-control" id="smsText" v-model="smsText" v-on:input="checkSmsLength"></textarea>
+                            <textarea class="form-control" id="smsText" v-model="smsText" v-on:input="checkSmsLength" style="height: 100px;"></textarea>
                             <p style="display:none" v-bind:style="{display: smsText.length > 0 ? '' : 'none'}">{{ smsText.length }} | {{ smsLength - smsText.length }} Remains | Max: {{ smsLength }} characters</p>
                         </div>
                         <div class="form-group">
@@ -84,6 +89,26 @@
                         </tr>
                     </tbody>
                 </table>
+                <table class="table table-bordered" style="display: none;" v-if="searchType =='employee' && employees.length > 0" :style="{display: searchType =='employee' && employees.length > 0 ? '' : 'none'}">
+                    <thead>
+                        <tr>
+                            <th>Select All &nbsp; <input type="checkbox" v-on:click="selectAll"></th>
+                            <th>Employee Code</th>
+                            <th>Employee Name</th>
+                            <th>Mobile</th>
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody style="display:none" v-bind:style="{display: employees.length > 0 ? '' : 'none'}">
+                        <tr v-for="employee in employees">
+                            <td><input type="checkbox" v-bind:value="employee.Employee_ContactNo" v-model="selectedEmployees" v-if="employee.Employee_ContactNo.match(regexMobile)"></td>
+                            <td>{{ employee.Employee_ID }}</td>
+                            <td>{{ employee.Employee_Name }}</td>
+                            <td><span class="label label-md arrowed" v-bind:class="[employee.Employee_ContactNo.match(regexMobile) ? 'label-info' : 'label-danger']">{{ employee.Employee_ContactNo }}</span></td>
+                            <td>{{ employee.Employee_PrasentAddress }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -102,6 +127,8 @@
                 selectedCustomers: [],
                 suppliers: [],
                 selectedSuppliers: [],
+                employees: [],
+                selectedEmployees: [],
                 smsText: '',
                 smsLength: 306,
                 onProgress: false,
@@ -125,6 +152,14 @@
                     });
                 })
             },
+            getEmployees() {
+                axios.get('/get_employees').then(res => {
+                    this.employees = res.data.map(employee => {
+                        employee.Employee_ContactNo = employee.Employee_ContactNo.trim();
+                        return employee;
+                    });
+                })
+            },
             onChangeSearchType() {
                 this.customers = [];
                 this.suppliers = [];
@@ -132,8 +167,10 @@
             getData() {
                 if (this.searchType == 'customer') {
                     this.getCustomers();
-                } else {
+                } else if (this.searchType == 'supplier') {
                     this.getSuppliers();
+                } else {
+                    this.getEmployees();
                 }
             },
             selectAll() {
@@ -141,9 +178,11 @@
                 if (checked) {
                     this.selectedCustomers = [...new Set(this.customers.map(v => v.Customer_Mobile))].filter(mobile => mobile.match(this.regexMobile));
                     this.selectedSuppliers = [...new Set(this.suppliers.map(v => v.Supplier_Mobile))].filter(mobile => mobile.match(this.regexMobile));
+                    this.selectedEmployees = [...new Set(this.employees.map(v => v.Employee_ContactNo))].filter(mobile => mobile.match(this.regexMobile));
                 } else {
                     this.selectedCustomers = [];
                     this.selectedSuppliers = [];
+                    this.selectedEmployees = [];
                 }
             },
             checkSmsLength() {
@@ -168,7 +207,15 @@
 
                 let data = {
                     smsText: this.smsText,
-                    numbers: this.searchType == 'customer' ? this.selectedCustomers : this.selectedSuppliers
+                }
+                if (this.searchType == 'customer') {
+                    data.numbers = this.selectedCustomers;
+                }
+                if (this.searchType == 'supplier') {
+                    data.numbers = this.selectedSuppliers;
+                }
+                if (this.searchType == 'employee') {
+                    data.numbers = this.selectedEmployees;
                 }
 
                 this.onProgress = true;
