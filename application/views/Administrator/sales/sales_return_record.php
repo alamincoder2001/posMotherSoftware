@@ -48,6 +48,7 @@
 						</div>
 
 						<div class="form-group">
+							<label for="">From</label>
 							<input type="date" style="margin:0;" class="form-control" v-model="fromDate">
 						</div>
 
@@ -57,7 +58,7 @@
 						</div>
 
 						<div class="form-group">
-							<input type="submit" @click="getReturns" value="Search">
+							<input type="button" @click="getReturns" value="Search">
 						</div>
 					</form>
 				</div>

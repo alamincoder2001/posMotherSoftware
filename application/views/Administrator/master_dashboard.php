@@ -236,6 +236,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 	<script src="<?php echo base_url(); ?>assets/js/ace.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url() ?>assets/fancyBox/js/jquery.fancybox.js?v=2.1.5"></script>
 
+	<script src="<?php echo base_url(); ?>assets/js/sweetalert2.min.js"></script>
 	<script type="text/javascript">
 		setInterval(function() {
 

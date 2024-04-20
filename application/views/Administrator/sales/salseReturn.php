@@ -1,7 +1,11 @@
 <style>
 	.v-select {
+		float: right;
+		min-width: 200px;
 		background: #fff;
+		margin-left: 5px;
 		border-radius: 4px !important;
+		margin-top: -2px;
 	}
 
 	.v-select .dropdown-toggle {
@@ -27,36 +31,38 @@
 		left: 0px;
 	}
 
+	.v-select .vs__actions {
+		margin-top: -5px;
+	}
+
 	.v-select .dropdown-menu {
 		width: auto;
 		overflow-y: auto;
 	}
 </style>
 
-<div class="row" id="salesReturn">
-	<div class="col-md-12">
-		<fieldset class="scheduler-border scheduler-search">
-			<legend class="scheduler-border">Sales Return</legend>
-			<div class="control-group">
-				<div class="form-group" style="display:none;" v-bind:style="{display: customers.length > 0 ? '' : 'none'}">
-					<label class="col-xs-1">Customer</label>
-					<div class="col-xs-3">
+<div class="row" id="salesReturn" style="margin: 0;">
+	<fieldset class="scheduler-border scheduler-search">
+		<legend class="scheduler-border">Sales Return</legend>
+		<div class="control-group">
+			<div class="col-md-12">
+				<form class="form-inline">
+					<div class="form-group" style="display:none;" v-bind:style="{display: customers.length > 0 ? '' : 'none'}">
+						<label>Customer</label>
 						<v-select v-bind:options="customers" label="display_name" v-model="selectedCustomer" v-on:input="getInvoices" @search="onSearchCustomer" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
 					</div>
-				</div>
 
-				<div class="form-group">
-					<label class="col-xs-1">Invoice</label>
-					<div class="col-xs-2 no-padding-left">
-						<v-select v-bind:options="invoices" label="SaleMaster_InvoiceNo" v-model="selectedInvoice" @search="onSearchInvoice" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
+					<div class="form-group">
+						<label>Invoice</label>
+						<v-select v-bind:options="invoices" label="SaleMaster_InvoiceNo" v-model="selectedInvoice" @input="onChangeInvoice" @search="onSearchInvoice" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
 					</div>
-				</div>
-				<div class="form-group">
-					<button type="button" style="padding: 1px 15px;" @click="getSaleDetailsForReturn" v-bind:disabled="salesReturn.returnId == 0 ? false : true">View</button>
-				</div>
+					<div class="form-group" style="margin-top: -3px;">
+						<button type="button" style="padding: 1px 15px;" @click="getSaleDetailsForReturn" v-bind:disabled="salesReturn.returnId == 0 ? false : true">View</button>
+					</div>
+				</form>
 			</div>
-		</fieldset>
-	</div>
+		</div>
+	</fieldset>
 	<div style="display:none;" v-bind:style="{display: cart.length > 0 ? '' : 'none'}">
 		<div class="col-xs-12 col-md-12 col-lg-12">
 			<br>
@@ -154,6 +160,7 @@
 		},
 		created() {
 			this.getCustomers();
+			this.getInvoices();
 			if (this.salesReturn.returnId != 0) {
 				this.getReturn();
 			}
@@ -189,30 +196,17 @@
 				}
 			},
 			getInvoices() {
-				if (event.type == 'readystatechange') {
-					return;
-				}
-				this.selectedInvoice = {
-					SaleMaster_InvoiceNo: '',
-					SalseCustomer_IDNo: null,
-					Customer_Name: '',
-					Customer_Mobile: '',
-					Customer_Address: '',
-					SaleMaster_TotalDiscountAmount: 0
-				}
-				this.invoices = [];
-				if (this.selectedCustomer == null) {
-					return;
-				}
-
-				if (this.selectedCustomer.Customer_Type == 'G') {
-					arg = {
-						customerType: 'G'
-					}
-				} else {
-					arg = {
-						customerId: this.selectedCustomer.Customer_SlNo,
-						forSearch: 'yes'
+				let arg = {};
+				if (this.selectedCustomer != null) {
+					if (this.selectedCustomer.Customer_Type == 'G') {
+						arg = {
+							customerType: 'G'
+						}
+					} else {
+						arg = {
+							customerId: this.selectedCustomer.Customer_SlNo,
+							forSearch: 'yes'
+						}
 					}
 				}
 
@@ -221,10 +215,9 @@
 				})
 			},
 			async onSearchInvoice(val, loading) {
-				if (val.length > 2) {
+				if (val.length > 3) {
 					loading(true);
 					await axios.post("/get_sales", {
-							customerType: this.selectedCustomer.Customer_Type,
 							name: val,
 						})
 						.then(res => {
@@ -235,6 +228,27 @@
 				} else {
 					loading(false)
 					await this.getInvoices();
+				}
+			},
+			onChangeInvoice() {
+				if (this.selectedInvoice == null) {
+					this.selectedInvoice = {
+						SaleMaster_InvoiceNo: '',
+						SalseCustomer_IDNo: null,
+						Customer_Name: '',
+						Customer_Mobile: '',
+						Customer_Address: '',
+						SaleMaster_TotalDiscountAmount: 0
+					};
+					this.selectedCustomer = null;
+					return;
+				}
+				if (this.selectedInvoice.SaleMaster_InvoiceNo != '') {
+					this.selectedCustomer = {
+						Customer_SlNo: this.selectedInvoice.customerType == 'G' ? "" : this.selectedInvoice.SalseCustomer_IDNo,
+						Customer_Name: this.selectedInvoice.Customer_Name,
+						display_name: this.selectedInvoice.customerType == 'G' ? 'Cash Customer' : `${this.selectedInvoice.Customer_Name} - ${this.selectedInvoice.Customer_Code} - ${this.selectedInvoice.Customer_Mobile}`,
+					}
 				}
 			},
 			async getSaleDetailsForReturn() {
@@ -249,13 +263,20 @@
 			},
 			productReturnTotal(ind) {
 				if (this.cart[ind].return_quantity > (this.cart[ind].SaleDetails_TotalQuantity - this.cart[ind].returned_quantity)) {
-					alert('Return quantity is not valid');
+					Swal.fire({
+						icon: "error",
+						text: "Return quantity is not valid!",
+					});
 					this.cart[ind].return_quantity = '';
+					return;
 				}
-
 				if (parseFloat(this.cart[ind].return_rate) > parseFloat(this.cart[ind].SaleDetails_Rate)) {
-					alert('Rate is not valid');
+					Swal.fire({
+						icon: "error",
+						text: "Rate is not valid!",
+					});
 					this.cart[ind].return_rate = '';
+					return;
 				}
 				this.cart[ind].return_amount = parseFloat(this.cart[ind].return_quantity) * parseFloat(this.cart[ind].return_rate);
 				this.calculateTotal();

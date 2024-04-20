@@ -44,7 +44,7 @@
 <div id="customerDueList">
 	<div class="row" style="margin: 0;">
 		<fieldset class="scheduler-border scheduler-search">
-			<legend class="scheduler-border">Search Sales Record</legend>
+			<legend class="scheduler-border">Search Customer Due</legend>
 			<div class="control-group">
 				<div class="col-md-12">
 					<form class="form-inline">

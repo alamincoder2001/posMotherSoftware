@@ -8,7 +8,7 @@
 						<div class="form-group clearfix">
 							<label class="control-label col-xs-4 col-md-4">Area Name:</label>
 							<div class="col-xs-8 col-md-8">
-								<input type="text" class="form-control" v-model="area.District_Name" required>
+								<input type="text" class="form-control" v-model="area.District_Name">
 							</div>
 						</div>
 						<div class="form-group clearfix">
@@ -104,6 +104,13 @@
 				})
 			},
 			saveArea() {
+				if (this.area.District_Name == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Area name is empty!",
+					});
+					return;
+				}
 				let url = '/add_area';
 				if (this.area.District_SlNo != 0) {
 					url = '/update_area';

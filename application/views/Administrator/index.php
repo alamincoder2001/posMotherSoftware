@@ -275,6 +275,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 	<!-- ace scripts -->
 	<script src="<?php echo base_url(); ?>assets/js/ace-elements.min.js"></script>
 	<script src="<?php echo base_url(); ?>assets/js/ace.min.js"></script>
+	<script src="<?php echo base_url(); ?>assets/js/sweetalert2.min.js"></script>
 
 	<!-- inline scripts related to this page -->
 

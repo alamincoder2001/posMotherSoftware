@@ -676,22 +676,32 @@
 				}
 
 				if (product.productId == '') {
-					alert('Select Product');
+					Swal.fire({
+						icon: "error",
+						text: "Select Product",
+					});
 					return;
 				}
-
 				if (product.quantity == 0 || product.quantity == '') {
-					alert('Enter quantity');
+					Swal.fire({
+						icon: "error",
+						text: "Enter quantity",
+					});
 					return;
 				}
 
 				if (product.salesRate == 0 || product.salesRate == '') {
-					alert('Enter sales rate');
+					Swal.fire({
+						icon: "error",
+						text: "Enter sales rate",
+					});
 					return;
 				}
-
 				if (product.quantity > this.productStock && product.is_service == 'false') {
-					alert('Stock unavailable');
+					Swal.fire({
+						icon: "error",
+						text: "Stock unavailable",
+					});
 					return;
 				}
 
@@ -746,11 +756,17 @@
 			},
 			async saveSales() {
 				if (this.selectedCustomer == null) {
-					alert('Select Customer');
+					Swal.fire({
+						icon: "error",
+						text: "Select Customer",
+					});
 					return;
 				}
 				if (this.cart.length == 0) {
-					alert('Cart is empty');
+					Swal.fire({
+						icon: "error",
+						text: "Cart is empty",
+					});
 					return;
 				}
 
@@ -782,7 +798,7 @@
 				axios.post(url, data).then(async res => {
 					let r = res.data;
 					if (r.success) {
-						let conf = confirm('Sale success, Do you want to view invoice?');
+						let conf = confirm(`${r.message}, Do you want to view invoice?`);
 						if (conf) {
 							window.open('/sale_invoice_print/' + r.salesId, '_blank');
 							await new Promise(r => setTimeout(r, 1000));

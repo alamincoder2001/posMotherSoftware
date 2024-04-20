@@ -275,6 +275,13 @@
 				})
 			},
 			saveSupplier() {
+				if (this.supplier.Supplier_Name == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Supplier name is empty!",
+					});
+					return;
+				}
 				let url = '/add_supplier';
 				if (this.supplier.Supplier_SlNo != 0) {
 					url = '/update_supplier';

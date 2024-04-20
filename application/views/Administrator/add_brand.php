@@ -104,6 +104,13 @@
 				})
 			},
 			saveBrand() {
+				if (this.brand.brand_name == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Brand name is empty!",
+					});
+					return;
+				}
 				let url = '/add_brand';
 				if (this.brand.brand_SiNo != 0) {
 					url = '/update_brand';

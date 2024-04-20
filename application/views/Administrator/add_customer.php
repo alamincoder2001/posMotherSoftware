@@ -373,7 +373,17 @@
 			},
 			saveCustomer() {
 				if (this.selectedDistrict == null) {
-					alert('Select area');
+					Swal.fire({
+						icon: "error",
+						text: "Area name is empty!",
+					});
+					return;
+				}
+				if (this.customer.Customer_Name == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Customer name is empty!",
+					});
 					return;
 				}
 

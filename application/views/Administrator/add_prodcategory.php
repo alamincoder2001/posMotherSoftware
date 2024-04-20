@@ -1,5 +1,5 @@
 <div id="categories">
-	<form @submit.prevent="getCategory">
+	<form @submit.prevent="saveCategory">
 		<div class="row" style="margin: 0;">
 			<fieldset class="scheduler-border">
 				<legend class="scheduler-border">Category Entry Form</legend>
@@ -116,7 +116,14 @@
 					});
 				})
 			},
-			getCategory() {
+			saveCategory() {
+				if (this.category.ProductCategory_Name == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Category name is empty!",
+					});
+					return;
+				}
 				let url = '/add_category';
 				if (this.category.ProductCategory_SlNo != 0) {
 					url = '/update_category';
