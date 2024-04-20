@@ -1,12 +1,33 @@
 <div id="supplierListReport">
+  <div class="row">
+    <div class="col-md-12" style="margin: 0;">
+      <fieldset class="scheduler-border scheduler-search">
+        <legend class="scheduler-border">Supplier List</legend>
+        <div class="control-group">
+          <form class="form-inline" @submit.prevent="getSuppliers">
+            <div class="form-group">
+              <label>Search Type</label>
+              <select class="form-select" style="height: 26px;margin:0 6px;width:150px;" v-model="searchType">
+                <option value="">All</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-top: -1px;">
+              <input type="submit" value="Search">
+            </div>
+          </form>
+        </div>
+      </fieldset>
+    </div>
+  </div>
   <div style="display:none;" v-bind:style="{display: suppliers.length > 0 ? '' : 'none'}">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12 text-right">
         <a href="" @click.prevent="printSupplierList"><i class="fa fa-print"></i> Print</a>
       </div>
     </div>
 
-    <div class="row" style="margin-top:15px;">
+    <div class="row">
       <div class="col-md-12">
         <div class="table-responsive" id="printContent">
           <table class="table table-bordered table-condensed">
@@ -31,7 +52,6 @@
       </div>
     </div>
   </div>
-
   <div style="display:none;text-align:center;" v-bind:style="{display: suppliers.length > 0 ? 'none' : ''}">
     No records found
   </div>
@@ -45,11 +65,9 @@
     el: '#supplierListReport',
     data() {
       return {
+        searchType: '',
         suppliers: []
       }
-    },
-    created() {
-      this.getSuppliers();
     },
     methods: {
       getSuppliers() {

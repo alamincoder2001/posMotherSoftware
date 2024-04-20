@@ -49,8 +49,8 @@
 				<div class="col-xs-12 col-md-12">
 					<form class="form-inline" @submit.prevent="getReport">
 						<div class="form-group">
-							<label class="control-label no-padding-right" for="searchType"> Search Type </label>
-							<select id="searchType" style="margin: 0;" class="form-control" v-model="searchType" v-on:change="onChangeSearchType">
+							<label for="searchType"> Search Type </label>
+							<select id="searchType" style="margin: 0;height:26px;width:150px;" class="form-select" v-model="searchType" v-on:change="onChangeSearchType">
 								<option value="all"> All </option>
 								<option value="asset"> By Asset</option>
 							</select>

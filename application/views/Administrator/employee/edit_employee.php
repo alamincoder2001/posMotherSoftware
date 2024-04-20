@@ -109,7 +109,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="em_Joint_date">Joint Date</label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input class="form-control date-picker" name="em_Joint_date" id="em_Joint_date" type="date" data-date-format="yyyy-mm-dd" style="border-radius: 5px !important;" value="<?php echo $employee->Employee_JoinDate; ?>" />
+							<input class="form-control" name="em_Joint_date" id="em_Joint_date" type="date" data-date-format="yyyy-mm-dd" style="border-radius: 5px !important;margin-bottom:4px;" value="<?php echo $employee->Employee_JoinDate; ?>" />
 						</div>
 					</div>
 
@@ -243,7 +243,7 @@ if ($serial[1] >= 9) {
 						<label class="col-md-4 control-label" for="em_dob">Date of Birth</label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input class="form-control" name="em_dob" id="em_dob" type="date" style="border-radius: 5px !important;" value="<?php echo $employee->Employee_BirthDate; ?>" />
+							<input class="form-control" name="em_dob" id="em_dob" type="date" style="border-radius: 5px !important;margin-bottom:4px;" value="<?php echo $employee->Employee_BirthDate; ?>" />
 						</div>
 					</div>
 

@@ -50,17 +50,19 @@
 		padding: 0;
 	}
 
-	#supplierPayment .add-button {
-		padding: 2.5px;
-		width: 30px;
-		background-color: #298db4;
+	.add-button {
+		padding: 2.8px;
+		width: 100%;
+		background-color: #d15b47;
 		display: block;
 		text-align: center;
 		color: white;
+		cursor: pointer;
+		border-radius: 3px;
 	}
 
-	#supplierPayment .add-button:hover {
-		background-color: #41add6;
+	.add-button:hover {
+		background-color: #d15b47;
 		color: white;
 	}
 </style>
@@ -102,13 +104,15 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-md-4 control-label">Supplier</label>
+									<label class="col-xs-4 control-label no-padding-right"> Supplier </label>
 									<label class="col-md-1">:</label>
-									<div class="col-md-6 col-xs-11">										
-										<v-select v-bind:options="suppliers" v-model="selectedSupplier" label="display_name" @input="getSupplierDue"></v-select>
-									</div>
-									<div class="col-md-1 col-xs-1" style="padding:0;margin-left: -9px;">
-										<a href="/supplier" target="_blank" class="add-button"><i class="fa fa-plus"></i></a>
+									<div class="col-xs-7" style="display: flex;align-items:center;margin-bottom:5px;">
+										<div style="width: 86%;">
+											<v-select v-bind:options="suppliers" style="margin: 0;" v-model="selectedSupplier" v-on:input="getSupplierDue" @search="onSearchSupplier" label="display_name"></v-select>
+										</div>
+										<div style="width: 13%;margin-left:2px;">
+											<a href="<?= base_url('supplier') ?>" class="add-button" target="_blank" title="Add New Supplier"><i class="fa fa-plus" aria-hidden="true"></i></a>
+										</div>
 									</div>
 								</div>
 								<div class="form-group">
@@ -144,7 +148,7 @@
 								</div>
 								<div class="form-group">
 									<div class="col-md-7 col-md-offset-5 text-right">
-										<input type="submit" class="btnSave" value="Save">										
+										<input type="submit" class="btnSave" value="Save">
 									</div>
 								</div>
 							</div>
@@ -177,8 +181,8 @@
 							<td>{{ row.FullName }}</td>
 							<td>
 								<?php if ($this->session->userdata('accountType') != 'u') { ?>
-										<i class="btnEdit fa fa-pencil" @click="editPayment(row)"></i>
-										<i class="btnDelete fa fa-trash" @click="deletePayment(row.SPayment_id)"></i>
+									<i class="btnEdit fa fa-pencil" @click="editPayment(row)"></i>
+									<i class="btnDelete fa fa-trash" @click="deletePayment(row.SPayment_id)"></i>
 								<?php } ?>
 							</td>
 						</tr>
@@ -299,9 +303,27 @@
 				})
 			},
 			getSuppliers() {
-				axios.get('/get_suppliers').then(res => {
+				axios.post('/get_suppliers', {
+					forSearch: 'yes'
+				}).then(res => {
 					this.suppliers = res.data;
 				})
+			},
+			async onSearchSupplier(val, loading) {
+				if (val.length > 2) {
+					loading(true);
+					await axios.post("/get_suppliers", {
+							name: val,
+						})
+						.then(res => {
+							let r = res.data;
+							this.suppliers = r.filter(item => item.status == 'a')
+							loading(false)
+						})
+				} else {
+					loading(false)
+					await this.getSuppliers();
+				}
 			},
 			getSupplierDue() {
 				if (this.selectedSupplier == null || this.selectedSupplier.Supplier_SlNo == undefined) {

@@ -186,6 +186,10 @@ class Products extends CI_Controller
             $clauses .= " and current_quantity <= Product_ReOrederLevel";
         }
 
+        if (isset($data->categoryId) && $data->categoryId != '') {
+            $clauses .= " and ProductCategory_ID = '$data->categoryId'";
+        }
+
         $stock = $this->mt->currentStock($clauses);
         $res['stock'] = $stock;
         $res['totalValue'] = array_sum(

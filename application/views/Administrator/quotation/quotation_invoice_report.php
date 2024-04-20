@@ -1,7 +1,7 @@
 <style>
   .v-select {
     float: right;
-    min-width: 200px;
+    min-width: 350px;
     background: #fff;
     margin-left: 5px;
     border-radius: 4px !important;
@@ -36,7 +36,7 @@
   }
 
   .v-select .dropdown-menu {
-    width: auto;
+    width: 100%;
     overflow-y: auto;
   }
 </style>
@@ -45,17 +45,14 @@
   <fieldset class="scheduler-border scheduler-search">
     <legend class="scheduler-border">Search Quotation Invoice</legend>
     <div class="control-group">
-      <div class="col-xs-12 col-md-12 col-lg-12">
-        <div class="form-group" style="margin-top:10px;">
-          <label class="col-sm-1 col-sm-offset-2 control-label no-padding-right"> Invoice no </label>
-          <label class="col-sm-1 control-label no-padding-right"> : </label>
-          <div class="col-sm-3">
-            <v-select v-bind:options="invoices" label="SaleMaster_InvoiceNo" v-model="selectedInvoice" v-on:input="viewInvoice" placeholder="Select Invoice"></v-select>
-          </div>
+      <div class="col-xs-12 col-md-12">
+        <div class="form-group" style="margin-top:10px;display:flex;justify-content:center;">
+          <label class="control-label no-padding-right"> Invoice No: </label>
+          <v-select v-bind:options="invoices" label="SaleMaster_InvoiceNo" v-model="selectedInvoice" v-on:input="viewInvoice" placeholder="Select Invoice"></v-select>
         </div>
 
         <div class="form-group">
-          <div class="col-sm-2">
+          <div class="col-md-2">
             <input type="button" class="btn btn-primary" value="Show Report" v-on:click="viewInvoice" style="margin-top:0px;width:150px;display: none;">
           </div>
         </div>

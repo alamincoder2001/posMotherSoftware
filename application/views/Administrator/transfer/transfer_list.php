@@ -53,14 +53,6 @@
                             <v-select v-bind:options="branches" v-model="selectedBranch" label="Branch_name" placeholder="Select Branch"></v-select>
                         </div>
 
-                        <!-- <div class="form-group">
-                            <label>Record Type</label>
-                            <select class="form-control" v-model="filter.recordType">
-                                <option value="without_details">Without Details</option>
-                                <option value="with_details">With Details</option>
-                            </select>
-                        </div> -->
-
                         <div class="form-group">
                             <label>Date from</label>
                             <input type="date" class="form-control" v-model="filter.dateFrom">
@@ -72,7 +64,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input type="submit" class="btn btn-info btn-xs" value="Search" style="padding-top:0px;padding-bottom:0px;margin-top:-4px;">
+                            <input type="submit" value="Search" />
                         </div>
                     </form>
                 </div>

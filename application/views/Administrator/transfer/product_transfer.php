@@ -53,7 +53,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4">Transfer date</label>
                                 <div class="col-md-8">
-                                    <input type="date" class="form-control" v-model="transfer.transfer_date">
+                                    <input type="date" style="margin-bottom: 4px;" class="form-control" v-model="transfer.transfer_date">
                                 </div>
                             </div>
                             <div class="form-group">

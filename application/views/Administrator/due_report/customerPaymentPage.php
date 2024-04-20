@@ -50,17 +50,18 @@
 		padding: 0;
 	}
 
-	#customerPayment .add-button {
-		padding: 2.5px;
-		width: 30px;
-		background-color: #298db4;
+	.add-button {
+		padding: 2.8px;
+		width: 100%;
+		background-color: #d15b47;
 		display: block;
 		text-align: center;
 		color: white;
+		cursor: pointer;
+		border-radius: 3px;
 	}
 
-	#customerPayment .add-button:hover {
-		background-color: #41add6;
+	.add-button:hover {
 		color: white;
 	}
 </style>
@@ -101,16 +102,20 @@
 										<v-select v-bind:options="filteredAccounts" v-model="selectedAccount" label="display_text" placeholder="Select account"></v-select>
 									</div>
 								</div>
+
 								<div class="form-group">
-									<label class="col-md-4 control-label">Customer</label>
+									<label class="col-md-4 control-label no-padding-right"> Customer </label>
 									<label class="col-md-1">:</label>
-									<div class="col-md-6 col-xs-11">										
-										<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name" @input="getCustomerDue"></v-select>
-									</div>
-									<div class="col-md-1 col-xs-1" style="padding:0;margin-left: -10px;">
-										<a href="/customer" target="_blank" class="add-button"><i class="fa fa-plus"></i></a>
+									<div class="col-md-7" style="display: flex;align-items:center;margin-bottom:5px;">
+										<div style="width: 86%;">
+											<v-select v-bind:options="customers" style="margin: 0;" label="display_name" v-model="selectedCustomer" v-on:input="getCustomerDue" @search="onSearchCustomer"></v-select>
+										</div>
+										<div style="width: 13%;margin-left:2px;">
+											<a href="<?= base_url('customer') ?>" class="add-button" target="_blank" title="Add New Customer"><i class="fa fa-plus" aria-hidden="true"></i></a>
+										</div>
 									</div>
 								</div>
+
 								<div class="form-group">
 									<label class="col-md-4 control-label">Due</label>
 									<label class="col-md-1">:</label>
@@ -125,7 +130,7 @@
 									<label class="col-md-4 control-label">Payment Date</label>
 									<label class="col-md-1">:</label>
 									<div class="col-md-7">
-										<input type="date" class="form-control" v-model="payment.CPayment_date" required @change="getCustomerPayments" v-bind:disabled="userType == 'u' ? true : false">
+										<input type="date" style="margin-bottom: 4px;" class="form-control" v-model="payment.CPayment_date" required @change="getCustomerPayments" v-bind:disabled="userType == 'u' ? true : false">
 									</div>
 								</div>
 								<div class="form-group">
@@ -300,7 +305,9 @@
 				})
 			},
 			getCustomers() {
-				axios.get('/get_customers').then(res => {
+				axios.post('/get_customers', {
+					forSearch: 'yes'
+				}).then(res => {
 					this.customers = res.data;
 				})
 			},
@@ -314,6 +321,22 @@
 				}).then(res => {
 					this.payment.CPayment_previous_due = res.data[0].dueAmount;
 				})
+			},
+			async onSearchCustomer(val, loading) {
+				if (val.length > 2) {
+					loading(true);
+					await axios.post("/get_customers", {
+							name: val,
+						})
+						.then(res => {
+							let r = res.data;
+							this.customers = r.filter(item => item.status == 'a')
+							loading(false)
+						})
+				} else {
+					loading(false)
+					await this.getCustomers();
+				}
 			},
 			getAccounts() {
 				axios.get('/get_bank_accounts')

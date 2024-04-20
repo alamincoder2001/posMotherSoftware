@@ -380,7 +380,7 @@ select {
   font-size: 12px !important;
 }
 .table > tbody > tr > td {
-  padding: 0px 3px;
+  padding: 1px 5px;
   line-height: 1 !important;
   font-size: 13px;
 }

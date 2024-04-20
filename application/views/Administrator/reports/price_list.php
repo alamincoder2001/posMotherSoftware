@@ -49,7 +49,7 @@
                     <form class="form-inline" @submit.prevent="getProducts">
                         <div class="form-group">
                             <label>Search Type</label>
-                            <select class="form-control" v-model="searchType">
+                            <select class="form-select" style="height: 26px;padding:0 6px;width:150px;" v-model="searchType">
                                 <option value="">All</option>
                                 <option value="category">By Category</option>
                             </select>
@@ -60,7 +60,7 @@
                             <v-select v-bind:options="categories" v-model="selectedCategory" label="ProductCategory_Name"></v-select>
                         </div>
 
-                        <div class="form-group" style="margin-top: -5px;">
+                        <div class="form-group" style="margin-top: -1px;">
                             <input type="submit" value="Search">
                         </div>
                     </form>

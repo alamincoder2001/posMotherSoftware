@@ -1,12 +1,17 @@
 <style>
 	.v-select {
-		margin-bottom: 5px;
+		float: right;
+		min-width: 200px;
 		background: #fff;
-		border-radius: 3px;
+		margin-left: 5px;
+		border-radius: 4px !important;
+		margin-top: -2px;
 	}
 
 	.v-select .dropdown-toggle {
 		padding: 0px;
+		height: 25px;
+		border: none;
 	}
 
 	.v-select input[type=search],
@@ -36,79 +41,75 @@
 	}
 </style>
 <div class="row" id="productLedger">
-	<div class="col-xs-12 col-md-12 col-lg-12">
-		<fieldset class="scheduler-border scheduler-search">
-			<legend class="scheduler-border">Product Ledger</legend>
-			<div class="control-group">
-				<form v-on:submit.prevent="getProductLedger">
+	<fieldset class="scheduler-border scheduler-search">
+		<legend class="scheduler-border">Product Ledger</legend>
+		<div class="control-group">
+			<div class="col-xs-12 col-md-12 col-lg-12">
+				<form v-on:submit.prevent="getProductLedger" class="form-inline">
 					<div class="form-group">
-						<label class="col-sm-1 control-label no-padding-right"> Product </label>
-						<div class="col-sm-2">
-							<v-select v-bind:options="products" v-model="selectedProduct" label="display_text"></v-select>
-						</div>
+						<label> Product </label>
+						<v-select v-bind:options="products" v-model="selectedProduct" label="display_text"></v-select>
 					</div>
 
 					<div class="form-group">
-						<label class="col-sm-1 control-label no-padding-right"> Date from </label>
-						<div class="col-sm-2">
-							<input type="date" class="form-control" v-model="dateFrom">
-						</div>
-						<label class="col-sm-1 control-label no-padding-right text-center" style="width:30px"> to </label>
-						<div class="col-sm-2">
-							<input type="date" class="form-control" v-model="dateTo">
-						</div>
+						<label> Date from </label>
+						<input type="date" class="form-control" v-model="dateFrom">
+
+					</div>
+					<div class="form-group">
+						<label> to </label>
+						<input type="date" class="form-control" v-model="dateTo">
 					</div>
 
 					<div class="form-group">
-						<div class="col-sm-1">
-							<input type="submit" class="btn btn-primary btnSearch" value="Show" style="margin-top:0px;border:0px;height:28px;">
-						</div>
+						<input type="submit" value="Show">
 					</div>
 				</form>
 			</div>
-		</fieldset>
-	</div>
-
-	<div class="col-sm-12" style="display:none;" v-bind:style="{display: showTable ? '' : 'none'}">
-		<a href="" style="margin: 7px 0;display:block;width:50px;" v-on:click.prevent="print">
-			<i class="fa fa-print"></i> Print
-		</a>
-		<div class="table-responsive" id="reportTable">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th style="text-align:center">Date</th>
-						<th style="text-align:center">Description</th>
-						<th style="text-align:center">Rate</th>
-						<th style="text-align:center">In Quantity</th>
-						<th style="text-align:center">Out Quantity</th>
-						<th style="text-align:center">Stock</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td></td>
-						<td style="text-align:left;">Previous Stock</td>
-						<td colspan="3"></td>
-						<td style="text-align:right;">{{ parseFloat(previousStock).toFixed(2) }}</td>
-					</tr>
-					<tr v-for="row in ledger">
-						<td>{{ row.date }}</td>
-						<td style="text-align:left;">{{ row.description }}</td>
-						<td style="text-align:right;">{{ parseFloat(row.rate).toFixed(2) }}</td>
-						<td style="text-align:right;">{{ parseFloat(row.in_quantity).toFixed(2) }}</td>
-						<td style="text-align:right;">{{ parseFloat(row.out_quantity).toFixed(2) }}</td>
-						<td style="text-align:right;">{{ parseFloat(row.stock).toFixed(2) }}</td>
-					</tr>
-				</tbody>
-				<tbody v-if="ledger.length == 0">
-					<tr>
-						<td colspan="6">No records found</td>
-					</tr>
-				</tbody>
-			</table>
 		</div>
+	</fieldset>
+</div>
+
+<div class="col-sm-12" style="display:none;" v-bind:style="{display: showTable ? '' : 'none'}">
+	<a href="" style="margin: 7px 0;display:block;width:50px;" v-on:click.prevent="print">
+		<i class="fa fa-print"></i> Print
+	</a>
+	<div class="table-responsive" id="reportTable">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th style="text-align:center">Date</th>
+					<th style="text-align:center">Description</th>
+					<th style="text-align:center">Rate</th>
+					<th style="text-align:center">In Quantity</th>
+					<th style="text-align:center">Out Quantity</th>
+					<th style="text-align:center">Stock</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td></td>
+					<td style="text-align:left;">Previous Stock</td>
+					<td colspan="3"></td>
+					<td style="text-align:right;">{{ parseFloat(previousStock).toFixed(2) }}</td>
+				</tr>
+				<tr v-for="row in ledger">
+					<td>{{ row.date }}</td>
+					<td style="text-align:left;">{{ row.description }}</td>
+					<td style="text-align:right;">{{ parseFloat(row.rate).toFixed(2) }}</td>
+					<td style="text-align:right;">{{ parseFloat(row.in_quantity).toFixed(2) }}</td>
+					<td style="text-align:right;">{{ parseFloat(row.out_quantity).toFixed(2) }}</td>
+					<td style="text-align:right;">{{ parseFloat(row.stock).toFixed(2) }}</td>
+				</tr>
+			</tbody>
+			<tbody v-if="ledger.length == 0">
+				<tr>
+					<td colspan="6">No records found</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
+</div>
 </div>
 
 <script src="<?php echo base_url(); ?>assets/js/vue/vue.min.js"></script>

@@ -1,8 +1,4 @@
 <style>
-	#balanceSheet .buttons {
-		margin-top: -5px;
-	}
-
 	.balancesheet-table {
 		width: 100%;
 		border-collapse: collapse;
@@ -29,12 +25,13 @@
 			<legend class="scheduler-border">Balance Sheet</legend>
 			<div class="control-group">
 				<div class="col-md-12">
-					<form action="" class="form-inline" @submit.prevent="getStatements">
+					<form class="form-inline" @submit.prevent="getStatements">
 						<div class="form-group">
+							<label for="">Select Date</label>
 							<input type="date" class="form-control" v-model="date">
 						</div>
 
-						<div class="form-group buttons">
+						<div class="form-group">
 							<input type="submit" value="Search">
 						</div>
 					</form>

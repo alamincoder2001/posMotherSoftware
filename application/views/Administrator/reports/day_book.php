@@ -1,8 +1,4 @@
 <style>
-	#dayBook .buttons {
-		margin-top: -5px;
-	}
-
 	.day-book-table {
 		width: 100%;
 		margin-bottom: 50px;
@@ -59,7 +55,7 @@
 							<input type="date" class="form-control" v-model="filter.dateTo">
 						</div>
 
-						<div class="form-group buttons">
+						<div class="form-group">
 							<input type="submit" value="Search">
 						</div>
 					</form>

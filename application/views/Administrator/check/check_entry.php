@@ -78,25 +78,25 @@
                 <div class="form-group">
                   <label class="col-sm-5 control-label no-padding-left" for="date"> Date:<span class="text-bold text-danger">*</span> </label>
                   <div class="col-sm-7">
-                    <input class="form-control date-picker" required id="date" name="date" type="date" value="<?php echo date('Y-m-d'); ?>" data-date-format="yyyy-mm-dd" />
+                    <input class="form-control" style="margin-bottom: 4px;" required id="date" name="date" type="date" value="<?php echo date('Y-m-d'); ?>" data-date-format="yyyy-mm-dd" />
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-5 control-label no-padding-left" for="check_date">Cheque Date:<span class="text-bold text-danger">*</span> </label>
                   <div class="col-sm-7">
-                    <input class="form-control date-picker" required id="check_date" name="check_date" type="date" value="<?php echo date('Y-m-d'); ?>" data-date-format="yyyy-mm-dd" />
+                    <input class="form-control" style="margin-bottom: 4px;" required id="check_date" name="check_date" type="date" value="<?php echo date('Y-m-d'); ?>" data-date-format="yyyy-mm-dd" />
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-5 control-label no-padding-left" for="remid_date">Reminder Date:<span class="text-bold text-danger">*</span> </label>
                   <div class="col-sm-7">
-                    <input class="form-control date-picker" required id="remid_date" name="remid_date" type="date" value="<?php echo date('Y-m-d'); ?>" data-date-format="yyyy-mm-dd" />
+                    <input class="form-control" style="margin-bottom: 4px;" required id="remid_date" name="remid_date" type="date" value="<?php echo date('Y-m-d'); ?>" data-date-format="yyyy-mm-dd" />
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-5 control-label no-padding-left" for="sub_date">Submit Date:<span class="text-bold text-danger">*</span> </label>
                   <div class="col-sm-7">
-                    <input class="form-control date-picker" required id="sub_date" name="sub_date" type="date" value="<?php echo date('Y-m-d'); ?>" data-date-format="yyyy-mm-dd" />
+                    <input class="form-control" style="margin-bottom: 4px;" required id="sub_date" name="sub_date" type="date" value="<?php echo date('Y-m-d'); ?>" data-date-format="yyyy-mm-dd" />
                   </div>
                 </div>
                 <div class="form-group">

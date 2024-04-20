@@ -64,7 +64,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input type="submit" class="btn btn-info btn-xs" value="Search" style="padding-top:0px;padding-bottom:0px;margin-top:-4px;">
+                            <input type="submit" value="Search">
                         </div>
                     </form>
                 </div>
@@ -157,7 +157,9 @@
 
             receivedTransfer(transfer) {
                 if (confirm("Are you sure?")) {
-                    axios.post('/receivedTransfer', {transferId: transfer.transfer_id})
+                    axios.post('/receivedTransfer', {
+                            transferId: transfer.transfer_id
+                        })
                         .then(res => {
                             alert(res.data.message);
                             this.getTransfers();

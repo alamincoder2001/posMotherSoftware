@@ -499,7 +499,8 @@
 			},
 			async getCustomers() {
 				await axios.post('/get_customers', {
-					customerType: this.sales.salesType
+					customerType: this.sales.salesType,
+					forSearch: 'yes'
 				}).then(res => {
 					this.customers = res.data;
 					this.customers.unshift({

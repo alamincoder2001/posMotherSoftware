@@ -65,7 +65,7 @@
 
 	.record-table th,
 	.record-table td {
-		padding: 3px;
+		padding: 0px 6px;
 		border: 1px solid #454545;
 	}
 
@@ -74,7 +74,7 @@
 	}
 
 	.custom_table th {
-		padding: 5px;
+		padding: 0 6px;
 	}
 </style>
 <div id="paymentsRecord">

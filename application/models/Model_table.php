@@ -578,6 +578,7 @@ class Model_Table extends CI_Model
         $stock = $this->db->query("
             select * from(
                 select
+                    p.ProductCategory_ID,
                     ci.*,
                     (select (ci.purchase_quantity + ci.sales_return_quantity + ci.transfer_to_quantity) - (ci.sales_quantity + ci.purchase_return_quantity + ci.damage_quantity + ci.transfer_from_quantity)) as current_quantity,
                     p.Product_Name,

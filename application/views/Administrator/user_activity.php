@@ -77,28 +77,27 @@
 	<fieldset class="scheduler-border scheduler-search">
 		<legend class="scheduler-border">Search User Activity</legend>
 		<div class="control-group">
-			<div class="row">
-				<div class="col-md-12">
-					<form class="form-inline" id="searchForm" @submit.prevent="getSearchResult">
+			<div class="col-md-12">
+				<form class="form-inline" id="searchForm" @submit.prevent="getSearchResult">
+					<div class="form-group" style="display:none;" v-bind:style="{display: users.length > 0 ? '' : 'none'}">
+						<label>User</label>
+						<v-select v-bind:options="users" v-model="selectedUser" label="FullName" placeholder="Select User"></v-select>
+					</div>
 
-						<div class="form-group" style="display:none;" v-bind:style="{display: users.length > 0 ? '' : 'none'}">
-							<label>User</label>
-							<v-select v-bind:options="users" v-model="selectedUser" label="FullName" placeholder="Select User"></v-select>
-						</div>
+					<div class="form-group">
+						<label for="">From</label>
+						<input type="date" class="form-control" v-model="dateFrom">
+					</div>
 
-						<div class="form-group">
-							<input type="date" class="form-control" v-model="dateFrom">
-						</div>
+					<div class="form-group">
+						<label for="">To</label>
+						<input type="date" class="form-control" v-model="dateTo">
+					</div>
 
-						<div class="form-group">
-							<input type="date" class="form-control" v-model="dateTo">
-						</div>
-
-						<div class="form-group" style="margin-top: -5px;">
-							<input type="submit" value="Search">
-						</div>
-					</form>
-				</div>
+					<div class="form-group">
+						<input type="submit" value="Search">
+					</div>
+				</form>
 			</div>
 		</div>
 	</fieldset>

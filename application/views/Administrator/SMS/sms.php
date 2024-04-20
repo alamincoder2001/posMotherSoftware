@@ -1,7 +1,7 @@
 <div id="sms">
     <div class="row">
         <div class="col-md-6">
-            <fieldset class="scheduler-border scheduler-search">
+            <fieldset class="scheduler-border scheduler-search" style="height:190px;">
                 <legend class="scheduler-border">Search Type</legend>
                 <div class="control-group">
                     <form v-on:submit.prevent="getData">
@@ -20,7 +20,7 @@
                                 <input type="radio" id="employee" value="employee" @change="onChangeSearchType" v-model="searchType"> By Employee
                             </label>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="margin-top: 50px;">
                             <button type="submit" class="btn btn-primary btn-xs pull-right"> Submit </button>
                         </div>
                     </form>
@@ -163,6 +163,7 @@
             onChangeSearchType() {
                 this.customers = [];
                 this.suppliers = [];
+                this.employees = [];
             },
             getData() {
                 if (this.searchType == 'customer') {

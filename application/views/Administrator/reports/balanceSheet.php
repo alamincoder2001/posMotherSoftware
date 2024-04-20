@@ -1,8 +1,4 @@
 <style>
-	#balanceSheet .buttons {
-		margin-top: -5px;
-	}
-
 	.balancesheet-table {
 		width: 100%;
 		border-collapse: collapse;
@@ -40,7 +36,7 @@
 							<input type="date" class="form-control" v-model="filter.dateTo">
 						</div>
 
-						<div class="form-group buttons">
+						<div class="form-group">
 							<input type="submit" value="Search">
 						</div>
 					</form>

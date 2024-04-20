@@ -1,12 +1,35 @@
 <div id="customerListReport">
+    <div class="row">
+        <div class="col-md-12" style="margin: 0;">
+            <fieldset class="scheduler-border scheduler-search">
+                <legend class="scheduler-border">Customer List</legend>
+                <div class="control-group">
+                    <form class="form-inline" @submit.prevent="getCustomers">
+                        <div class="form-group">
+                            <label>Search Type</label>
+                            <select class="form-select" style="height: 26px;padding:0 6px;width:150px;" v-model="searchType">
+                                <option value="">All</option>
+                                <option value="retail">Retail</option>
+                                <option value="wholesale">Wholesale</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" value="Search">
+                        </div>
+                    </form>
+                </div>
+            </fieldset>
+        </div>
+    </div>
     <div style="display:none;" v-bind:style="{display: customers.length > 0 ? '' : 'none'}">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 text-right">
                 <a href="" @click.prevent="printCustomerList"><i class="fa fa-print"></i> Print</a>
             </div>
         </div>
 
-        <div class="row" style="margin-top:15px;">
+        <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive" id="printContent">
                     <table class="table table-bordered table-hover">
@@ -45,15 +68,15 @@
         el: '#customerListReport',
         data() {
             return {
+                searchType: '',
                 customers: []
             }
         },
-        created() {
-            this.getCustomers();
-        },
         methods: {
             getCustomers() {
-                axios.get('/get_customers').then(res => {
+                axios.post('/get_customers', {
+                    customerType: this.searchType
+                }).then(res => {
                     this.customers = res.data;
                 })
             },

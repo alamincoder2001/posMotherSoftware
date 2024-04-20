@@ -32,6 +32,8 @@ class Account extends CI_Controller
         try {
             $accountObj = json_decode($this->input->raw_input_stream);
 
+            $accountObj->Acc_Code = isset($accountObj->Acc_Code) ? $accountObj->Acc_Code : $this->mt->generateAccountCode();
+
             $duplicateCodeCount = $this->db->query("select * from tbl_account where Acc_Code = ?", $accountObj->Acc_Code)->num_rows();
             if ($duplicateCodeCount != 0) {
                 $accountObj = $this->mt->generateAccountCode();
@@ -46,7 +48,9 @@ class Account extends CI_Controller
             }
 
             $account = (array)$accountObj;
-            unset($account['Acc_SlNo']);
+            if (isset($account['Acc_SlNo'])) {
+                unset($account['Acc_SlNo']);
+            }
             $account['status']         = 'a';
             $account['AddBy']          = $this->session->userdata("userId");
             $account['AddTime']        = date('Y-m-d H:i:s');
@@ -104,7 +108,7 @@ class Account extends CI_Controller
                 'DeletedTime' => date('Y-m-d H:i:s'),
                 'laste_update_ip' => get_client_ip()
             );
-            
+
             $this->db->query("update tbl_account set status = 'd' where Acc_SlNo = ?", $data->accountId);
 
             $res = ['success' => true, 'message' => 'Account deleted'];
@@ -117,7 +121,7 @@ class Account extends CI_Controller
 
     public function getAccounts()
     {
-        $accounts = $this->db->query("select * from tbl_account where status = 'a' and branch_id = ?", $this->session->userdata('BRANCHid'))->result();
+        $accounts = $this->db->query("select * from tbl_account where status = 'a' and branch_id = ? order by Acc_SlNo desc", $this->session->userdata('BRANCHid'))->result();
         echo json_encode($accounts);
     }
     // Cash Transaction
@@ -1165,13 +1169,14 @@ class Account extends CI_Controller
         echo json_encode($res);
     }
 
-    function all_transaction_report()  {
+    function all_transaction_report()
+    {
         $access = $this->mt->userAccess();
-        if(!$access){
+        if (!$access) {
             redirect(base_url());
         }
         $data['title'] = "Cash Transaction Report";
-		$data['content'] = $this->load->view('Administrator/account/all_transaction_report', $data, TRUE);
+        $data['content'] = $this->load->view('Administrator/account/all_transaction_report', $data, TRUE);
         $this->load->view('Administrator/index', $data);
     }
 }

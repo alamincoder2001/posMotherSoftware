@@ -82,7 +82,7 @@
 					<form class="form-inline" id="searchForm" @submit.prevent="getSearchResult">
 						<div class="form-group">
 							<label>Search Type</label>
-							<select class="form-control" v-model="searchType" @change="onChangeSearchType">
+							<select class="form-select" style="margin: 0;width:150px;height:26px;" v-model="searchType" @change="onChangeSearchType">
 								<option value="">All</option>
 								<option value="supplier">By Supplier</option>
 								<option value="category">By Category</option>
@@ -120,14 +120,16 @@
 						</div>
 
 						<div class="form-group">
+							<label for="">From</label>
 							<input type="date" class="form-control" v-model="dateFrom">
 						</div>
 
 						<div class="form-group">
+							<label for="">To</label>
 							<input type="date" class="form-control" v-model="dateTo">
 						</div>
 
-						<div class="form-group" style="margin-top: -5px;">
+						<div class="form-group" style="margin-top: -1px;">
 							<input type="submit" value="Search">
 						</div>
 					</form>

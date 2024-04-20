@@ -5,10 +5,6 @@
 		border-radius: 3px;
 	}
 
-	.v-select.open .dropdown-toggle {
-		border-bottom: 1px solid #ccc;
-	}
-
 	.v-select .dropdown-toggle {
 		padding: 0px;
 		height: 25px;
@@ -50,17 +46,18 @@
 		padding: 0;
 	}
 
-	#cashTransaction .add-button {
-		padding: 2.5px;
-		width: 28px;
-		background-color: #298db4;
+	.add-button {
+		padding: 2.8px;
+		width: 100%;
+		background-color: #d15b47;
 		display: block;
 		text-align: center;
 		color: white;
+		cursor: pointer;
+		border-radius: 3px;
 	}
 
-	#cashTransaction .add-button:hover {
-		background-color: #41add6;
+	.add-button:hover {
 		color: white;
 	}
 </style>
@@ -92,14 +89,17 @@
 										</select>
 									</div>
 								</div>
+
 								<div class="form-group">
-									<label class="col-md-4 control-label">Account</label>
-									<label class="col-md-1">:</label>
-									<div class="col-md-6 col-xs-11">
-										<v-select v-bind:options="accounts" v-model="selectedAccount" label="Acc_Name"></v-select>
-									</div>
-									<div class="col-xs-1" style="padding-left:0;margin-left: -3px;">
-										<a href="/account" target="_blank" class="add-button"><i class="fa fa-plus"></i></a>
+									<label class="col-xs-4 control-label"> Account </label>
+									<label class="col-xs-1">:</label>
+									<div class="col-xs-7" style="display: flex;align-items:center;margin-bottom:5px;">
+										<div style="width: 86%;">
+											<v-select v-bind:options="accounts" style="margin: 0;" label="Acc_Name" v-model="selectedAccount"></v-select>
+										</div>
+										<div style="width: 13%;margin-left:2px;">
+											<span class="add-button" @click.prevent="modalOpen('/add_account', 'Add Account', 'Acc_Name')"><i class="fa fa-plus"></i></span>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -109,7 +109,7 @@
 									<label class="col-md-4 control-label">Date</label>
 									<label class="col-md-1">:</label>
 									<div class="col-md-7">
-										<input type="date" class="form-control" required v-model="transaction.Tr_date" @change="getTransactions" v-bind:disabled="userType == 'u' ? true : false">
+										<input type="date" style="margin-bottom: 4px;" class="form-control" required v-model="transaction.Tr_date" @change="getTransactions" v-bind:disabled="userType == 'u' ? true : false">
 									</div>
 								</div>
 								<div class="form-group">
@@ -172,6 +172,32 @@
 				</datatable>
 				<datatable-pager v-model="page" type="abbreviated" :per-page="per_page" style="margin-bottom: 50px;"></datatable-pager>
 			</div>
+		</div>
+	</div>
+
+	<!-- modal form -->
+	<div class="modal formModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-sm" role="document">
+			<form @submit.prevent="saveModalData($event)">
+				<div class="modal-content">
+					<div class="modal-header" style="display: flex;align-items: center;justify-content: space-between;">
+						<h5 class="modal-title" v-html="modalTitle"></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" style="padding-top: 0;">
+						<div class="form-group">
+							<label for="">Name</label>
+							<input type="text" :name="formInput" v-model="fieldValue" class="form-control" autocomplete="off" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btnReset" data-dismiss="modal">Close</button>
+						<button type="submit" class="btnSave">Save</button>
+					</div>
+				</div>
+			</form>
 		</div>
 	</div>
 
@@ -248,7 +274,12 @@
 				],
 				page: 1,
 				per_page: 100,
-				filter: ''
+				filter: '',
+
+				formInput: '',
+				url: '',
+				modalTitle: '',
+				fieldValue: ''
 			}
 		},
 		created() {
@@ -339,7 +370,34 @@
 
 				this.selectedAccount = null;
 				this.getTransactionCode();
-			}
+			},
+
+			// modal data store
+			modalOpen(url, title, txt) {
+				$(".formModal").modal("show");
+				this.formInput = txt;
+				this.url = url;
+				this.modalTitle = title;
+			},
+
+			saveModalData(event) {
+				let filter = {}
+				if (this.formInput == "Acc_Name") {
+					filter.Acc_Name = this.fieldValue;
+				}
+
+				axios.post(this.url, filter)
+					.then(res => {
+						if (this.formInput == "Acc_Name") {
+							this.getAccounts();
+						}
+
+						$(".formModal").modal('hide');
+						this.formInput = '';
+						this.url = "";
+						this.modalTitle = '';
+					})
+			},
 		}
 	})
 </script>

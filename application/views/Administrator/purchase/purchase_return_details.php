@@ -76,7 +76,7 @@
 <div id="purchaseReturnList">
 	<div class="row" style="margin:0;">
 		<fieldset class="scheduler-border scheduler-search">
-			<legend class="scheduler-border">Purchase Return Record</legend>
+			<legend class="scheduler-border">Purchase Return Details</legend>
 			<div class="control-group">
 				<div class="col-md-12">
 					<form class="form-inline" id="searchForm" @submit.prevent="getPurchaseReturnDetails">
@@ -91,14 +91,16 @@
 						</div>
 
 						<div class="form-group">
+							<label for="">From</label>
 							<input type="date" class="form-control" v-model="dateFrom">
 						</div>
 
 						<div class="form-group">
+							<label for="">To</label>
 							<input type="date" class="form-control" v-model="dateTo">
 						</div>
 
-						<div class="form-group" style="margin-top: -5px;">
+						<div class="form-group">
 							<input type="submit" value="Search">
 						</div>
 					</form>

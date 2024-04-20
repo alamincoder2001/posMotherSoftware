@@ -35,14 +35,16 @@
 				<div class="col-md-12">
 					<form class="form-inline" id="searchForm" @submit.prevent="getQuotations">
 						<div class="form-group">
-							<input type="date" class="form-control" v-model="filter.dateFrom">
+							<label for="">Date From</label>
+							<input type="date" style="margin: 0;" class="form-control" v-model="filter.dateFrom">
+						</div>
+						
+						<div class="form-group">
+							<label for="">To</label>
+							<input type="date" style="margin: 0;" class="form-control" v-model="filter.dateTo">
 						</div>
 
 						<div class="form-group">
-							<input type="date" class="form-control" v-model="filter.dateTo">
-						</div>
-
-						<div class="form-group" style="margin-top: -5px;">
 							<input type="submit" value="Search">
 						</div>
 					</form>

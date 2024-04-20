@@ -46,35 +46,29 @@
 		<fieldset class="scheduler-border scheduler-search">
 			<legend class="scheduler-border">Search Sales Record</legend>
 			<div class="control-group">
-				<div class="col-xs-12">
-					<div class="form-group">
-						<label class="col-md-1 control-label no-padding" style="font-size:13px;margin: 0;margin-top: 3px;">Search Type</label>
-						<div class="col-md-2">
-							<select class="form-control" v-model="searchType" v-on:change="onChangeSearchType" style="padding:0px;">
+				<div class="col-md-12">
+					<form class="form-inline">
+						<div class="form-group">
+							<label>Search Type</label>
+							<select class="form-select" style="margin:0;height:26px;width:150px;" v-model="searchType" v-on:change="onChangeSearchType" style="padding:0px;">
 								<option value="all">All</option>
 								<option value="customer">By Customer</option>
 								<option value="area">By Area</option>
 							</select>
 						</div>
-					</div>
-					<div class="form-group" style="display: none" v-bind:style="{display: searchType == 'customer' ? '' : 'none'}">
-						<label class="col-md-2 control-label no-padding-right">Select Customer</label>
-						<div class="col-md-2">
+						<div class="form-group" style="display: none" v-bind:style="{display: searchType == 'customer' ? '' : 'none'}">
+							<label>Select Customer</label>
 							<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name" placeholder="Select customer"></v-select>
 						</div>
-					</div>
-					<div class="form-group" style="display: none" v-bind:style="{display: searchType == 'area' ? '' : 'none'}">
-						<label class="col-md-1 control-label no-padding-right">Select Area</label>
-						<div class="col-md-2">
+						<div class="form-group" style="display: none" v-bind:style="{display: searchType == 'area' ? '' : 'none'}">
+							<label>Select Area</label>
 							<v-select v-bind:options="areas" v-model="selectedArea" label="District_Name" placeholder="Select area"></v-select>
 						</div>
-					</div>
 
-					<div class="form-group">
-						<div class="col-sm-2">
+						<div class="form-group" style="margin-top: -1px;">
 							<input type="button" value="Show Report" v-on:click="getDues">
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		</fieldset>

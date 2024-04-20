@@ -86,14 +86,14 @@
 						</div>
 
 						<div class="form-group">
-							<input type="date" class="form-control" v-model="dateFrom">
+							<input type="date" style="margin: 0;" class="form-control" v-model="dateFrom">
 						</div>
 
 						<div class="form-group">
-							<input type="date" class="form-control" v-model="dateTo">
+							<input type="date" style="margin: 0;" class="form-control" v-model="dateTo">
 						</div>
 
-						<div class="form-group" style="margin-top: -5px;">
+						<div class="form-group">
 							<input type="submit" value="Search">
 						</div>
 					</form>

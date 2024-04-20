@@ -46,29 +46,25 @@
 		<fieldset class="scheduler-border scheduler-search">
 			<legend class="scheduler-border">Supplier Due</legend>
 			<div class="control-group">
-				<div class="col-xs-12 col-md-12 col-lg-12" style="margin: 0;">
-					<div class="form-group">
-						<label class="col-md-1 control-label no-padding-right" style="font-size: 12px;" for="searchType"> Search Type </label>
-						<div class="col-md-2">
-							<select id="searchType" class="form-control" style="padding: 0px 3px" v-model="searchType" v-on:change="onChangeSearchType">
+				<div class="col-xs-12 col-md-12 col-lg-12">
+					<form class="form-inline">
+						<div class="form-group">
+							<label for="searchType"> Search Type </label>
+							<select id="searchType" class="form-select" style="margin:0;width:150px;height:26px;" v-model="searchType" v-on:change="onChangeSearchType">
 								<option value="all"> All </option>
 								<option value="supplier"> By Supplier </option>
 							</select>
 						</div>
-					</div>
 
-					<div class="form-group" style="display:none" v-bind:style="{display: searchType == 'supplier' ? '' : 'none'}">
-						<label class="col-md-1 control-label no-padding-right" for="searchType"> Suppliers </label>
-						<div class="col-md-2">
+						<div class="form-group" style="display:none" v-bind:style="{display: searchType == 'supplier' ? '' : 'none'}">
+							<label> Suppliers </label>
 							<v-select v-bind:options="suppliers" v-model="selectedSupplier" label="Supplier_Name"></v-select>
 						</div>
-					</div>
 
-					<div class="form-group">
-						<div class="col-sm-2">
+						<div class="form-group" style="margin-top: -1px;">
 							<input type="button" value="Show Report" v-on:click="getDues">
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		</fieldset>

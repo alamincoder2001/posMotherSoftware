@@ -27,9 +27,28 @@
 		left: 0px;
 	}
 
+	.v-select .vs__actions {
+		margin-top: -5px;
+	}
+
 	.v-select .dropdown-menu {
 		width: auto;
 		overflow-y: auto;
+	}
+
+	.add-button {
+		padding: 2.8px;
+		width: 100%;
+		background-color: #d15b47;
+		display: block;
+		text-align: center;
+		color: white;
+		cursor: pointer;
+		border-radius: 3px;
+	}
+
+	.add-button:hover {
+		color: white;
 	}
 </style>
 
@@ -78,11 +97,13 @@
 					<div class="col-xs-12 col-md-5">
 						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right"> Customer </label>
-							<div class="col-xs-7">
-								<v-select v-bind:options="customers" label="display_name" v-model="selectedCustomer" v-on:input="customerOnChange"></v-select>
-							</div>
-							<div class="col-xs-1" style="padding: 0;">
-								<a href="<?= base_url('customer') ?>" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank" title="Add New Customer"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
+							<div class="col-xs-8" style="display: flex;align-items:center;margin-bottom:5px;">
+								<div style="width: 86%;">
+									<v-select v-bind:options="customers" style="margin: 0;" label="display_name" v-model="selectedCustomer" v-on:input="customerOnChange" @search="onSearchCustomer"></v-select>
+								</div>
+								<div style="width: 13%;margin-left:2px;">
+									<a href="<?= base_url('customer') ?>" class="add-button" target="_blank" title="Add New Customer"><i class="fa fa-plus" aria-hidden="true"></i></a>
+								</div>
 							</div>
 						</div>
 
@@ -111,12 +132,14 @@
 					<div class="col-xs-12 col-md-5">
 						<form v-on:submit.prevent="addToCart">
 							<div class="form-group">
-								<label class="col-xs-3 control-label no-padding-right"> Product </label>
-								<div class="col-xs-8">
-									<v-select v-bind:options="products" v-model="selectedProduct" label="display_text" v-on:input="productOnChange"></v-select>
-								</div>
-								<div class="col-xs-1" style="padding: 0;">
-									<a href="<?= base_url('product') ?>" class="btn btn-xs btn-danger" style="height: 25px; border: 0; width: 27px; margin-left: -10px;" target="_blank" title="Add New Product"><i class="fa fa-plus" aria-hidden="true" style="margin-top: 5px;"></i></a>
+								<label class="col-xs-3 control-label no-padding-right"> <span v-html="selectedProduct.is_service == 'true' ? 'Service' : 'Product'"></span> </label>
+								<div class="col-xs-9" style="display: flex;align-items:center;margin-bottom:5px;">
+									<div style="width: 86%;">
+										<v-select v-bind:options="products" style="margin: 0;" v-model="selectedProduct" label="display_text" @input="productOnChange" @search="onSearchProduct"></v-select>
+									</div>
+									<div style="width: 13%;margin-left:2px;">
+										<a href="<?= base_url('product') ?>" class="add-button" target="_blank" title="Add New Product"><i class="fa fa-plus" aria-hidden="true"></i></a>
+									</div>
 								</div>
 							</div>
 
@@ -280,11 +303,11 @@
 								<tr>
 									<td>
 										<div class="form-group">
-											<div class="col-xs-5">
-												<input type="button" class="btn btn-success btn-sm" value="Save" v-on:click="saveQuotation" style="color: white!important;margin-top: 0px;width:100%;padding:5px;font-weight:bold;">
+											<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
+												<input type="button" class="btn btn-sm" value="Save" v-on:click="saveQuotation" style="width:100%;background: green !important;border: 0;border-radius: 5px;" />
 											</div>
-											<div class="col-xs-7">
-												<a class="btn btn-info btn-sm" href="/quotation" style="color: white!important;margin-top: 0px;width:100%;padding:5px;font-weight:bold;">New Quotation</a>
+											<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
+												<a class="btn btn-sm" href="/quotation" style="background: #2d1c5a !important;border: 0;width: 100%;display: flex; justify-content: center;border-radius: 5px;">New Quotation</a>
 											</div>
 										</div>
 									</td>
@@ -372,10 +395,12 @@
 				})
 			},
 			async getCustomers() {
-				await axios.post('/get_customers').then(res => {
+				await axios.post('/get_customers', {
+					forSearch: 'yes'
+				}).then(res => {
 					this.customers = res.data;
 					this.customers.unshift({
-						Customer_SlNo: 'C01',
+						Customer_SlNo: '',
 						Customer_Code: '',
 						Customer_Name: 'Cash Customer',
 						display_name: 'Cash Customer',
@@ -385,10 +410,44 @@
 					})
 				})
 			},
+			async onSearchCustomer(val, loading) {
+				if (val.length > 2) {
+					loading(true);
+					await axios.post("/get_customers", {
+							name: val,
+						})
+						.then(res => {
+							let r = res.data;
+							this.customers = r.filter(item => item.status == 'a')
+							loading(false)
+						})
+				} else {
+					loading(false)
+					await this.getCustomers();
+				}
+			},
 			getProducts() {
-				axios.get('/get_products').then(res => {
+				axios.post('/get_products', {
+					forSearch: 'yes'
+				}).then(res => {
 					this.products = res.data;
 				})
+			},
+			async onSearchProduct(val, loading) {
+				if (val.length > 2) {
+					loading(true);
+					await axios.post("/get_products", {
+							name: val,
+						})
+						.then(res => {
+							let r = res.data;
+							this.products = r.filter(item => item.status == 'a');
+							loading(false)
+						})
+				} else {
+					loading(false)
+					await this.getProducts();
+				}
 			},
 			productTotal() {
 				this.selectedProduct.total = (parseFloat(this.selectedProduct.quantity) * parseFloat(this.selectedProduct.Product_SellingPrice)).toFixed(2);

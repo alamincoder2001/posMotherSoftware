@@ -61,7 +61,7 @@
 			<div class="control-group">
 				<div class="col-md-12">
 					<form class="form-inline" v-on:submit.prevent="getProfitLoss">
-						<div class="form-group" style="margin-right: 15px;">
+						<div class="form-group">
 							<label>Customer &nbsp;</label>
 							<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name" placeholder="Select Customer"></v-select>
 						</div>
@@ -77,7 +77,7 @@
 						</div>
 
 						<div class="form-group">
-							<input type="submit" class="btn btn-info btn-xs" value="Search" style="padding-top:0px;padding-bottom:0px;margin-top:-4px;">
+							<input type="submit" value="Search">
 						</div>
 					</form>
 				</div>

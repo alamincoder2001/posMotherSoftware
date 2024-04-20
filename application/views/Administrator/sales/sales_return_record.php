@@ -41,28 +41,25 @@
 			<fieldset class="scheduler-border scheduler-search">
 				<legend class="scheduler-border">Sales Retrun Record</legend>
 				<div class="control-group">
-					<div class="form-group">
-						<label class="col-md-1">Customer</label>
-						<div class="col-md-3">
+					<form class="form-inline">
+						<div class="form-group">
+							<label>Customer</label>
 							<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name"></v-select>
 						</div>
-					</div>
 
-					<div class="form-group">
-						<div class="col-md-2">
-							<input type="date" class="form-control" v-model="fromDate">
+						<div class="form-group">
+							<input type="date" style="margin:0;" class="form-control" v-model="fromDate">
 						</div>
-					</div>
 
-					<div class="form-group">
-						<div class="col-md-2">
-							<input type="date" class="form-control" v-model="toDate">
+						<div class="form-group">
+							<label for="">To</label>
+							<input type="date" style="margin:0;" class="form-control" v-model="toDate">
 						</div>
-					</div>
 
-					<div class="form-group" style="margin-top: -5px;">
-						<input type="submit" @click="getReturns" value="Search">
-					</div>
+						<div class="form-group">
+							<input type="submit" @click="getReturns" value="Search">
+						</div>
+					</form>
 				</div>
 			</fieldset>
 		</div>

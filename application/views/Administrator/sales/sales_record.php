@@ -107,21 +107,23 @@
 
 						<div class="form-group" v-bind:style="{display: searchTypesForRecord.includes(searchType) ? '' : 'none'}">
 							<label>Record Type</label>
-							<select class="form-control" v-model="recordType" @change="sales = []">
+							<select class="form-control" v-model="recordType" @change="sales = []" style="margin: 0;">
 								<option value="without_details">Without Details</option>
 								<option value="with_details">With Details</option>
 							</select>
 						</div>
 
 						<div class="form-group">
+							<label for="">From</label>
 							<input type="date" class="form-control" v-model="dateFrom">
 						</div>
 
 						<div class="form-group">
+							<label for="">To</label>
 							<input type="date" class="form-control" v-model="dateTo">
 						</div>
 
-						<div class="form-group" style="margin-top: -5px;">
+						<div class="form-group">
 							<input type="submit" value="Search">
 						</div>
 					</form>
