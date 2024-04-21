@@ -250,8 +250,11 @@
                 if (event.target.id == 'article') {
                     if (this.selectedProduct.article.length > 10) {
                         this.selectedProduct.article = this.selectedProduct.article.substring(0, 10);
-                        alert("You must 10 character");
-                        return
+                        Swal.fire({
+                            icon: "error",
+                            text: "You take only 10 characters",
+                        });
+                        return;
                     }
                 }
             },
@@ -305,12 +308,18 @@
 
             addToCart() {
                 if (this.selectedProduct.quantity == "" || this.selectedProduct.quantity == 0 || this.selectedProduct.quantity == undefined) {
-                    alert("Please fill quantity");
+                    Swal.fire({
+                        icon: "error",
+                        text: "Please fill quantity",
+                    });
                     document.querySelector("#products [type='search']").focus();
                     return;
                 }
                 if (this.selectedProduct.sale_rate == "" || this.selectedProduct.sale_rate == 0) {
-                    alert("Please fill price");
+                    Swal.fire({
+                        icon: "error",
+                        text: "Please fill price",
+                    });
                     return;
                 }
 

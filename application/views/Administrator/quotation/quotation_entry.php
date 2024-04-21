@@ -500,19 +500,25 @@
 					quantity: this.selectedProduct.quantity,
 					total: this.selectedProduct.total
 				}
-
 				if (product.productId == '') {
-					alert('Select Product');
+					Swal.fire({
+						icon: "error",
+						text: "Select Product",
+					});
 					return;
 				}
-
 				if (product.quantity == 0 || product.quantity == '') {
-					alert('Enter quantity');
+					Swal.fire({
+						icon: "error",
+						text: "Enter quantity",
+					});
 					return;
 				}
-
 				if (product.salesRate == 0 || product.salesRate == '') {
-					alert('Enter sales rate');
+					Swal.fire({
+						icon: "error",
+						text: "Enter sales rate",
+					});
 					return;
 				}
 
@@ -553,7 +559,10 @@
 			},
 			saveQuotation() {
 				if (this.cart.length == 0) {
-					alert('Cart is empty');
+					Swal.fire({
+						icon: "error",
+						text: "Cart is empty",
+					});
 					return;
 				}
 

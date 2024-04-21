@@ -111,6 +111,7 @@
 
                                 <div class="form-group">
                                     <div class="col-md-8 col-md-offset-4 text-right">
+                                        <input type="button" value="Reset" @click="resetForm" class="btnReset">
                                         <input type="submit" value="Save" class="btnSave">
                                     </div>
                                 </div>
@@ -201,7 +202,6 @@
                         field: 'branch_name',
                         align: 'center'
                     },
-                    // { label: 'Initial Balance', field: 'initial_balance', align: 'center' },
                     {
                         label: 'status',
                         field: 'status_text',
@@ -229,6 +229,27 @@
             },
 
             saveAccount() {
+                if (this.account.account_name == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Account name is empty!",
+					});
+					return;
+				}
+                if (this.account.account_number == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Account name is empty!",
+					});
+					return;
+				}
+                if (this.account.bank_name == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Bank name is empty!",
+					});
+					return;
+				}
                 let url = '/add_bank_account';
                 if (this.account.account_id != 0) {
                     url = '/update_bank_account';
@@ -239,11 +260,6 @@
                         if (r.success) {
                             this.resetForm();
                             this.getAccounts();
-                        }
-                    })
-                    .catch(error => {
-                        if (error.response) {
-                            alert(`${error.response.status}, ${error.response.statusText}`);
                         }
                     })
             },
@@ -262,11 +278,6 @@
                         alert(r.message);
                         if (r.success) {
                             this.getAccounts();
-                        }
-                    })
-                    .catch(error => {
-                        if (error.response) {
-                            alert(`${error.response.status}, ${error.response.statusText}`);
                         }
                     })
             },

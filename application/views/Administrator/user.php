@@ -232,6 +232,34 @@
 				})
 			},
 			saveUser() {
+				if (this.user.FullName == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Name is empty",
+					});
+					return;
+				}
+				if (this.user.User_Name == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Username is empty",
+					});
+					return;
+				}
+				if (this.user.Password == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Password is empty",
+					});
+					return;
+				}
+				if (this.user.Re_Password == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Re Password is empty",
+					});
+					return;
+				}
 				let url = '/add_user';
 				if (this.user.User_SlNo != 0) {
 					url = '/update_user';

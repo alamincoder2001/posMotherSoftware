@@ -290,12 +290,17 @@
 				let filteredCart = this.cart.filter(product => product.return_quantity > 0 && product.return_rate > 0);
 
 				if (filteredCart.length == 0) {
-					alert('No products to return');
+					Swal.fire({
+						icon: "error",
+						text: "No products to return",
+					});
 					return;
 				}
-
 				if (this.salesReturn.returnDate == null || this.salesReturn.returnDate == '') {
-					alert('Enter date');
+					Swal.fire({
+						icon: "error",
+						text: "Enter date",
+					});
 					return;
 				}
 

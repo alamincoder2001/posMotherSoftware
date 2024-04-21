@@ -36,7 +36,7 @@ if ($serial[1] >= 9) {
 <div id="Edit_emloyee_form">
 	<div class="row">
 		<div class="col-md-6">
-			<fieldset class="scheduler-border scheduler-search">
+			<fieldset class="scheduler-border scheduler-search" style="height: 260px;">
 				<legend class="scheduler-border">Job Information</legend>
 				<div class="control-group">
 					<div class="form-group">
@@ -263,8 +263,13 @@ if ($serial[1] >= 9) {
 		</div>
 
 		<div class="col-md-6">
-			<img id="hideid" src="<?php echo base_url(); ?>uploads/no_user.png" alt="" style="width:100px;">
-			<img id="preview" src="#" style="width:80px;height:80px" hidden>
+			<fieldset class="scheduler-border scheduler-search">
+				<legend class="scheduler-border">Picture Section</legend>
+				<div class="control-group">
+					<img id="hideid" src="<?php echo base_url(); ?>uploads/no_user.png" alt="" style="width:100px;">
+					<img id="preview" src="#" style="width:80px;height:80px" hidden>
+				</div>
+			</fieldset>
 		</div>
 	</div>
 </div>

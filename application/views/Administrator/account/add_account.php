@@ -62,6 +62,7 @@
 
                                 <div class="form-group">
                                     <div class="col-md-8 col-md-offset-4 text-right">
+                                        <input type="button" value="Reset" @click="resetForm" class="btnReset">
                                         <input type="submit" value="Save" class="btnSave">
                                     </div>
                                 </div>
@@ -170,11 +171,6 @@
                             this.getAccounts();
                         }
                     })
-                    .catch(error => {
-                        if (error.response) {
-                            alert(`${error.response.status}, ${error.response.statusText}`);
-                        }
-                    })
             },
 
             editAccount(account) {
@@ -196,11 +192,6 @@
                         alert(r.message);
                         if (r.success) {
                             this.getAccounts();
-                        }
-                    })
-                    .catch(error => {
-                        if (error.response) {
-                            alert(`${error.response.status}, ${error.response.statusText}`);
                         }
                     })
             },

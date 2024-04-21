@@ -218,10 +218,13 @@
                 let qty = $("#quantity").val();
                 let price = $("#price").val();
                 if (qty == '' || qty == 0) {
-                    alert('Quantity is empty');
+					Swal.fire({
+						icon: "error",
+						text: "Quantity is empty",
+					});
                     this.onProgress = false;
-                    return;
-                }
+					return;
+				}
                 var product = {
                     code: code,
                     name: name,

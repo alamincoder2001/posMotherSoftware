@@ -80,7 +80,7 @@
 					<div class="form-group">
 						<label class="col-xs-4 col-md-1 control-label no-padding-right"> Sales By </label>
 						<div class="col-xs-8 col-md-2">
-							<v-select v-bind:options="employees" v-model="selectedEmployee" label="Employee_Name" placeholder="Select Employee"></v-select>
+							<v-select v-bind:options="employees" v-model="selectedEmployee" label="display_name" placeholder="Select Employee"></v-select>
 						</div>
 					</div>
 
@@ -278,122 +278,124 @@
 			<div class="control-group">
 				<div class="row">
 					<div class="col-xs-12">
-						<div class="table-responsive">
-							<table style="color:#000;margin-bottom: 0px;border-collapse: collapse;">
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Sub Total</label>
-											<div class="col-xs-12">
-												<input type="number" id="subTotal" class="form-control" v-model="sales.subTotal" readonly />
+						<form @submit.prevent="saveSales($event)">
+							<div class="table-responsive">
+								<table style="color:#000;margin-bottom: 0px;border-collapse: collapse;">
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Sub Total</label>
+												<div class="col-xs-12">
+													<input type="number" id="subTotal" class="form-control" v-model="sales.subTotal" readonly />
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
+										</td>
+									</tr>
 
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount Persent</label>
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount Persent</label>
 
-											<div class="col-xs-4">
-												<input type="number" id="discountPercent" class="form-control" v-model="discountPercent" v-on:input="calculateTotal" />
+												<div class="col-xs-4">
+													<input type="number" id="discountPercent" class="form-control" v-model="discountPercent" v-on:input="calculateTotal" />
+												</div>
+
+												<label class="col-xs-1 control-label no-padding-right">%</label>
+
+												<div class="col-xs-7">
+													<input type="number" id="discount" class="form-control" v-model="sales.discount" v-on:input="calculateTotal" />
+												</div>
+
 											</div>
+										</td>
+									</tr>
 
-											<label class="col-xs-1 control-label no-padding-right">%</label>
-
-											<div class="col-xs-7">
-												<input type="number" id="discount" class="form-control" v-model="sales.discount" v-on:input="calculateTotal" />
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;"> Vat </label>
+												<div class="col-xs-12">
+													<input type="number" id="vat" readonly="" class="form-control" v-model="sales.vat" />
+												</div>
 											</div>
+										</td>
+									</tr>
 
-										</div>
-									</td>
-								</tr>
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Transport Cost</label>
+												<div class="col-xs-12">
+													<input type="number" class="form-control" v-model="sales.transportCost" v-on:input="calculateTotal" />
+												</div>
+											</div>
+										</td>
+									</tr>
 
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;"> Vat </label>
-											<div class="col-xs-12">
-												<input type="number" id="vat" readonly="" class="form-control" v-model="sales.vat" />
+									<tr style="display:none;">
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Round Of</label>
+												<div class="col-xs-12">
+													<input type="number" id="roundOf" class="form-control" />
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
+										</td>
+									</tr>
 
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Transport Cost</label>
-											<div class="col-xs-12">
-												<input type="number" class="form-control" v-model="sales.transportCost" v-on:input="calculateTotal" />
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Total</label>
+												<div class="col-xs-12">
+													<input type="number" id="total" class="form-control" v-model="sales.total" readonly />
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
+										</td>
+									</tr>
 
-								<tr style="display:none;">
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Round Of</label>
-											<div class="col-xs-12">
-												<input type="number" id="roundOf" class="form-control" />
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Paid</label>
+												<div class="col-xs-12">
+													<input type="number" id="paid" class="form-control" v-model="sales.paid" v-on:input="calculateTotal" v-bind:disabled="selectedCustomer.Customer_Type == 'G' ? true : false" />
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
+										</td>
+									</tr>
 
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Total</label>
-											<div class="col-xs-12">
-												<input type="number" id="total" class="form-control" v-model="sales.total" readonly />
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label" style="margin:0;">Due</label>
+												<div class="col-xs-6">
+													<input type="number" id="due" class="form-control" v-model="sales.due" readonly />
+												</div>
+												<div class="col-xs-6">
+													<input type="number" id="previousDue" class="form-control" v-model="sales.previousDue" readonly style="color:red;" />
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
+										</td>
+									</tr>
 
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Paid</label>
-											<div class="col-xs-12">
-												<input type="number" id="paid" class="form-control" v-model="sales.paid" v-on:input="calculateTotal" v-bind:disabled="selectedCustomer.Customer_Type == 'G' ? true : false" />
+									<tr>
+										<td>
+											<div class="form-group">
+												<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
+													<input type="submit" id="btnSale" class="btn btn-sm" value="Sale" style="width:100%;background: green !important;border: 0;border-radius: 5px;" v-bind:disabled="saleOnProgress ? true : false" />
+												</div>
+												<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
+													<a class="btn btn-sm" v-bind:href="`/sales`" style="background: #2d1c5a !important;border: 0;width: 100%;display: flex; justify-content: center;border-radius: 5px;">New Sale</a>
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
+										</td>
+									</tr>
 
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label" style="margin:0;">Due</label>
-											<div class="col-xs-6">
-												<input type="number" id="due" class="form-control" v-model="sales.due" readonly />
-											</div>
-											<div class="col-xs-6">
-												<input type="number" id="previousDue" class="form-control" v-model="sales.previousDue" readonly style="color:red;" />
-											</div>
-										</div>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										<div class="form-group">
-											<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
-												<input type="button" class="btn btn-sm" value="Sale" v-on:click="saveSales" style="width:100%;background: green !important;border: 0;border-radius: 5px;" v-bind:disabled="saleOnProgress ? true : false" />
-											</div>
-											<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
-												<a class="btn btn-sm" v-bind:href="`/sales`" style="background: #2d1c5a !important;border: 0;width: 100%;display: flex; justify-content: center;border-radius: 5px;">New Sale</a>
-											</div>
-										</div>
-									</td>
-								</tr>
-
-							</table>
-						</div>
+								</table>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -472,6 +474,7 @@
 				productStock: '',
 				saleOnProgress: false,
 				sales_due_on_update: 0,
+				click: false,
 				userType: '<?php echo $this->session->userdata("accountType"); ?>'
 			}
 		},
@@ -489,7 +492,10 @@
 		methods: {
 			getEmployees() {
 				axios.get('/get_employees').then(res => {
-					this.employees = res.data;
+					this.employees = res.data.map(item => {
+						item.display_name = `${item.Employee_Name} - ${item.Employee_ID}`;
+						return item;
+					});
 				})
 			},
 			getBranches() {
@@ -754,7 +760,12 @@
 					this.sales.due = (parseFloat(this.sales.total) - parseFloat(this.sales.paid)).toFixed(2);
 				}
 			},
-			async saveSales() {
+			async saveSales(event) {
+				if (!this.click) {
+					this.click = true;
+					document.querySelector("#btnSale").focus();
+					return;
+				}
 				if (this.selectedCustomer == null) {
 					Swal.fire({
 						icon: "error",
@@ -776,10 +787,11 @@
 				if (this.sales.salesId != 0) {
 					url = "/update_sales";
 				}
-
 				if (parseFloat(this.selectedCustomer.Customer_Credit_Limit) < (parseFloat(this.sales.due) + parseFloat(this.sales.previousDue))) {
-					alert(`Customer credit limit (${this.selectedCustomer.Customer_Credit_Limit}) exceeded`);
-					this.saleOnProgress = false;
+					Swal.fire({
+						icon: "error",
+						text: `Customer credit limit (${this.selectedCustomer.Customer_Credit_Limit}) exceeded`,
+					});
 					return;
 				}
 
@@ -846,7 +858,8 @@
 
 					this.selectedEmployee = {
 						Employee_SlNo: sales.employee_id,
-						Employee_Name: sales.Employee_Name
+						Employee_Name: sales.Employee_Name,
+						display_name: `${sales.Employee_Name} - ${sales.Employee_ID}`
 					}
 
 					this.selectedCustomer = {

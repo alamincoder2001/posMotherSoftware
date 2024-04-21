@@ -1,8 +1,10 @@
 body{
-			background:url('../img/test.jpg');
+			/* background:url('../img/test.jpg'); */
 			background-position: center;
-			background-repeat: repeat-y;
+			background-repeat: no-repeat;
 			background-size: cover;
+			width: 100%;
+			height: 100vh;
 		}
 		.contant{
 			width: 800px;
@@ -12,18 +14,21 @@ body{
 			clear: both;
 		}
 		.headding{
-			color:#fff;
 			position: relative;
 			text-align: center;
-			top: 18px;
+			top: 35px;
+			color: #fff;
 		}
 		.login{
-			width: 100%;
-			/*border:1px solid #ddd;*/
+			width: 60%;
 			border: 3px solid #3d76cf;
 			min-height: 400px;
-			margin:60px 0px;
+			margin:10px 0px;
 			border-radius: 5px;
+			position: absolute;
+			top: 55%;
+			left: 50%;
+			transform: translate(-50%, -50%);
 		}
 		.left-cont{
 			float: left;

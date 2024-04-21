@@ -549,6 +549,13 @@
 				this.selectedProduct.total = this.selectedProduct.quantity * this.selectedProduct.Product_Purchase_Rate;
 			},
 			addToCart() {
+				if (this.selectedProduct == null) {
+					Swal.fire({
+						icon: "error",
+						text: "Select product",
+					});
+					return;
+				}
 				let cartInd = this.cart.findIndex(p => p.productId == this.selectedProduct.Product_SlNo);
 				if (cartInd > -1) {
 					this.cart.splice(cartInd, 1);
@@ -575,7 +582,10 @@
 						productId: this.cart[ind].productId
 					}).then(res => res.data);
 					if (this.cart[ind].quantity > stock) {
-						alert('Stock unavailable');
+						Swal.fire({
+							icon: "error",
+							text: "Stock unavailable",
+						});
 						return;
 					}
 				}
@@ -611,17 +621,24 @@
 			},
 			savePurchase() {
 				if (this.selectedSupplier.Supplier_SlNo == null || this.selectedSupplier == null) {
-					alert('Select supplier');
+					Swal.fire({
+						icon: "error",
+						text: "Select supplier",
+					});
 					return;
 				}
-
 				if (this.purchase.purchaseDate == '') {
-					alert('Enter purchase date');
+					Swal.fire({
+						icon: "error",
+						text: "Enter purchase date",
+					});
 					return;
 				}
-
 				if (this.cart.length == 0) {
-					alert('Cart is empty');
+					Swal.fire({
+						icon: "error",
+						text: "Cart is empty",
+					});
 					return;
 				}
 				this.purchase.purchaseFor = this.selectedBranch.branch_id;

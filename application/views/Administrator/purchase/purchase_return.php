@@ -143,7 +143,9 @@
 		},
 		methods: {
 			getPurchases() {
-				axios.post('/get_purchases', {forSearch: 'yes'}).then(res => {
+				axios.post('/get_purchases', {
+					forSearch: 'yes'
+				}).then(res => {
 					this.invoices = res.data.purchases;
 				})
 			},
@@ -165,7 +167,10 @@
 			},
 			async getPurchaseDetailsForReturn() {
 				if (this.selectedInvoice == null) {
-					alert('Select invoice');
+					Swal.fire({
+						icon: "error",
+						text: "Select invoice",
+					});
 					return;
 				}
 				await axios.post('/get_purchasedetails_for_return', {
@@ -186,22 +191,32 @@
 
 					let returnDetail = this.returnDetails.find(rd => rd.PurchaseReturnDetailsProduct_SlNo == this.cart[ind].Product_IDNo);
 					stock = +stock + +(returnDetail?.PurchaseReturnDetails_ReturnQuantity ?? 0);
-
 					if (stock < this.cart[ind].return_quantity) {
-						alert('Unavailable stock');
+						Swal.fire({
+							icon: "error",
+							text: "Unavailable stock",
+						});
 						this.cart[ind].return_quantity = '';
 						return;
 					}
 				}
 				if (this.cart[ind].return_quantity > (this.cart[ind].PurchaseDetails_TotalQuantity - this.cart[ind].returned_quantity)) {
-					alert('Return quantity is not valid');
+					Swal.fire({
+						icon: "error",
+						text: "Return quantity is not valid",
+					});
 					this.cart[ind].return_quantity = '';
+					return;
+				}
+				if (parseFloat(this.cart[ind].return_rate) > parseFloat(this.cart[ind].PurchaseDetails_Rate)) {
+					Swal.fire({
+						icon: "error",
+						text: "Rate is not valid",
+					});
+					this.cart[ind].return_rate = '';
+					return;
 				}
 
-				if (parseFloat(this.cart[ind].return_rate) > parseFloat(this.cart[ind].PurchaseDetails_Rate)) {
-					alert('Rate is not valid');
-					this.cart[ind].return_rate = '';
-				}
 				this.cart[ind].return_amount = parseFloat(this.cart[ind].return_quantity) * parseFloat(this.cart[ind].return_rate);
 				this.calculateTotal();
 				this.save_disabled = false;
@@ -215,12 +230,17 @@
 				let filteredCart = this.cart.filter(product => product.return_quantity > 0 && product.return_rate > 0);
 
 				if (filteredCart.length == 0) {
-					alert('No products to return');
+					Swal.fire({
+						icon: "error",
+						text: "No products to return",
+					});
 					return;
 				}
-
 				if (this.purchaseReturn.returnDate == null || this.purchaseReturn.returnDate == '') {
-					alert('Enter date');
+					Swal.fire({
+						icon: "error",
+						text: "Enter date",
+					});
 					return;
 				}
 
@@ -263,7 +283,7 @@
 						Supplier_Name: purchaseReturn.Supplier_Name,
 						Supplier_Address: purchaseReturn.Supplier_Address,
 						Supplier_Mobile: purchaseReturn.Supplier_Mobile,
-						supplierType : purchaseReturn.supplierType 
+						supplierType: purchaseReturn.supplierType
 					}
 
 					this.purchaseReturn.returnDate = purchaseReturn.PurchaseReturn_ReturnDate;

@@ -221,6 +221,7 @@
                     Product_SlNo: "",
                     Product_Code: "",
                     Product_Name: "",
+                    display_text: '',
                     quantity: 0,
                     Product_Purchase_Rate: 0,
                     total: 0,
@@ -297,7 +298,10 @@
 
             addToCart() {
                 if (this.selectedProduct == null) {
-                    alert("Product is empty");
+                    Swal.fire({
+                        icon: "error",
+                        text: "Product is empty",
+                    });
                     return;
                 }
                 let product = {
@@ -310,12 +314,17 @@
                 }
 
                 if (product.quantity > this.productStock) {
-                    alert('Stock unavailable');
+                    Swal.fire({
+                        icon: "error",
+                        text: "Stock unavailable",
+                    });
                     return;
                 }
-
                 if (product.productName == '') {
-                    alert("Product name is empty");
+                    Swal.fire({
+                        icon: "error",
+                        text: "Product name is empty",
+                    });
                     return;
                 }
 
@@ -339,6 +348,7 @@
                     Product_SlNo: "",
                     Product_Code: "",
                     Product_Name: "",
+                    display_text: '',
                     quantity: 0,
                     Product_Purchase_Rate: 0,
                     total: 0,
@@ -348,7 +358,10 @@
 
             addDamage() {
                 if (this.carts.length == 0) {
-                    alert('Cart is empty');
+                    Swal.fire({
+                        icon: "error",
+                        text: "Cart is empty",
+                    });
                     return;
                 }
 
@@ -430,10 +443,11 @@
                 this.damage.Damage_SlNo = '';
                 this.damage.Damage_Description = '';
                 this.damage.damage_amount = 0;
-                this.damage.damageFor = "<?php echo $this->session->userdata('BRANCHid'); ?>";
+                this.damage.damageFor = "<?= $this->session->userdata('BRANCHid'); ?>";
+                this.damage.Damage_InvoiceNo = "<?= $this->mt->generateDamageCode(); ?>";
+
                 this.carts = [];
 
-                this.damage.Damage_InvoiceNo = "<?php echo $this->mt->generateDamageCode();?>"
             }
         }
     })

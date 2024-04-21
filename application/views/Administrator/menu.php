@@ -434,7 +434,7 @@ if ($module == 'dashboard' or $module == '') {
 		<?php if (array_search("returnList", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
 			<li class="<?= current_url() == '/returnList' ? 'active' : '' ?>">
 				<a href="<?php echo base_url(); ?>returnList">
-					<i class="menu-icon fa fa-list"></i>					
+					<i class="menu-icon fa fa-list"></i>
 					<span class="menu-text"> Sale Return Record </span>
 				</a>
 				<b class="arrow"></b>
@@ -454,7 +454,7 @@ if ($module == 'dashboard' or $module == '') {
 		<?php if (array_search("quotation_record", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
 			<li class="<?= current_url() == '/quotation_record' ? 'active' : '' ?>">
 				<a href="<?php echo base_url(); ?>quotation_record">
-					<i class="menu-icon fa fa-list"></i>					
+					<i class="menu-icon fa fa-list"></i>
 					<span class="menu-text"> Quotation Record </span>
 				</a>
 				<b class="arrow"></b>
@@ -570,7 +570,7 @@ if ($module == 'dashboard' or $module == '') {
 							</a>
 							<b class="arrow"></b>
 						</li>
-					<?php endif; ?>					
+					<?php endif; ?>
 				</ul>
 			</li>
 		<?php endif; ?>
@@ -603,6 +603,16 @@ if ($module == 'dashboard' or $module == '') {
 			</li>
 		<?php endif; ?>
 
+		<?php if (array_search("purchaseRecord", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+			<li class="<?= current_url() == '/purchaseRecord' ? 'active' : '' ?>">
+				<a href="<?php echo base_url(); ?>purchaseRecord">
+					<i class="menu-icon fa fa-list"></i>
+					<span class="menu-text">Purchase Record</span>
+				</a>
+				<b class="arrow"></b>
+			</li>
+		<?php endif; ?>
+
 		<?php if (array_search("purchaseReturns", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
 			<li class="<?= current_url() == '/purchaseReturns' ? 'active' : '' ?>">
 				<a href="<?php echo base_url(); ?>purchaseReturns">
@@ -613,11 +623,11 @@ if ($module == 'dashboard' or $module == '') {
 			</li>
 		<?php endif; ?>
 
-		<?php if (array_search("purchaseRecord", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
-			<li class="<?= current_url() == '/purchaseRecord' ? 'active' : '' ?>">
-				<a href="<?php echo base_url(); ?>purchaseRecord">
+		<?php if (array_search("returnsList", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+			<li class="<?= current_url() == '/returnsList' ? 'active' : '' ?>">
+				<a href="<?php echo base_url(); ?>returnsList">
 					<i class="menu-icon fa fa-list"></i>
-					<span class="menu-text">Purchase Record</span>
+					<span class="menu-text"> Pur. Return Record </span>
 				</a>
 				<b class="arrow"></b>
 			</li>
@@ -633,18 +643,27 @@ if ($module == 'dashboard' or $module == '') {
 			</li>
 		<?php endif; ?>
 
+		<?php if (array_search("assets_report", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+			<li class="<?= current_url() == '/assets_report' ? 'active' : '' ?>">
+				<a href="<?php echo base_url(); ?>assets_report">
+					<i class="menu-icon fa fa-list"></i>
+					<span class="menu-text"> Assets Report </span>
+				</a>
+				<b class="arrow"></b>
+			</li>
+		<?php endif; ?>
+
 		<?php if (
 			array_search("purchaseInvoice", $access) > -1
 			|| array_search("supplierDue", $access) > -1
 			|| array_search("supplierPaymentReport", $access) > -1
 			|| array_search("supplierList", $access) > -1
-			|| array_search("returnsList", $access) > -1
 			|| array_search("purchase_return_details", $access) > -1
 			|| array_search("reorder_list", $access) > -1
 			|| array_search("assets_report", $access) > -1
 			|| isset($CheckSuperAdmin) || isset($CheckAdmin)
 		) : ?>
-			<li class="<?= current_url() == '/purchase_return_details' || current_url() == '/returnsList' || current_url() == '/supplierList' || current_url() == '/supplierPaymentReport' || current_url() == '/assets_report' || current_url() == '/reorder_list' || current_url() == '/supplierDue' || current_url() == '/purchaseInvoice' ? 'open' : '' ?>">
+			<li class="<?= current_url() == '/purchase_return_details' || current_url() == '/supplierList' || current_url() == '/supplierPaymentReport' || current_url() == '/reorder_list' || current_url() == '/supplierDue' || current_url() == '/purchaseInvoice' ? 'open' : '' ?>">
 				<a href="<?php echo base_url(); ?>" class="dropdown-toggle">
 					<i class="menu-icon fa fa-file"></i>
 					<span class="menu-text"> Report </span>
@@ -655,17 +674,6 @@ if ($module == 'dashboard' or $module == '') {
 				<b class="arrow"></b>
 
 				<ul class="submenu">
-
-					<?php if (array_search("assets_report", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
-						<li class="<?= current_url() == '/assets_report' ? 'active' : '' ?>">
-							<a href="<?php echo base_url(); ?>assets_report">
-								<i class="menu-icon fa fa-caret-right"></i>
-								Assets Report
-							</a>
-							<b class="arrow"></b>
-						</li>
-					<?php endif; ?>
-
 					<?php if (array_search("purchaseInvoice", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
 						<li class="<?= current_url() == '/purchaseInvoice' ? 'active' : '' ?>">
 							<a href="<?php echo base_url(); ?>purchaseInvoice">
@@ -703,16 +711,6 @@ if ($module == 'dashboard' or $module == '') {
 							<a href="<?php echo base_url(); ?>supplierList">
 								<i class="menu-icon fa fa-caret-right"></i>
 								<span class="menu-text"> Supplier List </span>
-							</a>
-							<b class="arrow"></b>
-						</li>
-					<?php endif; ?>
-
-					<?php if (array_search("returnsList", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
-						<li class="<?= current_url() == '/returnsList' ? 'active' : '' ?>">
-							<a href="<?php echo base_url(); ?>returnsList">
-								<i class="menu-icon fa fa-caret-right"></i>
-								Purchase Return List
 							</a>
 							<b class="arrow"></b>
 						</li>

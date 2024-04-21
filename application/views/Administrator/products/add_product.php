@@ -370,11 +370,17 @@
 			},
 			saveProduct() {
 				if (this.selectedCategory == null) {
-					alert('Select category');
+					Swal.fire({
+						icon: "error",
+						text: "Select category",
+					});
 					return;
 				}
 				if (this.selectedUnit == null) {
-					alert('Select unit');
+					Swal.fire({
+						icon: "error",
+						text: "Select unit",
+					});
 					return;
 				}
 				if (this.selectedBrand != null) {

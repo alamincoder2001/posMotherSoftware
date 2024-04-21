@@ -61,13 +61,15 @@ class Model_Table extends CI_Model
 
     public function generatePurchaseInvoice()
     {
-        $invoice = date('Y') . "000001";
-        $year = date('Y');
-        $purchases = $this->db->query("select * from tbl_purchasemaster pm where pm.PurchaseMaster_InvoiceNo like '$year%'");
+        $branchId = $this->session->userdata('BRANCHid');
+        $branchNo = strlen($branchId) < 10 ? '0' . $branchId : $branchId;
+        $invoice = date('y') . $branchNo . "0001";
+        $year = date('y');
+        $purchases = $this->db->query("select * from tbl_purchasemaster pm where pm.PurchaseMaster_InvoiceNo like '$year%' and branch_id = ?", $branchId);
         if ($purchases->num_rows() != 0) {
             $newPurchaseId = $purchases->num_rows() + 1;
-            $zeros = array('0', '00', '000', '0000', '00000');
-            $invoice = date('Y') . (strlen($newPurchaseId) > count($zeros) ? $newPurchaseId : $zeros[count($zeros) - strlen($newPurchaseId)] . $newPurchaseId);
+            $zeros = array('0', '00', '000', '0000');
+            $invoice = date('y') . $branchNo . (strlen($newPurchaseId) > count($zeros) ? $newPurchaseId : $zeros[count($zeros) - strlen($newPurchaseId)] . $newPurchaseId);
         }
 
         return $invoice;

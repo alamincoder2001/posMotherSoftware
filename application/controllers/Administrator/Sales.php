@@ -365,6 +365,7 @@ class Sales extends CI_Controller
             ifnull(c.Customer_Address, sm.customerAddress) as Customer_Address,
             c.Customer_Type,
             e.Employee_Name,
+            e.Employee_ID,
             br.Branch_name,
             u.FullName
             from tbl_salesmaster sm
