@@ -123,8 +123,8 @@
 									<label class="col-md-4 control-label">Amount</label>
 									<label class="col-md-1">:</label>
 									<div class="col-md-7">
-										<input type="number" class="form-control" step="0.01" required v-model="transaction.In_Amount" style="display:none;" v-if="transaction.Tr_Type == 'In Cash'" v-bind:style="{display: transaction.Tr_Type == 'In Cash' ? '' : 'none'}">
-										<input type="number" class="form-control" step="0.01" required v-model="transaction.Out_Amount" v-if="transaction.Tr_Type == 'Out Cash' || transaction.Tr_Type == ''" v-bind:style="{display: transaction.Tr_Type == 'Out Cash' || transaction.Tr_Type == '' ? '' : 'none'}">
+										<input type="number" class="form-control" min="0" step="any" required v-model="transaction.In_Amount" style="display:none;" v-if="transaction.Tr_Type == 'In Cash'" v-bind:style="{display: transaction.Tr_Type == 'In Cash' ? '' : 'none'}">
+										<input type="number" class="form-control" min="0" step="any" required v-model="transaction.Out_Amount" v-if="transaction.Tr_Type == 'Out Cash' || transaction.Tr_Type == ''" v-bind:style="{display: transaction.Tr_Type == 'Out Cash' || transaction.Tr_Type == '' ? '' : 'none'}">
 									</div>
 								</div>
 								<div class="form-group">

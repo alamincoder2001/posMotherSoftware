@@ -97,7 +97,7 @@
                         <div class="form-group">
                             <label for="" class="control-label col-md-4">Amount</label>
                             <div class="col-md-8">
-                                <input type="number" class="form-control" v-model="transaction.amount" required>
+                                <input type="number" min="0" step="any" class="form-control" v-model="transaction.amount" required>
                             </div>
                         </div>
 

@@ -286,7 +286,7 @@
 											<div class="form-group">
 												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Sub Total</label>
 												<div class="col-xs-12">
-													<input type="number" id="subTotal" class="form-control" v-model="sales.subTotal" readonly />
+													<input type="number" min="0" step="any" id="subTotal" class="form-control" v-model="sales.subTotal" readonly />
 												</div>
 											</div>
 										</td>
@@ -298,13 +298,13 @@
 												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount Persent</label>
 
 												<div class="col-xs-4">
-													<input type="number" id="discountPercent" class="form-control" v-model="discountPercent" v-on:input="calculateTotal" />
+													<input type="number" min="0" step="any" id="discountPercent" class="form-control" v-model="discountPercent" v-on:input="calculateTotal" />
 												</div>
 
 												<label class="col-xs-1 control-label no-padding-right">%</label>
 
 												<div class="col-xs-7">
-													<input type="number" id="discount" class="form-control" v-model="sales.discount" v-on:input="calculateTotal" />
+													<input type="number" min="0" step="any" id="discount" class="form-control" v-model="sales.discount" v-on:input="calculateTotal" />
 												</div>
 
 											</div>
@@ -316,7 +316,7 @@
 											<div class="form-group">
 												<label class="col-xs-12 control-label no-padding-right" style="margin:0;"> Vat </label>
 												<div class="col-xs-12">
-													<input type="number" id="vat" readonly="" class="form-control" v-model="sales.vat" />
+													<input type="number" min="0" step="any" id="vat" readonly="" class="form-control" v-model="sales.vat" />
 												</div>
 											</div>
 										</td>
@@ -327,18 +327,7 @@
 											<div class="form-group">
 												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Transport Cost</label>
 												<div class="col-xs-12">
-													<input type="number" class="form-control" v-model="sales.transportCost" v-on:input="calculateTotal" />
-												</div>
-											</div>
-										</td>
-									</tr>
-
-									<tr style="display:none;">
-										<td>
-											<div class="form-group">
-												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Round Of</label>
-												<div class="col-xs-12">
-													<input type="number" id="roundOf" class="form-control" />
+													<input type="number" min="0" step="any" class="form-control" v-model="sales.transportCost" v-on:input="calculateTotal" />
 												</div>
 											</div>
 										</td>
@@ -360,7 +349,7 @@
 											<div class="form-group">
 												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Paid</label>
 												<div class="col-xs-12">
-													<input type="number" id="paid" class="form-control" v-model="sales.paid" v-on:input="calculateTotal" v-bind:disabled="selectedCustomer.Customer_Type == 'G' ? true : false" />
+													<input type="number" min="0" step="any" id="paid" class="form-control" v-model="sales.paid" v-on:input="calculateTotal" v-bind:disabled="selectedCustomer.Customer_Type == 'G' ? true : false" />
 												</div>
 											</div>
 										</td>
@@ -371,10 +360,10 @@
 											<div class="form-group">
 												<label class="col-xs-12 control-label" style="margin:0;">Due</label>
 												<div class="col-xs-6">
-													<input type="number" id="due" class="form-control" v-model="sales.due" readonly />
+													<input type="number" min="0" step="any" id="due" class="form-control" v-model="sales.due" readonly />
 												</div>
 												<div class="col-xs-6">
-													<input type="number" id="previousDue" class="form-control" v-model="sales.previousDue" readonly style="color:red;" />
+													<input type="number" min="0" step="any" id="previousDue" class="form-control" v-model="sales.previousDue" readonly style="color:red;" />
 												</div>
 											</div>
 										</td>
@@ -781,8 +770,6 @@
 					return;
 				}
 
-				this.saleOnProgress = true;
-
 				let url = "/add_sales";
 				if (this.sales.salesId != 0) {
 					url = "/update_sales";
@@ -807,6 +794,7 @@
 					cart: this.cart,
 					customer: this.selectedCustomer
 				}
+				this.saleOnProgress = true;
 				axios.post(url, data).then(async res => {
 					let r = res.data;
 					if (r.success) {

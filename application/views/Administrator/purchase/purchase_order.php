@@ -240,7 +240,7 @@
 										<div class="form-group">
 											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Sub Total</label>
 											<div class="col-xs-12">
-												<input type="number" id="subTotal" name="subTotal" class="form-control" v-model="purchase.subTotal" readonly />
+												<input type="number" min="0" step="any" id="subTotal" name="subTotal" class="form-control" v-model="purchase.subTotal" readonly />
 											</div>
 										</div>
 									</td>
@@ -251,11 +251,11 @@
 										<div class="form-group">
 											<label class="col-xs-12 control-label no-padding-right" style="margin: 0;"> Vat </label>
 											<div class="col-xs-4 no-padding-right">
-												<input type="number" class="form-control" id="vatPercent" name="vatPercent" v-model="vatPercent" v-on:input="calculateTotal" />
+												<input type="number" min="0" step="any" class="form-control" id="vatPercent" name="vatPercent" v-model="vatPercent" v-on:input="calculateTotal" />
 											</div>
 											<label class="col-xs-1"> % </label>
 											<div class="col-xs-6 no-padding-right">
-												<input type="number" class="form-control" id="vat" name="vat" v-model="purchase.vat" readonly />
+												<input type="number" min="0" step="any" class="form-control" id="vat" name="vat" v-model="purchase.vat" readonly />
 											</div>
 										</div>
 									</td>
@@ -266,7 +266,7 @@
 										<div class="form-group">
 											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount</label>
 											<div class="col-xs-12">
-												<input type="number" id="discount" name="discount" class="form-control" v-model="purchase.discount" v-on:input="calculateTotal" />
+												<input type="number" min="0" step="any" id="discount" name="discount" class="form-control" v-model="purchase.discount" v-on:input="calculateTotal" />
 											</div>
 										</div>
 									</td>
@@ -277,7 +277,7 @@
 										<div class="form-group">
 											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Transport / Labour Cost</label>
 											<div class="col-xs-12">
-												<input type="number" id="freight" name="freight" class="form-control" v-model="purchase.freight" v-on:input="calculateTotal" />
+												<input type="number" min="0" step="any" id="freight" name="freight" class="form-control" v-model="purchase.freight" v-on:input="calculateTotal" />
 											</div>
 										</div>
 									</td>
@@ -288,7 +288,7 @@
 										<div class="form-group">
 											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Total</label>
 											<div class="col-xs-12">
-												<input type="number" id="total" class="form-control" v-model="purchase.total" readonly />
+												<input type="number" min="0" step="any" id="total" class="form-control" v-model="purchase.total" readonly />
 											</div>
 										</div>
 									</td>
@@ -299,7 +299,7 @@
 										<div class="form-group">
 											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Paid</label>
 											<div class="col-xs-12">
-												<input type="number" id="paid" class="form-control" v-model="purchase.paid" v-on:input="calculateTotal" v-bind:disabled="selectedSupplier.Supplier_Type == 'G' ? true : false" />
+												<input type="number" min="0" step="any" id="paid" class="form-control" v-model="purchase.paid" v-on:input="calculateTotal" v-bind:disabled="selectedSupplier.Supplier_Type == 'G' ? true : false" />
 											</div>
 										</div>
 									</td>
@@ -318,10 +318,10 @@
 									<td>
 										<div class="form-group">
 											<div class="col-xs-6">
-												<input type="number" id="due" name="due" class="form-control" v-model="purchase.due" readonly />
+												<input type="number" min="0" step="any" id="due" name="due" class="form-control" v-model="purchase.due" readonly />
 											</div>
 											<div class="col-xs-6">
-												<input type="number" id="previousDue" name="previousDue" class="form-control" v-model="purchase.previousDue" readonly style="color:red;" />
+												<input type="number" min="0" step="any" id="previousDue" name="previousDue" class="form-control" v-model="purchase.previousDue" readonly style="color:red;" />
 											</div>
 										</div>
 									</td>

@@ -143,23 +143,17 @@
 								</div>
 							</div>
 
-							<div class="form-group" style="display: none;">
-								<label class="col-xs-3 control-label no-padding-right"> Brand </label>
+							<div class="form-group">
+								<label class="col-xs-3 control-label no-padding-right"> Sale Rate </label>
 								<div class="col-xs-9">
-									<input type="text" placeholder="Group" class="form-control" />
+									<input type="number" min="0" step="any" placeholder="Rate" class="form-control" v-model="selectedProduct.Product_SellingPrice" v-on:input="productTotal" />
 								</div>
 							</div>
 
 							<div class="form-group">
-								<label class="col-xs-3 control-label no-padding-right"> Sale Rate </label>
-								<div class="col-xs-9">
-									<input type="number" placeholder="Rate" class="form-control" v-model="selectedProduct.Product_SellingPrice" v-on:input="productTotal" />
-								</div>
-							</div>
-							<div class="form-group">
 								<label class="col-xs-3 control-label no-padding-right"> Quantity </label>
 								<div class="col-xs-9">
-									<input type="number" id="quantity" placeholder="Qty" class="form-control" ref="quantity" v-model="selectedProduct.quantity" v-on:input="productTotal" autocomplete="off" required />
+									<input type="number" min="0" step="any" id="quantity" placeholder="Qty" class="form-control" ref="quantity" v-model="selectedProduct.quantity" v-on:input="productTotal" autocomplete="off" required />
 								</div>
 							</div>
 
@@ -238,7 +232,7 @@
 										<div class="form-group">
 											<label class="col-md-12 control-label no-padding-right">Sub Total</label>
 											<div class="col-md-12">
-												<input type="number" class="form-control" v-model="quotation.subTotal" readonly />
+												<input type="number" min="0" step="any" class="form-control" v-model="quotation.subTotal" readonly />
 											</div>
 										</div>
 									</td>
@@ -249,11 +243,11 @@
 										<div class="form-group">
 											<label class="col-md-12 control-label no-padding-right"> Vat </label>
 											<div class="col-md-4">
-												<input type="number" class="form-control" v-model="vatPercent" v-on:input="calculateTotal" />
+												<input type="number" min="0" step="any" class="form-control" v-model="vatPercent" v-on:input="calculateTotal" />
 											</div>
 											<label class="col-md-1 control-label no-padding-right">%</label>
 											<div class="col-md-7">
-												<input type="number" readonly class="form-control" v-model="quotation.vat" />
+												<input type="number" min="0" step="any" readonly class="form-control" v-model="quotation.vat" />
 											</div>
 										</div>
 									</td>
@@ -264,7 +258,7 @@
 										<div class="form-group">
 											<label class="col-md-12 control-label no-padding-right">Freight</label>
 											<div class="col-md-12">
-												<input type="number" class="form-control" />
+												<input type="number" min="0" step="any" class="form-control" />
 											</div>
 										</div>
 									</td>
@@ -276,13 +270,13 @@
 											<label class="col-md-12 control-label no-padding-right">Discount Persent</label>
 
 											<div class="col-md-4">
-												<input type="number" class="form-control" v-model="discountPercent" v-on:input="calculateTotal" />
+												<input type="number" min="0" step="any" class="form-control" v-model="discountPercent" v-on:input="calculateTotal" />
 											</div>
 
 											<label class="col-md-1 control-label no-padding-right">%</label>
 
 											<div class="col-md-7">
-												<input type="number" id="discount" class="form-control" v-model="quotation.discount" v-on:input="calculateTotal" />
+												<input type="number" min="0" step="any" id="discount" class="form-control" v-model="quotation.discount" v-on:input="calculateTotal" />
 											</div>
 
 										</div>
@@ -294,7 +288,7 @@
 										<div class="form-group">
 											<label class="col-md-12 control-label no-padding-right">Total</label>
 											<div class="col-md-12">
-												<input type="number" class="form-control" v-model="quotation.total" readonly />
+												<input type="number" min="0" step="any" class="form-control" v-model="quotation.total" readonly />
 											</div>
 										</div>
 									</td>
