@@ -20,7 +20,7 @@ body{
 			color: #fff;
 		}
 		.login{
-			width: 60%;
+			width: 58%;
 			border: 3px solid #3d76cf;
 			min-height: 400px;
 			margin:10px 0px;
@@ -224,13 +224,14 @@ body{
 				min-height: 300px !important;
 			}
 			.right-cont{
-				min-height: 300px !important;
+				min-height: 313px !important;
 			}
 			.com-image{
 				display: none;
 			}
 			.login-form{
-				padding: 45px 33px;
+				padding: 45px 33px !important;
+				min-height: 300px !important;
 			}
 			.com-add{
 				border:none;

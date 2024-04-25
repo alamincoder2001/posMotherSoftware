@@ -9,9 +9,9 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?php echo $companyInfo->Company_Name; ?> || Login Page</title>
+	<link rel="icon" type="image/x-icon" href="<?php echo base_url(); ?>uploads/favicon.png">
 	<link rel="stylesheet" type="text/css" href="/assets/login/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="/assets/login/css/style.css">
-	<link rel="icon" type="image/x-icon" href="<?php echo base_url(); ?>uploads/favicon.png">
 
 	<style>
 		* {
@@ -164,6 +164,64 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 			animation-delay: 2.75s;
 			animation-duration: 2.75s;
 		}
+
+		.login-form {
+			padding: 60px 55px;
+			min-height: 400px;
+		}
+
+		@media only screen and (min-width: 300px) {
+			.login {
+				width: 95%;
+			}
+
+			.login-form h4 {
+				font-size: 20px;
+			}
+		}
+
+		@media only screen and (min-width: 600px) {
+			.right-cont {
+				min-height: 313px !important;
+			}
+
+			.login-form {
+				padding: 60px 55px;
+				min-height: 400px;
+			}
+		}
+
+		@media only screen and (min-width: 1000px) {
+			.login {
+				width: 55%;
+			}
+
+			.headding {
+				top: 50px;
+			}
+		}
+
+		@media only screen and (min-width: 1200px) {
+			.login {
+				width: 55%;
+				top: 50%;
+			}
+
+			.headding {
+				top: 50px;
+			}
+		}
+
+		@media only screen and (min-width: 1400px) {
+			.login {
+				width: 40%;
+				top: 50%;
+			}
+
+			.headding {
+				top: 115px;
+			}
+		}
 	</style>
 </head>
 
@@ -182,7 +240,9 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 
 
 		<div class="content">
-			<h2 class="headding"><p id="typed"></p></h2>
+			<h2 class="headding">
+				<p id="typed"></p>
+			</h2>
 			<div class="login">
 				<div class="left-cont">
 					<div class="company-feature">
