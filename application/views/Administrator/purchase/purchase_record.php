@@ -11,7 +11,7 @@
 	.v-select .dropdown-toggle {
 		padding: 0px;
 		height: 25px;
-		border: none;		
+		border: none;
 	}
 
 	.v-select input[type=search],
@@ -236,8 +236,6 @@
 								<?php } ?>
 							</td>
 						</tr>
-					</tbody>
-					<tfoot>
 						<tr style="font-weight:bold;">
 							<td colspan="3" style="text-align:right;">Total</td>
 							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_SubTotalAmount)}, 0) }}</td>
@@ -250,7 +248,7 @@
 							<td></td>
 							<td></td>
 						</tr>
-					</tfoot>
+					</tbody>
 				</table>
 
 				<table class="table record-table table-hover table-bordered" v-if="searchTypesForDetails.includes(searchType)" style="display:none;" v-bind:style="{display: searchTypesForDetails.includes(searchType) ? '' : 'none'}">
@@ -273,13 +271,11 @@
 							<td style="text-align:right;">{{ purchase.PurchaseDetails_Rate }}</td>
 							<td style="text-align:right;">{{ purchase.PurchaseDetails_TotalQuantity }}</td>
 						</tr>
-					</tbody>
-					<tfoot>
 						<tr style="font-weight:bold;">
 							<td colspan="5" style="text-align:right;">Total Quantity</td>
 							<td style="text-align:right;">{{ purchases.reduce((prev, curr) => { return prev + parseFloat(curr.PurchaseDetails_TotalQuantity)}, 0) }}</td>
 						</tr>
-					</tfoot>
+					</tbody>
 				</table>
 			</div>
 		</div>
@@ -408,10 +404,10 @@
 			},
 			getPurchaseDetails() {
 				let filter = {
-					categoryId: this.selectedCategory == null || this.selectedCategory.ProductCategory_SlNo == '' ? '': this.selectedCategory.ProductCategory_SlNo,
-					productId : this.selectedProduct == null || this.selectedProduct.Product_SlNo == '' ? ''          : this.selectedProduct.Product_SlNo,
-					dateFrom  : this.dateFrom,
-					dateTo    : this.dateTo
+					categoryId: this.selectedCategory == null || this.selectedCategory.ProductCategory_SlNo == '' ? '' : this.selectedCategory.ProductCategory_SlNo,
+					productId: this.selectedProduct == null || this.selectedProduct.Product_SlNo == '' ? '' : this.selectedProduct.Product_SlNo,
+					dateFrom: this.dateFrom,
+					dateTo: this.dateTo
 				}
 
 				axios.post('/get_purchasedetails', filter)

@@ -401,7 +401,6 @@
 				axios.post(url, fd, {
 					onUploadProgress: upe => {
 						let progress = Math.round(upe.loaded / upe.total * 100);
-						console.log(progress);
 					}
 				}).then(res => {
 					let r = res.data;
@@ -427,7 +426,7 @@
 				if (customer.image_name == null || customer.image_name == '') {
 					this.imageUrl = null;
 				} else {
-					this.imageUrl = '/uploads/customers/' + customer.image_name;
+					this.imageUrl = customer.image_name;
 				}
 			},
 			deleteCustomer(customerId) {
@@ -510,6 +509,7 @@
 						this.formInput = '';
 						this.url = "";
 						this.modalTitle = '';
+						this.fieldValue = '';
 					})
 			},
 		}

@@ -23,7 +23,7 @@ const salesInvoice = Vue.component('sales-invoice', {
                         <strong>Customer Mobile:</strong> {{ sales.Customer_Mobile }}
                     </div>
                     <div class="col-xs-5 text-right">
-                        <strong>Sales by:</strong> {{ sales.FullName }}<br>
+                        <strong>Sales by:</strong> {{ sales.added_by }}<br>
                         <strong>Invoice No.:</strong> {{ sales.SaleMaster_InvoiceNo }}<br>
                         <strong>Sales Date:</strong> {{ sales.SaleMaster_SaleDate }} {{ sales.AddTime | formatDateTime('h:mm a') }}
                         <span v-if="sales.employee_id != null">
@@ -421,7 +421,7 @@ const salesInvoice = Vue.component('sales-invoice', {
                                 </div>
                                 <div class="row" style="font-size:12px;">
                                     <div class="col-xs-6">
-                                        Print Date: ${moment().format('DD-MM-YYYY h:mm a')}, Printed by: ${this.sales.FullName}
+                                        Print Date: ${moment().format('DD-MM-YYYY h:mm a')}, Printed by: ${this.sales.added_by}
                                     </div>
                                     <div class="col-xs-6 text-right">
                                         Developed by: Link-Up Technologoy, Contact no: 01911978897

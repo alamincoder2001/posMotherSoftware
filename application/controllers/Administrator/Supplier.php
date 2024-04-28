@@ -281,6 +281,10 @@ class Supplier extends CI_Controller
         $data = json_decode($this->input->raw_input_stream);
         $clauses = "";
         $limit = "";
+        $status = "a";
+        if (isset($data->status) && $data->status != '') {
+            $status = $data->status;
+        }
         if (isset($data->forSearch) && $data->forSearch != '') {
             $limit .= "limit 20";
         }
@@ -295,7 +299,7 @@ class Supplier extends CI_Controller
             s.*,
             concat(s.Supplier_Name, ' - ', s.Supplier_Code, ' - ', s.Supplier_Mobile) as display_name
             from tbl_supplier s
-            where s.status = 'a'
+            where s.status = '$status'
             and s.Supplier_Type != 'G'
             and s.branch_id = ? or branch_id = 0
             $clauses
@@ -432,6 +436,10 @@ class Supplier extends CI_Controller
         $data = json_decode($this->input->raw_input_stream);
 
         $paymentTypeClause = "";
+        $status = "a";
+        if (isset($data->status) && $data->status != '') {
+            $status = $data->status;
+        }
         if (isset($data->paymentType) && $data->paymentType != '' && $data->paymentType == 'received') {
             $paymentTypeClause = " and sp.SPayment_TransactionType = 'CR'";
         }
@@ -461,12 +469,14 @@ class Supplier extends CI_Controller
                     when 'bank' then concat('Bank - ', ba.account_name, ' - ', ba.account_number, ' - ', ba.bank_name)
                     else 'Cash'
                 end as payment_by,
-                u.FullName
+                ua.User_Name as added_by,
+                ud.User_Name as deleted_by
             from tbl_supplier_payment sp
             left join tbl_bank_accounts ba on ba.account_id = sp.account_id
             left join tbl_supplier s on s.Supplier_SlNo = sp.SPayment_customerID
-            left join tbl_user u on u.User_SlNo = sp.AddBy
-            where sp.status = 'a'
+            left join tbl_user ua on ua.User_SlNo = sp.AddBy
+            left join tbl_user ud on ud.User_SlNo = sp.DeletedBy
+            where sp.status = '$status'
             and sp.branch_id = ? $paymentTypeClause $dateClause
             order by sp.SPayment_id desc
         ", $this->session->userdata('BRANCHid'))->result();

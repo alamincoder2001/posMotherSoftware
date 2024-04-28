@@ -80,6 +80,8 @@ class Sales extends CI_Controller
                     unset($customer['Customer_Code']);
                     unset($customer['Customer_Type']);
                     unset($customer['District_Name']);
+                    unset($customer['added_by']);
+                    unset($customer['deleted_by']);
                     $customer["UpdateBy"]   = $this->session->userdata("userId");
                     $customer["UpdateTime"] = date("Y-m-d H:i:s");
                     $customer["status"]     = 'a';
@@ -245,6 +247,10 @@ class Sales extends CI_Controller
         $data = json_decode($this->input->raw_input_stream);
         $branchId = $this->session->userdata("BRANCHid");
         $clauses = "";
+        $status = "a";
+        if (isset($data->status) && $data->status != '') {
+            $status = $data->status;
+        }
         if (isset($data->dateFrom) && $data->dateFrom != '' && isset($data->dateTo) && $data->dateTo != '') {
             $clauses .= " and sm.SaleMaster_SaleDate between '$data->dateFrom' and '$data->dateTo'";
         }
@@ -270,17 +276,16 @@ class Sales extends CI_Controller
                 c.Customer_Address,
                 e.Employee_Name,
                 br.Branch_name,
-                (
-                    select ifnull(count(*), 0) from tbl_saledetails sd 
-                    where sd.SaleMaster_IDNo = 1
-                    and sd.status != 'd'
-                ) as total_products
+                ua.User_Name as added_by,
+                ud.User_Name as deleted_by
             from tbl_salesmaster sm
             left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             left join tbl_employee e on e.Employee_SlNo = sm.employee_id
             left join tbl_branch br on br.branch_id = sm.branch_id
+            left join tbl_user ua on ua.User_SlNo = sm.AddBy
+            left join tbl_user ud on ud.User_SlNo = sm.DeletedBy
             where sm.branch_id = '$branchId'
-            and sm.status = 'a'
+            and sm.status = '$status'
             $clauses
             order by sm.SaleMaster_SlNo desc
         ")->result();
@@ -295,7 +300,7 @@ class Sales extends CI_Controller
                 join tbl_product p on p.Product_SlNo = sd.Product_IDNo
                 join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
                 where sd.SaleMaster_IDNo = ?
-                and sd.status != 'd'
+                and sd.status = '$status'
             ", $sale->SaleMaster_SlNo)->result();
         }
 
@@ -309,6 +314,10 @@ class Sales extends CI_Controller
 
         $clauses = "";
         $limit = "";
+        $status = "a";
+        if (isset($data->status) && $data->status != '') {
+            $status = $data->status;
+        }
 
         if (isset($data->name) && $data->name != '') {
             $clauses .= " or sm.SaleMaster_InvoiceNo like '$data->name%'";
@@ -351,6 +360,7 @@ class Sales extends CI_Controller
                 join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
                 join tbl_unit u on u.Unit_SlNo = p.Unit_ID
                 where sd.SaleMaster_IDNo = ?
+                and sd.status = '$status'
             ", $data->salesId)->result();
 
             $res['saleDetails'] = $saleDetails;
@@ -367,14 +377,16 @@ class Sales extends CI_Controller
             e.Employee_Name,
             e.Employee_ID,
             br.Branch_name,
-            u.FullName
+            ua.User_Name as added_by,
+            ud.User_Name as deleted_by
             from tbl_salesmaster sm
             left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
             left join tbl_employee e on e.Employee_SlNo = sm.employee_id
-            left join tbl_user u on u.User_SlNo = sm.AddBy
+            left join tbl_user ua on ua.User_SlNo = sm.AddBy
+            left join tbl_user ud on ud.User_SlNo = sm.DeletedBy
             left join tbl_branch br on br.branch_id = sm.branch_id
             where sm.branch_id = '$branchId'
-            and sm.status = 'a'
+            and sm.status = '$status'
             $clauses
             order by sm.SaleMaster_SlNo desc
             $limit

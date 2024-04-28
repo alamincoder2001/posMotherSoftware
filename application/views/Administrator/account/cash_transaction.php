@@ -160,7 +160,7 @@
 							<td>{{ row.Tr_Description }}</td>
 							<td>{{ row.In_Amount }}</td>
 							<td>{{ row.Out_Amount }}</td>
-							<td>{{ row.FullName }}</td>
+							<td>{{ row.added_by }}</td>
 							<td>
 								<?php if ($this->session->userdata('accountType') != 'u') { ?>
 									<i @click="editTransaction(row)" class="btnEdit fa fa-pencil"></i>

@@ -160,7 +160,7 @@
 								<td>{{ sale.SaleMaster_SaleDate }}</td>
 								<td>{{ sale.Customer_Name }}</td>
 								<td>{{ sale.Employee_Name }}</td>
-								<td>{{ sale.FullName }}</td>
+								<td>{{ sale.added_by }}</td>
 								<td>{{ sale.saleDetails[0].Product_Name }}</td>
 								<td style="text-align:right;">{{ sale.saleDetails[0].SaleDetails_Rate }}</td>
 								<td style="text-align:center;">{{ sale.saleDetails[0].SaleDetails_TotalQuantity }}</td>
@@ -221,7 +221,7 @@
 							<td>{{ sale.SaleMaster_SaleDate }}</td>
 							<td>{{ sale.Customer_Name }}</td>
 							<td>{{ sale.Employee_Name }}</td>
-							<td>{{ sale.FullName }}</td>
+							<td>{{ sale.added_by }}</td>
 							<td style="text-align:right;">{{ sale.SaleMaster_SubTotalAmount }}</td>
 							<td style="text-align:right;">{{ sale.SaleMaster_TaxAmount }}</td>
 							<td style="text-align:right;">{{ sale.SaleMaster_TotalDiscountAmount }}</td>
@@ -418,7 +418,7 @@
 			},
 			getSalesRecord() {
 				let filter = {
-					userFullName: this.selectedUser == null || this.selectedUser.FullName == '' ? '' : this.selectedUser.FullName,
+					userId: this.selectedUser == null || this.selectedUser.User_SlNo == '' ? '' : this.selectedUser.User_SlNo,
 					customerId: this.selectedCustomer == null || this.selectedCustomer.Customer_SlNo == '' ? '' : this.selectedCustomer.Customer_SlNo,
 					employeeId: this.selectedEmployee == null || this.selectedEmployee.Employee_SlNo == '' ? '' : this.selectedEmployee.Employee_SlNo,
 					dateFrom: this.dateFrom,

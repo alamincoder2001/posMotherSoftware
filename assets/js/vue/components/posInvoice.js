@@ -41,7 +41,7 @@ const posInvoice = Vue.component("pos-invoice", {
                                 <tr>
                                     <td style="text-align:right;">SavedBy</td>
                                     <td>:</td>
-                                    <td style="text-align:right;">{{ sale.FullName }}</td>
+                                    <td style="text-align:right;">{{ sale.added_by }}</td>
                                 </tr>
                             </table>
                         </div>

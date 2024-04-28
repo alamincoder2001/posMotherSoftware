@@ -144,6 +144,10 @@ class Account extends CI_Controller
         $data = json_decode($this->input->raw_input_stream);
 
         $dateClause = "";
+        $status = "a";
+        if (isset($data->status) && $data->status != '') {
+            $status = $data->status;
+        }
         if (isset($data->dateFrom) && $data->dateFrom != '' && isset($data->dateTo) && $data->dateTo != '') {
             $dateClause = " and ct.Tr_date between '$data->dateFrom' and '$data->dateTo'";
         }
@@ -165,11 +169,13 @@ class Account extends CI_Controller
             select 
                 ct.*,
                 a.Acc_Name,
-                u.FullName
+                ua.User_Name as added_by,
+                ud.User_Name as deleted_by
             from tbl_cashtransaction ct
             join tbl_account a on a.Acc_SlNo = ct.Acc_SlID
-            left join tbl_user u on u.User_SlNo = ct.AddBy
-            where ct.status = 'a'
+            left join tbl_user ua on ua.User_SlNo = ct.AddBy
+            left join tbl_user ud on ud.User_SlNo = ct.DeletedBy
+            where ct.status = '$status'
             and ct.branch_id = ?
             $dateClause $transactionTypeClause $accountClause
             order by ct.Tr_SlNo desc

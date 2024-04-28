@@ -179,7 +179,7 @@
 							<td>{{ row.payment_by }}</td>
 							<td>{{ row.CPayment_amount }}</td>
 							<td>{{ row.CPayment_notes }}</td>
-							<td>{{ row.AddBy }}</td>
+							<td>{{ row.added_by }}</td>
 							<td>
 								<i class="fa fa-file" style="margin-right: 5px;font-size: 14px;cursor: pointer;" @click="window.location = `/paymentAndReport/${row.CPayment_id}`"></i>
 								<?php if ($this->session->userdata('accountType') != 'u') { ?>

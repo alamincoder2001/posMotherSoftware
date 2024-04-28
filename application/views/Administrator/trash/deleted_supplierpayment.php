@@ -37,16 +37,16 @@
 		overflow-y: auto;
 	}
 </style>
-<div id="customerPaymentHistory">
+<div id="supplierPaymentHistory">
 	<div class="row" style="margin: 0;">
 		<div class="col-xs-12 col-md-12 col-lg-12">
 			<fieldset class="scheduler-border scheduler-search">
-				<legend class="scheduler-border">Customer Payment History</legend>
+				<legend class="scheduler-border">Supplier Payment History</legend>
 				<div class="control-group">
-					<form class="form-inline" id="searchForm" @submit.prevent="getCustomerPayments">
+					<form class="form-inline" id="searchForm" @submit.prevent="getSupplierPayments">
 						<div class="form-group">
-							<label>Customer</label>
-							<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name"></v-select>
+							<label>Supplier</label>
+							<v-select v-bind:options="suppliers" v-model="selectedSupplier" label="display_name"></v-select>
 						</div>
 
 						<div class="form-group">
@@ -86,28 +86,37 @@
 						<tr>
 							<th style="text-align:center">Transaction Id</th>
 							<th style="text-align:center">Date</th>
-							<th style="text-align:center">Customer</th>
+							<th style="text-align:center">Supplier</th>
 							<th style="text-align:center">Transaction Type</th>
 							<th style="text-align:center">Payment by</th>
 							<th style="text-align:center">Description</th>
 							<th style="text-align:center">Amount</th>
+							<th style="text-align:center">AddedBy</th>
+							<th style="text-align:center">DeletedBy</th>
+							<th style="text-align:center">DeletedTime</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr v-for="payment in payments">
-							<td style="text-align:left;">{{ payment.CPayment_invoice }}</td>
-							<td style="text-align:left;">{{ payment.CPayment_date }}</td>
-							<td style="text-align:left;">{{ payment.Customer_Code }} - {{ payment.Customer_Name }}</td>
+							<td style="text-align:left;">{{ payment.SPayment_invoice }}</td>
+							<td style="text-align:left;">{{ payment.SPayment_date }}</td>
+							<td style="text-align:left;">{{ payment.Supplier_Code }} - {{ payment.Supplier_Name }}</td>
 							<td style="text-align:left;">{{ payment.transaction_type }}</td>
 							<td style="text-align:left;">{{ payment.payment_by }}</td>
-							<td style="text-align:left;">{{ payment.CPayment_notes }}</td>
-							<td style="text-align:right;">{{ payment.CPayment_amount }}</td>
-						</tr>
-						<tr v-if="paymentType != ''">
-							<td colspan="6" style="text-align:right;">Total</td>
-							<td style="text-align:right;">{{ payments.reduce((p, c) => { return p + parseFloat(c.CPayment_amount)}, 0).toFixed(2) }}</td>
+							<td style="text-align:left;">{{ payment.SPayment_notes }}</td>
+							<td style="text-align:right;">{{ payment.SPayment_amount }}</td>
+                            <td>{{ payment.added_by }}</td>
+                            <td>{{ payment.deleted_by }}</td>
+                            <td>{{ payment.DeletedTime | dateFormat('DD-MM-YYYY, h:mm:ss a') }}</td>
 						</tr>
 					</tbody>
+					<tfoot v-if="paymentType != ''">
+						<tr>
+							<td colspan="6" style="text-align:right;">Total</td>
+							<td style="text-align:right;">{{ payments.reduce((p, c) => { return p + parseFloat(c.SPayment_amount)}, 0).toFixed(2) }}</td>
+                            <td colspan="3"></td>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>
@@ -122,48 +131,54 @@
 <script>
 	Vue.component('v-select', VueSelect.VueSelect);
 	new Vue({
-		el: '#customerPaymentHistory',
+		el: '#supplierPaymentHistory',
 		data() {
 			return {
-				customers: [],
-				selectedCustomer: null,
+				suppliers: [],
+				selectedSupplier: null,
 				dateFrom: null,
 				dateTo: null,
-				paymentType: 'received',
+				paymentType: 'paid',
 				payments: []
 			}
 		},
+        filters: {
+            dateFormat(dt, format) {
+                return moment(dt).format(format);
+            },
+        },
 		created() {
 			this.dateFrom = moment().format('YYYY-MM-DD');
 			this.dateTo = moment().format('YYYY-MM-DD');
-			this.getCustomers();
+			this.getSuppliers();
 		},
 		methods: {
-			getCustomers() {
-				axios.get('/get_customers').then(res => {
-					this.customers = res.data;
+			getSuppliers() {
+				axios.get('/get_suppliers').then(res => {
+					this.suppliers = res.data;
 				})
 			},
-			getCustomerPayments() {
+			getSupplierPayments() {
 				let data = {
 					dateFrom: this.dateFrom,
 					dateTo: this.dateTo,
-					customerId: this.selectedCustomer == null ? null : this.selectedCustomer.Customer_SlNo,
-					paymentType: this.paymentType
+					supplierId: this.selectedSupplier == null ? null : this.selectedSupplier.Supplier_SlNo,
+					paymentType: this.paymentType,
+                    status: 'd'
 				}
 
-				axios.post('/get_customer_payments', data).then(res => {
+				axios.post('/get_supplier_payments', data).then(res => {
 					this.payments = res.data;
 				})
 			},
 			async print() {
-				let customerText = '';
-				if (this.selectedCustomer != null) {
-					customerText = `
-                        <strong>Customer Code: </strong> ${this.selectedCustomer.Customer_Code}<br>
-                        <strong>Name: </strong> ${this.selectedCustomer.Customer_Name}<br>
-                        <strong>Address: </strong> ${this.selectedCustomer.Customer_Address}<br>
-                        <strong>Mobile: </strong> ${this.selectedCustomer.Customer_Mobile}<br>
+				let supplierText = '';
+				if (this.selectedSupplier != null) {
+					supplierText = `
+                        <strong>Supplier Code: </strong> ${this.selectedSupplier.Supplier_Code}<br>
+                        <strong>Name: </strong> ${this.selectedSupplier.Supplier_Name}<br>
+                        <strong>Address: </strong> ${this.selectedSupplier.Supplier_Address}<br>
+                        <strong>Mobile: </strong> ${this.selectedSupplier.Supplier_Mobile}<br>
                     `;
 				}
 
@@ -173,10 +188,10 @@
 				}
 				let reportContent = `
 					<div class="container">
-						<h4 style="text-align:center">Customer Payment History</h4 style="text-align:center">
+						<h4 style="text-align:center">Deleted Supplier Payment</h4 style="text-align:center">
 						<div class="row">
 							<div class="col-xs-6" style="font-size:12px;">
-								${customerText}
+								${supplierText}
 							</div>
 							<div class="col-xs-6 text-right">
 								${dateText}

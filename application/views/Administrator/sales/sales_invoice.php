@@ -53,7 +53,7 @@
         <div class="form-group" style="display: flex;align-items:center;">
           <label class="col-md-2 text-right col-md-offset-2 control-label no-padding-right"> Invoice no: </label>
           <div class="col-md-4">
-            <v-select v-bind:options="invoices" label="invoice_text" v-model="selectedInvoice" v-on:input="viewInvoice" placeholder="Select Invoice"></v-select>
+            <v-select v-bind:options="invoices" label="invoice_text" v-model="selectedInvoice" v-on:input="viewInvoice" @search="onSearchInvoice" placeholder="Select Invoice"></v-select>
           </div>
         </div>
 
@@ -68,8 +68,8 @@
 
   <div class="col-md-8 col-md-offset-2">
     <br>
-    <sales-invoice v-if="company_profile.print_type != 3 && showInvoice" v-bind:sales_id="selectedInvoice.SaleMaster_SlNo"></sales-invoice>
-    <pos-invoice v-if="company_profile.print_type == 3 && showInvoice" v-bind:pos_id="selectedInvoice.SaleMaster_SlNo"></pos-invoice>
+    <sales-invoice v-if="company_profile.print_type != 3 && showInvoice" v-bind:sales_id="selectedInvoice ? selectedInvoice.SaleMaster_SlNo : ''"></sales-invoice>
+    <pos-invoice v-if="company_profile.print_type == 3 && showInvoice" v-bind:pos_id="selectedInvoice ? selectedInvoice.SaleMaster_SlNo : ''"></pos-invoice>
   </div>
 </div>
 
@@ -104,9 +104,27 @@
         })
       },
       getSales() {
-        axios.get("/get_sales").then(res => {
+        axios.post("/get_sales", {
+          forSearch: 'yes'
+        }).then(res => {
           this.invoices = res.data.sales;
         })
+      },
+      async onSearchInvoice(val, loading) {
+        if (val.length > 3) {
+          loading(true);
+          await axios.post("/get_sales", {
+              name: val,
+            })
+            .then(res => {
+              let r = res.data;
+              this.invoices = r.sales
+              loading(false)
+            })
+        } else {
+          loading(false)
+          await this.getSales();
+        }
       },
       async viewInvoice() {
         this.showInvoice = false;

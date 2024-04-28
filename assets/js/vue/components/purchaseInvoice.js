@@ -23,7 +23,7 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
                         <strong>Supplier Mobile:</strong> {{ purchase.Supplier_Mobile }}
                     </div>
                     <div class="col-xs-5 text-right">
-                        <strong>Purchase by:</strong> {{ purchase.FullName }}<br>
+                        <strong>Purchase by:</strong> {{ purchase.added_by }}<br>
                         <strong>Invoice No.:</strong> {{ purchase.PurchaseMaster_InvoiceNo }}<br>
                         <strong>Purchase Date:</strong> {{ purchase.PurchaseMaster_OrderDate }} {{ moment(purchase.AddTime).format('h:mm a') }}
                     </div>
@@ -132,6 +132,7 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
     data(){
         return {
             purchase:{
+                PurchaseMaster_SlNo: null,
                 PurchaseMaster_InvoiceNo: null,
                 SalseSupplier_IDNo: null,
                 PurchaseMaster_OrderDate: null,
@@ -355,7 +356,7 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
 
                         <div class="row" style="font-size:12px;">
                             <div class="col-xs-6">
-                                Print Date: ${moment().format('DD-MM-YYYY h:mm a')}, Printed by: ${this.purchase.FullName}
+                                Print Date: ${moment().format('DD-MM-YYYY h:mm a')}, Printed by: ${this.purchase.added_by}
                             </div>
                             <div class="col-xs-6 text-right">
                                 Developed by: Link-Up Technologoy, Contact no: 01911978897

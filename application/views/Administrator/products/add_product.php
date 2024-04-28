@@ -125,7 +125,7 @@
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">VAT:</label>
 							<div class="col-md-7">
-								<input type="text" class="form-control" v-model="product.vat">
+								<input type="number" class="form-control" v-model="product.vat">
 							</div>
 						</div>
 					</div>
@@ -134,28 +134,28 @@
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Re-order level:</label>
 							<div class="col-md-7">
-								<input type="text" class="form-control" v-model="product.Product_ReOrederLevel" required>
+								<input type="number" class="form-control" v-model="product.Product_ReOrederLevel" required>
 							</div>
 						</div>
 
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Purchase Rate:</label>
 							<div class="col-md-7">
-								<input type="text" id="purchase_rate" class="form-control" v-model="product.Product_Purchase_Rate" required v-bind:disabled="product.is_service ? true : false">
+								<input type="number" id="purchase_rate" class="form-control" v-model="product.Product_Purchase_Rate" required v-bind:disabled="product.is_service ? true : false">
 							</div>
 						</div>
 
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Sales Rate:</label>
 							<div class="col-md-7">
-								<input type="text" class="form-control" v-model="product.Product_SellingPrice" required>
+								<input type="number" class="form-control" v-model="product.Product_SellingPrice" required>
 							</div>
 						</div>
 
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Wholesale Rate:</label>
 							<div class="col-md-7">
-								<input type="text" class="form-control" v-model="product.Product_WholesaleRate" required>
+								<input type="number" class="form-control" v-model="product.Product_WholesaleRate" required>
 							</div>
 						</div>
 						<div class="form-group clearfix">
@@ -440,14 +440,20 @@
 				})
 			},
 			clearForm() {
-				let keys = Object.keys(this.product);
-				keys.forEach(key => {
-					if (typeof(this.product[key]) == "string") {
-						this.product[key] = '';
-					} else if (typeof(this.product[key]) == "number") {
-						this.product[key] = 0;
-					}
-				})
+				this.product = {
+					Product_SlNo: '',
+					Product_Code: "",
+					Product_Name: '',
+					ProductCategory_ID: '',
+					brand: '',
+					Product_ReOrederLevel: 0,
+					Product_Purchase_Rate: 0,
+					Product_SellingPrice: 0,
+					Product_WholesaleRate: 0,
+					Unit_ID: '',
+					vat: 0,
+					is_service: false
+				}
 				this.product.Product_Code = "<?php echo $this->mt->generateProductCode(); ?>";
 			},
 
@@ -489,6 +495,7 @@
 						this.formInput = '';
 						this.url = "";
 						this.modalTitle = '';
+						this.fieldValue = '';
 					})
 			},
 		}

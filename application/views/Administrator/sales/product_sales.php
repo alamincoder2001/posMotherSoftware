@@ -314,10 +314,18 @@
 									<tr>
 										<td>
 											<div class="form-group">
-												<label class="col-xs-12 control-label no-padding-right" style="margin:0;"> Vat </label>
-												<div class="col-xs-12">
-													<input type="number" min="0" step="any" id="vat" readonly="" class="form-control" v-model="sales.vat" />
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Vat Persent</label>
+
+												<div class="col-xs-4">
+													<input type="number" min="0" step="any" id="vatPercent" class="form-control" v-model="vatPercent" v-on:input="calculateTotal" />
 												</div>
+
+												<label class="col-xs-1 control-label no-padding-right">%</label>
+
+												<div class="col-xs-7">
+													<input type="number" min="0" step="any" id="vat" class="form-control" :readonly="sales.vatPercent > 0 ? false : true" v-model="sales.vat" v-on:input="calculateTotal" />
+												</div>
+
 											</div>
 										</td>
 									</tr>
@@ -416,6 +424,7 @@
 					employeeId: null,
 					subTotal: 0.00,
 					discount: 0.00,
+					vatPercent: 0.00,
 					vat: 0.00,
 					transportCost: 0.00,
 					total: 0.00,
@@ -705,7 +714,7 @@
 					this.cart.splice(cartInd, 1);
 				}
 
-				this.cart.unshift(product);
+				this.cart.push(product);
 				this.clearProduct();
 				this.calculateTotal();
 			},
@@ -740,7 +749,13 @@
 				} else {
 					this.discountPercent = (parseFloat(this.sales.discount) / parseFloat(this.sales.subTotal) * 100).toFixed(2);
 				}
-				this.sales.total = ((parseFloat(this.sales.subTotal) + parseFloat(this.sales.vat) + parseFloat(this.sales.transportCost)) - parseFloat(this.sales.discount)).toFixed(2);
+				this.sales.total = ((parseFloat(this.sales.subTotal) + parseFloat(this.sales.transportCost)) - parseFloat(this.sales.discount)).toFixed(2);
+				if (event.target.id == 'vatPercent') {
+					this.sales.vat = ((parseFloat(this.sales.total) * parseFloat(this.vatPercent)) / 100).toFixed(2);
+				} else {
+					this.vatPercent = (parseFloat(this.sales.vat) / parseFloat(this.sales.total) * 100).toFixed(2);
+				}
+				this.sales.total = parseFloat(parseFloat(this.sales.vat) + parseFloat(this.sales.total)).toFixed(2);
 
 				if (event.target.id != 'paid') {
 					this.sales.paid = this.sales.total;

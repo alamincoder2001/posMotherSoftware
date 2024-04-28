@@ -21,6 +21,10 @@ class Purchase extends CI_Controller
         $data = json_decode($this->input->raw_input_stream);
         $branchId = $this->session->userdata("BRANCHid");
         $clauses = "";
+        $status = "a";
+        if (isset($data->status) && $data->status != '') {
+            $status = $data->status;
+        }
         if (isset($data->dateFrom) && $data->dateFrom != '' && isset($data->dateTo) && $data->dateTo != '') {
             $clauses .= " and pm.PurchaseMaster_OrderDate between '$data->dateFrom' and '$data->dateTo'";
         }
@@ -40,12 +44,16 @@ class Purchase extends CI_Controller
                 s.Supplier_Name,
                 s.Supplier_Mobile,
                 s.Supplier_Address,
-                br.Branch_name
+                br.Branch_name,
+                ua.User_Name as added_by,
+                ud.User_Name as deleted_by
             from tbl_purchasemaster pm
             left join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
             left join tbl_branch br on br.branch_id = pm.branch_id
+            left join tbl_user ua on ua.User_SlNo = pm.AddBy
+            left join tbl_user ud on ud.User_SlNo = pm.DeletedBy
             where pm.branch_id = '$branchId'
-            and pm.status = 'a'
+            and pm.status = '$status'
             $clauses
         ")->result();
 
@@ -59,7 +67,7 @@ class Purchase extends CI_Controller
                 join tbl_product p on p.Product_SlNo = pd.Product_IDNo
                 join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
                 where pd.PurchaseMaster_IDNo = ?
-                and pd.status != 'd'
+                and pd.status = '$status'
             ", $purchase->PurchaseMaster_SlNo)->result();
         }
 
@@ -73,7 +81,10 @@ class Purchase extends CI_Controller
 
         $clauses = "";
         $limit = "";
-
+        $status = "a";
+        if (isset($data->status) && $data->status != '') {
+            $status = $data->status;
+        }
         if (isset($data->name) && $data->name != '') {
             $clauses .= " or pm.PurchaseMaster_InvoiceNo like '$data->name%'";
         }
@@ -107,6 +118,7 @@ class Purchase extends CI_Controller
                 join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
                 join tbl_unit u on u.Unit_SlNo = p.Unit_ID
                 where pd.PurchaseMaster_IDNo = '$data->purchaseId'
+                and pd.status = '$status'
             ")->result();
         }
         $purchases = $this->db->query("
@@ -119,12 +131,14 @@ class Purchase extends CI_Controller
             s.Supplier_Email,
             ifnull(s.Supplier_Code, 'Cash Supplier') as Supplier_Code,
             ifnull(s.Supplier_Address, pm.supplierAddress) as Supplier_Address,
-            u.FullName
+            ua.User_Name as added_by,
+            ud.User_Name as deleted_by
             from tbl_purchasemaster pm
             left join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
-            left join tbl_user u on u.User_SlNo = pm.AddBy
+            left join tbl_user ua on ua.User_SlNo = pm.AddBy
+            left join tbl_user ud on ud.User_SlNo = pm.DeletedBy
             where pm.branch_id = '$branchId' 
-            and pm.status = 'a'
+            and pm.status = '$status'
             $purchaseIdClause $clauses
             order by pm.PurchaseMaster_SlNo desc
             $limit

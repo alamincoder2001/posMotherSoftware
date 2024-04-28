@@ -128,6 +128,11 @@ class Products extends CI_Controller
 
         $clauses = "";
         $limit = "";
+        $status = "a";
+        if (isset($data->status) && $data->status != '') {
+            $status = $data->status;
+        }
+
         if (isset($data->categoryId) && $data->categoryId != '') {
             $clauses .= " and p.ProductCategory_ID = '$data->categoryId'";
         }
@@ -150,12 +155,16 @@ class Products extends CI_Controller
                 concat(p.Product_Name, ' - ', p.Product_Code) as display_text,
                 pc.ProductCategory_Name,
                 br.brand_name,
-                u.Unit_Name
+                u.Unit_Name,
+                ua.User_Name as added_by,
+                ud.User_Name as deleted_by
             from tbl_product p
             left join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
             left join tbl_brand br on br.brand_SiNo = p.brand
             left join tbl_unit u on u.Unit_SlNo = p.Unit_ID
-            where p.status = 'a'
+            left join tbl_user ua on ua.User_SlNo = p.AddBy
+            left join tbl_user ud on ud.User_SlNo = p.DeletedBy
+            where p.status = '$status'
             $clauses
             order by p.Product_SlNo desc
             $limit

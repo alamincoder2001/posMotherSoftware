@@ -373,6 +373,16 @@ if ($module == 'dashboard' or $module == '') {
 		<?php endif; ?>
 
 		<?php if ($this->session->userdata('BRANCHid') == 1 && (isset($CheckSuperAdmin) || isset($CheckAdmin))) : ?>
+			<li class="<?= current_url() == '/deleted_data' ? 'active' : '' ?>">
+				<a href="<?php echo base_url(); ?>deleted_data" style="display:flex;align-items:center;">
+					<i class="menu-icon fa fa-trash" style="color: red !important;"></i>
+					<span class="menu-text"> Deleted Data </span>
+				</a>
+				<b class="arrow"></b>
+			</li>
+		<?php endif; ?>
+
+		<?php if ($this->session->userdata('BRANCHid') == 1 && (isset($CheckSuperAdmin) || isset($CheckAdmin))) : ?>
 			<li class="<?= current_url() == '/companyProfile' ? 'active' : '' ?>">
 				<a href="<?php echo base_url(); ?>companyProfile">
 					<i class="menu-icon fa fa-bank"></i>

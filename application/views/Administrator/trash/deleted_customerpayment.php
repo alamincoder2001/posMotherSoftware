@@ -91,6 +91,9 @@
 							<th style="text-align:center">Payment by</th>
 							<th style="text-align:center">Description</th>
 							<th style="text-align:center">Amount</th>
+							<th style="text-align:center">AddedBy</th>
+							<th style="text-align:center">DeletedBy</th>
+							<th style="text-align:center">DeletedTime</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -102,12 +105,18 @@
 							<td style="text-align:left;">{{ payment.payment_by }}</td>
 							<td style="text-align:left;">{{ payment.CPayment_notes }}</td>
 							<td style="text-align:right;">{{ payment.CPayment_amount }}</td>
-						</tr>
-						<tr v-if="paymentType != ''">
-							<td colspan="6" style="text-align:right;">Total</td>
-							<td style="text-align:right;">{{ payments.reduce((p, c) => { return p + parseFloat(c.CPayment_amount)}, 0).toFixed(2) }}</td>
+                            <td>{{ payment.added_by }}</td>
+                            <td>{{ payment.deleted_by }}</td>
+                            <td>{{ payment.DeletedTime | dateFormat('DD-MM-YYYY, h:mm:ss a') }}</td>
 						</tr>
 					</tbody>
+					<tfoot v-if="paymentType != ''">
+						<tr>
+							<td colspan="6" style="text-align:right;">Total</td>
+							<td style="text-align:right;">{{ payments.reduce((p, c) => { return p + parseFloat(c.CPayment_amount)}, 0).toFixed(2) }}</td>
+                            <td colspan="3"></td>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>
@@ -133,6 +142,11 @@
 				payments: []
 			}
 		},
+        filters: {
+            dateFormat(dt, format) {
+                return moment(dt).format(format);
+            },
+        },
 		created() {
 			this.dateFrom = moment().format('YYYY-MM-DD');
 			this.dateTo = moment().format('YYYY-MM-DD');
@@ -149,7 +163,8 @@
 					dateFrom: this.dateFrom,
 					dateTo: this.dateTo,
 					customerId: this.selectedCustomer == null ? null : this.selectedCustomer.Customer_SlNo,
-					paymentType: this.paymentType
+					paymentType: this.paymentType,
+                    status: 'd'
 				}
 
 				axios.post('/get_customer_payments', data).then(res => {
@@ -173,7 +188,7 @@
 				}
 				let reportContent = `
 					<div class="container">
-						<h4 style="text-align:center">Customer Payment History</h4 style="text-align:center">
+						<h4 style="text-align:center">Deleted Customer Payment</h4 style="text-align:center">
 						<div class="row">
 							<div class="col-xs-6" style="font-size:12px;">
 								${customerText}

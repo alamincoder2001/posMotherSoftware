@@ -44,6 +44,11 @@ class Customer extends CI_Controller
 
         $customerTypeClause = "";
         $limit = "";
+        $status = "a";
+        if (isset($data->status) && $data->status != '') {
+            $status = $data->status;
+        }
+
         if (isset($data->customerType) && $data->customerType != null) {
             $customerTypeClause = " and Customer_Type = '$data->customerType'";
         }
@@ -59,10 +64,14 @@ class Customer extends CI_Controller
             select
                 c.*,
                 d.District_Name,
-                concat_ws(' - ', c.Customer_Name, c.Customer_Code, c.Customer_Mobile) as display_name
+                concat_ws(' - ', c.Customer_Name, c.Customer_Code, c.Customer_Mobile) as display_name,
+                ua.User_Name as added_by,
+                ud.User_Name as deleted_by
             from tbl_customer c
             left join tbl_district d on d.District_SlNo = c.area_ID
-            where c.status = 'a'
+            left join tbl_user ua on ua.User_SlNo = c.AddBy
+            left join tbl_user ud on ud.User_SlNo = c.DeletedBy
+            where c.status = '$status'
             and c.Customer_Type != 'G'
             $customerTypeClause
             and (c.branch_id = ? or c.branch_id = 0)
@@ -94,6 +103,10 @@ class Customer extends CI_Controller
         $data = json_decode($this->input->raw_input_stream);
 
         $clauses = "";
+        $status = "a";
+        if (isset($data->status) && $data->status != '') {
+            $status = $data->status;
+        }
         if (isset($data->paymentType) && $data->paymentType != '' && $data->paymentType == 'received') {
             $clauses .= " and cp.CPayment_TransactionType = 'CR'";
         }
@@ -126,11 +139,15 @@ class Customer extends CI_Controller
                     when 'bank' then concat('Bank - ', ba.account_name, ' - ', ba.account_number, ' - ', ba.bank_name)
                     when 'By Cheque' then 'Cheque'
                     else 'Cash'
-                end as payment_by
+                end as payment_by,
+                ua.User_Name as added_by,
+                ud.User_Name as deleted_by
             from tbl_customer_payment cp
             left join tbl_customer c on c.Customer_SlNo = cp.CPayment_customerID
             left join tbl_bank_accounts ba on ba.account_id = cp.account_id
-            where cp.status = 'a'
+            left join tbl_user ua on ua.User_SlNo = cp.AddBy
+            left join tbl_user ud on ud.User_SlNo = cp.DeletedBy
+            where cp.status = '$status'
             and cp.branch_id = ? $clauses
             order by cp.CPayment_id desc
         ", $this->session->userdata('BRANCHid'))->result();
@@ -267,7 +284,7 @@ class Customer extends CI_Controller
 
             if (!empty($_FILES)) {
                 $imagePath = $this->mt->uploadImage($_FILES, 'image', 'uploads/customers', $customerObj->Customer_Code);
-                $this->db->query("update tbl_customer set image_name = ? where Customer_SlNo = ?", [$imagePath, $customerId]);
+                $this->db->query("update tbl_customer c set c.image_name = ? where c.Customer_SlNo = ?", [$imagePath, $customerId]);
             }
 
             $res = ['success' => true, 'message' => $res_message, 'customerCode' => $this->mt->generateCustomerCode()];
@@ -301,8 +318,9 @@ class Customer extends CI_Controller
             $customer["last_update_ip"] = get_client_ip();
 
             $this->db->where('Customer_SlNo', $customerId)->update('tbl_customer', $customer);
+            $customerImage = $this->db->query("select * from tbl_customer c where c.Customer_SlNo = ?", $customerId)->row();
             if (!empty($_FILES)) {
-                $oldImgFile = $customerMobileCount->row()->image_name;
+                $oldImgFile = $customerImage->image_name;
                 if (file_exists($oldImgFile)) {
                     unlink($oldImgFile);
                 }

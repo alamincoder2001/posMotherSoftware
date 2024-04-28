@@ -53,7 +53,7 @@
         <div class="form-group" style="display: flex;align-items:center;">
           <label class="col-md-2 text-right col-md-offset-2 control-label no-padding-right"> Invoice no: </label>
           <div class="col-md-4">
-            <v-select v-bind:options="invoices" label="invoice_text" v-model="selectedInvoice" v-on:input="viewInvoice" placeholder="Select Invoice"></v-select>
+            <v-select v-bind:options="invoices" label="invoice_text" v-model="selectedInvoice" @search="onSearchInvoice" v-on:input="viewInvoice" placeholder="Select Invoice"></v-select>
           </div>
         </div>
         <div class="form-group">
@@ -66,7 +66,7 @@
   </div>
   <div class="col-md-8 col-md-offset-2">
     <br>
-    <purchase-invoice v-bind:purchase_id="selectedInvoice.PurchaseMaster_SlNo" v-if="showInvoice"></purchase-invoice>
+    <purchase-invoice v-bind:purchase_id="selectedInvoice ? selectedInvoice.PurchaseMaster_SlNo : ''" v-if="showInvoice"></purchase-invoice>
   </div>
 </div>
 
@@ -93,9 +93,25 @@
     },
     methods: {
       getPurchases() {
-        axios.get("/get_purchases").then(res => {
+        axios.post("/get_purchases", {forSearch: 'yes'}).then(res => {
           this.invoices = res.data.purchases;
         })
+      },
+      async onSearchInvoice(val, loading) {
+        if (val.length > 3) {
+          loading(true);
+          await axios.post("/get_purchases", {
+              name: val,
+            })
+            .then(res => {
+              let r = res.data;
+              this.invoices = r.purchases
+              loading(false)
+            })
+        } else {
+          loading(false)
+          await this.getPurchases();
+        }
       },
       async viewInvoice() {
         this.showInvoice = false;
