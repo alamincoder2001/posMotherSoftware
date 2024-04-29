@@ -110,6 +110,7 @@
 
                         <div class="form-group">
                             <div class="col-md-8 col-md-offset-4 text-right">
+                                <input type="button" @click="resetForm" class="btnReset" value="Reset">
                                 <input type="submit" value="Save Transaction" v-bind:disabled="onProgress ? true : false" class="btnSave">
                             </div>
                         </div>
@@ -149,8 +150,8 @@
                             <td>{{ row.AddBy }}</td>
                             <td>
                                 <?php if ($this->session->userdata('accountType') != 'u') { ?>
-                                        <i class="btnEdit fa fa-pencil" @click="editTransaction(row)"></i>
-                                        <i class="btnDelete fa fa-trash" @click="removeTransaction(row)"></i>
+                                    <i class="btnEdit fa fa-pencil" @click="editTransaction(row)"></i>
+                                    <i class="btnDelete fa fa-trash" @click="removeTransaction(row)"></i>
                                 <?php } ?>
                             </td>
                         </tr>

@@ -160,18 +160,11 @@
 								<label class="col-xs-3 control-label no-padding-right"> <span v-html="selectedProduct.is_service == 'true' ? 'Service' : 'Product'"></span> </label>
 								<div class="col-xs-9" style="display: flex;align-items:center;margin-bottom:5px;">
 									<div style="width: 86%;">
-										<v-select v-bind:options="products" style="margin: 0;" v-model="selectedProduct" label="display_text" @input="productOnChange" @search="onSearchProduct"></v-select>
+										<v-select v-bind:options="products" id="product" style="margin: 0;" v-model="selectedProduct" label="display_text" @input="productOnChange" @search="onSearchProduct"></v-select>
 									</div>
 									<div style="width: 13%;margin-left:2px;">
 										<a href="<?= base_url('product') ?>" class="add-button" target="_blank" title="Add New Product"><i class="fa fa-plus" aria-hidden="true"></i></a>
 									</div>
-								</div>
-							</div>
-
-							<div class="form-group" style="display: none;">
-								<label class="col-xs-3 control-label no-padding-right"> Brand </label>
-								<div class="col-xs-9">
-									<input type="text" id="brand" placeholder="Group" class="form-control" />
 								</div>
 							</div>
 
@@ -278,7 +271,7 @@
 			<div class="control-group">
 				<div class="row">
 					<div class="col-xs-12">
-						<form @submit.prevent="saveSales($event)">
+						<form @submit.prevent="saveSales">
 							<div class="table-responsive">
 								<table style="color:#000;margin-bottom: 0px;border-collapse: collapse;">
 									<tr>
@@ -381,7 +374,7 @@
 										<td>
 											<div class="form-group">
 												<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
-													<input type="submit" id="btnSale" class="btn btn-sm" value="Sale" style="width:100%;background: green !important;border: 0;border-radius: 5px;" v-bind:disabled="saleOnProgress ? true : false" />
+													<input type="submit" class="btn btn-sm" value="Sale" style="width:100%;background: green !important;border: 0;border-radius: 5px;" v-bind:disabled="saleOnProgress ? true : false" />
 												</div>
 												<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
 													<a class="btn btn-sm" v-bind:href="`/sales`" style="background: #2d1c5a !important;border: 0;width: 100%;display: flex; justify-content: center;border-radius: 5px;">New Sale</a>
@@ -389,7 +382,6 @@
 											</div>
 										</td>
 									</tr>
-
 								</table>
 							</div>
 						</form>
@@ -472,6 +464,7 @@
 				productStock: '',
 				saleOnProgress: false,
 				sales_due_on_update: 0,
+				keyPressed: '',
 				click: false,
 				userType: '<?php echo $this->session->userdata("accountType"); ?>'
 			}
@@ -680,10 +673,7 @@
 				}
 
 				if (product.productId == '') {
-					Swal.fire({
-						icon: "error",
-						text: "Select Product",
-					});
+					document.querySelector("#product [type='search']").focus();
 					return;
 				}
 				if (product.quantity == 0 || product.quantity == '') {
@@ -764,10 +754,9 @@
 					this.sales.due = (parseFloat(this.sales.total) - parseFloat(this.sales.paid)).toFixed(2);
 				}
 			},
-			async saveSales(event) {
-				if (!this.click) {
+			async saveSales() {
+				if (this.keyPressed == 'Enter' && !this.click) {
 					this.click = true;
-					document.querySelector("#btnSale").focus();
 					return;
 				}
 				if (this.selectedCustomer == null) {
@@ -893,6 +882,13 @@
 					})
 				})
 			}
-		}
+		},
+
+		mounted() {
+			var projectThis = this;
+			window.addEventListener('keydown', function(event) {
+				projectThis.keyPressed = event.key;
+			});
+		},
 	})
 </script>

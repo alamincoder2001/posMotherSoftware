@@ -1,18 +1,18 @@
 <style>
-	.v-select {
-		float: right;
-		min-width: 200px;
-		background: #fff;
-		margin-left: 5px;
-		border-radius: 4px !important;
-		margin-top: -2px;
-	}
+    .v-select {
+        float: right;
+        min-width: 200px;
+        background: #fff;
+        margin-left: 5px;
+        border-radius: 4px !important;
+        margin-top: -2px;
+    }
 
-	.v-select .dropdown-toggle {
-		padding: 0px;
-		height: 25px;
-		border: none;
-	}
+    .v-select .dropdown-toggle {
+        padding: 0px;
+        height: 25px;
+        border: none;
+    }
 
     .v-select input[type=search],
     .v-select input[type=search]:focus {

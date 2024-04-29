@@ -189,6 +189,9 @@ body {
 }
 
 @media only screen and (min-width: 1400px) {
+  body {
+    height: 100vh !important;
+  }
   .login {
     width: 800px;
     top: 32%;

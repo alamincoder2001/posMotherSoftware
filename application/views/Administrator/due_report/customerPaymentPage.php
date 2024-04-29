@@ -149,6 +149,7 @@
 								</div>
 								<div class="form-group">
 									<div class="col-md-7 col-md-offset-5 text-right">
+										<input type="button" @click="resetForm" class="btnReset" value="Reset">
 										<input type="submit" class="btnSave" value="Save">
 									</div>
 								</div>

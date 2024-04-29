@@ -43,33 +43,38 @@
 	}
 </style>
 <div id="cashStatement">
-	<div class="row" style="border-bottom: 1px solid #ccc;">
-		<div class="col-md-12">
-			<form action="" class="form-inline" @submit.prevent="getStatements">
-				<div class="form-group">
-					<label for="">Date from</label>
-					<input type="date" class="form-control" v-model="filter.dateFrom">
-				</div>
+	<div class="row" style="margin:0;">
+		<fieldset class="scheduler-border scheduler-search">
+			<legend class="scheduler-border">Cash Statement</legend>
+			<div class="control-group">
+				<div class="col-md-12">
+					<form action="" class="form-inline" @submit.prevent="getStatements">
+						<div class="form-group">
+							<label for="">Date from</label>
+							<input type="date" class="form-control" v-model="filter.dateFrom">
+						</div>
 
-				<div class="form-group">
-					<label for="">to</label>
-					<input type="date" class="form-control" v-model="filter.dateTo">
-				</div>
+						<div class="form-group">
+							<label for="">to</label>
+							<input type="date" class="form-control" v-model="filter.dateTo">
+						</div>
 
-				<div class="form-group buttons">
-					<input type="submit" value="Search">
+						<div class="form-group buttons">
+							<input type="submit" value="Search">
+						</div>
+					</form>
 				</div>
-			</form>
-		</div>
+			</div>
+		</fieldset>
 	</div>
 	<div class="row">
-		<div class="col-md-12" style="padding-top:15px;text-align:right;">
+		<div class="col-md-12" style="text-align:right;">
 			<a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
 		</div>
 	</div>
 
 	<div id="printContent">
-		<div class="row" style="margin-top: 15px;">
+		<div class="row">
 			<div class="col-md-4">
 				<div class="account-section">
 					<div class="col1">

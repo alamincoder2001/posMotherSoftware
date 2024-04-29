@@ -129,7 +129,7 @@
 									<label class="col-md-4 control-label">Payment Date</label>
 									<label class="col-md-1">:</label>
 									<div class="col-md-7">
-										<input type="date" class="form-control" v-model="payment.SPayment_date" required @change="getSupplierPayments" v-bind:disabled="userType == 'u' ? true : false">
+										<input type="date" style="margin-bottom: 4px;" class="form-control" v-model="payment.SPayment_date" required @change="getSupplierPayments" v-bind:disabled="userType == 'u' ? true : false">
 									</div>
 								</div>
 								<div class="form-group">
@@ -148,6 +148,7 @@
 								</div>
 								<div class="form-group">
 									<div class="col-md-7 col-md-offset-5 text-right">
+										<input type="button" @click="resetForm" class="btnReset" value="Reset">
 										<input type="submit" class="btnSave" value="Save">
 									</div>
 								</div>

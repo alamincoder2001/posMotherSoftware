@@ -110,6 +110,7 @@
 
                         <div class="form-group">
                             <div class="col-md-8 col-md-offset-4 text-right">
+                                <input type="button" @click="resetForm" value="Reset" class="btnReset">
                                 <input type="submit" value="Save Transaction" v-bind:disabled="onProgress ? true : false" class="btnSave">
                             </div>
                         </div>

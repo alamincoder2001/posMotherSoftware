@@ -138,7 +138,7 @@
 								<label class="col-xs-4 control-label no-padding-right"> Product </label>
 								<div class="col-xs-8" style="display: flex;align-items:center;margin-bottom:5px;">
 									<div style="width: 86%;">
-										<v-select v-bind:options="products" style="margin: 0;" v-model="selectedProduct" label="display_text" v-on:input="onChangeProduct" @search="onSearchProduct"></v-select>
+										<v-select v-bind:options="products" id="product" style="margin: 0;" v-model="selectedProduct" label="display_text" v-on:input="onChangeProduct" @search="onSearchProduct"></v-select>
 									</div>
 									<div style="width: 13%;margin-left:2px;">
 										<a href="<?= base_url('product') ?>" class="add-button" target="_blank" title="Add New Product"><i class="fa fa-plus" aria-hidden="true"></i></a>
@@ -149,12 +149,12 @@
 							<div class="form-group">
 								<label class="col-xs-4 control-label no-padding-right"> Pur. Rate </label>
 								<div class="col-xs-4">
-									<input type="number" step="0.01" id="purchaseRate" name="purchaseRate" class="form-control" placeholder="Pur. Rate" v-model="selectedProduct.Product_Purchase_Rate" v-on:input="productTotal" required autocomplete="off" />
+									<input type="number" step="0.01" id="purchaseRate" name="purchaseRate" class="form-control" placeholder="Pur. Rate" v-model="selectedProduct.Product_Purchase_Rate" v-on:input="productTotal" autocomplete="off" />
 								</div>
 
 								<label class="col-xs-1 control-label no-padding-right"> Qty </label>
 								<div class="col-xs-3">
-									<input type="number" step="0.01" id="quantity" name="quantity" class="form-control" placeholder="Quantity" ref="quantity" v-model="selectedProduct.quantity" v-on:input="productTotal" required autocomplete="off" />
+									<input type="number" step="0.01" id="quantity" name="quantity" class="form-control" placeholder="Quantity" ref="quantity" v-model="selectedProduct.quantity" v-on:input="productTotal" autocomplete="off" />
 								</div>
 							</div>
 
@@ -233,114 +233,116 @@
 			<div class="control-group">
 				<div class="row">
 					<div class="col-xs-12">
-						<div class="table-responsive">
-							<table style="color:#000;margin-bottom: 0px;">
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Sub Total</label>
-											<div class="col-xs-12">
-												<input type="number" min="0" step="any" id="subTotal" name="subTotal" class="form-control" v-model="purchase.subTotal" readonly />
+						<form @submit.prevent="savePurchase">
+							<div class="table-responsive">
+								<table style="color:#000;margin-bottom: 0px;">
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Sub Total</label>
+												<div class="col-xs-12">
+													<input type="number" min="0" step="any" id="subTotal" name="subTotal" class="form-control" v-model="purchase.subTotal" readonly />
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin: 0;"> Vat </label>
-											<div class="col-xs-4 no-padding-right">
-												<input type="number" min="0" step="any" class="form-control" id="vatPercent" name="vatPercent" v-model="vatPercent" v-on:input="calculateTotal" />
+										</td>
+									</tr>
+	
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin: 0;"> Vat </label>
+												<div class="col-xs-4 no-padding-right">
+													<input type="number" min="0" step="any" class="form-control" id="vatPercent" name="vatPercent" v-model="vatPercent" v-on:input="calculateTotal" />
+												</div>
+												<label class="col-xs-1"> % </label>
+												<div class="col-xs-6 no-padding-right">
+													<input type="number" min="0" step="any" class="form-control" id="vat" name="vat" v-model="purchase.vat" readonly />
+												</div>
 											</div>
-											<label class="col-xs-1"> % </label>
-											<div class="col-xs-6 no-padding-right">
-												<input type="number" min="0" step="any" class="form-control" id="vat" name="vat" v-model="purchase.vat" readonly />
+										</td>
+									</tr>
+	
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount</label>
+												<div class="col-xs-12">
+													<input type="number" min="0" step="any" id="discount" name="discount" class="form-control" v-model="purchase.discount" v-on:input="calculateTotal" />
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount</label>
-											<div class="col-xs-12">
-												<input type="number" min="0" step="any" id="discount" name="discount" class="form-control" v-model="purchase.discount" v-on:input="calculateTotal" />
+										</td>
+									</tr>
+	
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Transport / Labour Cost</label>
+												<div class="col-xs-12">
+													<input type="number" min="0" step="any" id="freight" name="freight" class="form-control" v-model="purchase.freight" v-on:input="calculateTotal" />
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Transport / Labour Cost</label>
-											<div class="col-xs-12">
-												<input type="number" min="0" step="any" id="freight" name="freight" class="form-control" v-model="purchase.freight" v-on:input="calculateTotal" />
+										</td>
+									</tr>
+	
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Total</label>
+												<div class="col-xs-12">
+													<input type="number" min="0" step="any" id="total" class="form-control" v-model="purchase.total" readonly />
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Total</label>
-											<div class="col-xs-12">
-												<input type="number" min="0" step="any" id="total" class="form-control" v-model="purchase.total" readonly />
+										</td>
+									</tr>
+	
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Paid</label>
+												<div class="col-xs-12">
+													<input type="number" min="0" step="any" id="paid" class="form-control" v-model="purchase.paid" v-on:input="calculateTotal" v-bind:disabled="selectedSupplier.Supplier_Type == 'G' ? true : false" />
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Paid</label>
-											<div class="col-xs-12">
-												<input type="number" min="0" step="any" id="paid" class="form-control" v-model="purchase.paid" v-on:input="calculateTotal" v-bind:disabled="selectedSupplier.Supplier_Type == 'G' ? true : false" />
+										</td>
+									</tr>
+	
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="col-xs-6 control-label no-padding-right" style="margin:0;">Due</label>
+												<label class="col-xs-6 control-label no-padding-right" style="margin:0;">Prev. Due</label>
 											</div>
-										</div>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-xs-6 control-label no-padding-right" style="margin:0;">Due</label>
-											<label class="col-xs-6 control-label no-padding-right" style="margin:0;">Prev. Due</label>
-										</div>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										<div class="form-group">
-											<div class="col-xs-6">
-												<input type="number" min="0" step="any" id="due" name="due" class="form-control" v-model="purchase.due" readonly />
+										</td>
+									</tr>
+	
+									<tr>
+										<td>
+											<div class="form-group">
+												<div class="col-xs-6">
+													<input type="number" min="0" step="any" id="due" name="due" class="form-control" v-model="purchase.due" readonly />
+												</div>
+												<div class="col-xs-6">
+													<input type="number" min="0" step="any" id="previousDue" name="previousDue" class="form-control" v-model="purchase.previousDue" readonly style="color:red;" />
+												</div>
 											</div>
-											<div class="col-xs-6">
-												<input type="number" min="0" step="any" id="previousDue" name="previousDue" class="form-control" v-model="purchase.previousDue" readonly style="color:red;" />
+										</td>
+									</tr>
+	
+									<tr>
+										<td>
+											<div class="form-group text-right">
+												<div class="col-xs-6" style="display: block;width: 50%;">
+													<input type="submit" class="btn" value="Purchase" v-bind:disabled="purchaseOnProgress == true ? true : false" style="width:100%;background: green !important;border: 0;border-radius: 5px;">
+												</div>
+												<div class="col-xs-6" style="display: block;width: 50%;">
+													<input type="button" class="btn" onclick="window.location = '<?php echo base_url(); ?>purchase'" value="New Purch.." style="width:100%;background: #2d1c5a !important;border: 0;border-radius: 5px;">
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										<div class="form-group text-right">
-											<div class="col-xs-6" style="display: block;width: 50%;">
-												<input type="button" class="btn" value="Purchase" v-on:click="savePurchase" v-bind:disabled="purchaseOnProgress == true ? true : false" style="width:100%;background: green !important;border: 0;border-radius: 5px;">
-											</div>
-											<div class="col-xs-6" style="display: block;width: 50%;">
-												<input type="button" class="btn" onclick="window.location = '<?php echo base_url(); ?>purchase'" value="New Purch.." style="width:100%;background: #2d1c5a !important;border: 0;border-radius: 5px;">
-											</div>
-										</div>
-									</td>
-								</tr>
-							</table>
-						</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -409,6 +411,8 @@
 				},
 				cart: [],
 				purchaseOnProgress: false,
+				keyPressed: '',
+				click: false,
 				userType: '<?php echo $this->session->userdata("accountType") ?>'
 			}
 		},
@@ -549,11 +553,7 @@
 				this.selectedProduct.total = this.selectedProduct.quantity * this.selectedProduct.Product_Purchase_Rate;
 			},
 			addToCart() {
-				if (this.selectedProduct == null) {
-					Swal.fire({
-						icon: "error",
-						text: "Select product",
-					});
+				if (this.selectedProduct == null) {					
 					return;
 				}
 				let cartInd = this.cart.findIndex(p => p.productId == this.selectedProduct.Product_SlNo);
@@ -570,6 +570,26 @@
 					salesRate: this.selectedProduct.Product_SellingPrice,
 					quantity: this.selectedProduct.quantity,
 					total: this.selectedProduct.total
+				}
+
+				if (product.productId == '') {
+					document.querySelector("#product [type='search']").focus();
+					return;
+				}
+				if (product.quantity == 0 || product.quantity == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Enter quantity",
+					});
+					return;
+				}
+
+				if (product.purchaseRate == 0 || product.purchaseRate == '') {
+					Swal.fire({
+						icon: "error",
+						text: "Enter purchase rate",
+					});
+					return;
 				}
 
 				this.cart.push(product);
@@ -620,6 +640,11 @@
 				}
 			},
 			savePurchase() {
+				if (this.keyPressed == 'Enter' && !this.click) {
+					this.click = true;
+					return;
+				}
+
 				if (this.selectedSupplier.Supplier_SlNo == null || this.selectedSupplier == null) {
 					Swal.fire({
 						icon: "error",
@@ -726,6 +751,13 @@
 					})
 				})
 			}
-		}
+		},
+
+		mounted() {
+			var projectThis = this;
+			window.addEventListener('keydown', function(event) {
+				projectThis.keyPressed = event.key;
+			});
+		},
 	})
 </script>
