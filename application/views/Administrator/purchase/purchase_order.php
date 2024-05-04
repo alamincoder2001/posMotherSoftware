@@ -202,8 +202,12 @@
 							<td>{{ sl + 1}}</td>
 							<td style="text-align: left;padding-left:3px;">{{ product.name }}</td>
 							<td>{{ product.categoryName }}</td>
-							<td>{{ product.purchaseRate }}</td>
-							<td>{{ product.quantity }}</td>
+							<td>
+								<input type="number" min="0" step="any" v-model="product.quantity" style="margin:0;padding: 0 5px; width: 70px; text-align: center;" @input="quantityRateChange" />
+							</td>
+							<td>
+								<input type="number" min="0" step="any" v-model="product.purchaseRate" style="margin:0;padding: 0 5px; width: 120px; text-align: center;" @input="quantityRateChange" />
+							</td>
 							<td>{{ product.total }}</td>
 							<td><a href="" v-on:click.prevent="removeFromCart(sl)"><i class="fa fa-trash"></i></a></td>
 						</tr>
@@ -246,7 +250,7 @@
 											</div>
 										</td>
 									</tr>
-	
+
 									<tr>
 										<td>
 											<div class="form-group">
@@ -261,7 +265,7 @@
 											</div>
 										</td>
 									</tr>
-	
+
 									<tr>
 										<td>
 											<div class="form-group">
@@ -272,7 +276,7 @@
 											</div>
 										</td>
 									</tr>
-	
+
 									<tr>
 										<td>
 											<div class="form-group">
@@ -283,7 +287,7 @@
 											</div>
 										</td>
 									</tr>
-	
+
 									<tr>
 										<td>
 											<div class="form-group">
@@ -294,7 +298,7 @@
 											</div>
 										</td>
 									</tr>
-	
+
 									<tr>
 										<td>
 											<div class="form-group">
@@ -305,7 +309,7 @@
 											</div>
 										</td>
 									</tr>
-	
+
 									<tr>
 										<td>
 											<div class="form-group">
@@ -314,7 +318,7 @@
 											</div>
 										</td>
 									</tr>
-	
+
 									<tr>
 										<td>
 											<div class="form-group">
@@ -327,12 +331,12 @@
 											</div>
 										</td>
 									</tr>
-	
+
 									<tr>
 										<td>
 											<div class="form-group text-right">
 												<div class="col-xs-6" style="display: block;width: 50%;">
-													<input type="submit" class="btn" value="Purchase" v-bind:disabled="purchaseOnProgress == true ? true : false" style="width:100%;background: green !important;border: 0;border-radius: 5px;">
+													<input type="submit" class="btn" value="Purchase" v-bind:disabled="purchaseOnProgress == true ? true : false" style="width:100%;background: green !important;border: 0;border-radius: 5px;outline:none;">
 												</div>
 												<div class="col-xs-6" style="display: block;width: 50%;">
 													<input type="button" class="btn" onclick="window.location = '<?php echo base_url(); ?>purchase'" value="New Purch.." style="width:100%;background: #2d1c5a !important;border: 0;border-radius: 5px;">
@@ -553,7 +557,7 @@
 				this.selectedProduct.total = this.selectedProduct.quantity * this.selectedProduct.Product_Purchase_Rate;
 			},
 			addToCart() {
-				if (this.selectedProduct == null) {					
+				if (this.selectedProduct == null) {
 					return;
 				}
 				let cartInd = this.cart.findIndex(p => p.productId == this.selectedProduct.Product_SlNo);
@@ -594,6 +598,13 @@
 
 				this.cart.push(product);
 				this.clearSelectedProduct();
+				this.calculateTotal();
+			},
+			quantityRateChange() {
+				this.cart = this.cart.map(item => {
+					item.total = parseFloat(parseFloat(item.purchaseRate) * parseFloat(item.quantity)).toFixed(2);
+					return item;
+				})
 				this.calculateTotal();
 			},
 			async removeFromCart(ind) {

@@ -238,8 +238,12 @@
 								<td>{{ product.productCode }}</td>
 								<td style="text-align: left;padding-left:3px;">{{ product.name }}</td>
 								<td>{{ product.categoryName }}</td>
-								<td>{{ product.quantity }}</td>
-								<td>{{ product.salesRate }}</td>
+								<td>
+									<input type="number" min="0" step="any" v-model="product.quantity" style="margin:0;padding: 0 5px; width: 70px; text-align: center;" @input="quantityRateChange"/>
+								</td>
+								<td>
+									<input type="number" min="0" step="any" v-model="product.salesRate" style="margin:0;padding: 0 5px; width: 120px; text-align: center;" @input="quantityRateChange"/>
+								</td>
 								<td>{{ product.total }}</td>
 								<td><a href="" v-on:click.prevent="removeFromCart(sl)"><i class="fa fa-trash"></i></a></td>
 							</tr>
@@ -374,7 +378,7 @@
 										<td>
 											<div class="form-group">
 												<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
-													<input type="submit" class="btn btn-sm" value="Sale" style="width:100%;background: green !important;border: 0;border-radius: 5px;" v-bind:disabled="saleOnProgress ? true : false" />
+													<input type="submit" class="btn btn-sm" value="Sale" style="width:100%;background: green !important;border: 0;border-radius: 5px;outline:none;" v-bind:disabled="saleOnProgress ? true : false" />
 												</div>
 												<div class="col-xs-6 col-md-6" style="display: block;width: 50%;">
 													<a class="btn btn-sm" v-bind:href="`/sales`" style="background: #2d1c5a !important;border: 0;width: 100%;display: flex; justify-content: center;border-radius: 5px;">New Sale</a>
@@ -706,6 +710,13 @@
 
 				this.cart.push(product);
 				this.clearProduct();
+				this.calculateTotal();
+			},
+			quantityRateChange(){
+				this.cart = this.cart.map(item => {
+					item.total = parseFloat(parseFloat(item.salesRate) * parseFloat(item.quantity)).toFixed(2);
+					return item;
+				})
 				this.calculateTotal();
 			},
 			removeFromCart(ind) {
