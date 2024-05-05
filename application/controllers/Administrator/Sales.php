@@ -420,6 +420,11 @@ class Sales extends CI_Controller
                     $duplicateCustomer = $mobile_count->row();
                     unset($customer['Customer_Code']);
                     unset($customer['Customer_Type']);
+                    if (isset($customer['District_Name'])) {
+                        unset($customer['District_Name']);
+                        unset($customer['added_by']);
+                        unset($customer['deleted_by']);
+                    }
                     $customer["UpdateBy"]   = $this->session->userdata("userId");
                     $customer["UpdateTime"] = date("Y-m-d H:i:s");
                     $customer["status"]     = 'a';

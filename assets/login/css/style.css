@@ -24,19 +24,20 @@ body {
 .login {
   width: 800px;
   border: 3px solid #3d76cf;
-  min-height: 325px;
+  height: 325px;
   margin: 10px 0px;
   border-radius: 5px;
   position: absolute;
-  top: 42%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
+  overflow: hidden;
 }
 .left-cont {
   float: left;
   width: 40%;
   background: #01509f;
-  min-height: 325px;
+  height: 325px;
   color: #fff;
   position: relative;
 }
@@ -101,7 +102,7 @@ body {
 .right-cont {
   float: left;
   width: 60%;
-  min-height: 325px;
+  height: 325px;
   background: #fff;
 }
 .login-form {
@@ -120,7 +121,7 @@ body {
   width: 245px;
   border-radius: 15px;
   margin: 0px auto;
-  min-height: 130px;
+  height: 130px;
   border: 1px solid #fff;
   padding: 10px;
 }
@@ -132,14 +133,14 @@ body {
 
   .login {
     width: 95% !important;
-    min-height: auto;
+    height: auto;
     top: 40%;
     left: 50%;
   }
   .left-cont {
     width: 35% !important;
     padding: 5px !important;
-    min-height: 100% !important;
+    height: 100% !important;
     padding-bottom: 0 !important;
   }
   .company-feature {
@@ -153,7 +154,7 @@ body {
   }
   .com-add {
     width: 100% !important;
-    min-height: 67px;
+    height: 67px;
   }
   .com-profile {
     font-size: 10px !important;
@@ -173,7 +174,7 @@ body {
   }
   .right-cont {
     width: 65% !important;
-    min-height: 100%;
+    height: 185px !important;
   }
   .login-form {
     padding: 15px 40px;

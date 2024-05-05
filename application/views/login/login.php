@@ -66,7 +66,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 						<form method="post" action="<?php echo base_url(); ?>Login/procedure">
 							<div class="form-group">
 								<?php echo form_error('user_name'); ?>
-								<input type="text" name="user_name" class="form-control" placeholder="User Name">
+								<input type="text" name="user_name" class="form-control" placeholder="User Name" autofocus autocomplete="off"/>
 							</div>
 							<div class="form-group">
 								<?php echo form_error('password'); ?>
