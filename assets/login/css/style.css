@@ -131,16 +131,26 @@ body {
     height: 100vh !important;
   }
 
+  .headding {
+    top: 45px !important;
+  }
+  .headding span {
+    font-size: 20px !important;
+    font-weight: 900 !important;
+    letter-spacing: -1px !important;
+    text-transform: uppercase !important;
+  }
+
   .login {
     width: 95% !important;
-    height: auto;
-    top: 40%;
+    height: 200px;
+    top: 36%;
     left: 50%;
   }
   .left-cont {
     width: 35% !important;
     padding: 5px !important;
-    height: 100% !important;
+    height: 195px !important;
     padding-bottom: 0 !important;
   }
   .company-feature {
@@ -174,10 +184,10 @@ body {
   }
   .right-cont {
     width: 65% !important;
-    height: 185px !important;
+    height: 195px !important;
   }
   .login-form {
-    padding: 15px 40px;
+    padding: 18px 30px;
     padding-bottom: 0;
   }
   .form-control {
@@ -186,6 +196,17 @@ body {
   .btn {
     padding: 2px 12px;
     font-size: 12px;
+  }
+  .form p {
+    font-size: 9px !important;
+    margin: 0 !important;
+  }
+  .form .form-group {
+    margin-bottom: 10px !important;
+  }
+
+  .develop_by {
+    padding-top: 10px;
   }
 }
 
