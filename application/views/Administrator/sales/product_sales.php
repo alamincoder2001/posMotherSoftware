@@ -292,7 +292,7 @@
 									<tr>
 										<td>
 											<div class="form-group">
-												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount Persent</label>
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount</label>
 
 												<div class="col-xs-4">
 													<input type="number" min="0" step="any" id="discountPercent" class="form-control" v-model="discountPercent" v-on:input="calculateTotal" />
@@ -311,7 +311,7 @@
 									<tr>
 										<td>
 											<div class="form-group">
-												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Vat Persent</label>
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Vat</label>
 
 												<div class="col-xs-4">
 													<input type="number" min="0" step="any" id="vatPercent" class="form-control" v-model="vatPercent" v-on:input="calculateTotal" />
