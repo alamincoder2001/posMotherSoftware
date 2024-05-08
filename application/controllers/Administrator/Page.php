@@ -538,14 +538,15 @@ class Page extends CI_Controller
             }
 
             $newBranch = array(
-                'Branch_name' => $branch->name,
-                'Branch_title' => $branch->title,
-                'Branch_phone' => $branch->phone,
+                'Branch_name'    => $branch->name,
+                'Branch_title'   => $branch->title,
+                'Branch_phone'   => $branch->phone,
                 'Branch_address' => $branch->address,
-                'Branch_sales' => '2',
-                'add_by' => $this->session->userdata("userId"),
-                'add_time' => date('Y-m-d H:i:s'),
-                'status' => 'a'
+                'Branch_sales'   => '2',
+                'AddBy'          => $this->session->userdata("userId"),
+                'AddTime'        => date('Y-m-d H:i:s'),
+                'status'         => 'a',
+                'last_update_ip' => get_client_ip(),
             );
 
             $this->db->insert('tbl_branch', $newBranch);
@@ -587,14 +588,6 @@ class Page extends CI_Controller
         }
 
         echo json_encode($res);
-    }
-
-    public function branch_edit()
-    {
-        $id = $this->input->post('edit');
-        $query = $this->db->query("SELECT * from tbl_branch where branch_id = '$id'");
-        $data['selected'] = $query->row();
-        $this->load->view('Administrator/edit/branch_edit', $data);
     }
 
     //^^^^^^^^^^^^^^^^^^^^^^^^

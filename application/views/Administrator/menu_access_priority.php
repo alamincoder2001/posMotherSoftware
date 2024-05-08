@@ -36,8 +36,7 @@
             <div class="group">
                 <input type="checkbox" id="sales" class="group-head" @click="onClickGroupHeads"> <strong>Sales</strong>
                 <ul ref="sales">
-                    <li><input type="checkbox" class="access" value="sales/product" v-model="access"> Sales Entry</li>
-                    <li><input type="checkbox" class="access" value="sales/service" v-model="access"> Service Entry</li>
+                    <li><input type="checkbox" class="access" value="sales" v-model="access"> Sales Entry</li>
                     <li><input type="checkbox" class="access" value="salesReturn" v-model="access"> Sale Return</li>
                     <li><input type="checkbox" class="access" value="salesrecord" v-model="access"> Sales Record</li>
                     <li><input type="checkbox" class="access" value="currentStock" v-model="access"> Stock</li>

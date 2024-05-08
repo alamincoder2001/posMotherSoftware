@@ -90,7 +90,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 	<script>
 		$(function() {
 			var typed = new Typed('#typed', {
-				strings: ['Welcome to Online POS Accounting Software'],
+				strings: ['Welcome to Online ERP Software'],
 				typeSpeed: 100,
 				backSpeed: 100,
 				loop: true
