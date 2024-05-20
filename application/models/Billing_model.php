@@ -546,6 +546,7 @@ class Billing_model extends CI_Model
 			'Company_Name'      => $branch->Branch_title,
 			'Branch_phone'      => $branch->Branch_phone,
 			'Repot_Heading'     => $branch->Branch_address,
+			'InvoiceNote'       => $company->InvoiceNote,
 			'print_type'        => $company->print_type
 		];
 	}

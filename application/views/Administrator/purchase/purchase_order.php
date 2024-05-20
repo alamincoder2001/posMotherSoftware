@@ -191,8 +191,8 @@
 							<th style="width:4%;color:#000;">SL</th>
 							<th style="width:30%;color:#000;">Product Name</th>
 							<th style="width:13%;color:#000;">Category</th>
-							<th style="width:8%;color:#000;">Rate</th>
 							<th style="width:5%;color:#000;">Quantity</th>
+							<th style="width:8%;color:#000;">Rate</th>
 							<th style="width:13%;color:#000;">Total</th>
 							<th style="width:5%;color:#000;">Action</th>
 						</tr>
@@ -554,7 +554,7 @@
 			},
 
 			productTotal() {
-				this.selectedProduct.total = this.selectedProduct.quantity * this.selectedProduct.Product_Purchase_Rate;
+				this.selectedProduct.total = parseFloat(this.selectedProduct.quantity * this.selectedProduct.Product_Purchase_Rate).toFixed(2);
 			},
 			addToCart() {
 				if (this.selectedProduct == null) {

@@ -125,8 +125,10 @@ const salesInvoice = Vue.component('sales-invoice', {
                 <div class="row">
                     <div class="col-xs-12">
                         <strong>In Word: </strong> {{ withDecimal(sales.SaleMaster_TotalSaleAmount) }}<br><br>
-                        <strong>Note: </strong>
-                        <p style="white-space: pre-line">{{ sales.SaleMaster_Description }}</p>
+                        <p style="margin:0;">
+                            <strong>Note: </strong>
+                            {{ sales.SaleMaster_Description ? sales.SaleMaster_Description : currentBranch.InvoiceNote }}
+                        </p>
                     </div>
                 </div>
             </div>

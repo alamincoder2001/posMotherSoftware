@@ -383,8 +383,9 @@ class Page extends CI_Controller
         $config['image_height'] = '4000';
         $this->upload->initialize($config);
 
-        $data['Company_Name'] =  $this->input->post('Company_name', true);
-        $data['Repot_Heading'] =  $this->input->post('Description', true);
+        $data['Company_Name']  = $this->input->post('Company_name', true);
+        $data['Repot_Heading'] = $this->input->post('Description', true);
+        $data['InvoiceNote']   = $this->input->post('InvoiceNote', true);
 
         $xx = $this->mt->select_by_id("tbl_company", $id, $fld);
 
@@ -435,6 +436,8 @@ class Page extends CI_Controller
         $data['Currency_Name']    = $this->input->post('Currency_Name', true);
         $data['SubCurrency_Name'] = $this->input->post('SubCurrency_Name', true);
         $data['dueStatus']        = $this->input->post('dueStatus', true);
+        $data['Repot_Heading']    = $this->input->post('Description', true);
+        $data['InvoiceNote']      = $this->input->post('InvoiceNote', true);
 
         $xx = $this->db->query("select * from tbl_company order by Company_SlNo desc limit 1")->row();
 
