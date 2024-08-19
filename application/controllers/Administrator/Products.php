@@ -415,7 +415,7 @@ class Products extends CI_Controller
                 'a' as sequence,
                 pd.PurchaseDetails_SlNo as id,
                 pm.PurchaseMaster_OrderDate as date,
-                concat('Purchase - ', pm.PurchaseMaster_InvoiceNo, ' - ', s.Supplier_Name) as description,
+                concat('Purchase - ', pm.PurchaseMaster_InvoiceNo, ' - ', ifnull(s.Supplier_Name, pm.supplierName)) as description,
                 pd.PurchaseDetails_Rate as rate,
                 pd.PurchaseDetails_TotalQuantity as in_quantity,
                 0 as out_quantity
@@ -431,7 +431,7 @@ class Products extends CI_Controller
                 'b' as sequence,
                 sd.SaleDetails_SlNo as id,
                 sm.SaleMaster_SaleDate as date,
-                concat('Sale - ', sm.SaleMaster_InvoiceNo, ' - ', c.Customer_Name) as description,
+                concat('Sale - ', sm.SaleMaster_InvoiceNo, ' - ', ifnull(c.Customer_Name, sm.customerName)) as description,
                 sd.SaleDetails_Rate as rate,
                 0 as in_quantity,
                 sd.SaleDetails_TotalQuantity as out_quantity
