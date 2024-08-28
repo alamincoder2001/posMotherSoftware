@@ -128,11 +128,11 @@ body {
 
 @media (min-width: 300px) and (max-width: 620px) {
   body {
-    height: 100vh !important;
+    height: 94vh !important;
   }
 
   .headding {
-    top: 45px !important;
+    top: 62px !important;
   }
   .headding span {
     font-size: 20px !important;

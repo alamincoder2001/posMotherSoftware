@@ -56,7 +56,7 @@ class Customer extends CI_Controller
             $limit .= "limit 20";
         }
         if (isset($data->name) && $data->name != '') {
-            $customerTypeClause .= " or c.Customer_Code like '$data->name%'";
+            $customerTypeClause .= " and c.Customer_Code like '$data->name%'";
             $customerTypeClause .= " or c.Customer_Name like '$data->name%'";
             $customerTypeClause .= " or c.Customer_Mobile like '$data->name%'";
         }

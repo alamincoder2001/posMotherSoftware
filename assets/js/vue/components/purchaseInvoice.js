@@ -327,7 +327,7 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
                 <body>
                     <div class="container">
                         <div class="row">
-                            <div class="col-xs-2"><img src="/uploads/company_profile_thum/${this.currentBranch.Company_Logo_thum}" alt="Logo" style="height:80px;" /></div>
+                            <div class="col-xs-2"><img src="/${this.currentBranch.Company_Logo_thum}" alt="Logo" style="height:80px;" /></div>
                             <div class="col-xs-10" style="padding-top:20px;">
                                 <strong style="font-size:18px;">${this.currentBranch.Company_Name}</strong><br>
                                 <p style="white-space:pre-line;">${this.currentBranch.Repot_Heading}</p>

@@ -383,9 +383,8 @@ class Page extends CI_Controller
         $config['image_height'] = '4000';
         $this->upload->initialize($config);
 
-        $data['Company_Name']  = $this->input->post('Company_name', true);
-        $data['Repot_Heading'] = $this->input->post('Description', true);
-        $data['InvoiceNote']   = $this->input->post('InvoiceNote', true);
+        $data['Company_Name'] =  $this->input->post('Company_name', true);
+        $data['Repot_Heading'] =  $this->input->post('Description', true);
 
         $xx = $this->mt->select_by_id("tbl_company", $id, $fld);
 
@@ -393,11 +392,11 @@ class Page extends CI_Controller
         $images = $this->upload->data();
 
         if ($image != "") {
-            if ($xx['Company_Logo_thum'] && $xx['Company_Logo_org']) {
+            if ($xx['Company_Logo_thum'] && $xx['Company_Logo_thum']) {
                 unlink("./uploads/company_profile_thum/" . $xx['Company_Logo_thum']);
-                unlink("./uploads/company_profile_org/" . $xx['Company_Logo_org']);
+                unlink("./uploads/company_profile_org/" . $xx['Company_Logo_thum']);
             }
-            $data['Company_Logo_org'] = $images['file_name'];
+            $data['Company_Logo_thum'] = $images['file_name'];
 
             $config['image_library'] = 'gd2';
             $config['source_image'] = $this->upload->upload_path . $this->upload->file_name;
@@ -410,7 +409,7 @@ class Page extends CI_Controller
             $data['Company_Logo_thum'] = $this->upload->file_name;
         } else {
 
-            $data['Company_Logo_org'] = $xx['Company_Logo_org'];
+            $data['Company_Logo_thum'] = $xx['Company_Logo_thum'];
             $data['Company_Logo_thum'] = $xx['Company_Logo_thum'];
         }
         $data['print_type'] = $inpt;
@@ -422,22 +421,13 @@ class Page extends CI_Controller
 
     public function company_profile_Update()
     {
-        $inpt = $this->input->post('inpt', true);
-        $this->load->library('upload');
-        $config['upload_path'] = './uploads/company_profile_org/';
-        $config['allowed_types'] = 'gif|jpg|png|jpeg';
-        $config['max_size'] = '10000';
-        $config['image_width'] = '4000';
-        $config['image_height'] = '4000';
-        $this->upload->initialize($config);
-
+        $inpt                     = $this->input->post('inpt', true);
         $data['Company_Name']     = $this->input->post('Company_name', true);
         $data['InvoiceHeder']     = $this->input->post('InvoiceHeder', true);
         $data['Currency_Name']    = $this->input->post('Currency_Name', true);
         $data['SubCurrency_Name'] = $this->input->post('SubCurrency_Name', true);
         $data['dueStatus']        = $this->input->post('dueStatus', true);
-        $data['Repot_Heading']    = $this->input->post('Description', true);
-        $data['InvoiceNote']      = $this->input->post('InvoiceNote', true);
+        $data['last_update_ip']   = get_client_ip();
 
         $xx = $this->db->query("select * from tbl_company order by Company_SlNo desc limit 1")->row();
 
@@ -448,30 +438,17 @@ class Page extends CI_Controller
             $id = '1';
             redirect('Administrator/Page/company_profile');
         } else {
-            $image = $this->upload->do_upload('companyLogo');
-            $images = $this->upload->data();
-
-            if ($image != "") {
-                if ($xx->Company_Logo_thum && $xx->Company_Logo_org) {
-                    unlink("./uploads/company_profile_thum/" . $xx->Company_Logo_thum);
-                    unlink("./uploads/company_profile_org/" . $xx->Company_Logo_org);
-                }
-                $data['Company_Logo_org'] = $images['file_name'];
-
-                $config['image_library'] = 'gd2';
-                $config['source_image'] = $this->upload->upload_path . $this->upload->file_name;
-                $config['new_image'] = 'uploads/' . 'company_profile_thum/' . $this->upload->file_name;
-                $config['maintain_ratio'] = FALSE;
-                $config['width'] = 165;
-                $config['height'] = 175;
-                $this->load->library('image_lib', $config);
-                $this->image_lib->resize();
-                $data['Company_Logo_thum'] = $this->upload->file_name;
-            } else {
-
-                $data['Company_Logo_org'] = $xx->Company_Logo_org;
-                $data['Company_Logo_thum'] = $xx->Company_Logo_thum;
+            if (file_exists($xx->Company_Logo_thum)) {
+                unlink($xx->Company_Logo_thum);
             }
+            if (file_exists($xx->Company_Logo_thum)) {
+                unlink($xx->Company_Logo_thum);
+            }
+            $thumPath = $this->mt->uploadImage($_FILES, 'companyLogo', 'uploads/company_profile_thum', "");
+            $data['Company_Logo_thum'] = $thumPath;
+            $orgPath = $this->mt->uploadImage($_FILES, 'companyLogo', 'uploads/company_profile_org', "");
+            $data['Company_Logo_org'] = $orgPath;
+
             $data['print_type'] = $inpt;
             $this->db->update('tbl_company', $data);
             $id = '1';

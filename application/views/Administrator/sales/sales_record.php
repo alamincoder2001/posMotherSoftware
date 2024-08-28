@@ -162,9 +162,9 @@
 								<td>{{ sale.Employee_Name }}</td>
 								<td>{{ sale.added_by }}</td>
 								<td>{{ sale.saleDetails[0].Product_Name }}</td>
-								<td style="text-align:right;">{{ sale.saleDetails[0].SaleDetails_Rate }}</td>
+								<td style="text-align:right;">{{ sale.saleDetails[0].SaleDetails_Rate | decimal }}</td>
 								<td style="text-align:center;">{{ sale.saleDetails[0].SaleDetails_TotalQuantity }}</td>
-								<td style="text-align:right;">{{ sale.saleDetails[0].SaleDetails_TotalAmount }}</td>
+								<td style="text-align:right;">{{ sale.saleDetails[0].SaleDetails_TotalAmount | decimal }}</td>
 								<td style="text-align:center;">
 									<a href="" title="Sale Invoice" v-bind:href="`/sale_invoice_print/${sale.SaleMaster_SlNo}`" target="_blank"><i class="fa fa-file"></i></a>
 									<a href="" title="Chalan" v-bind:href="`/chalan/${sale.SaleMaster_SlNo}`" target="_blank"><i class="fa fa-file-o"></i></a>
@@ -177,18 +177,18 @@
 							<tr v-for="(product, sl) in sale.saleDetails.slice(1)">
 								<td colspan="5" v-bind:rowspan="sale.saleDetails.length - 1" v-if="sl == 0"></td>
 								<td>{{ product.Product_Name }}</td>
-								<td style="text-align:right;">{{ product.SaleDetails_Rate }}</td>
+								<td style="text-align:right;">{{ product.SaleDetails_Rate | decimal }}</td>
 								<td style="text-align:center;">{{ product.SaleDetails_TotalQuantity }}</td>
-								<td style="text-align:right;">{{ product.SaleDetails_TotalAmount }}</td>
+								<td style="text-align:right;">{{ product.SaleDetails_TotalAmount | decimal }}</td>
 								<td></td>
 							</tr>
 							<tr style="font-weight:bold;">
 								<td colspan="7" style="font-weight:normal;"><strong>Note: </strong>{{ sale.SaleMaster_Description }}</td>
 								<td style="text-align:center;">Total Quantity<br>{{ sale.saleDetails.reduce((prev, curr) => {return prev + parseFloat(curr.SaleDetails_TotalQuantity)}, 0) }}</td>
 								<td style="text-align:right;">
-									Total: {{ sale.SaleMaster_TotalSaleAmount }}<br>
-									Paid: {{ sale.SaleMaster_PaidAmount }}<br>
-									Due: {{ sale.SaleMaster_DueAmount }}
+									Total: {{ sale.SaleMaster_TotalSaleAmount | decimal }}<br>
+									Paid: {{ sale.SaleMaster_PaidAmount | decimal }}<br>
+									Due: {{ sale.SaleMaster_DueAmount | decimal }}
 								</td>
 								<td></td>
 							</tr>
@@ -222,13 +222,13 @@
 							<td>{{ sale.Customer_Name }}</td>
 							<td>{{ sale.Employee_Name }}</td>
 							<td>{{ sale.added_by }}</td>
-							<td style="text-align:right;">{{ sale.SaleMaster_SubTotalAmount }}</td>
-							<td style="text-align:right;">{{ sale.SaleMaster_TaxAmount }}</td>
-							<td style="text-align:right;">{{ sale.SaleMaster_TotalDiscountAmount }}</td>
-							<td style="text-align:right;">{{ sale.SaleMaster_Freight }}</td>
-							<td style="text-align:right;">{{ sale.SaleMaster_TotalSaleAmount }}</td>
-							<td style="text-align:right;">{{ sale.SaleMaster_PaidAmount }}</td>
-							<td style="text-align:right;">{{ sale.SaleMaster_DueAmount }}</td>
+							<td style="text-align:right;">{{ sale.SaleMaster_SubTotalAmount | decimal }}</td>
+							<td style="text-align:right;">{{ sale.SaleMaster_TaxAmount | decimal }}</td>
+							<td style="text-align:right;">{{ sale.SaleMaster_TotalDiscountAmount | decimal }}</td>
+							<td style="text-align:right;">{{ sale.SaleMaster_Freight | decimal }}</td>
+							<td style="text-align:right;">{{ sale.SaleMaster_TotalSaleAmount | decimal }}</td>
+							<td style="text-align:right;">{{ sale.SaleMaster_PaidAmount | decimal }}</td>
+							<td style="text-align:right;">{{ sale.SaleMaster_DueAmount | decimal }}</td>
 							<td style="text-align:left;">{{ sale.SaleMaster_Description }}</td>
 							<td style="text-align:center;">
 								<a href="" title="Sale Invoice" v-bind:href="`/sale_invoice_print/${sale.SaleMaster_SlNo}`" target="_blank"><i class="fa fa-file"></i></a>
@@ -239,21 +239,19 @@
 								<?php } ?>
 							</td>
 						</tr>
-					</tbody>
-					<tfoot>
 						<tr style="font-weight:bold;">
 							<td colspan="5" style="text-align:right;">Total</td>
-							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_SubTotalAmount)}, 0) }}</td>
-							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_TaxAmount)}, 0) }}</td>
-							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_TotalDiscountAmount)}, 0) }}</td>
-							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_Freight)}, 0) }}</td>
-							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_TotalSaleAmount)}, 0) }}</td>
-							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_PaidAmount)}, 0) }}</td>
-							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_DueAmount)}, 0) }}</td>
+							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_SubTotalAmount)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_TaxAmount)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_TotalDiscountAmount)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_Freight)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_TotalSaleAmount)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_PaidAmount)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ sales.reduce((prev, curr)=>{return prev + parseFloat(curr.SaleMaster_DueAmount)}, 0) | decimal }}</td>
 							<td></td>
 							<td></td>
 						</tr>
-					</tfoot>
+					</tbody>
 				</table>
 
 				<template v-if="searchTypesForDetails.includes(searchType)" style="display:none;" v-bind:style="{display: searchTypesForDetails.includes(searchType) ? '' : 'none'}">
@@ -342,6 +340,11 @@
 				sales: [],
 				searchTypesForRecord: ['', 'user', 'customer', 'employee'],
 				searchTypesForDetails: ['quantity', 'category']
+			}
+		},
+		filters: {
+			decimal(val){
+				return parseFloat(val).toFixed(2);
 			}
 		},
 		methods: {

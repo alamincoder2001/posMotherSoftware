@@ -165,8 +165,8 @@
 								<td>{{ purchase.Supplier_Name }}</td>
 								<td style="text-align: left;">{{ purchase.purchaseDetails[0].Product_Name }}</td>
 								<td style="text-align:center;">{{ purchase.purchaseDetails[0].PurchaseDetails_TotalQuantity }}</td>
-								<td style="text-align:right;">{{ purchase.purchaseDetails[0].PurchaseDetails_Rate }}</td>
-								<td style="text-align:right;">{{ purchase.purchaseDetails[0].PurchaseDetails_TotalAmount }}</td>
+								<td style="text-align:right;">{{ purchase.purchaseDetails[0].PurchaseDetails_Rate | decimal }}</td>
+								<td style="text-align:right;">{{ purchase.purchaseDetails[0].PurchaseDetails_TotalAmount | decimal }}</td>
 								<td style="text-align:center;">
 									<a href="" title="Purchase Invoice" v-bind:href="`/purchase_invoice_print/${purchase.PurchaseMaster_SlNo}`" target="_blank"><i class="fa fa-file-text"></i></a>
 									<?php if ($this->session->userdata('accountType') != 'u') { ?>
@@ -179,8 +179,8 @@
 								<td colspan="3" v-bind:rowspan="purchase.purchaseDetails.length - 1" v-if="sl == 0"></td>
 								<td style="text-align: left;">{{ product.Product_Name }}</td>
 								<td style="text-align:center;">{{ product.PurchaseDetails_TotalQuantity }}</td>
-								<td style="text-align:right;">{{ product.PurchaseDetails_Rate }}</td>
-								<td style="text-align:right;">{{ product.PurchaseDetails_TotalAmount }}</td>
+								<td style="text-align:right;">{{ product.PurchaseDetails_Rate | decimal }}</td>
+								<td style="text-align:right;">{{ product.PurchaseDetails_TotalAmount | decimal }}</td>
 								<td></td>
 							</tr>
 							<tr style="font-weight:bold;">
@@ -188,9 +188,9 @@
 								<td style="text-align:center;">Total Quantity<br>{{ purchase.purchaseDetails.reduce((prev, curr) => {return prev + parseFloat(curr.PurchaseDetails_TotalQuantity)}, 0) }}</td>
 								<td></td>
 								<td style="text-align:right;">
-									Total: {{ purchase.PurchaseMaster_TotalAmount }}<br>
-									Paid: {{ purchase.PurchaseMaster_PaidAmount }}<br>
-									Due: {{ purchase.PurchaseMaster_DueAmount }}
+									Total: {{ purchase.PurchaseMaster_TotalAmount | decimal }}<br>
+									Paid: {{ purchase.PurchaseMaster_PaidAmount | decimal }}<br>
+									Due: {{ purchase.PurchaseMaster_DueAmount | decimal }}
 								</td>
 								<td></td>
 							</tr>
@@ -220,13 +220,13 @@
 							<td>{{ purchase.PurchaseMaster_InvoiceNo }}</td>
 							<td>{{ purchase.PurchaseMaster_OrderDate }}</td>
 							<td>{{ purchase.Supplier_Name }}</td>
-							<td style="text-align:right;">{{ purchase.PurchaseMaster_SubTotalAmount }}</td>
-							<td style="text-align:right;">{{ purchase.PurchaseMaster_Tax }}</td>
-							<td style="text-align:right;">{{ purchase.PurchaseMaster_DiscountAmount }}</td>
-							<td style="text-align:right;">{{ purchase.PurchaseMaster_Freight }}</td>
-							<td style="text-align:right;">{{ purchase.PurchaseMaster_TotalAmount }}</td>
-							<td style="text-align:right;">{{ purchase.PurchaseMaster_PaidAmount }}</td>
-							<td style="text-align:right;">{{ purchase.PurchaseMaster_DueAmount }}</td>
+							<td style="text-align:right;">{{ purchase.PurchaseMaster_SubTotalAmount | decimal }}</td>
+							<td style="text-align:right;">{{ purchase.PurchaseMaster_Tax | decimal }}</td>
+							<td style="text-align:right;">{{ purchase.PurchaseMaster_DiscountAmount | decimal }}</td>
+							<td style="text-align:right;">{{ purchase.PurchaseMaster_Freight | decimal }}</td>
+							<td style="text-align:right;">{{ purchase.PurchaseMaster_TotalAmount | decimal }}</td>
+							<td style="text-align:right;">{{ purchase.PurchaseMaster_PaidAmount | decimal }}</td>
+							<td style="text-align:right;">{{ purchase.PurchaseMaster_DueAmount | decimal }}</td>
 							<td style="text-align:left;">{{ purchase.PurchaseMaster_Description }}</td>
 							<td style="text-align:center;">
 								<a href="" title="Purchase Invoice" v-bind:href="`/purchase_invoice_print/${purchase.PurchaseMaster_SlNo}`" target="_blank"><i class="fa fa-file-text"></i></a>
@@ -238,13 +238,13 @@
 						</tr>
 						<tr style="font-weight:bold;">
 							<td colspan="3" style="text-align:right;">Total</td>
-							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_SubTotalAmount)}, 0) }}</td>
-							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_Tax)}, 0) }}</td>
-							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_DiscountAmount)}, 0) }}</td>
-							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_Freight)}, 0) }}</td>
-							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_TotalAmount)}, 0) }}</td>
-							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_PaidAmount)}, 0) }}</td>
-							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_DueAmount)}, 0) }}</td>
+							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_SubTotalAmount)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_Tax)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_DiscountAmount)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_Freight)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_TotalAmount)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_PaidAmount)}, 0) | decimal }}</td>
+							<td style="text-align:right;">{{ purchases.reduce((prev, curr)=>{return prev + parseFloat(curr.PurchaseMaster_DueAmount)}, 0) | decimal }}</td>
 							<td></td>
 							<td></td>
 						</tr>
@@ -308,6 +308,11 @@
 				purchases: [],
 				searchTypesForRecord: ['', 'user', 'supplier'],
 				searchTypesForDetails: ['quantity', 'category']
+			}
+		},
+		filters: {
+			decimal(val){
+				return parseFloat(val).toFixed(2);
 			}
 		},
 		methods: {

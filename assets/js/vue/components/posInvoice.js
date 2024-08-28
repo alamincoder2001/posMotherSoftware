@@ -331,7 +331,7 @@ const posInvoice = Vue.component("pos-invoice", {
                             <tr>
                                 <td>
                                     <div class="row" style="margin-top:8px;">
-                                      ${this.currentBranch.Company_Logo_org == null || this.currentBranch.Company_Logo_org == '' ? '' :` <div class="col-xs-12 text-center"><img src="/uploads/company_profile_thum/${this.currentBranch.Company_Logo_org}" alt="Logo" style="height:40px;" /></div>`}                                               
+                                      ${this.currentBranch.Company_Logo_org == null || this.currentBranch.Company_Logo_org == '' ? '' :` <div class="col-xs-12 text-center"><img src="/${this.currentBranch.Company_Logo_thum}" alt="Logo" style="height:40px;" /></div>`}                                               
                                         <div class="col-xs-12 text-center">
                                             <strong style="font-size:14px;">${this.currentBranch.Company_Name}</strong><br>
                                             <p style="white-space:pre-line;line-height:1;">${this.currentBranch.Repot_Heading}</p>

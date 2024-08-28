@@ -289,7 +289,7 @@ class Supplier extends CI_Controller
             $limit .= "limit 20";
         }
         if (isset($data->name) && $data->name != '') {
-            $clauses .= "or s.Supplier_Code like '$data->name%'";
+            $clauses .= "and s.Supplier_Code like '$data->name%'";
             $clauses .= "or s.Supplier_Name like '$data->name%'";
             $clauses .= "or s.Supplier_Mobile like '$data->name%'";
         }

@@ -27,7 +27,7 @@
 								<div class="col-md-3">
 									<div class="left">
 										<?php if ($selected->Company_Logo_thum != "") { ?>
-											<img id="hideid" src="<?php echo base_url() . 'uploads/company_profile_thum/' . $selected->Company_Logo_thum; ?>" alt="" style="width:100px">
+											<img id="hideid" src="<?php echo base_url() . $selected->Company_Logo_thum; ?>" alt="" style="width:100px">
 										<?php } else { ?>
 											<img id="hideid" src="<?php echo base_url(); ?>images/No-Image-.jpg" alt="" style="width:200px">
 										<?php } ?>
@@ -43,8 +43,10 @@
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group">
-										<label class="control-label" for="Company_name"> Company Name </label>
-										<input name="Company_name" type="text" id="Company_name" value="<?php echo $selected->Company_Name; ?>" class="form-control" />
+										<label class="control-label" for="form-field-1"> Company Name </label>
+										<div>
+											<input name="Company_name" type="text" id="Company_name" value="<?php echo $selected->Company_Name; ?>" class="form-control" />
+										</div>
 									</div>
 								</div>
 							</div>
@@ -52,7 +54,7 @@
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
-										<label class="control-label" for="InvoiceHeder"> Invoice Header </label>
+										<label class="control-label" for="form-field-1"> Invoice Header </label>
 										<div>
 											<input name="InvoiceHeder" type="text" id="InvoiceHeder" value="<?php echo $selected->InvoiceHeder; ?>" class="form-control" />
 										</div>
@@ -60,9 +62,9 @@
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
-										<label class="control-label" for="dueStatus"> Invoice Due Area </label>
+										<label class="control-label" for="form-field-1"> Invoice Due Area </label>
 										<div>
-											<select name="dueStatus" id="dueStatus" class="form-control">
+											<select name="dueStatus" class="form-control">
 												<option value="true" <?= $selected->dueStatus == 'true' ? 'selected' : '' ?>>With Due</option>
 												<option value="false" <?= $selected->dueStatus == 'false' ? 'selected' : '' ?>>Without Due</option>
 											</select>
@@ -73,7 +75,7 @@
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
-										<label class="control-label" for="Currency_Name"> Currency </label>
+										<label class="control-label" for="form-field-1"> Currency </label>
 										<div>
 											<input name="Currency_Name" type="text" id="Currency_Name" value="<?php echo $selected->Currency_Name; ?>" class="form-control" />
 										</div>
@@ -81,7 +83,7 @@
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
-										<label class="control-label" for="SubCurrency_Name"> Sub Currency </label>
+										<label class="control-label" for="form-field-1"> Sub Currency </label>
 										<div>
 											<input name="SubCurrency_Name" type="text" id="SubCurrency_Name" value="<?php echo $selected->SubCurrency_Name; ?>" class="form-control" />
 										</div>
@@ -92,19 +94,10 @@
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group">
-										<label class="control-label" for="Description"> Description </label>
+										<label class="control-label" for="form-field-1"> Description </label>
 										<div>
 											<textarea id="Description" name="Description" class="form-control"><?php echo $selected->Repot_Heading; ?></textarea>
 										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-group">
-										<label class="control-label" for="InvoiceNote"> Invoice Note </label>
-										<textarea id="InvoiceNote" name="InvoiceNote" class="form-control"><?php echo $selected->InvoiceNote; ?></textarea>
 									</div>
 								</div>
 							</div>
@@ -170,7 +163,7 @@
 							</div>
 
 							<div class="form-group">
-								<label class="col-md-12 control-label" for="Company_name" style="margin-top:15px;"> Company Name </label>
+								<label class="col-md-12 control-label" for="form-field-1" style="margin-top:15px;"> Company Name </label>
 								<div class="col-md-12">
 									<input name="Company_name" type="text" id="Company_name" value="" class="form-control" />
 									<input name="iidd" type="hidden" id="iidd" value="" class="txt" />
@@ -180,20 +173,9 @@
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group">
-										<label class="control-label" for="Description" style="margin-top:15px;"> Description </label>
+										<label class="control-label" for="form-field-1" style="margin-top:15px;"> Description </label>
 										<div>
 											<textarea id="Description" name="Description" class="form-control"></textarea>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-group">
-										<label class="control-label" for="InvoiceNote" style="margin-top:15px;"> Invoice Note </label>
-										<div>
-											<textarea id="InvoiceNote" name="InvoiceNote" class="form-control"></textarea>
 										</div>
 									</div>
 								</div>

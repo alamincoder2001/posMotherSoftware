@@ -184,7 +184,7 @@ const quotationInvoice = Vue.component('quotation-invoice', {
                 <body>
                     <div class="container">
                         <div class="row">
-                            <div class="col-xs-2"><img src="/uploads/company_profile_thum/${this.companyProfile.Company_Logo_thum}" alt="Logo" style="height:80px;" /></div>
+                            <div class="col-xs-2"><img src="/${this.companyProfile.Company_Logo_thum}" alt="Logo" style="height:80px;" /></div>
                             <div class="col-xs-10" style="padding-top:20px;">
                                 <strong style="font-size:18px;">${this.companyProfile.Company_Name}</strong><br>
                                 ${this.companyProfile.Repot_Heading}

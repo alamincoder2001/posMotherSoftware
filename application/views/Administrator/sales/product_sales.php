@@ -239,10 +239,10 @@
 								<td style="text-align: left;padding-left:3px;">{{ product.name }}</td>
 								<td>{{ product.categoryName }}</td>
 								<td>
-									<input type="number" min="0" step="any" v-model="product.quantity" style="margin:0;padding: 0 5px; width: 70px; text-align: center;" @input="quantityRateChange"/>
+									<input type="number" min="0" step="any" v-model="product.quantity" style="margin:0;padding: 0 5px; width: 70px; text-align: center;" @input="quantityRateChange" />
 								</td>
 								<td>
-									<input type="number" min="0" step="any" v-model="product.salesRate" style="margin:0;padding: 0 5px; width: 120px; text-align: center;" @input="quantityRateChange"/>
+									<input type="number" min="0" step="any" v-model="product.salesRate" style="margin:0;padding: 0 5px; width: 120px; text-align: center;" @input="quantityRateChange" />
 								</td>
 								<td>{{ product.total }}</td>
 								<td><a href="" v-on:click.prevent="removeFromCart(sl)"><i class="fa fa-trash"></i></a></td>
@@ -332,7 +332,7 @@
 											<div class="form-group">
 												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Transport Cost</label>
 												<div class="col-xs-12">
-													<input type="number" min="0" step="any" class="form-control" v-model="sales.transportCost" v-on:input="calculateTotal" />
+													<input type="number" min="0" step="any" id="transportCost" class="form-control" v-model="sales.transportCost" v-on:input="calculateTotal" />
 												</div>
 											</div>
 										</td>
@@ -712,7 +712,7 @@
 				this.clearProduct();
 				this.calculateTotal();
 			},
-			quantityRateChange(){
+			quantityRateChange() {
 				this.cart = this.cart.map(item => {
 					item.total = parseFloat(parseFloat(item.salesRate) * parseFloat(item.quantity)).toFixed(2);
 					return item;
@@ -742,21 +742,25 @@
 				this.sales.subTotal = this.cart.reduce((prev, curr) => {
 					return prev + parseFloat(curr.total)
 				}, 0).toFixed(2);
-				this.sales.vat = this.cart.reduce((prev, curr) => {
-					return +prev + +(curr.total * (curr.vat / 100))
-				}, 0);
+				if (event.target.id != 'transportCost') {
+					this.sales.vat = this.cart.reduce((prev, curr) => {
+						return +prev + +(curr.total * (curr.vat / 100))
+					}, 0);
+				}
 				if (event.target.id == 'discountPercent') {
 					this.sales.discount = ((parseFloat(this.sales.subTotal) * parseFloat(this.discountPercent)) / 100).toFixed(2);
 				} else {
 					this.discountPercent = (parseFloat(this.sales.discount) / parseFloat(this.sales.subTotal) * 100).toFixed(2);
 				}
-				this.sales.total = ((parseFloat(this.sales.subTotal) + parseFloat(this.sales.transportCost)) - parseFloat(this.sales.discount)).toFixed(2);
+				this.sales.total = (parseFloat(this.sales.subTotal) - parseFloat(this.sales.discount)).toFixed(2);
 				if (event.target.id == 'vatPercent') {
 					this.sales.vat = ((parseFloat(this.sales.total) * parseFloat(this.vatPercent)) / 100).toFixed(2);
-				} else {
+				} else if (event.target.id == 'vat') {
 					this.vatPercent = (parseFloat(this.sales.vat) / parseFloat(this.sales.total) * 100).toFixed(2);
+				} else {
+					this.sales.vat = ((parseFloat(this.sales.total) * parseFloat(this.vatPercent)) / 100).toFixed(2);
 				}
-				this.sales.total = parseFloat(parseFloat(this.sales.vat) + parseFloat(this.sales.total)).toFixed(2);
+				this.sales.total = parseFloat(parseFloat(this.sales.vat) + parseFloat(this.sales.total) + parseFloat(this.sales.transportCost)).toFixed(2);
 
 				if (event.target.id != 'paid') {
 					this.sales.paid = this.sales.total;

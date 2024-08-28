@@ -28,7 +28,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 						<?php if ($companyInfo->Company_Logo_thum == "") { ?>
 							<img src="/assets/login/img/images.jpg" style="width: 100%; height: 125px; border-radius: 15px; margin-top: 10px; padding: 5px; border: 1px solid white;">
 						<?php } else { ?>
-							<img src="/uploads/company_profile_org/<?php echo $companyInfo->Company_Logo_thum; ?>" style="width: 100%; height: 125px; border-radius: 15px; margin-top: 10px; padding: 5px; border: 1px solid white;">
+							<img src="/<?php echo $companyInfo->Company_Logo_thum; ?>" style="width: 100%; height: 125px; border-radius: 15px; margin-top: 10px; padding: 5px; border: 1px solid white;">
 						<?php } ?>
 					</div>
 

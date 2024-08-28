@@ -254,13 +254,9 @@
 									<tr>
 										<td>
 											<div class="form-group">
-												<label class="col-xs-12 control-label no-padding-right" style="margin: 0;"> Vat </label>
-												<div class="col-xs-4 no-padding-right">
-													<input type="number" min="0" step="any" class="form-control" id="vatPercent" name="vatPercent" v-model="vatPercent" v-on:input="calculateTotal" />
-												</div>
-												<label class="col-xs-1"> % </label>
-												<div class="col-xs-6 no-padding-right">
-													<input type="number" min="0" step="any" class="form-control" id="vat" name="vat" v-model="purchase.vat" readonly />
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount</label>
+												<div class="col-xs-12">
+													<input type="number" min="0" step="any" id="discount" name="discount" class="form-control" v-model="purchase.discount" v-on:input="calculateTotal" />
 												</div>
 											</div>
 										</td>
@@ -269,9 +265,13 @@
 									<tr>
 										<td>
 											<div class="form-group">
-												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Discount</label>
-												<div class="col-xs-12">
-													<input type="number" min="0" step="any" id="discount" name="discount" class="form-control" v-model="purchase.discount" v-on:input="calculateTotal" />
+												<label class="col-xs-12 control-label no-padding-right" style="margin: 0;"> Vat </label>
+												<div class="col-xs-4 no-padding-right">
+													<input type="number" min="0" step="any" class="form-control" id="vatPercent" name="vatPercent" v-model="vatPercent" v-on:input="calculateTotal" />
+												</div>
+												<label class="col-xs-1"> % </label>
+												<div class="col-xs-6 no-padding-right">
+													<input type="number" min="0" step="any" class="form-control" id="vat" name="vat" v-model="purchase.vat" readonly />
 												</div>
 											</div>
 										</td>
@@ -640,8 +640,9 @@
 				this.purchase.subTotal = this.cart.reduce((prev, curr) => {
 					return prev + parseFloat(curr.total);
 				}, 0).toFixed(2);
-				this.purchase.vat = ((this.purchase.subTotal * parseFloat(this.vatPercent)) / 100).toFixed(2);
-				this.purchase.total = ((parseFloat(this.purchase.subTotal) + parseFloat(this.purchase.vat) + parseFloat(this.purchase.freight)) - parseFloat(this.purchase.discount)).toFixed(2);
+				this.purchase.total = (parseFloat(this.purchase.subTotal) - parseFloat(this.purchase.discount)).toFixed(2);
+				this.purchase.vat = ((this.purchase.total * parseFloat(this.vatPercent)) / 100).toFixed(2);
+				this.purchase.total = (parseFloat(this.purchase.total) + parseFloat(this.purchase.vat) + parseFloat(this.purchase.freight)).toFixed(2);
 
 				if (event.target.id == 'paid') {
 					this.purchase.due = (parseFloat(this.purchase.total) - parseFloat(this.purchase.paid)).toFixed(2);
