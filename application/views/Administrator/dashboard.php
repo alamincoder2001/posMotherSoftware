@@ -25,7 +25,7 @@ if ($module == 'dashboard' or $module == '') { ?>
 		<div class="col-md-12 col-xs-12">
 			<!-- Header Logo -->
 			<div class="col-md-12 header" style="height: 130px;">
-				<img src="<?php echo base_url(); ?>assets/images/linkup_logo.png" class="img img-responsive center-block">
+				<img src="<?php echo base_url(); ?>assets/images/linkup_logo.png" style="border-radius: 8px;" class="img img-responsive center-block">
 			</div>
 			<div class="col-md-10 col-md-offset-1">
 				<div class="col-md-3 col-xs-6 section4">

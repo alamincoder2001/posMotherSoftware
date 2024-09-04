@@ -62,7 +62,7 @@ class SMS_model extends CI_Model
 
         if ($this->smsEnabled == 'gateway1') {
             $url = $this->url;
-            $postData = array(
+             $postData = array(
                 "UserName" => "ceo@linktechbd.com",
                 "Apikey" => $this->apiKey,
                 "MobileNumber" => "88{$recipient}",
@@ -106,12 +106,12 @@ class SMS_model extends CI_Model
         if ($this->smsEnabled == 'gateway1') {
             $url = $this->bulkUrl;
 
-            $mobileNumbers = array_map(function ($item) {
+            $mobileNumbers = array_map(function($item) {
                 $recipient = trim($item);
                 return "88{$recipient}";
             }, $recipients);
-
-            $numbers = implode(', ', array_values($mobileNumbers));
+            
+            $numbers = implode(',', array_values($mobileNumbers));
 
             $postData = array(
                 "UserName" => "ceo@linktechbd.com",
@@ -126,13 +126,12 @@ class SMS_model extends CI_Model
             $recipient = implode(",", array_map('trim', $recipients));
 
             $postData = array(
-                "user"          => $this->userId,
-                "senderid"      => $this->senderId2,
-                "pwd"           => $this->password,
-                "CountryCode"   => $this->countryCode,
-                "mobileno"      => $recipient,
-                "msgtext"       => $smsText,
-                "priority"      => 'High'
+                "UserName" => "ceo@linktechbd.com",
+                "Apikey" => $this->apiKey,
+                "MobileNumber" => $numbers,
+                "SenderName" => $this->senderId,
+                "TransactionType" => "T",
+                "Message" => $smsText
             );
         }
 

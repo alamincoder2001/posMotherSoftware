@@ -178,8 +178,9 @@ class Customer extends CI_Controller
                 $customerInfo = $this->db->query("select * from tbl_customer where Customer_SlNo = ?", $paymentObj->CPayment_customerID)->row();
                 $sendToName = $customerInfo->owner_name != '' ? $customerInfo->owner_name : $customerInfo->Customer_Name;
                 $currency = $this->session->userdata('Currency_Name');
+                $paymentInvoice = $payment['CPayment_invoice'];
 
-                $message = "Dear {$sendToName},\nThanks for your payment. Received amount is {$currency} {$paymentObj->CPayment_amount}. Current due is {$currency} {$currentDue}";
+                $message = "Dear {$sendToName},\nThanks for your payment\nInvoice No.{$paymentInvoice}\nReceived {$currency} {$paymentObj->CPayment_amount}\nCurrent due {$currency} {$currentDue}";
                 $recipient = $customerInfo->Customer_Mobile;
                 $this->sms->sendSms($recipient, $message);
             }

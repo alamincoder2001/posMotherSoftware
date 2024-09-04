@@ -7,110 +7,107 @@
 <div id="smsSettings">
     <form @submit.prevent="saveSettings">
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group clearfix">
-                    <label class="control-label col-md-4">Gateway 1</label>
-                    <div class="col-md-8">
+            <div class="col-md-6 col-xs-12">
+                <div class="form-group">
+                    <label class="control-label col-xs-4">Gateway 1</label>
+                    <div class="col-xs-8">
                         <input type="checkbox" v-model="settings.sms_enabled" true-value="gateway1" false-value="false">
                     </div>
                 </div>
-                <div class="form-group clearfix">
-                    <label class="control-label col-md-4">API Key</label>
-                    <div class="col-md-8">
+                <div class="form-group">
+                    <label class="control-label col-xs-4">API Key</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.api_key">
                     </div>
                 </div>
-                <div class="form-group clearfix">
-                    <label class="control-label col-md-4">URL</label>
-                    <div class="col-md-8">
+                <div class="form-group">
+                    <label class="control-label col-xs-4">URL</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.url">
                     </div>
                 </div>
-                <div class="form-group clearfix">
-                    <label class="control-label col-md-4">Bulk URL</label>
-                    <div class="col-md-8">
+                <div class="form-group">
+                    <label class="control-label col-xs-4">Bulk URL</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.bulk_url">
                     </div>
                 </div>
-                <div class="form-group clearfix">
-                    <label class="control-label col-md-4">Sender Id</label>
-                    <div class="col-md-8">
+                <div class="form-group">
+                    <label class="control-label col-xs-4">Sender Id</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.sender_id">
                     </div>
                 </div>
-                <div class="form-group clearfix">
-                    <label class="control-label col-md-4">SMS Type</label>
-                    <div class="col-md-8">
+                <div class="form-group">
+                    <label class="control-label col-xs-4">SMS Type</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.sms_type">
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-12">
                 <div class="form-group clearfix">
-                    <label class="control-label col-md-4">Gateway 2</label>
-                    <div class="col-md-8">
+                    <label class="control-label col-xs-4">Gateway 2</label>
+                    <div class="col-xs-8">
                         <input type="checkbox" v-model="settings.sms_enabled" true-value="gateway2" false-value="false">
                     </div>
                 </div>
                 <div class="form-group clearfix">
-                    <label class="control-label col-md-4">URL</label>
-                    <div class="col-md-8">
+                    <label class="control-label col-xs-4">URL</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.url_2">
                     </div>
                 </div>
                 <div class="form-group clearfix">
-                    <label class="control-label col-md-4">Bulk URL</label>
-                    <div class="col-md-8">
+                    <label class="control-label col-xs-4">Bulk URL</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.bulk_url_2">
                     </div>
                 </div>
                 <div class="form-group clearfix">
-                    <label class="control-label col-md-4">User Id</label>
-                    <div class="col-md-8">
+                    <label class="control-label col-xs-4">User Id</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.user_id">
                     </div>
                 </div>
 
                 <div class="form-group clearfix">
-                    <label class="control-label col-md-4">Sender Id</label>
-                    <div class="col-md-8">
+                    <label class="control-label col-xs-4">Sender Id</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.sender_id_2">
                     </div>
                 </div>
 
                 <div class="form-group clearfix">
-                    <label class="control-label col-md-4">Country Code</label>
-                    <div class="col-md-8">
+                    <label class="control-label col-xs-4">Country Code</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.country_code">
                     </div>
                 </div>
                 <div class="form-group clearfix">
-                    <label class="control-label col-md-4">Password</label>
-                    <div class="col-md-8">
+                    <label class="control-label col-xs-4">Password</label>
+                    <div class="col-xs-8">
                         <input type="password" class="form-control" v-model="settings.password">
                     </div>
                 </div>
             </div>
-        </div>
-        <br>
-        <br>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
+
+
+            <div class="col-md-6 col-md-offset-3" style="margin-top: 30px;">
                 <div class="form-group clearfix">
-                    <label class="control-label col-md-4">Sender Name</label>
-                    <div class="col-md-8">
+                    <label class="control-label col-xs-4">Sender Name</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.sender_name">
                     </div>
                 </div>
                 <div class="form-group clearfix">
-                    <label class="control-label col-md-4">Sender Phone</label>
-                    <div class="col-md-8">
+                    <label class="control-label col-xs-4">Sender Phone</label>
+                    <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.sender_phone">
                     </div>
                 </div>
                 <div class="form-group clearfix">
-                    <div class="col-md-8 col-md-offset-4">
+                    <div class="col-xs-8 col-xs-offset-4">
                         <input type="submit" value="Save" class="btn btn-success btn-sm">
                     </div>
                 </div>

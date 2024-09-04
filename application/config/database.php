@@ -8,13 +8,13 @@ $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 
-	'username' => 'root',
-	'password' => '',
-	'database' => 'ex11prretailpro_soft',
-
-	// 'username' => 'ex11prretailpro_software',
-	// 'password' => 'cKb^$}isqXFQ',
+	// 'username' => 'root',
+	// 'password' => '',
 	// 'database' => 'ex11prretailpro_soft',
+
+	'username' => 'ex11prretailpro_software',
+	'password' => 'cKb^$}isqXFQ',
+	'database' => 'ex11prretailpro_soft',
 
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
