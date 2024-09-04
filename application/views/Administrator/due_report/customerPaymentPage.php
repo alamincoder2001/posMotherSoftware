@@ -150,7 +150,7 @@
 								<div class="form-group">
 									<div class="col-md-7 col-md-offset-5 text-right">
 										<input type="button" @click="resetForm" class="btnReset" value="Reset">
-										<input type="submit" class="btnSave" value="Save">
+										<input type="submit" :disabled="paymentProgress" class="btnSave" value="Save">
 									</div>
 								</div>
 							</div>
@@ -228,6 +228,7 @@
 				},
 				accounts: [],
 				selectedAccount: null,
+				paymentProgress: false,
 				userType: '<?php echo $this->session->userdata("accountType"); ?>',
 
 				columns: [{
@@ -367,11 +368,13 @@
 				if (this.payment.CPayment_id != 0) {
 					url = '/update_customer_payment';
 				}
+				this.paymentProgress = true;
 				axios.post(url, this.payment).then(res => {
 					let r = res.data;
 					alert(r.message);
 					if (r.success) {
 						this.resetForm();
+						this.paymentProgress = false;
 						this.getCustomerPayments();
 						let invoiceConfirm = confirm('Do you want to view invoice?');
 						if (invoiceConfirm == true) {

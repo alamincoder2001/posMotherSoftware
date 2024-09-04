@@ -26,7 +26,8 @@ class SMS extends CI_Controller{
 
         $result = $this->sms->sendSms($data->number, $data->smsText);
 
-        if(!$result){
+        $result = json_decode($result, true);
+        if($result['status'] != 'Success'){
             $res = ['success'=>false, 'message'=>'SMS not sent'];   
             echo json_encode($res);
             exit;
@@ -51,7 +52,8 @@ class SMS extends CI_Controller{
 
         $result = $this->sms->sendBulkSms($data->numbers, $data->smsText);
 
-        if(!$result){
+        $result = json_decode($result, true);
+        if($result['status'] != 'Success'){
             $res = ['success'=>false, 'message'=>'SMS not sent'];   
             echo json_encode($res);
             exit;

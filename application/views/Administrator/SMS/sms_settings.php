@@ -1,6 +1,7 @@
 <style>
     #smsSettings label {
-        font-size: 13px;
+        font-size: 12px;
+        font-weight: 600;
     }
 </style>
 <div id="smsSettings">
@@ -70,14 +71,14 @@
                         <input type="text" class="form-control" v-model="settings.user_id">
                     </div>
                 </div>
-                
+
                 <div class="form-group clearfix">
                     <label class="control-label col-md-4">Sender Id</label>
                     <div class="col-md-8">
                         <input type="text" class="form-control" v-model="settings.sender_id_2">
                     </div>
                 </div>
-                
+
                 <div class="form-group clearfix">
                     <label class="control-label col-md-4">Country Code</label>
                     <div class="col-md-8">
