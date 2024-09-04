@@ -899,7 +899,7 @@ class Account extends CI_Controller
             select 
                 sm.SaleMaster_SlNo as id,
                 sm.SaleMaster_SaleDate as date,
-                concat('Sale - ', sm.SaleMaster_InvoiceNo, ' - ', c.Customer_Name, ' (', c.Customer_Code, ')', ' - Bill: ', sm.SaleMaster_TotalSaleAmount) as description,
+                concat('Sale - ', sm.SaleMaster_InvoiceNo, ' - ', ifnull(c.Customer_Name, sm.customerName), ' (', ifnull(c.Customer_Code, 'Cash Customer'), ')', ' - Bill: ', sm.SaleMaster_TotalSaleAmount) as description,
                 sm.SaleMaster_PaidAmount as in_amount,
                 0.00 as out_amount
             from tbl_salesmaster sm 
@@ -1032,7 +1032,7 @@ class Account extends CI_Controller
             select 
                 pm.PurchaseMaster_SlNo as id,
                 pm.PurchaseMaster_OrderDate as date,
-                concat('Purchase - ', pm.PurchaseMaster_InvoiceNo, ' - ', s.Supplier_Name, ' (', s.Supplier_Code, ')', ' - Bill: ', pm.PurchaseMaster_TotalAmount) as description,
+                concat('Purchase - ', pm.PurchaseMaster_InvoiceNo, ' - ', ifnull(s.Supplier_Name, pm.supplierName), ' (', ifnull(s.Supplier_Code, 'Cash Supplier'), ')', ' - Bill: ', pm.PurchaseMaster_TotalAmount) as description,
                 0.00 as in_amount,
                 pm.PurchaseMaster_PaidAmount as out_amount
             from tbl_purchasemaster pm 

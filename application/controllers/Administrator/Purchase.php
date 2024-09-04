@@ -86,7 +86,7 @@ class Purchase extends CI_Controller
             $status = $data->status;
         }
         if (isset($data->name) && $data->name != '') {
-            $clauses .= " or pm.PurchaseMaster_InvoiceNo like '$data->name%'";
+            $clauses .= " and pm.PurchaseMaster_InvoiceNo like '$data->name%'";
         }
         if (isset($data->dateFrom) && $data->dateFrom != '' && isset($data->dateTo) && $data->dateTo != '') {
             $clauses .= " and pm.PurchaseMaster_OrderDate between '$data->dateFrom' and '$data->dateTo'";
@@ -662,42 +662,24 @@ class Purchase extends CI_Controller
                 $invoice = $this->mt->generatePurchaseInvoice();
             }
 
+            $supplierId = $data->purchase->supplierId;
             if (isset($data->supplier)) {
                 $supplier = (array)$data->supplier;
                 unset($supplier['Supplier_SlNo']);
                 unset($supplier['display_name']);
 
-                $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and branch_id = ?", [$data->supplier->Supplier_Mobile, $this->session->userdata("BRANCHid")]);
-                if (
-                    $data->supplier->Supplier_Mobile != '' &&
-                    $data->supplier->Supplier_Mobile != null &&
-                    $mobile_count->num_rows() > 0
-                ) {
+                $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and branch_id = ?", [$data->supplier->Supplier_Mobile, $this->session->userdata("BRANCHid")])->row();
 
-                    $duplicateSupplier = $mobile_count->row();
-                    unset($supplier['Supplier_Code']);
-                    unset($supplier['Supplier_Type']);
-                    $supplier["UpdateBy"]   = $this->session->userdata("userId");
-                    $supplier["UpdateTime"] = date("Y-m-d H:i:s");
-                    $supplier["status"]     = 'a';
+                if ($data->supplier->Supplier_Type == 'N' && empty($mobile_count)) {
+                    $supplier['Supplier_Code']     = $this->mt->generateSupplierCode();
+                    $supplier['status']            = 'a';
+                    $supplier['AddBy']             = $this->session->userdata("userId");
+                    $supplier['AddTime']           = date('Y-m-d H:i:s');
+                    $supplier['last_update_ip'] = get_client_ip();
+                    $supplier['branch_id'] = $this->session->userdata('BRANCHid');
 
-                    if ($duplicateSupplier->Supplier_Type == 'G') {
-                        $supplier["Supplier_Type"] = '';
-                    }
-                    $this->db->where('Supplier_SlNo', $duplicateSupplier->Supplier_SlNo)->update('tbl_supplier', $supplier);
-                    $supplierId = $duplicateSupplier->Supplier_SlNo;
-                } else {
-                    if ($data->supplier->Supplier_Type == 'N') {
-                        $supplier['Supplier_Code']     = $this->mt->generateSupplierCode();
-                        $supplier['status']            = 'a';
-                        $supplier['AddBy']             = $this->session->userdata("userId");
-                        $supplier['AddTime']           = date('Y-m-d H:i:s');
-                        $supplier['last_update_ip'] = get_client_ip();
-                        $supplier['branch_id'] = $this->session->userdata('BRANCHid');
-
-                        $this->db->insert('tbl_supplier', $supplier);
-                        $supplierId = $this->db->insert_id();
-                    }
+                    $this->db->insert('tbl_supplier', $supplier);
+                    $supplierId = $this->db->insert_id();
                 }
             }
 
@@ -801,44 +783,25 @@ class Purchase extends CI_Controller
 
             $data = json_decode($this->input->raw_input_stream);
             $purchaseId = $data->purchase->purchaseId;
-            $supplierId = $data->purchase->supplierId;
 
+            $supplierId = $data->purchase->supplierId;
             if (isset($data->supplier)) {
                 $supplier = (array)$data->supplier;
                 unset($supplier['Supplier_SlNo']);
                 unset($supplier['display_name']);
 
-                $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and branch_id = ?", [$data->supplier->Supplier_Mobile, $this->session->userdata("BRANCHid")]);
-                if (
-                    $data->supplier->Supplier_Mobile != '' &&
-                    $data->supplier->Supplier_Mobile != null &&
-                    $mobile_count->num_rows() > 0
-                ) {
+                $mobile_count = $this->db->query("select * from tbl_supplier where Supplier_Mobile = ? and branch_id = ?", [$data->supplier->Supplier_Mobile, $this->session->userdata("BRANCHid")])->row();
 
-                    $duplicateSupplier = $mobile_count->row();
-                    unset($supplier['Supplier_Code']);
-                    unset($supplier['Supplier_Type']);
-                    $supplier["UpdateBy"]   = $this->session->userdata("userId");
-                    $supplier["UpdateTime"] = date("Y-m-d H:i:s");
-                    $supplier["status"]     = 'a';
+                if ($data->supplier->Supplier_Type == 'N' && empty($mobile_count)) {
+                    $supplier['Supplier_Code']     = $this->mt->generateSupplierCode();
+                    $supplier['status']            = 'a';
+                    $supplier['AddBy']             = $this->session->userdata("userId");
+                    $supplier['AddTime']           = date('Y-m-d H:i:s');
+                    $supplier['last_update_ip'] = get_client_ip();
+                    $supplier['branch_id'] = $this->session->userdata('BRANCHid');
 
-                    if ($duplicateSupplier->Supplier_Type == 'G') {
-                        $supplier["Supplier_Type"] = '';
-                    }
-                    $this->db->where('Supplier_SlNo', $duplicateSupplier->Supplier_SlNo)->update('tbl_supplier', $supplier);
-                    $supplierId = $duplicateSupplier->Supplier_SlNo;
-                } else {
-                    if ($data->supplier->Supplier_Type == 'N') {
-                        $supplier['Supplier_Code']  = $this->mt->generateSupplierCode();
-                        $supplier['status']         = 'a';
-                        $supplier['AddBy']          = $this->session->userdata("userId");
-                        $supplier['AddTime']        = date('Y-m-d H:i:s');
-                        $supplier['last_update_ip'] = get_client_ip();
-                        $supplier['branch_id']      = $this->session->userdata('BRANCHid');
-
-                        $this->db->insert('tbl_supplier', $supplier);
-                        $supplierId = $this->db->insert_id();
-                    }
+                    $this->db->insert('tbl_supplier', $supplier);
+                    $supplierId = $this->db->insert_id();
                 }
             }
 

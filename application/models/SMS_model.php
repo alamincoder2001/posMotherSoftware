@@ -62,7 +62,7 @@ class SMS_model extends CI_Model
 
         if ($this->smsEnabled == 'gateway1') {
             $url = $this->url;
-             $postData = array(
+            $postData = array(
                 "UserName" => "ceo@linktechbd.com",
                 "Apikey" => $this->apiKey,
                 "MobileNumber" => "88{$recipient}",
@@ -102,36 +102,36 @@ class SMS_model extends CI_Model
             return false;
         }
         $smsText = urldecode($message);
+        $messages = array_map(function ($recipient) use ($smsText) {
+            $recipient = trim($recipient);
+            return array(
+                'MobNumber' => "88{$recipient}",
+                'Message' => $smsText
+            );
+        }, $recipients);
 
         if ($this->smsEnabled == 'gateway1') {
             $url = $this->bulkUrl;
 
-            $mobileNumbers = array_map(function($item) {
-                $recipient = trim($item);
-                return "88{$recipient}";
-            }, $recipients);
-            
-            $numbers = implode(',', array_values($mobileNumbers));
-
             $postData = array(
                 "UserName" => "ceo@linktechbd.com",
                 "Apikey" => $this->apiKey,
-                "MobileNumber" => $numbers,
                 "SenderName" => $this->senderId,
-                "TransactionType" => "T",
-                "Message" => $smsText
+                "TransactionType" => "D",
+                "SmsData" => $messages
             );
         } else {
             $url = $this->bulkUrl2;
             $recipient = implode(",", array_map('trim', $recipients));
 
             $postData = array(
-                "UserName" => "ceo@linktechbd.com",
-                "Apikey" => $this->apiKey,
-                "MobileNumber" => $numbers,
-                "SenderName" => $this->senderId,
-                "TransactionType" => "T",
-                "Message" => $smsText
+                "user"          => $this->userId,
+                "senderid"      => $this->senderId2,
+                "pwd"           => $this->password,
+                "CountryCode"   => $this->countryCode,
+                "mobileno"      => $recipient,
+                "msgtext"       => $smsText,
+                "priority"      => 'High'
             );
         }
 

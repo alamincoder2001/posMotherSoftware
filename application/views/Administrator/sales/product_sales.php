@@ -807,6 +807,7 @@
 					this.sales.employeeId = null;
 				}
 				this.sales.salesFrom = this.selectedBranch.branch_id;
+				this.sales.customerId = this.selectedCustomer.Customer_SlNo;
 
 				let data = {
 					sales: this.sales,

@@ -69,40 +69,19 @@ class Sales extends CI_Controller
                 unset($customer['Customer_SlNo']);
                 unset($customer['display_name']);
                 unset($customer['Customer_Type']);
+                $mobile_count = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and branch_id = ?", [$data->customer->Customer_Mobile, $this->session->userdata("BRANCHid")])->row();
 
-                $mobile_count = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and branch_id = ?", [$data->customer->Customer_Mobile, $this->session->userdata("BRANCHid")]);
-                if (
-                    $data->customer->Customer_Mobile != '' &&
-                    $data->customer->Customer_Mobile != null &&
-                    $mobile_count->num_rows() > 0
-                ) {
-                    $duplicateCustomer = $mobile_count->row();
-                    unset($customer['Customer_Code']);
-                    unset($customer['Customer_Type']);
-                    unset($customer['District_Name']);
-                    unset($customer['added_by']);
-                    unset($customer['deleted_by']);
-                    $customer["UpdateBy"]   = $this->session->userdata("userId");
-                    $customer["UpdateTime"] = date("Y-m-d H:i:s");
-                    $customer["status"]     = 'a';
-                    if ($duplicateCustomer->Customer_Type == 'G') {
-                        $customer["Customer_Type"] = 'retail';
-                    }
-                    $this->db->where('Customer_SlNo', $duplicateCustomer->Customer_SlNo)->update('tbl_customer', $customer);
-                    $customerId = $duplicateCustomer->Customer_SlNo;
-                } else {
-                    if ($data->customer->Customer_Type == 'N') {
-                        $customer['Customer_Code'] = $this->mt->generateCustomerCode();
-                        $customer['Customer_Type'] = $data->sales->salesType;
-                        $customer['status'] = 'a';
-                        $customer['AddBy'] = $this->session->userdata("userId");
-                        $customer['AddTime'] = date("Y-m-d H:i:s");
-                        $customer['last_update_ip'] = get_client_ip();
-                        $customer['branch_id'] = $this->session->userdata("BRANCHid");
-
-                        $this->db->insert('tbl_customer', $customer);
-                        $customerId = $this->db->insert_id();
-                    }
+                if ($data->customer->Customer_Type == 'N' && empty($mobile_count)) {
+                    $customer['Customer_Code'] = $this->mt->generateCustomerCode();
+                    $customer['Customer_Type'] = $data->sales->salesType;
+                    $customer['Customer_Credit_Limit'] = $data->sales->total;
+                    $customer['status'] = 'a';
+                    $customer['AddBy'] = $this->session->userdata("userId");
+                    $customer['AddTime'] = date("Y-m-d H:i:s");
+                    $customer['last_update_ip'] = get_client_ip();
+                    $customer['branch_id'] = $this->session->userdata("BRANCHid");
+                    $this->db->insert('tbl_customer', $customer);
+                    $customerId = $this->db->insert_id();
                 }
             }
 
@@ -168,14 +147,20 @@ class Sales extends CI_Controller
                 }
             }
             //Send sms
-            $currentDue = $data->sales->previousDue + ($data->sales->total - $data->sales->paid);
-            $customerInfo = $this->db->query("select * from tbl_customer where Customer_SlNo = ?", $customerId)->row();
-            $sendToName = $customerInfo->owner_name != '' ? $customerInfo->owner_name : $customerInfo->Customer_Name;
-            $currency = $this->session->userdata('Currency_Name');
+            if (!empty($data->customer->Customer_Mobile) && preg_match("/(^(01){1}[3456789]{1}(\d){8})$/", trim($data->customer->Customer_Mobile)) == 1) {
+                $currentDue = $data->sales->previousDue + ($data->sales->total - $data->sales->paid);
+                $customerInfo = $this->db->query("select * from tbl_customer where Customer_SlNo = ?", $customerId)->row();
+                if (!empty($customerInfo)) {
+                    $sendToName = $customerInfo->owner_name != '' ? $customerInfo->owner_name : $customerInfo->Customer_Name;
+                } else {
+                    $sendToName = $data->customer->Customer_Name;
+                }
+                $currency = $this->session->userdata('Currency_Name');
 
-            $message = "Dear {$sendToName},\nYour invoice No. {$invoice}\nBill is {$currency} {$data->sales->total}\nReceived {$currency} {$data->sales->paid}\nCurrent due {$currency} {$currentDue}";
-            $recipient = $customerInfo->Customer_Mobile;
-            $this->sms->sendSms($recipient, $message);
+                $message = "Dear {$sendToName},\nYour invoice No. {$invoice}\nBill is {$currency} {$data->sales->total}\nReceived {$currency} {$data->sales->paid}\nCurrent due {$currency} {$currentDue}";
+                $recipient = $data->customer->Customer_Mobile;
+                $this->sms->sendSms($recipient, $message);
+            }
 
             $this->db->trans_commit();
             $res = ['success' => true, 'message' => 'Sales Success', 'salesId' => $salesId];
@@ -410,41 +395,19 @@ class Sales extends CI_Controller
                 unset($customer['Customer_SlNo']);
                 unset($customer['display_name']);
                 unset($customer['Customer_Type']);
-                $mobile_count = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and branch_id = ?", [$data->customer->Customer_Mobile, $this->session->userdata("BRANCHid")]);
-                if (
-                    $data->customer->Customer_Mobile != '' &&
-                    $data->customer->Customer_Mobile != null &&
-                    $mobile_count->num_rows() > 0
-                ) {
-                    $duplicateCustomer = $mobile_count->row();
-                    unset($customer['Customer_Code']);
-                    unset($customer['Customer_Type']);
-                    if (isset($customer['District_Name'])) {
-                        unset($customer['District_Name']);
-                        unset($customer['added_by']);
-                        unset($customer['deleted_by']);
-                    }
-                    $customer["UpdateBy"]   = $this->session->userdata("userId");
-                    $customer["UpdateTime"] = date("Y-m-d H:i:s");
-                    $customer["status"]     = 'a';
-                    if ($duplicateCustomer->Customer_Type == 'G') {
-                        $customer["Customer_Type"] = 'retail';
-                    }
-                    $this->db->where('Customer_SlNo', $duplicateCustomer->Customer_SlNo)->update('tbl_customer', $customer);
-                    $customerId = $duplicateCustomer->Customer_SlNo;
-                } else {
-                    if ($data->customer->Customer_Type == 'N') {
-                        $customer['Customer_Code'] = $this->mt->generateCustomerCode();
-                        $customer['Customer_Type'] = $data->sales->salesType;
-                        $customer['status'] = 'a';
-                        $customer['AddBy'] = $this->session->userdata("userId");
-                        $customer['AddTime'] = date("Y-m-d H:i:s");
-                        $customer['last_update_ip'] = get_client_ip();
-                        $customer['branch_id'] = $this->session->userdata("BRANCHid");
+                $mobile_count = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and branch_id = ?", [$data->customer->Customer_Mobile, $this->session->userdata("BRANCHid")])->row();
 
-                        $this->db->insert('tbl_customer', $customer);
-                        $customerId = $this->db->insert_id();
-                    }
+                if ($data->customer->Customer_Type == 'N' && empty($mobile_count)) {
+                    $customer['Customer_Code'] = $this->mt->generateCustomerCode();
+                    $customer['Customer_Type'] = $data->sales->salesType;
+                    $customer['Customer_Credit_Limit'] = $data->sales->total;
+                    $customer['status'] = 'a';
+                    $customer['AddBy'] = $this->session->userdata("userId");
+                    $customer['AddTime'] = date("Y-m-d H:i:s");
+                    $customer['last_update_ip'] = get_client_ip();
+                    $customer['branch_id'] = $this->session->userdata("BRANCHid");
+                    $this->db->insert('tbl_customer', $customer);
+                    $customerId = $this->db->insert_id();
                 }
             }
 

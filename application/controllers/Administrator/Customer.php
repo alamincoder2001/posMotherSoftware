@@ -173,16 +173,18 @@ class Customer extends CI_Controller
             $paymentId = $this->db->insert_id();
 
             if ($paymentObj->CPayment_TransactionType == 'CR') {
-                $currentDue = $paymentObj->CPayment_TransactionType == 'CR' ? $paymentObj->CPayment_previous_due - $paymentObj->CPayment_amount : $paymentObj->CPayment_previous_due + $paymentObj->CPayment_amount;
                 //Send sms
                 $customerInfo = $this->db->query("select * from tbl_customer where Customer_SlNo = ?", $paymentObj->CPayment_customerID)->row();
-                $sendToName = $customerInfo->owner_name != '' ? $customerInfo->owner_name : $customerInfo->Customer_Name;
-                $currency = $this->session->userdata('Currency_Name');
-                $paymentInvoice = $payment['CPayment_invoice'];
+                $currentDue = $paymentObj->CPayment_TransactionType == 'CR' ? $paymentObj->CPayment_previous_due - $paymentObj->CPayment_amount : $paymentObj->CPayment_previous_due + $paymentObj->CPayment_amount;
+                if (!empty($customerInfo->Customer_Mobile) && preg_match("/(^(01){1}[3456789]{1}(\d){8})$/", trim($customerInfo->Customer_Mobile)) == 1) {
+                    $sendToName = $customerInfo->owner_name != '' ? $customerInfo->owner_name : $customerInfo->Customer_Name;
+                    $currency = $this->session->userdata('Currency_Name');
+                    $paymentInvoice = $payment['CPayment_invoice'];
 
-                $message = "Dear {$sendToName},\nThanks for your payment\nInvoice No.{$paymentInvoice}\nReceived {$currency} {$paymentObj->CPayment_amount}\nCurrent due {$currency} {$currentDue}";
-                $recipient = $customerInfo->Customer_Mobile;
-                $this->sms->sendSms($recipient, $message);
+                    $message = "Dear {$sendToName},\nThanks for your payment\nInvoice No.{$paymentInvoice}\nReceived {$currency} {$paymentObj->CPayment_amount}\nCurrent due {$currency} {$currentDue}";
+                    $recipient = $customerInfo->Customer_Mobile;
+                    $this->sms->sendSms($recipient, $message);
+                }
             }
 
             $res = ['success' => true, 'message' => 'Payment added successfully', 'paymentId' => $paymentId];

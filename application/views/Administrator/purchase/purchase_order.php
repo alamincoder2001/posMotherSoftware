@@ -657,13 +657,6 @@
 					return;
 				}
 
-				if (this.selectedSupplier.Supplier_SlNo == null || this.selectedSupplier == null) {
-					Swal.fire({
-						icon: "error",
-						text: "Select supplier",
-					});
-					return;
-				}
 				if (this.purchase.purchaseDate == '') {
 					Swal.fire({
 						icon: "error",
@@ -679,6 +672,7 @@
 					return;
 				}
 				this.purchase.purchaseFor = this.selectedBranch.branch_id;
+				this.purchase.supplierId = this.selectedSupplier.Supplier_SlNo;
 
 				let data = {
 					purchase: this.purchase,
