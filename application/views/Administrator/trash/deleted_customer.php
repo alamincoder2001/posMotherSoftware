@@ -122,8 +122,8 @@
             },
 
             storeCustomer() {
-                let customers = this.customers.filter(item => item.checkStatus == true).length;
-                if (customers == 0) {
+                let customers = this.customers.filter(item => item.checkStatus == true);
+                if (customers.length == 0) {
                     Swal.fire({
                         icon: "error",
                         text: "Select customer",
@@ -131,7 +131,7 @@
                     return;
                 }
                 axios.post('/restore_customer', {
-                        customers: this.customers
+                        customers: customers
                     })
                     .then(res => {
                         alert(res.data);

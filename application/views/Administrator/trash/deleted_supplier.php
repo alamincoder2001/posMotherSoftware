@@ -162,8 +162,8 @@
 			},
 
 			storeSupplier() {
-				let suppliers = this.suppliers.filter(item => item.checkStatus == true).length;
-				if (suppliers == 0) {
+				let suppliers = this.suppliers.filter(item => item.checkStatus == true);
+				if (suppliers.length == 0) {
 					Swal.fire({
 						icon: "error",
 						text: "Select supplier",
@@ -171,7 +171,7 @@
 					return;
 				}
 				axios.post('/restore_supplier', {
-						suppliers: this.suppliers
+						suppliers: suppliers
 					})
 					.then(res => {
 						alert(res.data);

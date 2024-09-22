@@ -182,8 +182,8 @@
                 }
             },
             storeProduct() {
-                let products = this.products.filter(item => item.checkStatus == true).length;
-                if (products == 0) {
+                let products = this.products.filter(item => item.checkStatus == true);
+                if (products.length == 0) {
                     Swal.fire({
                         icon: "error",
                         text: "Select product",
@@ -191,7 +191,7 @@
                     return;
                 }
                 axios.post('/restore_product', {
-                        products: this.products
+                        products: products
                     })
                     .then(res => {
                         alert(res.data);
