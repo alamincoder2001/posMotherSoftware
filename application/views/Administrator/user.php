@@ -26,7 +26,6 @@
 							<label class="col-xs-1 control-label">:</label>
 							<div class="col-xs-6">
 								<select class="form-control" style="padding:0;" v-model="user.userBranch_id" name="Brunch" id="Brunch" data-placeholder="Choose a Brunch...">
-									<option value=""> </option>
 									<option v-for="item in branches" :value="item.branch_id">{{item.Branch_name}}</option>
 								</select>
 							</div>
@@ -37,7 +36,6 @@
 							<label class="col-xs-1 control-label">:</label>
 							<div class="col-xs-6">
 								<select class="form-control" style="padding:0;" name="type" v-model="user.UserType" id="type">
-									<option value=""></option>
 									<option value="a">Admin</option>
 									<option value="u">User</option>
 									<option value="e">Entry User</option>
@@ -77,9 +75,9 @@
 						</div>
 
 						<div class="form-group">
-							<label class="col-xs-4 control-label" for=""> </label>
-							<label class="col-xs-1 control-label"></label>
-							<div class="col-xs-6 text-right">
+							<div class="col-xs-5"></div>
+							<label class="col-xs-3 control-label" for="status"> <input type="checkbox" id="status" true-value="a" false-value="p" v-model="user.status"> Is Active </label>
+							<div class="col-xs-3">
 								<button type="submit" name="btnSave" title="Save" class="btnSave">
 									Save
 									<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
@@ -104,7 +102,7 @@
 			<div class="table-responsive">
 				<datatable :columns="columns" :data="users" :filter-by="filter" style="margin-bottom: 5px;">
 					<template scope="{ row }">
-						<tr @dblclick="changestatus(row)" :style="{background: row.status == 'p' ? '#7a7a7a' : ''}">
+						<tr :style="{background: row.status == 'p' ? '#7a7a7a' : ''}">
 							<td>{{ row.sl }}</td>
 							<td>{{ row.User_ID }}</td>
 							<td>{{ row.FullName }}</td>
@@ -121,13 +119,11 @@
 								<span v-if="row.status == 'p'" class="badge badge-danger">Deactive</span>
 							</td>
 							<td>
-								<span v-if="row.status == 'a'">
-									<?php if ($this->session->userdata('accountType') != 'u') { ?>
-										<i v-if="row.UserType == 'e' || row.UserType == 'u'" class="btnAccess fa fa-users" @click="window.open('/access/'+row.User_SlNo)"></i>
-										<i v-if="row.UserType == 'e' || row.UserType == 'u' || row.UserType == 'a'" class="btnEdit fa fa-pencil" @click="editUser(row)"></i>
-										<i v-if="row.UserType == 'e' || row.UserType == 'u'" class="btnDelete fa fa-trash" @click="deleteUser(row.User_SlNo)"></i>
-									<?php } ?>
-								</span>
+								<?php if ($this->session->userdata('accountType') != 'u') { ?>
+									<i v-if="row.UserType == 'e' || row.UserType == 'u'" class="btnAccess fa fa-users" @click="window.open('/access/'+row.User_SlNo)"></i>
+									<i v-if="row.UserType == 'e' || row.UserType == 'u' || row.UserType == 'a'" class="btnEdit fa fa-pencil" @click="editUser(row)"></i>
+									<i v-if="row.UserType == 'e' || row.UserType == 'u'" class="btnDelete fa fa-trash" @click="deleteUser(row.User_SlNo)"></i>
+								<?php } ?>
 							</td>
 						</tr>
 					</template>
@@ -156,10 +152,11 @@
 					FullName: '',
 					User_Name: '',
 					UserEmail: '',
-					userBranch_id: '',
+					userBranch_id: "<?= $this->session->userdata('BRANCHid'); ?>",
 					Password: '',
 					Re_Password: '',
-					UserType: '',
+					UserType: 'a',
+					status: 'a',
 				},
 				branches: [],
 
@@ -267,6 +264,7 @@
 				axios.post(url, this.user)
 					.then(res => {
 						let r = res.data;
+
 						alert(r.message);
 						if (r.success) {
 							this.clearForm();
@@ -321,7 +319,6 @@
 					User_Name: this.user.User_Name
 				}).then(res => {
 					let r = res.data;
-					console.log(r);
 				})
 			},
 
@@ -333,6 +330,9 @@
 					} else if (typeof(this.user[key]) == "number") {
 						this.user[key] = 0;
 					}
+					this.user.userBranch_id = "<?= $this->session->userdata('BRANCHid'); ?>";
+					this.user.UserType = 'a';
+					this.user.status = 'a';
 				})
 				$("#error-txt").text('');
 			},

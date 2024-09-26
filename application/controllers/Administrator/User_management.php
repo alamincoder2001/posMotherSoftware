@@ -86,6 +86,7 @@ class User_management extends CI_Controller
                 "userBranch_id"  => $data->userBranch_id,
                 "User_Password"  => md5($data->Password),
                 "UserType"       => $data->UserType,
+                "status"         => $data->status,
                 "AddBy"          => $this->session->userdata("userId"),
                 "AddTime"        => date('Y-m-d H:i:s'),
                 "last_update_ip" => get_client_ip(),
@@ -113,14 +114,15 @@ class User_management extends CI_Controller
                 exit;
             }
             $user = array(
-                "User_Name"     => $data->User_Name,
-                "FullName"      => $data->FullName,
-                "UserEmail"     => $data->UserEmail,
-                "branch_id"     => $data->userBranch_id,
-                "userBranch_id" => $data->userBranch_id,
-                "UserType"      => $data->UserType,
-                "UpdateBy"      => $this->session->userdata("userId"),
-                "UpdateTime"    => date('Y-m-d H:i:s'),
+                "User_Name"      => $data->User_Name,
+                "FullName"       => $data->FullName,
+                "UserEmail"      => $data->UserEmail,
+                "branch_id"      => $data->userBranch_id,
+                "userBranch_id"  => $data->userBranch_id,
+                "UserType"       => $data->UserType,
+                "status"         => $data->status,
+                "UpdateBy"       => $this->session->userdata("userId"),
+                "UpdateTime"     => date('Y-m-d H:i:s'),
                 "last_update_ip" => get_client_ip(),
             );
             if (!empty($data->Password)) {
