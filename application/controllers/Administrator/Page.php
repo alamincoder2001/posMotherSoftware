@@ -426,6 +426,7 @@ class Page extends CI_Controller
         $data['InvoiceHeder']     = $this->input->post('InvoiceHeder', true);
         $data['Currency_Name']    = $this->input->post('Currency_Name', true);
         $data['SubCurrency_Name'] = $this->input->post('SubCurrency_Name', true);
+        $data['Repot_Heading'] = $this->input->post('Description', true);
         $data['dueStatus']        = $this->input->post('dueStatus', true);
         $data['last_update_ip']   = get_client_ip();
 
