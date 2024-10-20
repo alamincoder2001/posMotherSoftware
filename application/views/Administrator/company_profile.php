@@ -101,6 +101,16 @@
 									</div>
 								</div>
 							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label class="control-label" for="InvoiceNote"> Invoice Note </label>
+										<div>
+											<textarea id="InvoiceNote" name="InvoiceNote" class="form-control"><?php echo $selected->InvoiceNote; ?></textarea>
+										</div>
+									</div>
+								</div>
+							</div>
 
 							<div class="row">
 								<div class="col-md-12">

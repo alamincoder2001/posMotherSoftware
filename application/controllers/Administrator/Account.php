@@ -634,6 +634,28 @@ class Account extends CI_Controller
             select * from(
                 select 
                     'a' as sequence,
+                    sm.SaleMaster_SlNo as id,
+                    concat('Sales Invoice: ', sm.SaleMaster_InvoiceNo) as description,
+                    sm.accountId as account_id,
+                    sm.SaleMaster_SaleDate as transaction_date,
+                    'deposit' as transaction_type,
+                    sm.bankPaid as deposit,
+                    0.00 as withdraw,
+                    sm.SaleMaster_Description as note,
+                    ac.account_name,
+                    ac.account_number,
+                    ac.bank_name,
+                    ac.branch_name,
+                    0.00 as balance
+                from tbl_salesmaster sm
+                join tbl_bank_accounts ac on ac.account_id = sm.accountId
+                where sm.status = 'a'
+                and sm.bankPaid > 0
+                and sm.branch_id = " . $this->session->userdata('BRANCHid') . "
+                
+                UNION
+                select 
+                    'b' as sequence,
                     bt.transaction_id as id,
                     bt.transaction_type as description,
                     bt.account_id,
@@ -655,7 +677,7 @@ class Account extends CI_Controller
 
                 UNION
                 select 
-                    'b' as sequence,
+                    'c' as sequence,
                     bt.transaction_id as id,
                     bt.transaction_type as description,
                     bt.account_id,
@@ -677,7 +699,7 @@ class Account extends CI_Controller
                 
                 UNION
                 select
-                    'c' as sequence,
+                    'd' as sequence,
                     cp.CPayment_id as id,
                     concat('Payment Received - ', c.Customer_Name, ' (', c.Customer_Code, ')') as description, 
                     cp.account_id,
@@ -701,7 +723,7 @@ class Account extends CI_Controller
                 
                 UNION
                 select
-                    'd' as sequence,
+                    'e' as sequence,
                     cp.CPayment_id as id,
                     concat('paid to customer - ', c.Customer_Name, ' (', c.Customer_Code, ')') as description, 
                     cp.account_id,
@@ -725,7 +747,7 @@ class Account extends CI_Controller
                 
                 UNION
                 select 
-                    'e' as sequence,
+                    'f' as sequence,
                     sp.SPayment_id as id,
                     concat('paid - ', s.Supplier_Name, ' (', s.Supplier_Code, ')') as description, 
                     sp.account_id,
@@ -749,7 +771,7 @@ class Account extends CI_Controller
                 
                 UNION
                 select 
-                    'f' as sequence,
+                    'g' as sequence,
                     sp.SPayment_id as id,
                     concat('received from supplier - ', s.Supplier_Name, ' (', s.Supplier_Code, ')') as description, 
                     sp.account_id,
@@ -900,7 +922,7 @@ class Account extends CI_Controller
                 sm.SaleMaster_SlNo as id,
                 sm.SaleMaster_SaleDate as date,
                 concat('Sale - ', sm.SaleMaster_InvoiceNo, ' - ', ifnull(c.Customer_Name, sm.customerName), ' (', ifnull(c.Customer_Code, 'Cash Customer'), ')', ' - Bill: ', sm.SaleMaster_TotalSaleAmount) as description,
-                sm.SaleMaster_PaidAmount as in_amount,
+                sm.cashPaid as in_amount,
                 0.00 as out_amount
             from tbl_salesmaster sm 
             left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo

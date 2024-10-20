@@ -43,7 +43,6 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 	<script src="<?php echo base_url(); ?>assets/js/jquery-2.1.4.min.js"></script>
 
 	<link rel="icon" type="image/x-icon" href="<?php echo base_url(); ?>uploads/favicon.png">
-
 </head>
 
 <body class="skin-2">

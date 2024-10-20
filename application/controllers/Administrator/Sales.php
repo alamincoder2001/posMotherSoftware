@@ -86,24 +86,27 @@ class Sales extends CI_Controller
             }
 
             $sales = array(
-                'SaleMaster_InvoiceNo' => $invoice,
-                'employee_id' => $data->sales->employeeId,
-                'SaleMaster_SaleDate' => $data->sales->salesDate,
-                'SaleMaster_SaleType' => $data->sales->salesType,
-                'SaleMaster_TotalSaleAmount' => $data->sales->total,
+                'SaleMaster_InvoiceNo'           => $invoice,
+                'employee_id'                    => $data->sales->employeeId,
+                'SaleMaster_SaleDate'            => $data->sales->salesDate,
+                'SaleMaster_SaleType'            => $data->sales->salesType,
+                'SaleMaster_TotalSaleAmount'     => $data->sales->total,
                 'SaleMaster_TotalDiscountAmount' => $data->sales->discount,
-                'SaleMaster_TaxAmount' => $data->sales->vat,
-                'SaleMaster_Freight' => $data->sales->transportCost,
-                'SaleMaster_SubTotalAmount' => $data->sales->subTotal,
-                'SaleMaster_PaidAmount' => $data->sales->paid,
-                'SaleMaster_DueAmount' => $data->sales->due,
-                'SaleMaster_Previous_Due' => $data->sales->previousDue,
-                'SaleMaster_Description' => $data->sales->note,
-                'status' => 'a',
-                "AddBy" => $this->session->userdata("userId"),
-                'AddTime' => date("Y-m-d H:i:s"),
-                'last_update_ip' => get_client_ip(),
-                'branch_id' => $this->session->userdata("BRANCHid")
+                'SaleMaster_TaxAmount'           => $data->sales->vat,
+                'SaleMaster_Freight'             => $data->sales->transportCost,
+                'SaleMaster_SubTotalAmount'      => $data->sales->subTotal,
+                'accountId'                      => empty($data->sales->accountId) ? NULL : $data->sales->accountId,
+                'cashPaid'                       => $data->sales->cashPaid,
+                'bankPaid'                       => $data->sales->bankPaid,
+                'SaleMaster_PaidAmount'          => $data->sales->paid,
+                'SaleMaster_DueAmount'           => $data->sales->due,
+                'SaleMaster_Previous_Due'        => $data->sales->previousDue,
+                'SaleMaster_Description'         => $data->sales->note,
+                'status'                         => 'a',
+                "AddBy"                          => $this->session->userdata("userId"),
+                'AddTime'                        => date("Y-m-d H:i:s"),
+                'last_update_ip'                 => get_client_ip(),
+                'branch_id'                      => $this->session->userdata("BRANCHid")
             );
             if ($data->customer->Customer_Type == 'G') {
                 $sales['SalseCustomer_IDNo']    = Null;
@@ -358,6 +361,9 @@ class Sales extends CI_Controller
             ifnull(c.Customer_Mobile, sm.customerMobile) as Customer_Mobile,
             ifnull(c.Customer_Address, sm.customerAddress) as Customer_Address,
             c.Customer_Type,
+            ba.account_name,
+            ba.account_number,
+            ba.bank_name,
             e.Employee_Name,
             e.Employee_ID,
             br.Branch_name,
@@ -365,6 +371,7 @@ class Sales extends CI_Controller
             ud.User_Name as deleted_by
             from tbl_salesmaster sm
             left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+            left join tbl_bank_accounts ba on ba.account_id = sm.accountId
             left join tbl_employee e on e.Employee_SlNo = sm.employee_id
             left join tbl_user ua on ua.User_SlNo = sm.AddBy
             left join tbl_user ud on ud.User_SlNo = sm.DeletedBy
@@ -420,6 +427,9 @@ class Sales extends CI_Controller
                 'SaleMaster_TaxAmount'           => $data->sales->vat,
                 'SaleMaster_Freight'             => $data->sales->transportCost,
                 'SaleMaster_SubTotalAmount'      => $data->sales->subTotal,
+                'accountId'                      => empty($data->sales->accountId) ? NULL : $data->sales->accountId,
+                'cashPaid'                       => $data->sales->cashPaid,
+                'bankPaid'                       => $data->sales->bankPaid,
                 'SaleMaster_PaidAmount'          => $data->sales->paid,
                 'SaleMaster_DueAmount'           => $data->sales->due,
                 'SaleMaster_Previous_Due'        => $data->sales->previousDue,

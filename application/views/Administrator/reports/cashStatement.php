@@ -133,7 +133,7 @@
 							<td>{{ sale.SaleMaster_InvoiceNo }}</td>
 							<td>{{ sale.SaleMaster_SaleDate }}</td>
 							<td>{{ sale.Customer_Name }}</td>
-							<td style="text-align:right;">{{ sale.SaleMaster_PaidAmount | decimal }}</td>
+							<td style="text-align:right;">{{ sale.cashPaid | decimal }}</td>
 						</tr>
 					</tbody>
 					<tfoot>
@@ -763,7 +763,7 @@
 		computed: {
 			totalSales() {
 				return this.sales.reduce((prev, curr) => {
-					return prev + parseFloat(curr.SaleMaster_PaidAmount)
+					return prev + parseFloat(curr.cashPaid)
 				}, 0).toFixed(2);
 			},
 			totalPurchase() {
@@ -907,7 +907,7 @@
 			getSales() {
 				axios.post('/get_sales', this.filter)
 					.then(res => {
-						this.sales = res.data.sales;
+						this.sales = res.data.sales.filter(item => item.cashPaid > 0);
 					})
 			},
 

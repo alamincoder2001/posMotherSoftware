@@ -352,9 +352,30 @@
 									<tr>
 										<td>
 											<div class="form-group">
-												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Paid</label>
+												<label class="col-xs-6 control-label no-padding-right" style="margin:0;">CashPaid</label>
+												<label class="col-xs-6 control-label no-padding-right" style="margin:0;">BankPaid</label>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<div class="form-group">
+												<div class="col-xs-6">
+													<input type="number" min="0" step="any" id="cashPaid" class="form-control" v-model="sales.cashPaid" v-on:input="calculateTotal" />
+												</div>
+												<div class="col-xs-6">
+													<input type="number" min="0" step="any" id="bankPaid" class="form-control" v-model="sales.bankPaid" v-on:input="calculateTotal" />
+												</div>
+											</div>
+										</td>
+									</tr>
+
+									<tr style="display: none;" :style="{display: sales.bankPaid > 0 ? '' : 'none'}" v-if="sales.bankPaid > 0">
+										<td>
+											<div class="form-group">
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Bank Account</label>
 												<div class="col-xs-12">
-													<input type="number" min="0" step="any" id="paid" class="form-control" v-model="sales.paid" v-on:input="calculateTotal" v-bind:disabled="selectedCustomer.Customer_Type == 'G' ? true : false" />
+													<v-select :options="banks" v-model="selectedBank" label="display_name" style="border-radius: 4px;"></v-select>
 												</div>
 											</div>
 										</td>
@@ -415,18 +436,21 @@
 					salesBy: '<?php echo $this->session->userdata("FullName"); ?>',
 					salesType: 'retail',
 					salesFrom: '',
-					salesDate: '',
+					salesDate: moment().format('YYYY-MM-DD'),
 					customerId: '',
 					employeeId: null,
-					subTotal: 0.00,
-					discount: 0.00,
-					vatPercent: 0.00,
-					vat: 0.00,
-					transportCost: 0.00,
-					total: 0.00,
-					paid: 0.00,
-					previousDue: 0.00,
-					due: 0.00,
+					accountId: null,
+					subTotal: 0,
+					discount: 0,
+					vatPercent: 0,
+					vat: 0,
+					transportCost: 0,
+					total: 0,
+					cashPaid: 0,
+					bankPaid: 0,
+					paid: 0,
+					previousDue: 0,
+					due: 0,
 					note: '',
 				},
 				vatPercent: 0,
@@ -434,6 +458,8 @@
 				cart: [],
 				employees: [],
 				selectedEmployee: null,
+				banks: [],
+				selectedBank: null,
 				branches: [],
 				selectedBranch: {
 					branch_id: "<?php echo $this->session->userdata('BRANCHid'); ?>",
@@ -474,8 +500,8 @@
 			}
 		},
 		async created() {
-			this.sales.salesDate = moment().format('YYYY-MM-DD');
 			await this.getEmployees();
+			await this.getBank();
 			await this.getBranches();
 			await this.getCustomers();
 			this.getProducts();
@@ -489,6 +515,14 @@
 				axios.get('/get_employees').then(res => {
 					this.employees = res.data.map(item => {
 						item.display_name = `${item.Employee_Name} - ${item.Employee_ID}`;
+						return item;
+					});
+				})
+			},
+			getBank() {
+				axios.get('/get_bank_accounts').then(res => {
+					this.banks = res.data.map(item => {
+						item.display_name = `${item.account_name} - ${item.account_number} - ${item.bank_name}`;
 						return item;
 					});
 				})
@@ -762,14 +796,19 @@
 				}
 				this.sales.total = parseFloat(parseFloat(this.sales.vat) + parseFloat(this.sales.total) + parseFloat(this.sales.transportCost)).toFixed(2);
 
-				if (event.target.id != 'paid') {
-					this.sales.paid = this.sales.total;
+				var totalPaid = parseFloat(parseFloat(this.sales.cashPaid) + parseFloat(this.sales.bankPaid)).toFixed(2);
+				if (event.target.id != 'cashPaid' && event.target.id != 'bankPaid') {
+					this.sales.cashPaid = this.sales.total;
 					this.sales.due = 0;
-				} else {
-					this.sales.due = (parseFloat(this.sales.total) - parseFloat(this.sales.paid)).toFixed(2);
+				} else if (event.target.id == 'cashPaid') {
+					this.sales.due = parseFloat(parseFloat(this.sales.total) - parseFloat(totalPaid)).toFixed(2);
+				} else if (event.target.id == 'bankPaid') {
+					this.sales.due = parseFloat(parseFloat(this.sales.total) - parseFloat(totalPaid)).toFixed(2);
 				}
 			},
 			async saveSales() {
+				this.sales.accountId = this.selectedBank ? this.selectedBank.account_id : '';
+				this.sales.paid = parseFloat(parseFloat(this.sales.cashPaid) + parseFloat(this.sales.bankPaid)).toFixed(2);
 				if (this.keyPressed == 'Enter' && !this.click) {
 					this.click = true;
 					return;
@@ -797,6 +836,28 @@
 					Swal.fire({
 						icon: "error",
 						text: `Customer credit limit (${this.selectedCustomer.Customer_Credit_Limit}) exceeded`,
+					});
+					return;
+				}
+
+				if (parseFloat(this.sales.due) > 0 && this.selectedCustomer.Customer_Type == 'G') {
+					Swal.fire({
+						icon: "error",
+						text: `Cash Customer can not due`,
+					});
+					return;
+				}
+				if (parseFloat(this.sales.paid) > parseFloat(this.sales.total)) {
+					Swal.fire({
+						icon: "error",
+						text: `Paid amount can not greater than total amount`,
+					});
+					return;
+				}
+				if (parseFloat(this.sales.bankPaid) > 0 && this.selectedBank == null) {
+					Swal.fire({
+						icon: "error",
+						text: `Please select account`,
 					});
 					return;
 				}
@@ -852,6 +913,8 @@
 					this.sales.vat = sales.SaleMaster_TaxAmount;
 					this.sales.transportCost = sales.SaleMaster_Freight;
 					this.sales.total = sales.SaleMaster_TotalSaleAmount;
+					this.sales.cashPaid = sales.cashPaid;
+					this.sales.bankPaid = sales.bankPaid;
 					this.sales.paid = sales.SaleMaster_PaidAmount;
 					this.sales.previousDue = sales.SaleMaster_Previous_Due;
 					this.sales.due = sales.SaleMaster_DueAmount;
@@ -868,6 +931,13 @@
 						Employee_SlNo: sales.employee_id,
 						Employee_Name: sales.Employee_Name,
 						display_name: `${sales.Employee_Name} - ${sales.Employee_ID}`
+					}
+
+					if (this.sales.bankPaid > 0) {
+						this.selectedBank = {
+							account_id: sales.accountId,
+							display_name: `${sales.account_name} - ${sales.account_number} - ${sales.bank_name}`
+						}
 					}
 
 					this.selectedCustomer = {

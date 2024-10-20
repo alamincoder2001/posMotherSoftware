@@ -426,7 +426,8 @@ class Page extends CI_Controller
         $data['InvoiceHeder']     = $this->input->post('InvoiceHeder', true);
         $data['Currency_Name']    = $this->input->post('Currency_Name', true);
         $data['SubCurrency_Name'] = $this->input->post('SubCurrency_Name', true);
-        $data['Repot_Heading'] = $this->input->post('Description', true);
+        $data['InvoiceNote']      = $this->input->post('InvoiceNote', true);
+        $data['Repot_Heading']    = $this->input->post('Description', true);
         $data['dueStatus']        = $this->input->post('dueStatus', true);
         $data['last_update_ip']   = get_client_ip();
 
@@ -717,9 +718,11 @@ class Page extends CI_Controller
 
     public function getMotherApiContent()
     {
-        $url = 'http://linktechbd.com/motherapi/index.php';
+        $url = 'https://linktechbd.com/motherapi/index.php';
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HTTPGET, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $response_json = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);

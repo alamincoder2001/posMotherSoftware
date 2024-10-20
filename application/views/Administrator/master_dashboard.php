@@ -26,15 +26,27 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/ace-skins.min.css" />
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/ace-rtl.min.css" />
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/responsive.css" />
+	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/style.css" />
 
 	<!-- ace settings handler -->
 	<script src="<?php echo base_url(); ?>assets/js/ace-extra.min.js"></script>
 	<link rel="icon" type="image/x-icon" href="<?php echo base_url(); ?>uploads/favicon.png">
-
 </head>
 
 <body class="skin-2">
-
+	<?php
+	$proggress = $this->session->userdata('proggressBar');
+	if ($proggress) {
+	?>
+		<div id="preloader">
+			<div id="progress-bar">
+				<div id="progress"></div>
+			</div>
+			<p id="loading-text">Loading... <span id="percent">0%</span></p>
+		</div>
+	<?php }
+	$this->session->unset_userdata('proggressBar');
+	?>
 	<div id="navbar" class="navbar navbar-default ace-save-state navbar-fixed-top" style="background:#3e2e6b !important;">
 		<div class="navbar-container ace-save-state" id="navbar-container">
 			<button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
@@ -238,6 +250,24 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 
 	<script src="<?php echo base_url(); ?>assets/js/sweetalert2.min.js"></script>
 	<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", function() {
+			let progressBar = document.getElementById('progress');
+			let percentText = document.getElementById('percent');
+			let preloader = document.getElementById('preloader');
+
+			let loadingProgress = 0;
+			let loadingInterval = setInterval(function() {
+				loadingProgress += 40;
+				progressBar.style.width = loadingProgress + "%";
+				percentText.innerText = loadingProgress + "%";
+
+				if (loadingProgress >= 100) {
+					clearInterval(loadingInterval);
+					preloader.style.display = 'none';
+				}
+			}, 200);
+		});
+
 		setInterval(function() {
 
 			var currentTime = new Date();

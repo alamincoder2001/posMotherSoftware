@@ -1,5 +1,5 @@
-const salesInvoice = Vue.component('sales-invoice', {
-    template: `
+const salesInvoice = Vue.component("sales-invoice", {
+  template: `
         <div>
             <div class="row">
                 <div class="col-xs-12 text-right">
@@ -17,10 +17,10 @@ const salesInvoice = Vue.component('sales-invoice', {
                 </div>
                 <div class="row">
                     <div class="col-xs-7">
-                        <strong>Customer Id:</strong> {{ sales.Customer_Code }}<br>
-                        <strong>Customer Name:</strong> {{ sales.Customer_Name }}<br>
-                        <strong>Customer Address:</strong> {{ sales.Customer_Address }}<br>
-                        <strong>Customer Mobile:</strong> {{ sales.Customer_Mobile }}
+                        <strong>Customer ID:</strong> {{ sales.Customer_Code }}<br>
+                        <strong>Name:</strong> {{ sales.Customer_Name }}<br>
+                        <strong>Address:</strong> {{ sales.Customer_Address }}<br>
+                        <strong>Mobile:</strong> {{ sales.Customer_Mobile }}
                     </div>
                     <div class="col-xs-5 text-right">
                         <strong>Sales by:</strong> {{ sales.added_by }}<br>
@@ -59,13 +59,30 @@ const salesInvoice = Vue.component('sales-invoice', {
                                     <td>{{ product.SaleDetails_Rate }}</td>
                                     <td align="right">{{ product.SaleDetails_TotalAmount }}</td>
                                 </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align:center;font-weight:700;">Total</td>
+                                    <td style="text-align:center;font-weight:700;">{{ cart.reduce((prev, curr) => {return prev + parseFloat(curr.SaleDetails_TotalQuantity)}, 0) }}</td>
+                                    <td colspan="3" style="text-align:right;font-weight:700;">{{ cart.reduce((prev, curr) => {return prev + parseFloat(curr.SaleDetails_TotalAmount)}, 0).toFixed(2) }}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-6">
-                        <br>
+                        <table _a584de class="pull-left" style="display:none;margin:5px 0;" :style="{display: sales.bankPaid > 0 ? '' : 'none'}">
+                            <tr>
+                                <td style="font-weight:700;">Sl.</td>
+                                <td style="font-weight:700;">Bank</td>
+                                <td style="font-weight:700;">Amount</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>{{sales.account_name}} - {{sales.account_number}} - {{sales.bank_name}}</td>
+                                <td>{{sales.bankPaid}}</td>
+                            </tr>
+                        </table>
+
                         <table class="pull-left" style="display:none;" :style="{display: currentBranch.dueStatus == 'true' ? '' : 'none'}">
                             <tr>
                                 <td><strong>Previous Due:</strong></td>
@@ -94,12 +111,12 @@ const salesInvoice = Vue.component('sales-invoice', {
                                 <td style="text-align:right">{{ sales.SaleMaster_SubTotalAmount }}</td>
                             </tr>
                             <tr>
-                                <td><strong>VAT:</strong></td>
-                                <td style="text-align:right">{{ sales.SaleMaster_TaxAmount }}</td>
-                            </tr>
-                            <tr>
                                 <td><strong>Discount:</strong></td>
                                 <td style="text-align:right">{{ sales.SaleMaster_TotalDiscountAmount }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>VAT:</strong></td>
+                                <td style="text-align:right">{{ sales.SaleMaster_TaxAmount }}</td>
                             </tr>
                             <tr>
                                 <td><strong>Transport Cost:</strong></td>
@@ -125,7 +142,7 @@ const salesInvoice = Vue.component('sales-invoice', {
                 <div class="row">
                     <div class="col-xs-12">
                         <strong>In Word: </strong> {{ withDecimal(sales.SaleMaster_TotalSaleAmount) }}<br><br>
-                        <p style="margin:0;">
+                        <p style="margin:0;display:none;" :style="{display: sales.SaleMaster_Description || currentBranch.InvoiceNote ? '' : 'none'}">
                             <strong>Note: </strong>
                             {{ sales.SaleMaster_Description ? sales.SaleMaster_Description : currentBranch.InvoiceNote }}
                         </p>
@@ -134,58 +151,58 @@ const salesInvoice = Vue.component('sales-invoice', {
             </div>
         </div>
     `,
-    props: ['sales_id'],
-    data(){
-        return {
-            sales:{
-                SaleMaster_InvoiceNo: null,
-                SalseCustomer_IDNo: null,
-                SaleMaster_SaleDate: null,
-                Customer_Name: null,
-                Customer_Address: null,
-                Customer_Mobile: null,
-                SaleMaster_TotalSaleAmount: null,
-                SaleMaster_TotalDiscountAmount: null,
-                SaleMaster_TaxAmount: null,
-                SaleMaster_Freight: null,
-                SaleMaster_SubTotalAmount: null,
-                SaleMaster_PaidAmount: null,
-                SaleMaster_DueAmount: null,
-                SaleMaster_Previous_Due: null,
-                SaleMaster_Description: null,
-                AddBy: null
-            },
-            cart: [],
-            style: null,
-            companyProfile: {},
-            currentBranch: {}
-        }
+  props: ["sales_id"],
+  data() {
+    return {
+      sales: {
+        SaleMaster_InvoiceNo: null,
+        SalseCustomer_IDNo: null,
+        SaleMaster_SaleDate: null,
+        Customer_Name: null,
+        Customer_Address: null,
+        Customer_Mobile: null,
+        SaleMaster_TotalSaleAmount: null,
+        SaleMaster_TotalDiscountAmount: null,
+        SaleMaster_TaxAmount: null,
+        SaleMaster_Freight: null,
+        SaleMaster_SubTotalAmount: null,
+        SaleMaster_PaidAmount: null,
+        SaleMaster_DueAmount: null,
+        SaleMaster_Previous_Due: null,
+        SaleMaster_Description: null,
+        AddBy: null,
+      },
+      cart: [],
+      style: null,
+      companyProfile: {},
+      currentBranch: {},
+    };
+  },
+  filters: {
+    formatDateTime(dt, format) {
+      return dt == "" || dt == null ? "" : moment(dt).format(format);
     },
-    filters: {
-        formatDateTime(dt, format) {
-            return dt == '' || dt == null ? '' : moment(dt).format(format);
-        }
+  },
+  created() {
+    this.getCurrentBranch();
+    this.setStyle();
+    this.getSales();
+  },
+  methods: {
+    getSales() {
+      axios.post("/get_sales", { salesId: this.sales_id }).then((res) => {
+        this.sales = res.data.sales[0];
+        this.cart = res.data.saleDetails;
+      });
     },
-    created(){
-        this.getCurrentBranch();
-        this.setStyle();
-        this.getSales();
+    getCurrentBranch() {
+      axios.get("/get_current_branch").then((res) => {
+        this.currentBranch = res.data;
+      });
     },
-    methods:{
-        getSales(){
-            axios.post('/get_sales', {salesId: this.sales_id}).then(res=>{
-                this.sales = res.data.sales[0];
-                this.cart = res.data.saleDetails;
-            })
-        },
-        getCurrentBranch() {
-            axios.get('/get_current_branch').then(res => {
-                this.currentBranch = res.data;
-            })
-        },
-        setStyle(){
-            this.style = document.createElement('style');
-            this.style.innerHTML = `
+    setStyle() {
+      this.style = document.createElement("style");
+      this.style.innerHTML = `
                 div[_h098asdh]{
                     /*background-color:#e0e0e0;*/
                     font-weight: bold;
@@ -218,106 +235,130 @@ const salesInvoice = Vue.component('sales-invoice', {
                     padding: 2px;
                 }
             `;
-            document.head.appendChild(this.style);
-        },
-        withDecimal(n) {
-            n = n == undefined ? 0 : parseFloat(n).toFixed(2);
-            var nums = n.toString().split('.')
-            var whole = this.convertNumberToWords(nums[0])
-            if (nums.length == 2 && nums[1] > 0) {
-                var fraction = this.convertNumberToWords(nums[1])
-                return whole + this.currentBranch.Currency_Name + ' ' + fraction + this.currentBranch.SubCurrency_Name +" only";
-
-            } else {
-                return whole + this.currentBranch.Currency_Name + " only";
+      document.head.appendChild(this.style);
+    },
+    withDecimal(n) {
+      n = n == undefined ? 0 : parseFloat(n).toFixed(2);
+      var nums = n.toString().split(".");
+      var whole = this.convertNumberToWords(nums[0]);
+      if (nums.length == 2 && nums[1] > 0) {
+        var fraction = this.convertNumberToWords(nums[1]);
+        return (
+          whole +
+          this.currentBranch.Currency_Name +
+          " " +
+          fraction +
+          this.currentBranch.SubCurrency_Name +
+          " only"
+        );
+      } else {
+        return whole + this.currentBranch.Currency_Name + " only";
+      }
+    },
+    convertNumberToWords(amount) {
+      var words = new Array();
+      words[0] = "";
+      words[1] = "One";
+      words[2] = "Two";
+      words[3] = "Three";
+      words[4] = "Four";
+      words[5] = "Five";
+      words[6] = "Six";
+      words[7] = "Seven";
+      words[8] = "Eight";
+      words[9] = "Nine";
+      words[10] = "Ten";
+      words[11] = "Eleven";
+      words[12] = "Twelve";
+      words[13] = "Thirteen";
+      words[14] = "Fourteen";
+      words[15] = "Fifteen";
+      words[16] = "Sixteen";
+      words[17] = "Seventeen";
+      words[18] = "Eighteen";
+      words[19] = "Nineteen";
+      words[20] = "Twenty";
+      words[30] = "Thirty";
+      words[40] = "Forty";
+      words[50] = "Fifty";
+      words[60] = "Sixty";
+      words[70] = "Seventy";
+      words[80] = "Eighty";
+      words[90] = "Ninety";
+      amount = amount.toString();
+      var atemp = amount.split(".");
+      var number = atemp[0].split(",").join("");
+      var n_length = number.length;
+      var words_string = "";
+      if (n_length <= 9) {
+        var n_array = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0);
+        var received_n_array = new Array();
+        for (var i = 0; i < n_length; i++) {
+          received_n_array[i] = number.substr(i, 1);
+        }
+        for (var i = 9 - n_length, j = 0; i < 9; i++, j++) {
+          n_array[i] = received_n_array[j];
+        }
+        for (var i = 0, j = 1; i < 9; i++, j++) {
+          if (i == 0 || i == 2 || i == 4 || i == 7) {
+            if (n_array[i] == 1) {
+              n_array[j] = 10 + parseInt(n_array[j]);
+              n_array[i] = 0;
             }
-        },
-        convertNumberToWords(amount) {
-            var words = new Array();
-            words[0] = '';
-            words[1] = 'One';
-            words[2] = 'Two';
-            words[3] = 'Three';
-            words[4] = 'Four';
-            words[5] = 'Five';
-            words[6] = 'Six';
-            words[7] = 'Seven';
-            words[8] = 'Eight';
-            words[9] = 'Nine';
-            words[10] = 'Ten';
-            words[11] = 'Eleven';
-            words[12] = 'Twelve';
-            words[13] = 'Thirteen';
-            words[14] = 'Fourteen';
-            words[15] = 'Fifteen';
-            words[16] = 'Sixteen';
-            words[17] = 'Seventeen';
-            words[18] = 'Eighteen';
-            words[19] = 'Nineteen';
-            words[20] = 'Twenty';
-            words[30] = 'Thirty';
-            words[40] = 'Forty';
-            words[50] = 'Fifty';
-            words[60] = 'Sixty';
-            words[70] = 'Seventy';
-            words[80] = 'Eighty';
-            words[90] = 'Ninety';
-            amount = amount.toString();
-            var atemp = amount.split(".");
-            var number = atemp[0].split(",").join("");
-            var n_length = number.length;
-            var words_string = "";
-            if (n_length <= 9) {
-                var n_array = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0);
-                var received_n_array = new Array();
-                for (var i = 0; i < n_length; i++) {
-                    received_n_array[i] = number.substr(i, 1);
-                }
-                for (var i = 9 - n_length, j = 0; i < 9; i++, j++) {
-                    n_array[i] = received_n_array[j];
-                }
-                for (var i = 0, j = 1; i < 9; i++, j++) {
-                    if (i == 0 || i == 2 || i == 4 || i == 7) {
-                        if (n_array[i] == 1) {
-                            n_array[j] = 10 + parseInt(n_array[j]);
-                            n_array[i] = 0;
-                        }
-                    }
-                }
-                value = "";
-                for (var i = 0; i < 9; i++) {
-                    if (i == 0 || i == 2 || i == 4 || i == 7) {
-                        value = n_array[i] * 10;
-                    } else {
-                        value = n_array[i];
-                    }
-                    if (value != 0) {
-                        words_string += words[value] + " ";
-                    }
-                    if ((i == 1 && value != 0) || (i == 0 && value != 0 && n_array[i + 1] == 0)) {
-                        words_string += "Crores ";
-                    }
-                    if ((i == 3 && value != 0) || (i == 2 && value != 0 && n_array[i + 1] == 0)) {
-                        words_string += "Lakhs ";
-                    }
-                    if ((i == 5 && value != 0) || (i == 4 && value != 0 && n_array[i + 1] == 0)) {
-                        words_string += "Thousand ";
-                    }
-                    if (i == 6 && value != 0 && (n_array[i + 1] != 0 && n_array[i + 2] != 0)) {
-                        words_string += "Hundred and ";
-                    } else if (i == 6 && value != 0) {
-                        words_string += "Hundred ";
-                    }
-                }
-                words_string = words_string.split("  ").join(" ");
-            }
-            return words_string;
-        },
-        async print(){
-            let invoiceContent = document.querySelector('#invoiceContent').innerHTML;
-            let printWindow = window.open('', 'PRINT', `width=${screen.width}, height=${screen.height}, left=0, top=0`);
-            if (this.currentBranch.print_type == '2') {
-                printWindow.document.write(`
+          }
+        }
+        value = "";
+        for (var i = 0; i < 9; i++) {
+          if (i == 0 || i == 2 || i == 4 || i == 7) {
+            value = n_array[i] * 10;
+          } else {
+            value = n_array[i];
+          }
+          if (value != 0) {
+            words_string += words[value] + " ";
+          }
+          if (
+            (i == 1 && value != 0) ||
+            (i == 0 && value != 0 && n_array[i + 1] == 0)
+          ) {
+            words_string += "Crores ";
+          }
+          if (
+            (i == 3 && value != 0) ||
+            (i == 2 && value != 0 && n_array[i + 1] == 0)
+          ) {
+            words_string += "Lakhs ";
+          }
+          if (
+            (i == 5 && value != 0) ||
+            (i == 4 && value != 0 && n_array[i + 1] == 0)
+          ) {
+            words_string += "Thousand ";
+          }
+          if (
+            i == 6 &&
+            value != 0 &&
+            n_array[i + 1] != 0 &&
+            n_array[i + 2] != 0
+          ) {
+            words_string += "Hundred and ";
+          } else if (i == 6 && value != 0) {
+            words_string += "Hundred ";
+          }
+        }
+        words_string = words_string.split("  ").join(" ");
+      }
+      return words_string;
+    },
+    async print() {
+      let invoiceContent = document.querySelector("#invoiceContent").innerHTML;
+      let printWindow = window.open(
+        "",
+        "PRINT",
+        `width=${screen.width}, height=${screen.height}, left=0, top=0`
+      );
+      if (this.currentBranch.print_type == "2") {
+        printWindow.document.write(`
                     <!DOCTYPE html>
                     <html lang="en">
                     <head>
@@ -356,8 +397,8 @@ const salesInvoice = Vue.component('sales-invoice', {
                     </body>
                     </html>
 				`);
-            } else {
-				printWindow.document.write(`
+      } else {
+        printWindow.document.write(`
                     <!DOCTYPE html>
                     <html lang="en">
                     <head>
@@ -379,10 +420,19 @@ const salesInvoice = Vue.component('sales-invoice', {
                                     <tr>
                                         <td>
                                             <div class="row">
-                                                <div class="col-xs-2"><img src="/${this.currentBranch.Company_Logo_thum}" alt="Logo" style="height:80px;" /></div>
+                                                <div class="col-xs-2"><img src="/${
+                                                  this.currentBranch
+                                                    .Company_Logo_thum
+                                                }" alt="Logo" style="height:80px;" /></div>
                                                 <div class="col-xs-10" style="padding-top:20px;">
-                                                    <strong style="font-size:18px;">${this.currentBranch.Company_Name}</strong><br>
-                                                    <p style="white-space:pre-line;">${this.currentBranch.Repot_Heading}</p>
+                                                    <strong style="font-size:18px;">${
+                                                      this.currentBranch
+                                                        .Company_Name
+                                                    }</strong><br>
+                                                    <p style="white-space:pre-line;">${
+                                                      this.currentBranch
+                                                        .Repot_Heading
+                                                    }</p>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -423,7 +473,9 @@ const salesInvoice = Vue.component('sales-invoice', {
                                 </div>
                                 <div class="row" style="font-size:12px;">
                                     <div class="col-xs-6">
-                                        Print Date: ${moment().format('DD-MM-YYYY h:mm a')}, Printed by: ${this.sales.added_by}
+                                        Print Date: ${moment().format(
+                                          "DD-MM-YYYY h:mm a"
+                                        )}, Printed by: ${this.sales.added_by}
                                     </div>
                                     <div class="col-xs-6 text-right">
                                         Developed by: Link-Up Technologoy, Contact no: 01911978897
@@ -435,16 +487,16 @@ const salesInvoice = Vue.component('sales-invoice', {
                     </body>
                     </html>
 				`);
-            }
-            let invoiceStyle = printWindow.document.createElement('style');
-            invoiceStyle.innerHTML = this.style.innerHTML;
-            printWindow.document.head.appendChild(invoiceStyle);
-            printWindow.moveTo(0, 0);
-            
-            printWindow.focus();
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            printWindow.print();
-            printWindow.close();
-        }
-    }
-})
+      }
+      let invoiceStyle = printWindow.document.createElement("style");
+      invoiceStyle.innerHTML = this.style.innerHTML;
+      printWindow.document.head.appendChild(invoiceStyle);
+      printWindow.moveTo(0, 0);
+
+      printWindow.focus();
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      printWindow.print();
+      printWindow.close();
+    },
+  },
+});

@@ -206,7 +206,7 @@ class Model_Table extends CI_Model
             select
             /* Received */
             (
-                select ifnull(sum(sm.SaleMaster_PaidAmount), 0) from tbl_salesmaster sm
+                select ifnull(sum(sm.cashPaid), 0) from tbl_salesmaster sm
                 where sm.branch_id= " . $this->session->userdata('BRANCHid') . "
                 and sm.status = 'a'
                 " . ($date == null ? "" : " and sm.SaleMaster_SaleDate < '$date'") . "
@@ -354,6 +354,13 @@ class Model_Table extends CI_Model
             select 
                 ba.*,
                 (
+                    select ifnull(sum(sm.bankPaid), 0) from tbl_salesmaster sm
+                    where sm.branch_id= " . $this->session->userdata('BRANCHid') . "
+                    and sm.status = 'a'
+                    and sm.bankPaid > 0
+                    " . ($date == null ? "" : " and sm.SaleMaster_SaleDate < '$date'") . "
+                ) as received_sales,
+                (
                     select ifnull(sum(bt.amount), 0) from tbl_bank_transactions bt
                     where bt.account_id = ba.account_id
                     and bt.transaction_type = 'deposit'
@@ -402,7 +409,7 @@ class Model_Table extends CI_Model
                     " . ($date == null ? "" : " and sp.SPayment_date < '$date'") . "
                 ) as total_received_from_supplier,
                 (
-                    select (ba.initial_balance + total_deposit + total_received_from_customer + total_received_from_supplier) - (total_withdraw + total_paid_to_customer + total_paid_to_supplier)
+                    select (ba.initial_balance + received_sales + total_deposit + total_received_from_customer + total_received_from_supplier) - (total_withdraw + total_paid_to_customer + total_paid_to_supplier)
                 ) as balance
             from tbl_bank_accounts ba
             where ba.branch_id = " . $this->session->userdata('BRANCHid') . "
@@ -998,16 +1005,34 @@ class Model_Table extends CI_Model
         $i = 0;
         $str = array();
         $words = array(
-            '0' => '', '1' => 'one', '2' => 'two',
-            '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
-            '7' => 'seven', '8' => 'eight', '9' => 'nine',
-            '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
-            '13' => 'thirteen', '14' => 'fourteen',
-            '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
-            '18' => 'eighteen', '19' => 'nineteen', '20' => 'twenty',
-            '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
-            '60' => 'sixty', '70' => 'seventy',
-            '80' => 'eighty', '90' => 'ninety'
+            '0' => '',
+            '1' => 'one',
+            '2' => 'two',
+            '3' => 'three',
+            '4' => 'four',
+            '5' => 'five',
+            '6' => 'six',
+            '7' => 'seven',
+            '8' => 'eight',
+            '9' => 'nine',
+            '10' => 'ten',
+            '11' => 'eleven',
+            '12' => 'twelve',
+            '13' => 'thirteen',
+            '14' => 'fourteen',
+            '15' => 'fifteen',
+            '16' => 'sixteen',
+            '17' => 'seventeen',
+            '18' => 'eighteen',
+            '19' => 'nineteen',
+            '20' => 'twenty',
+            '30' => 'thirty',
+            '40' => 'forty',
+            '50' => 'fifty',
+            '60' => 'sixty',
+            '70' => 'seventy',
+            '80' => 'eighty',
+            '90' => 'ninety'
         );
         $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
         while ($i < $digits_1) {
