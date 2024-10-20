@@ -35,7 +35,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 
 <body class="skin-2">
 	<?php
-	$proggress = $this->session->userdata('proggressBar');
+	$proggress = $this->session->userdata('progressBar');
 	if ($proggress) {
 	?>
 		<div id="preloader">
@@ -45,7 +45,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 			<p id="loading-text">Loading... <span id="percent">0%</span></p>
 		</div>
 	<?php }
-	$this->session->unset_userdata('proggressBar');
+	$this->session->unset_userdata('progressBar');
 	?>
 	<div id="navbar" class="navbar navbar-default ace-save-state navbar-fixed-top" style="background:#3e2e6b !important;">
 		<div class="navbar-container ace-save-state" id="navbar-container">

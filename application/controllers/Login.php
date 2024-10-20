@@ -54,7 +54,7 @@ class Login extends CI_Controller {
 				$sdata['Branch_name'] = $data->Branch_name;
 				$sdata['Brunch_image'] = $company->Company_Logo_org;
 				$sdata['Currency_Name'] = $company->Currency_Name;
-				$sdata['proggressBar'] = true;
+				$sdata['progressBar'] = true;
 				$this->session->set_userdata($sdata);
 				redirect('Administrator/');
 			}else{
