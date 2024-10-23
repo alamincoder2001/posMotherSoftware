@@ -71,7 +71,7 @@
 
 	<div id="printContent">
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-xs-12">
 				<div style="display:flex;">
 					<div style="width:50%;border:1px solid black;position:relative;">
 						<table class="day-book-table">
@@ -1020,7 +1020,7 @@
 							font-weight: bold;
 						}
 						.day-book-table .sub-value {
-							padding-right: 10px!important;
+							padding-right: 50px !important;
 							font-weight: bold;
 						}
 					</style>
