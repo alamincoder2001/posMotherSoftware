@@ -128,7 +128,6 @@ if ($serial[1] >= 9) {
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
 							<select class="chosen-select form-control" name="status" id="status" data-placeholder="Choose a status...">
-								<option value=""> </option>
 								<option value="a" <?= $employee->status == 'a' ? 'selected' : '' ?>> Active </option>
 								<option value="p" <?= $employee->status == 'p' ? 'selected' : '' ?>> Deactive </option>
 							</select>
@@ -178,15 +177,23 @@ if ($serial[1] >= 9) {
 					</div>
 
 					<div class="form-group">
-						<label class="col-md-4 control-label" for="em_photo"> Employee Image </label>
+						<label class="col-md-4 control-label" for="ec_email"> E-mail </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
-							<input type="file" id="em_photo" name="em_photo" class="form-control" onchange="readURL(this)" style="height: 26px;padding: 1px 0;border-radius: 3px;" />
+							<input type="text" id="ec_email" name="ec_email" value="<?= $employee->Employee_Email ?>" placeholder="E-mail" class="form-control" />
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label class="col-md-4 control-label" for="em_photo"> Reference </label>
+						<label class="col-md-4 control-label" for="nid"> NID </label>
+						<label class="col-md-1 control-label">:</label>
+						<div class="col-md-6">
+							<input type="text" id="nid" name="nid" value="<?= $employee->Employee_NID ?>" placeholder="NID" class="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-4 control-label" for="em_reference"> Reference </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
 							<textarea id="em_reference" name="em_reference" placeholder="Reference" value="<?= $employee->Employee_Reference ?>" class="form-control"></textarea>
@@ -232,7 +239,6 @@ if ($serial[1] >= 9) {
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
 							<select class="chosen-select form-control" name="Gender" id="Gender" data-placeholder="Choose a Gender...">
-								<option value=""> </option>
 								<option value="Male" <?= $employee->Employee_Gender == 'Male' ? 'selected' : '' ?>>Male</option>
 								<option value="Female" <?= $employee->Employee_Gender == 'Female' ? 'selected' : '' ?>>Female</option>
 							</select>
@@ -252,9 +258,8 @@ if ($serial[1] >= 9) {
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-6">
 							<select class="chosen-select form-control" name="Marital" id="Marital" data-placeholder="Choose a Marital status...">
-								<option value=""> </option>
-								<option value="married" <?= $employee->Employee_MaritalStatus == 'married' ? 'selected' : '' ?>>Married</option>
 								<option value="unmarried" <?= $employee->Employee_MaritalStatus == 'unmarried' ? 'selected' : '' ?>>Unmarried</option>
+								<option value="married" <?= $employee->Employee_MaritalStatus == 'married' ? 'selected' : '' ?>>Married</option>
 							</select>
 						</div>
 					</div>
@@ -263,6 +268,7 @@ if ($serial[1] >= 9) {
 		</div>
 
 		<div class="col-md-6">
+			<input type="file" id="em_photo" name="em_photo" class="form-control" onchange="readURL(this)" style="height: 26px;padding: 1px 0;border-radius: 3px;" />
 			<img id="hideid" src="<?php echo base_url(); ?>uploads/no_user.png" alt="" style="width:100px;">
 			<img id="preview" src="#" style="width:80px;height:80px" hidden>
 		</div>
@@ -359,6 +365,7 @@ if ($serial[1] >= 9) {
 		fd.append('ec_email', $('#ec_email').val());
 		fd.append('Marital', $('#Marital').val());
 		fd.append('bio_id', $('#bio_id').val());
+		fd.append('nid', $('#nid').val());
 
 		fd.append('salary_range', $('#salary_range').val());
 		fd.append('status', $('#status').val());

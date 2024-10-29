@@ -969,6 +969,8 @@
 			},
 
 			async print() {
+				const iframe = document.createElement('iframe');
+				document.body.appendChild(iframe);
 				let printContent = `
 					<div class="container">
 						<h4 style="text-align:center">Receipt and Payment</h4 style="text-align:center">
@@ -982,54 +984,21 @@
 						${document.querySelector('#printContent').innerHTML}
 					</div>
 				`;
-
-				var printWindow = window.open('', 'PRINT', `width=${screen.width}, height=${screen.height}`);
-				printWindow.document.write(`
-					<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>
+				const response = await fetch(`<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>`);
+				const headerContent = await response.text();
+				var printWindow = iframe.contentWindow.document;
+				printWindow.open();
+				printWindow.write(`
+					${headerContent}
+					${printContent}
 				`);
 
-				printWindow.document.body.innerHTML += printContent;
-				printWindow.document.head.innerHTML += `
-					<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-					<style>
-						.day-book-table {
-							width: 100%;
-							margin-bottom: 50px;
-						}
-						.day-book-table thead {
-							background: #ebebeb;
-							border-bottom: 1px solid black;
-						}
-						.day-book-table th {
-							padding: 5px 10px;
-							text-align: left;
-						}
-						.day-book-table td {
-							padding: 0px 30px;
-						}
-						.day-book-table tr td:last-child {
-							text-align: right;
-							padding-right: 50px;
-						}
-						.day-book-table .main-heading {
-							padding-left: 10px;
-							font-weight: bold;
-						}
-						.day-book-table .sub-heading {
-							padding-left: 20px;
-							font-weight: bold;
-						}
-						.day-book-table .sub-value {
-							padding-right: 50px !important;
-							font-weight: bold;
-						}
-					</style>
-				`;
-
-				printWindow.focus();
+				iframe.contentWindow.focus();
 				await new Promise(resolve => setTimeout(resolve, 1000));
-				printWindow.print();
+				iframe.contentWindow.print();
 				printWindow.close();
+				// Print the iframe
+				document.body.removeChild(iframe);
 			}
 		}
 	})

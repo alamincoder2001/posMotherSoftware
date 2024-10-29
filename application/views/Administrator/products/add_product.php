@@ -125,7 +125,7 @@
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">VAT:</label>
 							<div class="col-md-7">
-								<input type="number" class="form-control" v-model="product.vat">
+								<input type="number" min="0" step="any" class="form-control" v-model="product.vat">
 							</div>
 						</div>
 					</div>
@@ -134,28 +134,28 @@
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Re-order level:</label>
 							<div class="col-md-7">
-								<input type="number" class="form-control" v-model="product.Product_ReOrederLevel" required>
+								<input type="number" min="0" step="any" class="form-control" v-model="product.Product_ReOrederLevel" required>
 							</div>
 						</div>
 
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Purchase Rate:</label>
 							<div class="col-md-7">
-								<input type="number" id="purchase_rate" class="form-control" v-model="product.Product_Purchase_Rate" required v-bind:disabled="product.is_service ? true : false">
+								<input type="number" min="0" step="any" id="purchase_rate" class="form-control" v-model="product.Product_Purchase_Rate" required v-bind:disabled="product.is_service ? true : false">
 							</div>
 						</div>
 
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Sales Rate:</label>
 							<div class="col-md-7">
-								<input type="number" class="form-control" v-model="product.Product_SellingPrice" required>
+								<input type="number" min="0" step="any" class="form-control" v-model="product.Product_SellingPrice" required>
 							</div>
 						</div>
 
 						<div class="form-group clearfix">
 							<label class="control-label col-md-4">Wholesale Rate:</label>
 							<div class="col-md-7">
-								<input type="number" class="form-control" v-model="product.Product_WholesaleRate" required>
+								<input type="number" min="0" step="any" class="form-control" v-model="product.Product_WholesaleRate" required>
 							</div>
 						</div>
 						<div class="form-group clearfix">

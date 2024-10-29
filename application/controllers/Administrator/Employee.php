@@ -397,6 +397,7 @@ class Employee extends CI_Controller
         $department_id  = $this->input->post('em_Depertment', true);
         $employee_name  = $this->input->post('em_name', true);
         $bio_id         = $this->input->post('bio_id', true);
+        $nid         = $this->input->post('nid', true);
 
         if ($bio_id) {
             $bio_id_count = $this->db->query("SELECT * from tbl_employee where bio_id = '$bio_id' and branch_id = '$this->brunch'")->num_rows();
@@ -436,6 +437,7 @@ class Employee extends CI_Controller
         $data['Employee_ID'] = $employee_code;
         $data['Employee_Name'] = $employee_name;
         $data['bio_id'] = $bio_id;
+        $data['Employee_NID'] = $nid;
         $data['Employee_JoinDate'] = $this->input->post('em_Joint_date');
         $data['Employee_Gender'] = $this->input->post('Gender', true);
         $data['Employee_BirthDate'] = $this->input->post('em_dob', true);
@@ -497,6 +499,7 @@ class Employee extends CI_Controller
         $department_id = $this->input->post('em_Depertment', true);
         $employee_name = $this->input->post('em_name', true);
         $bio_id = $this->input->post('bio_id', true);
+        $nid = $this->input->post('nid', true);
 
         if ($bio_id) {
             $bio_id_count = $this->db->query("SELECT * from tbl_employee where bio_id = '$bio_id' and branch_id = '$this->brunch' and Employee_SlNo != '$id'")->num_rows();
@@ -537,6 +540,7 @@ class Employee extends CI_Controller
         $data['Employee_ID'] = $employee_code;
         $data['Employee_Name'] = $employee_name;
         $data['bio_id'] = $bio_id;
+        $data['Employee_NID'] = $nid;
         $data['Employee_JoinDate'] = $this->input->post('em_Joint_date');
         $data['Employee_Gender'] = $this->input->post('Gender', true);
         $data['Employee_BirthDate'] = $this->input->post('em_dob', true);
