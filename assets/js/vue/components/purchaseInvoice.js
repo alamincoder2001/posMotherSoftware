@@ -306,6 +306,7 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
             return words_string;
         },
         async print(){
+            const mediaQuery = window.matchMedia("(min-width: 600px)");
             let invoiceContent = document.querySelector('#invoiceContent').innerHTML;
             let printWindow = window.open('', 'PRINT', `width=${screen.width}, height=${screen.height}, left=0, top=0`);
             
@@ -374,9 +375,11 @@ const purchaseInvoice = Vue.component('purchase-invoice', {
             printWindow.moveTo(0, 0);
             
             printWindow.focus();
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             printWindow.print();
-            printWindow.close();
+            if (mediaQuery.matches) {
+                    printWindow.close();
+            }
         }
     }
 })

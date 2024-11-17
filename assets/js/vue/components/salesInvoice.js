@@ -351,6 +351,7 @@ const salesInvoice = Vue.component("sales-invoice", {
       return words_string;
     },
     async print() {
+      const mediaQuery = window.matchMedia("(min-width: 600px)");
       let invoiceContent = document.querySelector("#invoiceContent").innerHTML;
       let printWindow = window.open(
         "",
@@ -372,7 +373,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                                 width:500px!important;
                             }
                             body, table{
-                                font-size: 13px;
+                                font-size: ${mediaQuery.matches ? '13px !important' : '22px !important'};
                             }
                         </style>
                     </head>
@@ -409,7 +410,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                         <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
                         <style>
                             body, table{
-                                font-size: 13px;
+                                font-size: ${mediaQuery.matches ? '13px !important' : '22px !important'};
                             }
                         </style>
                     </head>
@@ -425,7 +426,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                                                     .Company_Logo_thum
                                                 }" alt="Logo" style="height:80px;" /></div>
                                                 <div class="col-xs-10" style="padding-top:20px;">
-                                                    <strong style="font-size:18px;">${
+                                                    <strong style="font-size:${mediaQuery.matches ? '18px !important' : '25px !important'}">${
                                                       this.currentBranch
                                                         .Company_Name
                                                     }</strong><br>
@@ -496,7 +497,9 @@ const salesInvoice = Vue.component("sales-invoice", {
       printWindow.focus();
       await new Promise((resolve) => setTimeout(resolve, 1000));
       printWindow.print();
-      printWindow.close();
+      if (mediaQuery.matches) {
+                printWindow.close();
+        }
     },
   },
 });

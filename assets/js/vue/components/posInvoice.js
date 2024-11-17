@@ -302,6 +302,7 @@ const posInvoice = Vue.component("pos-invoice", {
       return words_string + " only";
     },
     async print() {
+      const mediaQuery = window.matchMedia("(min-width: 600px)");
       let invoiceContent = document.querySelector("#invoiceContent").innerHTML;
       let printWindow = window.open(
         "",
@@ -320,8 +321,9 @@ const posInvoice = Vue.component("pos-invoice", {
                         <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
                         <style>
                             body, table{
-                                font-size: 10px !important;
+                                font-size: ${mediaQuery.matches ? '10px !important' : '22px !important'};
                             }
+                            
                         </style>
                     </head>
                     <body>
@@ -333,7 +335,7 @@ const posInvoice = Vue.component("pos-invoice", {
                                     <div class="row" style="margin-top:8px;">
                                       ${this.currentBranch.Company_Logo_org == null || this.currentBranch.Company_Logo_org == '' ? '' :` <div class="col-xs-12 text-center"><img src="/${this.currentBranch.Company_Logo_thum}" alt="Logo" style="height:40px;" /></div>`}                                               
                                         <div class="col-xs-12 text-center">
-                                            <strong style="font-size:14px;">${this.currentBranch.Company_Name}</strong><br>
+                                            <strong style="font-size:${mediaQuery.matches ? '14px !important' : '22px !important'};">${this.currentBranch.Company_Name}</strong><br>
                                             <p style="white-space:pre-line;line-height:1;">${this.currentBranch.Repot_Heading}</p>
                                         </div>
                                     </div>
@@ -356,7 +358,7 @@ const posInvoice = Vue.component("pos-invoice", {
                                 <td>
                                     <div class="row" style="margin-top:15px;">
                                         <div class="col-xs-12 text-center">${this.currentBranch.Company_Name}, Contact no: ${this.currentBranch.Branch_phone}</div>
-                                        <div class="col-xs-12 text-center" style="padding:0;font-size:10px;border-top:1px solid gray;">Software by: Big Technology, Contact no: 01946-700300</div>
+                                        <div class="col-xs-12 text-center" style="padding:0;font-size:${mediaQuery.matches ? '10px !important' : '22px !important'};border-top:1px solid gray;">Software by: Big Technology, Contact no: 01946-700300</div>
                                     </div>
                                 </td>
                             </tr>
@@ -375,7 +377,9 @@ const posInvoice = Vue.component("pos-invoice", {
       printWindow.focus();
       await new Promise((resolve) => setTimeout(resolve, 1000));
       printWindow.print();
-      printWindow.close();
+      if (mediaQuery.matches) {
+          printWindow.close();
+        }
     },
   },
 });

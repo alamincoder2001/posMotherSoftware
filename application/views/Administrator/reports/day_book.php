@@ -984,8 +984,7 @@
 						${document.querySelector('#printContent').innerHTML}
 					</div>
 				`;
-				const response = await fetch(`<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>`);
-				const headerContent = await response.text();
+				var headerContent = `<?php $this->load->view('Administrator/reports/reportHeader.php'); ?>`;
 				var printWindow = iframe.contentWindow.document;
 				printWindow.open();
 				printWindow.write(`

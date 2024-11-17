@@ -230,10 +230,13 @@ const quotationInvoice = Vue.component('quotation-invoice', {
             printWindow.document.head.appendChild(invoiceStyle);
             printWindow.moveTo(0, 0);
             
+            const mediaQuery = window.matchMedia("(min-width: 600px)");
             printWindow.focus();
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             printWindow.print();
-            printWindow.close();
+            if (mediaQuery.matches) {
+                    printWindow.close();
+            }
         }
     }
 })

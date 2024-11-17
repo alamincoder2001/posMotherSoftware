@@ -44,6 +44,25 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 			</div>
 			<p id="loading-text">Loading... <span id="percent">0%</span></p>
 		</div>
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+				let progressBar = document.getElementById('progress');
+				let percentText = document.getElementById('percent');
+				let preloader = document.getElementById('preloader');
+
+				let loadingProgress = 0;
+				let loadingInterval = setInterval(function() {
+					loadingProgress += 40;
+					progressBar.style.width = loadingProgress + "%";
+					percentText.innerText = loadingProgress + "%";
+
+					if (loadingProgress >= 100) {
+						clearInterval(loadingInterval);
+						preloader.style.display = 'none';
+					}
+				}, 200);
+			});
+		</script>
 	<?php }
 	$this->session->unset_userdata('progressBar');
 	?>
@@ -250,24 +269,6 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 
 	<script src="<?php echo base_url(); ?>assets/js/sweetalert2.min.js"></script>
 	<script type="text/javascript">
-		document.addEventListener("DOMContentLoaded", function() {
-			let progressBar = document.getElementById('progress');
-			let percentText = document.getElementById('percent');
-			let preloader = document.getElementById('preloader');
-
-			let loadingProgress = 0;
-			let loadingInterval = setInterval(function() {
-				loadingProgress += 40;
-				progressBar.style.width = loadingProgress + "%";
-				percentText.innerText = loadingProgress + "%";
-
-				if (loadingProgress >= 100) {
-					clearInterval(loadingInterval);
-					preloader.style.display = 'none';
-				}
-			}, 200);
-		});
-
 		setInterval(function() {
 
 			var currentTime = new Date();
