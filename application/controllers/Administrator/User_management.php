@@ -70,15 +70,15 @@ class User_management extends CI_Controller
         $res = ['success' => false, 'message' => ''];
         try {
             $data = json_decode($this->input->raw_input_stream);
-            $checkUsername = $this->db->query("select * from tbl_user where User_Name = ?", $data->User_Name)->num_rows();
+            $checkUsername = $this->db->query("select * from tbl_user where User_Name = ? and status != 'd'", $data->User_Name)->num_rows();
             if ($checkUsername > 0) {
                 $res = ['success' => false, 'message' => 'Username already exists'];
                 echo json_encode($res);
                 exit;
             }
 
-            $user = array(
-                "User_Id"        => $this->mt->generateUserCode(),
+            $check = $this->db->query("select * from tbl_user where User_Name = ? and status = 'd'", $data->User_Name)->row();
+            $userInfo = array(
                 "User_Name"      => $data->User_Name,
                 "FullName"       => $data->FullName,
                 "UserEmail"      => $data->UserEmail,
@@ -91,8 +91,15 @@ class User_management extends CI_Controller
                 "AddTime"        => date('Y-m-d H:i:s'),
                 "last_update_ip" => get_client_ip(),
             );
+            if (!empty($check)) {
+                $userInfo['DeletedBy'] = NULL;
+                $userInfo['DeletedTime'] = NULL;
+                $this->db->set($userInfo)->where('User_SlNo', $check->User_SlNo)->update('tbl_user');
+            } else {
+                $userInfo['User_ID'] = $this->mt->generateUserCode();
+                $this->db->insert("tbl_user", $userInfo);
+            }
 
-            $this->db->insert("tbl_user", $user);
 
             $res = ['success' => true, 'message' => 'User create successfully'];
         } catch (\Throwable $th) {
