@@ -184,7 +184,7 @@ class Purchase extends CI_Controller
             join tbl_purchasemaster pm on pm.PurchaseMaster_SlNo = pd.PurchaseMaster_IDNo
             join tbl_supplier s on s.Supplier_SlNo = pm.Supplier_SlNo
             where pd.status != 'd'
-            and pd.PurchaseDetails_branchID = '$this->brunch'
+            and pd.branch_id = '$this->brunch'
             $clauses
         ")->result();
 

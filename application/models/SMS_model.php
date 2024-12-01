@@ -16,6 +16,7 @@ class SMS_model extends CI_Model
     private $senderId = "";
     private $senderId2 = "";
     private $userId = "";
+    private $username = "";
     private $password = "";
     private $countryCode = "";
     private $smsType = "";
@@ -35,21 +36,22 @@ class SMS_model extends CI_Model
             return;
         }
 
-        $settings           = $query->row();
-        $this->smsEnabled   = $settings->sms_enabled;
-        $this->apiKey       = $settings->api_key;
-        $this->url          = $settings->url;
-        $this->bulkUrl      = $settings->bulk_url;
-        $this->url2         = $settings->url_2;
-        $this->bulkUrl2     = $settings->bulk_url_2;
-        $this->smsType      = $settings->sms_type;
-        $this->senderId     = $settings->sender_id;
-        $this->senderId2    = $settings->sender_id_2;
-        $this->userId       = $settings->user_id;
-        $this->password     = $settings->password;
-        $this->countryCode  = $settings->country_code;
-        $this->senderName   = $settings->sender_name;
-        $this->senderPhone  = $settings->sender_phone;
+        $settings          = $query->row();
+        $this->smsEnabled  = $settings->sms_enabled;
+        $this->apiKey      = $settings->api_key;
+        $this->url         = $settings->url;
+        $this->bulkUrl     = $settings->bulk_url;
+        $this->url2        = $settings->url_2;
+        $this->bulkUrl2    = $settings->bulk_url_2;
+        $this->smsType     = $settings->sms_type;
+        $this->senderId    = $settings->sender_id;
+        $this->senderId2   = $settings->sender_id_2;
+        $this->userId      = $settings->user_id;
+        $this->username    = $settings->username;
+        $this->password    = $settings->password;
+        $this->countryCode = $settings->country_code;
+        $this->senderName  = $settings->sender_name;
+        $this->senderPhone = $settings->sender_phone;
     }
 
     public function sendSms($recipient, $message)
@@ -63,7 +65,8 @@ class SMS_model extends CI_Model
         if ($this->smsEnabled == 'gateway1') {
             $url = $this->url;
             $postData = array(
-                "UserName" => "ceo@linktechbd.com",
+                // "UserName" => "ceo@linktechbd.com",
+                "UserName" => $this->username,
                 "Apikey" => $this->apiKey,
                 "MobileNumber" => "88{$recipient}",
                 "SenderName" => $this->senderId,
@@ -114,7 +117,7 @@ class SMS_model extends CI_Model
             $url = $this->bulkUrl;
 
             $postData = array(
-                "UserName" => "ceo@linktechbd.com",
+                "UserName" => $this->username,
                 "Apikey" => $this->apiKey,
                 "SenderName" => $this->senderId,
                 "TransactionType" => "D",

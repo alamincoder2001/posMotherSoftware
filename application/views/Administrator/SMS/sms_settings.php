@@ -33,6 +33,12 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="control-label col-xs-4">UserName</label>
+                    <div class="col-xs-8">
+                        <input type="text" class="form-control" v-model="settings.username">
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="control-label col-xs-4">Sender Id</label>
                     <div class="col-xs-8">
                         <input type="text" class="form-control" v-model="settings.sender_id">
@@ -132,6 +138,7 @@
                     url_2: '',
                     bulk_url_2: '',
                     sms_type: '',
+                    username: '',
                     sender_id: '',
                     sender_id_2: '',
                     user_id: '',
