@@ -311,7 +311,7 @@
 									<tr>
 										<td>
 											<div class="form-group">
-												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">Vat</label>
+												<label class="col-xs-12 control-label no-padding-right" style="margin:0;">VAT</label>
 
 												<div class="col-xs-4">
 													<input type="number" min="0" step="any" id="vatPercent" class="form-control" v-model="vatPercent" v-on:input="calculateTotal" />

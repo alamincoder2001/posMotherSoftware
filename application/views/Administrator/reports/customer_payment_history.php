@@ -173,7 +173,7 @@
 				}
 				let reportContent = `
 					<div class="container">
-						<h4 style="text-align:center">Customer Payment History</h4 style="text-align:center">
+						<h4 style="text-align:center">Customer Payment History</h4>
 						<div class="row">
 							<div class="col-xs-6" style="font-size:12px;">
 								${customerText}

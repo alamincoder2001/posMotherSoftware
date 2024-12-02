@@ -76,7 +76,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 					?>
 						<li class="light-blue dropdown-modal">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
-								<big>Branch Acess</big>
+								<big>Branch Access</big>
 								<i class="ace-icon fa fa-caret-down"></i>
 							</a>
 

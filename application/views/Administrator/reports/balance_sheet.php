@@ -348,7 +348,7 @@
 			async print() {
 				let printContent = `
 					<div class="container">
-						<h4 style="text-align:center">Balance Sheet</h4 style="text-align:center">
+						<h4 style="text-align:center">Balance Sheet</h4>
 						<div class="row">
 							<div class="col-xs-12 text-center">
 								Statement of <strong>${this.date}</strong> 

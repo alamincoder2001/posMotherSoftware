@@ -973,7 +973,7 @@
 				document.body.appendChild(iframe);
 				let printContent = `
 					<div class="container">
-						<h4 style="text-align:center">Receipt and Payment</h4 style="text-align:center">
+						<h4 style="text-align:center">Receipt and Payment</h4>
 						<div class="row">
 							<div class="col-xs-12 text-center">
 								<strong>Statement from</strong> ${this.filter.dateFrom} <strong>to</strong> ${this.filter.dateTo}

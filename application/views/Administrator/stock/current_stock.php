@@ -309,7 +309,7 @@
 			async print() {
 				let reportContent = `
 					<div class="container-fluid">
-						<h4 style="text-align:center">${this.selectedSearchType.text} Report</h4 style="text-align:center">
+						<h4 style="text-align:center">${this.selectedSearchType.text} Report</h4>
 						<h6 style="text-align:center">${this.selectionText}</h6>
 					</div>
 					<div class="container-fluid">

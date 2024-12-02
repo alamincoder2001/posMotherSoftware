@@ -337,7 +337,7 @@
 				}
 				let reportContent = `
 					<div class="container">
-						<h4 style="text-align:center">Profit/Loss Report</h4 style="text-align:center">
+						<h4 style="text-align:center">Profit/Loss Report</h4>
 						<div class="row">
 							<div class="col-md-6">${customerText}</div>
 							<div class="col-md-6 text-right">${dateText}</div>

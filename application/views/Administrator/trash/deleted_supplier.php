@@ -181,7 +181,7 @@
 			async print() {
 				let reportContent = `
 					<div class="container">
-						<h4 style="text-align:center">Deleted Supplier List</h4 style="text-align:center">
+						<h4 style="text-align:center">Deleted Supplier List</h4>
 						<div class="row">
 							<div class="col-xs-12">
 								${document.querySelector('#reportTable').innerHTML}

@@ -57,9 +57,8 @@
 											</div>
 										</div>
 
-
 										<div class="profile-info-row">
-											<div class="profile-info-name"> Age </div>
+											<div class="profile-info-name"> User Role </div>
 
 											<div class="profile-info-value">
 												<?php if ($user->UserType == 'a') : ?>
@@ -71,8 +70,6 @@
 												<?php endif; ?>
 											</div>
 										</div>
-
-
 									</div>
 
 									<div class="hr hr-8 dotted"></div>

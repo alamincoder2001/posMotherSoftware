@@ -544,7 +544,7 @@
 			async print() {
 				let printContent = `
 					<div class="container">
-						<h4 style="text-align:center">Balance In Out</h4 style="text-align:center">
+						<h4 style="text-align:center">Balance In Out</h4>
 						<div class="row">
 							<div class="col-xs-12 text-center">
 								Statement from <strong>${this.filter.dateFrom}</strong> to <strong>${this.filter.dateTo}</strong> 

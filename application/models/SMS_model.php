@@ -65,7 +65,6 @@ class SMS_model extends CI_Model
         if ($this->smsEnabled == 'gateway1') {
             $url = $this->url;
             $postData = array(
-                // "UserName" => "ceo@linktechbd.com",
                 "UserName" => $this->username,
                 "Apikey" => $this->apiKey,
                 "MobileNumber" => "88{$recipient}",
