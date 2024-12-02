@@ -56,7 +56,7 @@
 <div id="cashTransactionReport">
     <div class="row" style="margin:0;">
         <fieldset class="scheduler-border scheduler-search">
-            <legend class="scheduler-border">Search CashTransaction Report</legend>
+            <legend class="scheduler-border">Search Expense & Income Report</legend>
             <div class="control-group">
                 <div class="col-md-12">
                     <form class="form-inline" id="searchForm" @submit.prevent="getTransactions">

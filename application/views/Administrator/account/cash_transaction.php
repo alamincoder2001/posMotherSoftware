@@ -65,7 +65,7 @@
 	<div class="row">
 		<div class="col-md-12" style="margin: 0;">
 			<fieldset class="scheduler-border">
-				<legend class="scheduler-border">Cash Transaction Form</legend>
+				<legend class="scheduler-border">Expense & Income Entry Form</legend>
 				<div class="control-group">
 					<form @submit.prevent="addTransaction">
 						<div class="row">

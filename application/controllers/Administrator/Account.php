@@ -131,7 +131,7 @@ class Account extends CI_Controller
         if (!$access) {
             redirect(base_url());
         }
-        $data['title'] = "Cash Transaction";
+        $data['title'] = "Expense & Income Entry";
         $data['transaction'] = $this->Billing_model->select_all_transaction();
         $data['accounts'] = $this->Other_model->get_all_account_info();
         $data['content'] = $this->load->view('Administrator/account/cash_transaction', $data, TRUE);
@@ -1203,7 +1203,7 @@ class Account extends CI_Controller
         if (!$access) {
             redirect(base_url());
         }
-        $data['title'] = "Cash Transaction Report";
+        $data['title'] = "Expense & Income Report";
         $data['content'] = $this->load->view('Administrator/account/all_transaction_report', $data, TRUE);
         $this->load->view('Administrator/index', $data);
     }

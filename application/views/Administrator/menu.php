@@ -771,7 +771,7 @@ if ($module == 'dashboard' or $module == '') {
 			<li class="<?= current_url() == '/cashTransaction' ? 'active' : '' ?>">
 				<a href="<?php echo base_url(); ?>cashTransaction">
 					<i class="menu-icon fa fa-medkit"></i>
-					<span class="menu-text"> Cash Transaction </span>
+					<span class="menu-text"> Expense & Inc Entry </span>
 				</a>
 				<b class="arrow"></b>
 			</li>
@@ -1112,7 +1112,7 @@ if ($module == 'dashboard' or $module == '') {
 						<li class="<?= current_url() == '/TransactionReport' ? 'active' : '' ?>">
 							<a href="<?php echo base_url(); ?>TransactionReport">
 								<i class="menu-icon fa fa-caret-right"></i>
-								Cash Transaction Report
+								Expense & Income Report
 							</a>
 							<b class="arrow"></b>
 						</li>
