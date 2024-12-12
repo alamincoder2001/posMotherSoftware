@@ -128,9 +128,12 @@ class Products extends CI_Controller
 
         $clauses = "";
         $limit = "";
-        $status = "a";
+        $status = " and p.status = 'a'";
         if (isset($data->status) && $data->status != '') {
-            $status = $data->status;
+            $status = " and p.status = '$data->status'";
+        }
+        if(isset($data->withPstatus) && $data->withPstatus != '') {
+            $status = " and p.status != 'd'";
         }
 
         if (isset($data->categoryId) && $data->categoryId != '') {
@@ -164,8 +167,9 @@ class Products extends CI_Controller
             left join tbl_unit u on u.Unit_SlNo = p.Unit_ID
             left join tbl_user ua on ua.User_SlNo = p.AddBy
             left join tbl_user ud on ud.User_SlNo = p.DeletedBy
-            where p.status = '$status'
+            where 1 = 1
             $clauses
+            $status
             order by p.Product_SlNo desc
             $limit
         ")->result();

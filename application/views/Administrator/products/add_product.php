@@ -159,11 +159,15 @@
 							</div>
 						</div>
 						<div class="form-group clearfix">
-							<label class="control-label col-md-4">Is Service:</label>
-							<div class="col-md-1">
+							<label class="col-md-3">
 								<input type="checkbox" v-model="product.is_service" @change="changeIsService">
-							</div>
-							<div class="col-md-6 text-right">
+								Is Service
+							</label>
+							<label class="col-md-3">
+								<input type="checkbox" :false-value="`p`" :true-value="`a`" v-model="product.status">
+								Is Active
+							</label>
+							<div class="col-md-5 text-right">
 								<input type="button" @click="clearForm" class="btnReset" value="Reset">
 								<input type="submit" class="btnSave" value="Save">
 							</div>
@@ -185,7 +189,7 @@
 			<div class="table-responsive">
 				<datatable :columns="columns" :data="products" :filter-by="filter">
 					<template scope="{ row }">
-						<tr>
+						<tr :style="{background: row.status == 'p' ? '#fdda9b' : ''}">
 							<td>{{ row.Product_Code }}</td>
 							<td style="text-align: left;padding-left:3px;">{{ row.Product_Name }}</td>
 							<td>{{ row.ProductCategory_Name }}</td>
@@ -193,11 +197,15 @@
 							<td>{{ row.Product_SellingPrice }}</td>
 							<td>{{ row.Product_WholesaleRate }}</td>
 							<td>{{ row.vat }}</td>
+							<td>{{ row.Unit_Name }}</td>
 							<td>
 								<span v-if="row.is_service == 'false'" class="badge badge-success">Product</span>
 								<span v-else class="badge badge-warning">Service</span>
 							</td>
-							<td>{{ row.Unit_Name }}</td>
+							<td>
+								<span v-if="row.status == 'a'" class="badge badge-success">Active</span>
+								<span v-else class="badge badge-warning">Inactive</span>
+							</td>
 							<td>
 								<?php if ($this->session->userdata('accountType') != 'u') { ?>
 									<i class="btnEdit fa fa-pencil" @click="editProduct(row)"></i>
@@ -264,7 +272,8 @@
 					Product_WholesaleRate: 0,
 					Unit_ID: '',
 					vat: 0,
-					is_service: false
+					is_service: false,
+					status: 'a',
 				},
 				products: [],
 				categories: [],
@@ -311,13 +320,18 @@
 						align: 'center'
 					},
 					{
+						label: 'Unit',
+						field: 'Unit_Name',
+						align: 'center'
+					},
+					{
 						label: 'Type',
 						field: 'is_service',
 						align: 'center'
 					},
 					{
-						label: 'Unit',
-						field: 'Unit_Name',
+						label: 'Status',
+						field: 'status',
 						align: 'center'
 					},
 					{
@@ -364,7 +378,9 @@
 				})
 			},
 			getProducts() {
-				axios.get('/get_products').then(res => {
+				axios.post('/get_products', {
+					withPstatus: 'yes'
+				}).then(res => {
 					this.products = res.data;
 				})
 			},
@@ -411,9 +427,7 @@
 				keys.forEach(key => {
 					this.product[key] = product[key];
 				})
-
 				this.product.is_service = product.is_service == 'true' ? true : false;
-
 				this.selectedCategory = {
 					ProductCategory_SlNo: product.ProductCategory_ID,
 					ProductCategory_Name: product.ProductCategory_Name
@@ -452,7 +466,8 @@
 					Product_WholesaleRate: 0,
 					Unit_ID: '',
 					vat: 0,
-					is_service: false
+					is_service: false,
+					status: 'a'
 				}
 				this.product.Product_Code = "<?php echo $this->mt->generateProductCode(); ?>";
 			},

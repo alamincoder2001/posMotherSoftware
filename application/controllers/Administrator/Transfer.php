@@ -350,7 +350,7 @@ class Transfer extends CI_Controller
             $oldTransfer = $this->db->query("select * from tbl_transfermaster where transfer_id = ?", $transferId)->row();
             $oldTransferDetails = $this->db->query("select *, p.Product_Code, p.Product_Name from tbl_transferdetails left join tbl_product p on p.Product_SlNo = product_id where transfer_id = ?", $transferId)->result();
             foreach ($oldTransferDetails as $item) {
-                $productStock = $this->mt->transferBranchStock($item->product_id, $oldTransfer->transfer_to);
+                $productStock = $this->mt->transferBranchStock($item->product_id, $oldTransfer->transfer_from);
                 if ($item->quantity > $productStock) {
                     echo json_encode(['status' => false, 'message' => "{$item->Product_Name} - {$item->Product_Code} stock not available"]);
                     exit;
