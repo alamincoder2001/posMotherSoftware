@@ -41,14 +41,6 @@ $route['restore_supplier'] = 'Administrator/TrashData/reStoreSupplier';
 $route['deleted_sale_invoice/(:any)'] = 'Administrator/TrashData/deletedSaleInvoice/$1';
 $route['deleted_purchase_invoice/(:any)'] = 'Administrator/TrashData/deletedPurchaseInvoice/$1';
 
-// Bill=============
-$route['BillEntry']                 = 'Administrator/BillController/index';
-$route['BillEntry/store']             = 'Administrator/BillController/store';
-$route['BillEntry/edit/(:any)']     = 'Administrator/BillController/edit/$1';
-$route['BillEntry/update/(:any)']     = 'Administrator/BillController/update/$1';
-$route['BillEntry/delete/(:any)']     = 'Administrator/BillController/delete/$1';
-$route['BillEntry/search']             = 'Administrator/BillController/search';
-
 
 // Assets Info===========
 $route['AssetsEntry']                 = 'Administrator/Assets';
@@ -81,13 +73,10 @@ $route['get_areas']   = 'Administrator/Page/getDistricts';
 
 $route['product']                    = 'Administrator/Products';
 $route['add_product']                = 'Administrator/Products/addProduct';
-$route['productEdit']                = 'Administrator/Products/product_edit';
 $route['update_product']             = 'Administrator/Products/updateProduct';
 $route['delete_product']             = 'Administrator/Products/deleteProduct';
-$route['active_product']             = 'Administrator/Products/activeProduct';
 $route['productlist']                = 'Administrator/Reports/productlist';
 $route['currentStock']               = 'Administrator/Products/current_stock';
-$route['productName']                = 'Administrator/Products/product_name';
 $route['get_products']               = 'Administrator/Products/getProducts';
 $route['get_product_stock']          = 'Administrator/Products/getProductStock';
 $route['get_current_stock']          = 'Administrator/Products/getCurrentStock';
@@ -97,76 +86,74 @@ $route['product_ledger']             = 'Administrator/Products/productLedger';
 $route['get_product_ledger']         = 'Administrator/Products/getProductLedger';
 $route['reorder_list']               = 'Administrator/Reports/reOrderList';
 
-$route['totalStock'] = 'Administrator/Products/total_stock';
+$route['totalStock']             = 'Administrator/Products/total_stock';
 $route['GenerateBarcode/(:any)'] = 'BarcodeController/barcode_create/$1';
-$route['multibarcodeStore'] = 'Administrator/Products/multibarcodeStore';
-$route['multibarcodePrint'] = 'Administrator/Products/multibarcodePrint';
+$route['multibarcodeStore']      = 'Administrator/Products/multibarcodeStore';
+$route['multibarcodePrint']      = 'Administrator/Products/multibarcodePrint';
 
 
-$route['supplier'] = 'Administrator/Supplier';
-$route['add_supplier'] = 'Administrator/Supplier/addSupplier';
-$route['supplieredit'] = 'Administrator/Supplier/supplier_edit/';
+$route['supplier']        = 'Administrator/Supplier';
+$route['add_supplier']    = 'Administrator/Supplier/addSupplier';
+$route['supplieredit']    = 'Administrator/Supplier/supplier_edit/';
 $route['update_supplier'] = 'Administrator/Supplier/updateSupplier';
-$route['supplierList'] = 'Administrator/Reports/supplierList';
+$route['supplierList']    = 'Administrator/Reports/supplierList';
 $route['delete_supplier'] = 'Administrator/Supplier/deleteSupplier';
 
-$route['customer'] = 'Administrator/Customer';
-$route['add_customer'] = 'Administrator/Customer/addCustomer';
-$route['customeredit/(:any)'] = 'Administrator/Customer/customeredit/$1';
-$route['update_customer'] = 'Administrator/Customer/updateCustomer';
-$route['customerlist'] = 'Administrator/Customer/customerlist';
-$route['delete_customer'] = 'Administrator/Customer/deleteCustomer';
-$route['get_customers'] = 'Administrator/Customer/getCustomers';
-$route['get_customer_due'] = 'Administrator/Customer/getCustomerDue';
-$route['get_customer_ledger'] = 'Administrator/Customer/getCustomerLedger';
-$route['get_customer_payments'] = 'Administrator/Customer/getCustomerPayments';
-$route['add_customer_payment'] = 'Administrator/Customer/addCustomerPayment';
+$route['customer']                = 'Administrator/Customer';
+$route['add_customer']            = 'Administrator/Customer/addCustomer';
+$route['customeredit/(:any)']     = 'Administrator/Customer/customeredit/$1';
+$route['update_customer']         = 'Administrator/Customer/updateCustomer';
+$route['customerlist']            = 'Administrator/Customer/customerlist';
+$route['delete_customer']         = 'Administrator/Customer/deleteCustomer';
+$route['get_customers']           = 'Administrator/Customer/getCustomers';
+$route['get_customer_due']        = 'Administrator/Customer/getCustomerDue';
+$route['get_customer_ledger']     = 'Administrator/Customer/getCustomerLedger';
+$route['get_customer_payments']   = 'Administrator/Customer/getCustomerPayments';
+$route['add_customer_payment']    = 'Administrator/Customer/addCustomerPayment';
 $route['update_customer_payment'] = 'Administrator/Customer/updateCustomerPayment';
 $route['delete_customer_payment'] = 'Administrator/Customer/deleteCustomerPayment';
 
 $route['customerPaymentPage'] = 'Administrator/Customer/customerPaymentPage';
 $route['customer_payment_history'] = 'Administrator/Customer/customerPaymentHistory';
 
-$route['get_purchases'] = 'Administrator/Purchase/getPurchases';
-$route['get_purchasedetails'] = 'Administrator/Purchase/getPurchaseDetails';
+$route['get_purchases']                  = 'Administrator/Purchase/getPurchases';
+$route['get_purchasedetails']            = 'Administrator/Purchase/getPurchaseDetails';
 $route['get_purchasedetails_for_return'] = 'Administrator/Purchase/getPurchaseDetailsForReturn';
-$route['add_purchase_return'] = 'Administrator/Purchase/addPurchaseReturn';
-$route['update_purchase_return'] = 'Administrator/Purchase/updatePurchaseReturn';
-$route['get_purchase_return_details'] = 'Administrator/Purchase/getPurchaseReturnDetails';
-$route['purchase'] = 'Administrator/Purchase/order';
-$route['purchase/(:any)'] = 'Administrator/Purchase/purchaseEdit/$1';
-$route['purchase_invoice_print/(:any)'] = 'Administrator/Purchase/purchaseInvoicePrint/$1';
-$route['add_purchase'] = 'Administrator/Purchase/addPurchase';
-$route['update_purchase'] = 'Administrator/Purchase/updatePurchase';
-$route['purchaseInvoice'] = 'Administrator/Purchase/purchase_bill';
-$route['purchaseInvoiceSearch'] = 'Administrator/Purchase/purchase_invoice_search';
-$route['purchaseRecord'] = 'Administrator/Purchase/purchase_record';
-$route['get_purchase_record'] = 'Administrator/Purchase/getPurchaseRecord';
-$route['delete_purchase'] = 'Administrator/Purchase/deletePurchase';
-$route['supplierDue'] = 'Administrator/Supplier/supplier_due';
-$route['supplierPayment'] = 'Administrator/Supplier/supplierPaymentPage';
-$route['searchSupplierDue'] = 'Administrator/Supplier/search_supplier_due';
-$route['supplierPaymentReport'] = 'Administrator/Supplier/supplier_payment_report';
-$route['searchSupplierPayments'] = 'Administrator/Supplier/search_supplier_payments';
-$route['get_suppliers'] = 'Administrator/Supplier/getSuppliers';
-$route['get_supplier_due'] = 'Administrator/Supplier/getSupplierDue';
-$route['get_supplier_ledger'] = 'Administrator/Supplier/getSupplierLedger';
-$route['get_supplier_payments'] = 'Administrator/Supplier/getSupplierPayments';
-$route['add_supplier_payment'] = 'Administrator/Supplier/addSupplierPayment';
-$route['update_supplier_payment'] = 'Administrator/Supplier/updateSupplierPayment';
-$route['delete_supplier_payment'] = 'Administrator/Supplier/deleteSupplierPayment';
+$route['add_purchase_return']            = 'Administrator/Purchase/addPurchaseReturn';
+$route['update_purchase_return']         = 'Administrator/Purchase/updatePurchaseReturn';
+$route['get_purchase_return_details']    = 'Administrator/Purchase/getPurchaseReturnDetails';
+$route['purchase']                       = 'Administrator/Purchase/order';
+$route['purchase/(:any)']                = 'Administrator/Purchase/purchaseEdit/$1';
+$route['purchase_invoice_print/(:any)']  = 'Administrator/Purchase/purchaseInvoicePrint/$1';
+$route['add_purchase']                   = 'Administrator/Purchase/addPurchase';
+$route['update_purchase']                = 'Administrator/Purchase/updatePurchase';
+$route['purchaseInvoice']                = 'Administrator/Purchase/purchase_bill';
+$route['purchaseRecord']                 = 'Administrator/Purchase/purchase_record';
+$route['get_purchase_record']            = 'Administrator/Purchase/getPurchaseRecord';
+$route['delete_purchase']                = 'Administrator/Purchase/deletePurchase';
+$route['supplierDue']                    = 'Administrator/Supplier/supplier_due';
+$route['supplierPayment']                = 'Administrator/Supplier/supplierPaymentPage';
+$route['searchSupplierDue']              = 'Administrator/Supplier/search_supplier_due';
+$route['supplierPaymentReport']          = 'Administrator/Supplier/supplier_payment_report';
+$route['searchSupplierPayments']         = 'Administrator/Supplier/search_supplier_payments';
+$route['get_suppliers']                  = 'Administrator/Supplier/getSuppliers';
+$route['get_supplier_due']               = 'Administrator/Supplier/getSupplierDue';
+$route['get_supplier_ledger']            = 'Administrator/Supplier/getSupplierLedger';
+$route['get_supplier_payments']          = 'Administrator/Supplier/getSupplierPayments';
+$route['add_supplier_payment']           = 'Administrator/Supplier/addSupplierPayment';
+$route['update_supplier_payment']        = 'Administrator/Supplier/updateSupplierPayment';
+$route['delete_supplier_payment']        = 'Administrator/Supplier/deleteSupplierPayment';
 
-$route['purchaseReturns'] = 'Administrator/Purchase/returns';
-$route['purchaseReturns/(:any)'] = 'Administrator/Purchase/purchaseReturnEdit/$1';
-$route['PurchasereturnSearch'] = 'Administrator/Purchase/PurchasereturnSearch';
-$route['PurchaseReturnInsert'] = 'Administrator/Purchase/PurchaseReturnInsert';
-$route['returnsList'] = 'Administrator/Purchase/returns_list';
-$route['purchaseReturnRecord'] = 'Administrator/Purchase/purchase_return_record';
-$route['get_purchase_returns'] = 'Administrator/Purchase/getPurchaseReturns';
+$route['purchaseReturns']                = 'Administrator/Purchase/returns';
+$route['purchaseReturns/(:any)']         = 'Administrator/Purchase/purchaseReturnEdit/$1';
+$route['PurchaseReturnInsert']           = 'Administrator/Purchase/PurchaseReturnInsert';
+$route['returnsList']                    = 'Administrator/Purchase/returns_list';
+$route['purchaseReturnRecord']           = 'Administrator/Purchase/purchase_return_record';
+$route['get_purchase_returns']           = 'Administrator/Purchase/getPurchaseReturns';
 $route['purchase_return_invoice/(:any)'] = 'Administrator/Purchase/purchaseReturnInvoice/$1';
-$route['delete_purchase_return'] = 'Administrator/Purchase/deletePurchaseReturn';
-$route['purchase_return_details'] = 'Administrator/Purchase/purchaseReturnDetails';
-$route['check_purchase_return/(:any)'] = 'Administrator/Purchase/checkPurchaseReturn/$1';
+$route['delete_purchase_return']         = 'Administrator/Purchase/deletePurchaseReturn';
+$route['purchase_return_details']        = 'Administrator/Purchase/purchaseReturnDetails';
+$route['check_purchase_return/(:any)']   = 'Administrator/Purchase/checkPurchaseReturn/$1';
 
 $route['damageEntry'] = 'Administrator/Purchase/damage_entry';
 $route['add_damage'] = 'Administrator/Purchase/addDamage';
@@ -178,12 +165,6 @@ $route['SelectDamageProduct'] = 'Administrator/Purchase/damage_select_product';
 
 $route['sales'] = 'Administrator/Sales/index';
 $route['sales/(:any)'] = 'Administrator/Sales/salesEdit/$1';
-$route['salesinvoice'] = 'Administrator/Sales/sales_invoice';
-$route['salesOrder'] = 'Administrator/Sales/sales_order';
-$route['salesOrderUpdate'] = 'Administrator/Sales/sales_order_update';
-$route['productDelete'] = 'Administrator/Sales/product_delete';
-$route['productSalesSearch'] = 'Administrator/Sales/product_sales_search';
-$route['salesInvoiceSearch'] = 'Administrator/Sales/sales_invoice_search';
 $route['add_sales'] = 'Administrator/Sales/addSales';
 $route['get_sales'] = 'Administrator/Sales/getSales';
 $route['get_sales_record'] = 'Administrator/Sales/getSalesRecord';
@@ -203,8 +184,6 @@ $route['check_sale_return/(:any)'] = 'Administrator/Sales/checkSaleReturn/$1';
 $route['sale_invoice_print/(:any)'] = 'Administrator/Sales/saleInvoicePrint/$1';
 $route['salesrecord'] = 'Administrator/Sales/sales_record';
 $route['customerPaymentReport'] = 'Administrator/Customer/customer_payment_report';
-$route['invoiceProductDetails'] = 'Administrator/Sales/invoice_product_list';
-$route['invoiceProductList'] = 'Administrator/Sales/invoice_product_list_search';
 $route['chalan/(:any)'] = 'Administrator/Sales/chalan/$1';
 
 
@@ -220,7 +199,6 @@ $route['get_quotations']           = 'Administrator/Quotation/getQuotations';
 $route['quotationReport']          = 'Administrator/Quotation/quotation_report';
 $route['quotation_invoice/(:any)'] = 'Administrator/Quotation/quotationInvoice/$1';
 $route['quotation_invoice_report'] = 'Administrator/Quotation/quotationInvoiceReport';
-$route['DeleteQuotationInvoice']   = 'Administrator/Quotation/delete_quotation_invoice';
 
 
 
@@ -233,7 +211,6 @@ $route['returnList'] = 'Administrator/Sales/return_list';
 $route['salesReturnRecord'] = 'Administrator/Sales/sales_return_record';
 
 $route['profitLoss'] = 'Administrator/Sales/profitLoss';
-$route['profitLossSearch'] = 'Administrator/Sales/profitLossSearch';
 $route['get_profit_loss'] = 'Administrator/Sales/getProfitLoss';
 
 $route['customerDue'] = 'Administrator/Customer/customer_due';
@@ -328,9 +305,7 @@ $route['TransactionReport'] = 'Administrator/Account/all_transaction_report';
 $route['bank_transaction_report'] = 'Administrator/Account/bankTransactionReprot';
 $route['get_other_income_expense'] = 'Administrator/Account/getOtherIncomeExpense';
 
-$route['cashView'] = 'Administrator/Account/cash_view';
-$route['cashView'] = 'Administrator/Account/cash_view';
-$route['cashSearch'] = 'Administrator/Account/cash_view';
+$route['cash_view'] = 'Administrator/Account/cashView';
 $route['cash_ledger'] = 'Administrator/Account/cashLedger';
 $route['get_cash_ledger'] = 'Administrator/Account/getCashLedger';
 $route['cashStatment'] = 'Administrator/Reports/cashStatment';
@@ -387,8 +362,6 @@ $route['get_bank_transactions']     = 'Administrator/Account/getBankTransactions
 $route['get_all_bank_transactions'] = 'Administrator/Account/getAllBankTransactions';
 $route['remove_bank_transaction']   = 'Administrator/Account/removeBankTransaction';
 $route['get_bank_balance']          = 'Administrator/Account/getBankBalance';
-
-$route['cash_view'] = 'Administrator/Account/cashView';
 $route['bank_ledger'] = 'Administrator/Account/bankLedger';
 
 // Graph
@@ -396,18 +369,6 @@ $route['graph']            = 'Administrator/Graph/graph';
 $route['get_overall_data'] = 'Administrator/Graph/getOverallData';
 $route['get_graph_data']   = 'Administrator/Graph/getGraphData';
 $route['get_top_data']     = 'Administrator/Graph/getTopData';
-
-// SMS
-$route['sms']               = 'Administrator/SMS';
-$route['send_sms']          = 'Administrator/SMS/sendSms';
-$route['send_bulk_sms']     = 'Administrator/SMS/sendBulkSms';
-$route['sms_settings']      = 'Administrator/SMS/smsSettings';
-$route['get_sms_settings']  = 'Administrator/SMS/getSmsSettings';
-$route['save_sms_settings'] = 'Administrator/SMS/saveSmsSettings';
-
-$route['user_login'] = 'Login/userLogin';
-$route['database_backup'] = 'Administrator/Page/databaseBackup';
-
 
 // Loan
 $route['loan_transactions']         = 'Administrator/Loan/loanTransactions';
@@ -451,6 +412,17 @@ $route['update_investment_account'] = 'Administrator/Invest/updateInvestmentAcco
 $route['delete_investment_account'] = 'Administrator/Invest/deleteInvestmentAccount';
 $route['get_investment_accounts']   = 'Administrator/Invest/getInvestmentAccounts';
 
+
+// SMS
+$route['sms']               = 'Administrator/SMS';
+$route['send_sms']          = 'Administrator/SMS/sendSms';
+$route['send_bulk_sms']     = 'Administrator/SMS/sendBulkSms';
+$route['sms_settings']      = 'Administrator/SMS/smsSettings';
+$route['get_sms_settings']  = 'Administrator/SMS/getSmsSettings';
+$route['save_sms_settings'] = 'Administrator/SMS/saveSmsSettings';
+
+$route['user_login'] = 'Login/userLogin';
+$route['database_backup'] = 'Administrator/Page/databaseBackup';
 
 //mother api content
 $route['get_mother_api_content'] = 'Administrator/Page/getMotherApiContent';
