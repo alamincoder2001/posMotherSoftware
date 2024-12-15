@@ -148,8 +148,8 @@ class Products extends CI_Controller
             $limit .= "limit 20";
         }
         if (isset($data->name) && $data->name != '') {
-            $clauses .= " and p.Product_Code like '$data->name%'";
-            $clauses .= " or p.Product_Name like '$data->name%'";
+            $clauses .= " and p.Product_Code like '%$data->name%'";
+            $clauses .= " or p.Product_Name like '%$data->name%'";
         }
 
         $products = $this->db->query("
